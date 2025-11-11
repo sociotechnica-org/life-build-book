@@ -1,0 +1,3 @@
+# Workflows - Bronze Task Completion Behavior
+
+Bronze task completion has simpler workflow than Gold/Silver: director clicks/swipes task to mark complete, task disappears from Bronze stack with simple checkmark animation (no sculpture for volume reasons), task moves to Archives activity log contributing to completion metrics, and mode-based replacement behavior executes (Minimal: no replacement, Target: next candidate auto-populates, Maximal: continuous pull). Multiple completions feel satisfying without overwhelming celebration.

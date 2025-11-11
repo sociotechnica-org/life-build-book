@@ -1,0 +1,3 @@
+# Workflows - WIP Limit Enforcement
+
+WIP limit enforcement maintains focus and completion: system counts tasks currently in In Progress column (max 3), when directors attempt to add 4th task Marvin presents warning dialog, Marvin suggests completing or moving back tasks before starting new one, directors can override after seeing warning (rare, for exceptional circumstances), and system tracks override patterns to inform future capacity conversations with Jarvis.

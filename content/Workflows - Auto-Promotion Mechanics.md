@@ -1,0 +1,3 @@
+# Workflows - Auto-Promotion Mechanics
+
+Auto-promotion executes when directors confirm weekly plan: selected Gold/Silver projects change state to Work at Hand, Bronze tasks populate based on mode setting, items appear on The Table with enhanced visual treatment, Gold/Silver project images complete evolution to final polish, kanban boards populate with Stage 3 task lists, and AI team updates across system. This happens automatically without manual tagging.

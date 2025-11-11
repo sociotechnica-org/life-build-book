@@ -1,0 +1,3 @@
+# Workflows - Task Move to In Progress
+
+Moving tasks to In Progress indicates active work: drag task from To Do to In Progress column (or click task → select "Start"), visual feedback shows drag state, WIP limit enforcement checks current count (max 3), Marvin warns if exceeding limit and suggests completing existing tasks first, and task appears in In Progress with active work indicators. This explicit move prevents ambiguity about what's actively being worked.

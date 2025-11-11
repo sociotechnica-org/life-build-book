@@ -1,0 +1,3 @@
+# Workflows - Bronze Mode Setting Process
+
+Bronze mode setting reviews Bronze Candidates filter showing all tasks/micro-projects, counts how many tasks are Minimal requirements (due dates, planted tasks), decides on mode (Minimal/Target +X/Maximal) based on energy and other commitments, sets Target number if applicable, and reorders Bronze candidates if priorities shifted. Mode determines Bronze stack population behavior.

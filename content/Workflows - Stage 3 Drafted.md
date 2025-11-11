@@ -1,0 +1,3 @@
+# Workflows - Stage 3 Drafted
+
+Stage 3 creates complete task list: Marvin generates initial tasks based on objectives and archetype, directors iterate providing feedback, adding missing tasks, removing unnecessary ones, and reordering sequence. Normal pace takes 30 minutes; emergency pace takes 5 minutes with good-enough-fast focus. Project image evolves to Color Emergence. Task list will populate kanban board when activated.

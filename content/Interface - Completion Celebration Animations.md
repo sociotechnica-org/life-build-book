@@ -1,0 +1,3 @@
+# Interface - Completion Celebration Animations
+
+Gold and Silver project completions trigger urushi sculpture celebration: the final polished project image transforms into commemorative sculpture with gentle animation and subtle sound. This moment acknowledges significant achievement. Bronze task completions use simpler checkmark animations without sculpture (volume doesn't warrant individual celebration).

@@ -1,0 +1,3 @@
+# Workflows - Weekly Priority Queue Reordering
+
+Weekly Priority Queue reordering happens Friday (10-20 min) within each filter: does current order reflect this week's priorities? Should Paused projects at top stay high or descend? What changed since last week? Approaching deadlines that should elevate priorities? Category balance appropriate? For Bronze: due dates correct, combo opportunities, tasks that should promote to full projects?

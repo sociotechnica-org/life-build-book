@@ -1,0 +1,3 @@
+# Workflows - Three-Stream Filter Switching
+
+Three-stream filter switching enables focused priority decisions: click filter button (Gold/Silver/Bronze Candidates), view changes to show only projects/tasks meeting filter criteria, interact with filtered view (reorder, review), and switch to different filter or return to Full Queue View. Filters help directors think about fundamentally different work types separately.

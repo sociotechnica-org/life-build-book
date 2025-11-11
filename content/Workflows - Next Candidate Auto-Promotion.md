@@ -1,0 +1,3 @@
+# Workflows - Next Candidate Auto-Promotion
+
+When Gold or Silver completes, next candidate can auto-promote: system checks Priority Queue within relevant filter (Gold or Silver), identifies top candidate, presents option to director: "Activate [project name] now, or wait until Friday?", if director confirms immediate activation → project promotes to Work at Hand, if director defers → slot stays empty until Friday, and Marvin notes preference pattern to inform future suggestions.

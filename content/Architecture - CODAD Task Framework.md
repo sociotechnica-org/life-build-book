@@ -1,0 +1,3 @@
+# Architecture - CODAD Task Framework
+
+The CODAD Task Framework categorizes tasks into five types to help balance activities: Connect (relationship/communication), Operate (implementation/execution), Design (planning/conceptual), Advance (progress-driving), and Discover (research/learning). This framework helps Marvin suggest well-rounded task sequences and prevents imbalanced projects like all research with no action.

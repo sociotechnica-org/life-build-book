@@ -1,0 +1,3 @@
+# Workflows - Onboarding Flow
+
+Onboarding introduces directors to LifeBuild systematically: initial setup captures Director Attributes (Energy Reserve, Processing Power, Agency, Momentum, Support Infrastructure), brief tour of three workspaces (Life Map, Strategy Studio, Archives), guided first project creation through all four stages, simplified first Friday planning selecting one item (likely Bronze to build confidence), and graduated introduction to AI team members as their services become relevant. Focus: success in first 72 hours builds engagement.

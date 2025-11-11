@@ -1,0 +1,3 @@
+# Workflows - Gold Silver Pausing Process
+
+Gold or Silver pausing follows consistent steps: click pause button in Project Board header, Marvin presents three options with brief context for each, director selects option (Option A/B/C), system executes: project state → Paused, image retains decoration stage, saturation → 30%, kanban preserved, jumps to top of filter, and replacement activates if selected. Total time: under 2 minutes.

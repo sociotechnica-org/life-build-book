@@ -1,0 +1,3 @@
+# Workflows - Bronze Stack Expansion
+
+Bronze stack expands when clicked: compact stack spreads to fan or scrollable view showing all tasks, each task displays name/due date/time estimate/category icon, tasks become individually interactive (click to complete, drag to reorder), and clicking background or ESC collapses back to compact stack. This expansion enables task management without leaving Life Map.

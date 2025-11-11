@@ -1,0 +1,3 @@
+# AI Team - Workers Role
+
+Workers are AI agents assigned to execute specific delegated tasks, handling work independently and reporting completion for director review. Examples include Research Workers (discovery and analysis), Writing Workers (content creation), and specialized task executors. Workers free up director time for higher-leverage activities and build the director's Support Infrastructure attribute.

@@ -1,0 +1,3 @@
+# Workflows - Live to Work at Hand Promotion
+
+Projects transition from Live to Work at Hand through Friday confirmation or mid-week emergency promotion: image completes evolution to final Decoration stage, saturation enhances to 110% with glow, project appears on The Table in appropriate position (Gold/Silver), and also remains visible on home Category Card with subtle pulse. This dual presence maintains both priority and domain context.

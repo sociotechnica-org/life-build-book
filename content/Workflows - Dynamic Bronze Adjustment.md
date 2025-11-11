@@ -1,0 +1,3 @@
+# Workflows - Dynamic Bronze Adjustment
+
+Dynamic Bronze adjustment changes mode settings mid-week based on shifting capacity: click Bronze settings gear anytime, change from current mode to new mode (example: Minimal → Target +8, or Target +8 → Minimal), confirm, and stack updates immediately. Increasing mode pulls from Priority Queue; decreasing mode returns tasks to queue. Marvin may suggest adjustments based on observed patterns.

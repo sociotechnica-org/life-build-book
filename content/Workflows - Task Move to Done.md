@@ -1,0 +1,3 @@
+# Workflows - Task Move to Done
+
+Moving tasks to Done marks completion: drag from In Progress (or Review & Approve) to Done column, task displays completion checkmark and timestamp, progress ring on project card updates (fills clockwise), WIP slot frees for new work, and completed tasks remain visible in Done column providing satisfaction and progress evidence. Bronze tasks trigger mode-based replacement behavior.

@@ -1,0 +1,3 @@
+# Workflows - Weekly Execution Pattern
+
+Weekly execution follows consistent rhythm: Saturday-Thursday directors work primarily on Life Map, interact with Work at Hand on The Table (Gold/Silver projects via Project Boards, Bronze tasks via stack expansion), adapt mid-week if circumstances change (pause/replace, mode switching), observe their own patterns (what gets done, what doesn't, energy fluctuations), and gather data that informs next Friday's planning. The pattern creates learning through iteration.

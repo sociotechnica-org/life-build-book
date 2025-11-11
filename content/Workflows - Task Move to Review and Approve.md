@@ -1,0 +1,3 @@
+# Workflows - Task Move to Review and Approve
+
+Moving tasks to Review & Approve handles delegated work quality checkpoint: Workers or other subordinates complete tasks and move to this column, tasks await director review and don't count toward WIP limit, director opens task to review deliverables/quality, director either approves (moves to Done) or requests revisions (returns to In Progress with feedback), and this column remains empty when director does all work personally.

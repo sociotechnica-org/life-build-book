@@ -1,0 +1,3 @@
+# Workflows - Navigation Between Workspaces
+
+Navigation between workspaces happens fluidly: directors use header buttons (Life Map | Strategy Studio | Archives) or keyboard shortcuts (L/S/A), smooth 0.5s transition preserves spatial orientation, context saves automatically (current altitude, opened projects, filter selections), and directors always know where they are while feeling part of unified environment. Navigation never feels jarring or disorienting.

@@ -1,0 +1,3 @@
+# Workflows - Any State to Completed Transition
+
+Projects in any state can transition to Completed when all objectives achieved and tasks done: project moves to Archives, Gold/Silver projects receive sculpture celebration, image remains at final decoration stage, kanban board archives with all task history, and Conan creates token-efficient summary preserving essential learning. Pattern data feeds future planning.

@@ -1,0 +1,3 @@
+# Workflows - Drag to Reorder Within Filter
+
+Dragging projects within filtered Priority Queue view reorders priority sequence: click and hold project card, drag up or down to desired position, visual feedback shows drop zones, release to commit reorder, and system updates immediately. New order determines what's #1 (top candidate) for Friday selection or mid-week promotion. Reordering works in Full Queue View or filtered views.
