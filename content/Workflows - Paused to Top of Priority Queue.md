@@ -1,0 +1,3 @@
+# Workflows - Paused to Top of Priority Queue
+
+Paused projects automatically jump to top of their respective Priority Queue filter: Gold projects → top of Gold Candidates, Silver projects → top of Silver Candidates. This ensures paused work remains highly visible for potential resumption. Directors can reorder if paused project shouldn't stay at top, but system assumes paused work deserves high priority attention.

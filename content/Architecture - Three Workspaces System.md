@@ -1,0 +1,3 @@
+# Architecture - Three Workspaces System
+
+The Three Workspaces System organizes LifeBuild into distinct environments: Life Map (execution workspace), Strategy Studio (planning workspace), and Archives (learning workspace). Directors move fluidly between these spaces depending on their current activity. This separation creates mental context for different types of work while maintaining spatial and visual continuity.

@@ -1,0 +1,3 @@
+# Workflows - Replacement Option A Promote from Queue
+
+Option A promotes next candidate from relevant Priority Queue filter: Marvin shows top 3 candidates from Gold or Silver filter with brief context, director selects one, project immediately activates to Work at Hand, appears on The Table in opened position, and image evolves to decoration stage. Good for when planned work was already prioritized.

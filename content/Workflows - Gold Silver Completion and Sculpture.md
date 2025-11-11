@@ -1,0 +1,3 @@
+# Workflows - Gold Silver Completion and Sculpture
+
+Gold or Silver project completion triggers celebration and next candidate: director marks final task Done (100% completion), system detects all objectives achieved, urushi sculpture animation plays (final decoration stage transforms to commemorative sculpture), project transitions to Completed state and moves to Archives, Conan captures full history and creates token-efficient summary, and Marvin checks Gold/Silver Priority Queue for next candidate to auto-promote. Sculpture acknowledges significant achievement.

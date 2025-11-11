@@ -1,0 +1,3 @@
+# Workflows - Pause and Replace Pattern
+
+Pause and Replace enables mid-week Work at Hand adjustment: director clicks Work at Hand project on The Table or opens Project Board, clicks pause button in header, Marvin confirms pause and presents three replacement options (promote from queue, emergency creation, leave empty), director chooses option, and paused project returns to top of appropriate Priority Queue filter. This pattern supports genuine priority shifts.

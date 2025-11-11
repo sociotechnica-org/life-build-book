@@ -1,0 +1,3 @@
+# Workflows - Stage 4 Prioritized
+
+Stage 4 determines where project ranks: Marvin shows current Priority Queue, directors drag new project into position considering urgency, importance, and stream assignment (Gold/Silver/Bronze based on archetype and scale). Normal pace takes 5 minutes; emergency pace takes 2 minutes with option for immediate Work at Hand activation. Project exits Planning Queue, enters Priority Queue at intermediate polish image.

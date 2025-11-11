@@ -1,0 +1,3 @@
+# Workflows - Project Board Interaction
+
+Project Board interaction follows consistent pattern: director clicks project card anywhere (The Table, Category Card, Priority Queue), overlay appears centered over dimmed background maintaining spatial context, full kanban board displays with all four columns, director interacts with tasks (drag between columns, click for details, mark complete), pause button available in header if Work at Hand, close via ESC/back/click outside, and return to previous view with context preserved. This interaction pattern works identically regardless of project source.

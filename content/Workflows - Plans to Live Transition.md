@@ -1,0 +1,3 @@
+# Workflows - Plans to Live Transition
+
+Projects transition from Plans to Live when activated outside Work at Hand designation (less common): manually activated from Priority Queue mid-week, or selected as replacement when pausing Work at Hand. Image evolves to Mirror Polish, saturation becomes full (100%), kanban board populates with Stage 3 tasks, and project appears on home Category Card as active.

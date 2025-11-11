@@ -1,0 +1,3 @@
+# Workflows - Project to Archives Transition
+
+Any completed project transitions to Archives: project removes from Life Map and Priority Queue, Conan receives full project data (objectives, tasks, time actuals vs. estimates, team members, outcomes), Conan creates token-efficient summary preserving essential learning, project appears in Archives Historical Record with browse/search access, pattern data feeds Archives analysis (category balance, stream distribution, completion trends), and learning becomes available to entire AI team for future planning improvements.

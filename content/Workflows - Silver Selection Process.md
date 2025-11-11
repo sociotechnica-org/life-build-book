@@ -1,0 +1,3 @@
+# Workflows - Silver Selection Process
+
+Silver selection views Priority Queue through Silver Candidates filter showing only System Builds, Discovery Missions, and capacity-focused projects. Directors reorder considering leverage potential and infrastructure needs, note which project is #1 (top candidate), and decide whether to activate Silver or leave empty. Silver without Gold is common pattern during capacity-building phases.

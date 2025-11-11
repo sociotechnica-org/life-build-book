@@ -1,0 +1,3 @@
+# Workflows - Work at Hand to Paused Transition
+
+Projects transition from Work at Hand to Paused when directors click pause button and confirm: project removes from The Table, automatically jumps to top of Priority Queue within appropriate filter (Gold or Silver), image retains final polish decoration, saturation dims to ~30%, and kanban board state preserves for future resumption. Directors choose immediate replacement or leave slot empty.

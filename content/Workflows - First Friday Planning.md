@@ -1,0 +1,3 @@
+# Workflows - First Friday Planning
+
+First Friday planning establishes weekly rhythm with simplified scope: Jarvis facilitates abbreviated Council Chamber (15 min, basic week-in-review), Marvin guides one stream selection (start with Bronze only or Bronze + one Gold/Silver), Roster Room skipped initially (introduce delegation later), and Ready Room confirmation. Total time: 25-35 minutes. Directors experience full SODA cycle but with manageable complexity.

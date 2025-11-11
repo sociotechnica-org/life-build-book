@@ -1,0 +1,3 @@
+# Workflows - Progress Ring Update
+
+Progress ring automatically updates as tasks move to Done: system calculates completion percentage (done tasks / total tasks), ring fills clockwise from top in category color, ring brightness increases (+20% from base category color), and directors see at-a-glance progress on project cards both on The Table and home Category Cards. This passive feedback requires no manual updating.

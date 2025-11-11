@@ -1,0 +1,3 @@
+# Interface - Life Category Card Design
+
+Life Category Cards are large rectangular containers on the Life Map showing category name, color, all projects in that domain, and activity indicators. Cards display Work at Hand, Live projects, Maintenance Loop indicators, Plan stacks (collapsed "+X Planned"), and Paused indicators (collapsed "+X Paused"). Clicking card background zooms to Domain altitude.

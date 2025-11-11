@@ -1,0 +1,3 @@
+# Workflows - Mid-Week Priority Queue Access
+
+Priority Queue remains accessible mid-week for genuine priority shifts (rare but supported): directors can access Drafting Room anytime from Strategy Studio navigation, view/reorder filters if priorities shifted dramatically, and select new Work at Hand if emergency warrants. System recognizes difference between healthy mid-week adaptation (occasional) and replanning chaos (3+ consecutive weeks needing investigation).
