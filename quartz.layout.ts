@@ -38,7 +38,40 @@ export const defaultContentPageLayout: PageLayout = {
         { Component: Component.ReaderMode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      sortFn: (a, b) => {
+        // Custom sort to place 'platform' above 'features'
+        const aName = a.displayName.toLowerCase()
+        const bName = b.displayName.toLowerCase()
+
+        // Both are folders
+        if (a.isFolder && b.isFolder) {
+          // Platform comes first
+          if (aName === "platform" && bName === "features") return -1
+          if (aName === "features" && bName === "platform") return 1
+
+          // Otherwise alphabetical
+          return a.displayName.localeCompare(b.displayName, undefined, {
+            numeric: true,
+            sensitivity: "base",
+          })
+        }
+
+        // Sort order: folders first, then files
+        if ((!a.isFolder && !b.isFolder) || (a.isFolder && b.isFolder)) {
+          return a.displayName.localeCompare(b.displayName, undefined, {
+            numeric: true,
+            sensitivity: "base",
+          })
+        }
+
+        if (!a.isFolder && b.isFolder) {
+          return 1
+        } else {
+          return -1
+        }
+      },
+    }),
   ],
   right: [
     Component.Graph(),
@@ -62,7 +95,40 @@ export const defaultListPageLayout: PageLayout = {
         { Component: Component.Darkmode() },
       ],
     }),
-    Component.Explorer(),
+    Component.Explorer({
+      sortFn: (a, b) => {
+        // Custom sort to place 'platform' above 'features'
+        const aName = a.displayName.toLowerCase()
+        const bName = b.displayName.toLowerCase()
+
+        // Both are folders
+        if (a.isFolder && b.isFolder) {
+          // Platform comes first
+          if (aName === "platform" && bName === "features") return -1
+          if (aName === "features" && bName === "platform") return 1
+
+          // Otherwise alphabetical
+          return a.displayName.localeCompare(b.displayName, undefined, {
+            numeric: true,
+            sensitivity: "base",
+          })
+        }
+
+        // Sort order: folders first, then files
+        if ((!a.isFolder && !b.isFolder) || (a.isFolder && b.isFolder)) {
+          return a.displayName.localeCompare(b.displayName, undefined, {
+            numeric: true,
+            sensitivity: "base",
+          })
+        }
+
+        if (!a.isFolder && b.isFolder) {
+          return 1
+        } else {
+          return -1
+        }
+      },
+    }),
   ],
   right: [],
 }
