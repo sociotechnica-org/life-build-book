@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeBuild Strategic Charter</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    // Icon components
+    const Icon = ({ name, className }) => {
+      const ref = React.useRef(null);
+      React.useEffect(() => {
+        if (ref.current) {
+          ref.current.innerHTML = '';
+          const icon = lucide.createElement(lucide.icons[name]);
+          ref.current.appendChild(icon);
+        }
+      }, [name]);
+      return <span ref={ref} className={className} style={{display: 'inline-flex', alignItems: 'center'}} />;
+    };
+
+    const StrategicCharterApp = () => {
+      const [activeTier, setActiveTier] = useState("tier1");
+      const [activeSection, setActiveSection] = useState({
+        tier1: "identity",
+        tier2: "themes",
+        historical: "retrospective"
+      });
+
+      const tiers = [
+        { id: "tier1", label: "Tier 1: Life Foundation", icon: "Target" },
+        { id: "tier2", label: "Tier 2: Quarterly Planning", icon: "Calendar" },
+        { id: "historical", label: "Historical Log", icon: "History" }
+      ];
+
+      const sections = {
+        tier1: [
+          { id: "identity", label: "Core Identity" },
+          { id: "categories", label: "Life Categories" },
+          { id: "capacity", label: "Capacity Baselines" }
+        ],
+        tier2: [
+          { id: "themes", label: "Strategic Themes" },
+          { id: "initiatives", label: "Quarterly Initiatives" },
+          { id: "monthly", label: "Monthly Focus" }
+        ],
+        historical: [
+          { id: "retrospective", label: "Q1 2025 Retrospective" }
+        ]
+      };
+
+      const renderTier1Content = () => {
+        switch (activeSection.tier1) {
+          case "identity":
+            return (
+              <div className="space-y-8">
+                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-xl border border-indigo-100">
+                  <h3 className="text-xl font-semibold text-indigo-900 mb-3">Mission Statement</h3>
+                  <p className="text-gray-700 leading-relaxed text-lg">
+                    To cultivate a life of intentional growth and meaningful contribution, building systems that compound over time while remaining present for the people and experiences that matter most.
+                  </p>
+                </div>
+
+                <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-100">
+                  <h3 className="text-xl font-semibold text-amber-900 mb-3">Vision Statement (5-10 Years)</h3>
+                  <p className="text-gray-700 leading-relaxed">
+                    By 2030, I am a recognized expert in my field with a thriving consulting practice, financially independent with 3+ years of runway, living in a home that reflects my values, surrounded by deep relationships, and physically capable of enjoying adventures with those I love. My work directly improves the lives of thousands, and I have built systems that allow me to contribute meaningfully while maintaining space for rest, creativity, and spontaneous joy.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Core Values</h3>
+                  <div className="grid gap-4">
+                    {[
+                      {
+                        name: "Intentional Growth",
+                        description: "I choose deliberate progress over comfortable stagnation.",
+                        filter: "Does this stretch me toward who I'm becoming, not just who I am?"
+                      },
+                      {
+                        name: "Authentic Connection",
+                        description: "I prioritize depth over breadth in relationships.",
+                        filter: "Am I showing up as my full self, or performing a version I think others want?"
+                      },
+                      {
+                        name: "Sustainable Excellence",
+                        description: "I pursue quality through consistent effort, not heroic sprints.",
+                        filter: "Can I maintain this pace and standard for years, not weeks?"
+                      },
+                      {
+                        name: "Generous Contribution",
+                        description: "I create value for others as the foundation of my own prosperity.",
+                        filter: "Does this serve more than just my immediate interests?"
+                      }
+                    ].map((value, idx) => (
+                      <div key={idx} className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                        <h4 className="font-semibold text-gray-900 mb-2">{idx + 1}. {value.name}</h4>
+                        <p className="text-gray-700 mb-3">{value.description}</p>
+                        <div className="bg-gray-50 p-3 rounded-md">
+                          <span className="text-sm font-medium text-gray-600">Decision Filter:</span>
+                          <p className="text-sm text-gray-700 italic mt-1">{value.filter}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+
+          case "categories":
+            return (
+              <div className="space-y-6">
+                {[
+                  {
+                    name: "Health",
+                    advisor: "Maya",
+                    icon: "Heart",
+                    bgColor: "bg-rose-50",
+                    borderColor: "border-rose-100",
+                    barColor: "bg-rose-500",
+                    tagBg: "bg-rose-100",
+                    tagText: "text-rose-800",
+                    success: "Consistent energy throughout the day, sleeping deeply, moving joyfully, eating intuitively without restriction",
+                    baseline: { score: 6, label: "Good sleep habits, inconsistent exercise, stress eating patterns emerging" },
+                    dependencies: ["Purpose (energy for meaningful work)", "Relationships (shared activities)", "Growth (learning capacity)"]
+                  },
+                  {
+                    name: "Purpose",
+                    advisor: "Atlas",
+                    icon: "Compass",
+                    bgColor: "bg-blue-50",
+                    borderColor: "border-blue-100",
+                    barColor: "bg-blue-500",
+                    tagBg: "bg-blue-100",
+                    tagText: "text-blue-800",
+                    success: "Work that challenges and fulfills, clear career trajectory, daily sense of contribution and competence",
+                    baseline: { score: 7, label: "Engaged with current role, building toward independence, some uncertainty about next transition" },
+                    dependencies: ["Financial (runway for transitions)", "Growth (skill development)", "Health (sustained capacity)"]
+                  },
+                  {
+                    name: "Financial",
+                    advisor: "Sterling",
+                    icon: "TrendingUp",
+                    bgColor: "bg-emerald-50",
+                    borderColor: "border-emerald-100",
+                    barColor: "bg-emerald-500",
+                    tagBg: "bg-emerald-100",
+                    tagText: "text-emerald-800",
+                    success: "Financial peace through adequate reserves, diversified income, spending aligned with values, generosity without anxiety",
+                    baseline: { score: 5, label: "Stable income but building reserves, some debt, unclear long-term strategy" },
+                    dependencies: ["Purpose (income source)", "Home (major expense)", "Community (giving capacity)"]
+                  }
+                ].map((category) => (
+                  <div key={category.name} className={`${category.bgColor} p-6 rounded-xl border ${category.borderColor}`}>
+                    <div className="flex items-center gap-3 mb-4">
+                      <Icon name={category.icon} className="w-6 h-6" />
+                      <h3 className="text-xl font-semibold text-gray-900">{category.name}</h3>
+                      <span className="text-sm text-gray-500 ml-auto">Advisor: {category.advisor}</span>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-medium text-gray-700 mb-1">Success Descriptor</h4>
+                        <p className="text-gray-600">{category.success}</p>
+                      </div>
+
+                      <div>
+                        <h4 className="font-medium text-gray-700 mb-2">Current Baseline</h4>
+                        <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-1">
+                            {[...Array(10)].map((_, i) => (
+                              <div
+                                key={i}
+                                className={`w-6 h-3 rounded-sm ${
+                                  i < category.baseline.score
+                                    ? category.barColor
+                                    : "bg-gray-200"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <span className="font-semibold">{category.baseline.score}/10</span>
+                        </div>
+                        <p className="text-sm text-gray-600 mt-2">{category.baseline.label}</p>
+                      </div>
+
+                      <div>
+                        <h4 className="font-medium text-gray-700 mb-2">Key Interdependencies</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {category.dependencies.map((dep, i) => (
+                            <span key={i} className="bg-white px-3 py-1 rounded-full text-sm text-gray-700 border">
+                              {dep}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+
+          case "capacity":
+            return (
+              <div className="space-y-6">
+                {[
+                  {
+                    name: "Energy Reserve",
+                    icon: "Zap",
+                    range: "6-8",
+                    warning: "Caffeine dependence increasing, skipping workouts, irritability with partner, dread about Mondays",
+                    recovery: "Early bedtime (9pm) for 3+ days, nature walk without phone, protective weekend with no commitments",
+                    impact: "Below 5 = maintenance tasks only; 6-7 = normal productivity; 8+ = take on challenging projects"
+                  },
+                  {
+                    name: "Processing Power",
+                    icon: "Brain",
+                    range: "7-8",
+                    warning: "Re-reading paragraphs, difficulty finding words, simple decisions feel overwhelming, forgetting mid-task",
+                    recovery: "Brain dump all open loops, single-task for a day, reduce information intake, puzzle or strategy game",
+                    impact: "Below 6 = administrative tasks; 7 = standard work; 8+ = strategic thinking and complex problem-solving"
+                  },
+                  {
+                    name: "Agency",
+                    icon: "Target",
+                    range: "7-9",
+                    warning: '"What\'s the point" thinking, avoiding planning, feeling reactive rather than proactive, victim language',
+                    recovery: "Complete one small win, revisit past successes, make a choice (any choice), physical accomplishment",
+                    impact: "Below 6 = focus on controllables only; 7-8 = normal initiative; 9+ = bold moves and risk-taking appropriate"
+                  },
+                  {
+                    name: "Momentum",
+                    icon: "TrendingUp",
+                    range: "5-7",
+                    warning: "Project stalls without clear blockers, starting things without finishing, low completion rate this month",
+                    recovery: "Stack easy wins, reduce WIP to 1-2 items, celebrate completions explicitly, break next milestone smaller",
+                    impact: "Below 5 = consolidation week (finish, don't start); 6-7 = normal pacing; 8+ = accelerate and stretch"
+                  },
+                  {
+                    name: "Support Infrastructure",
+                    icon: "Users",
+                    range: "6-7",
+                    warning: "Missing appointments, inbox > 50 unreads, can't find files, eating out due to empty fridge",
+                    recovery: "Admin day to clear backlog, meal prep Sunday, digital declutter session, delegate or automate one thing",
+                    impact: "Below 5 = infrastructure repair is the priority; 6-7 = normal operations; 8+ = systems running smoothly"
+                  }
+                ].map((attr) => (
+                  <div key={attr.name} className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Icon name={attr.icon} className="w-5 h-5 text-indigo-600" />
+                      <h3 className="text-lg font-semibold text-gray-900">{attr.name}</h3>
+                      <span className="ml-auto bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium">
+                        Typical: {attr.range}
+                      </span>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div className="bg-red-50 p-3 rounded-lg">
+                        <h4 className="font-medium text-red-800 text-sm mb-2">Warning Signs</h4>
+                        <p className="text-sm text-red-700">{attr.warning}</p>
+                      </div>
+                      <div className="bg-green-50 p-3 rounded-lg">
+                        <h4 className="font-medium text-green-800 text-sm mb-2">Recovery Strategies</h4>
+                        <p className="text-sm text-green-700">{attr.recovery}</p>
+                      </div>
+                      <div className="bg-blue-50 p-3 rounded-lg">
+                        <h4 className="font-medium text-blue-800 text-sm mb-2">Work Capacity Impact</h4>
+                        <p className="text-sm text-blue-700">{attr.impact}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+
+          default:
+            return null;
+        }
+      };
+
+      const renderTier2Content = () => {
+        switch (activeSection.tier2) {
+          case "themes":
+            return (
+              <div className="space-y-6">
+                <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                  <p className="text-gray-700 font-medium">Current Quarter: Q2 2025 (April - June)</p>
+                </div>
+
+                {[
+                  {
+                    name: "Foundation Fortification",
+                    description: "Strengthening the systems and habits that will support larger ambitions",
+                    whyNow: "Recent energy dips signal that current infrastructure can't support planned growth",
+                    visionConnection: "Sustainable excellence requires reliable systems, not heroic effort",
+                    categories: ["Health", "Home", "Financial"],
+                    bgColor: "bg-amber-50",
+                    borderColor: "border-amber-100",
+                    tagBg: "bg-amber-100",
+                    tagText: "text-amber-800"
+                  },
+                  {
+                    name: "Professional Positioning",
+                    description: "Building visibility and credibility for future consulting practice",
+                    whyNow: "18-24 months from target independence date; need to start building now",
+                    visionConnection: "Recognized expert status requires consistent public contribution",
+                    categories: ["Purpose", "Growth", "Community"],
+                    bgColor: "bg-blue-50",
+                    borderColor: "border-blue-100",
+                    tagBg: "bg-blue-100",
+                    tagText: "text-blue-800"
+                  },
+                  {
+                    name: "Connection Cultivation",
+                    description: "Deepening key relationships through intentional time and attention",
+                    whyNow: "Partner mentioned feeling disconnected; two close friends moving away in summer",
+                    visionConnection: "Deep relationships are the foundation, not the reward, of meaningful life",
+                    categories: ["Relationships", "Leisure"],
+                    bgColor: "bg-rose-50",
+                    borderColor: "border-rose-100",
+                    tagBg: "bg-rose-100",
+                    tagText: "text-rose-800"
+                  }
+                ].map((theme, idx) => (
+                  <div key={idx} className={`${theme.bgColor} p-6 rounded-xl border ${theme.borderColor}`}>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{idx + 1}. {theme.name}</h3>
+                    <p className="text-gray-700 italic mb-4">{theme.description}</p>
+
+                    <div className="grid md:grid-cols-2 gap-4 mb-4">
+                      <div className="bg-white p-3 rounded-lg">
+                        <h4 className="font-medium text-gray-700 text-sm mb-1">Why Now</h4>
+                        <p className="text-sm text-gray-600">{theme.whyNow}</p>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg">
+                        <h4 className="font-medium text-gray-700 text-sm mb-1">Vision Connection</h4>
+                        <p className="text-sm text-gray-600">{theme.visionConnection}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-600">Primary Categories:</span>
+                      {theme.categories.map((cat, i) => (
+                        <span key={i} className={`${theme.tagBg} ${theme.tagText} px-2 py-1 rounded text-sm`}>
+                          {cat}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+
+          case "initiatives":
+            return (
+              <div className="space-y-6">
+                {[
+                  {
+                    name: "Home Office Renovation",
+                    archetype: "Initiative",
+                    category: "Home",
+                    theme: "Foundation Fortification",
+                    success: "Dedicated workspace with proper lighting, organized storage, soundproofing for calls, standing desk operational"
+                  },
+                  {
+                    name: "Launch Professional Blog",
+                    archetype: "System Build",
+                    category: "Purpose",
+                    theme: "Professional Positioning",
+                    success: "Site live with 5+ posts published, email subscriber system functional, monthly writing habit established"
+                  },
+                  {
+                    name: "Quarterly Financial Review System",
+                    archetype: "System Build",
+                    category: "Financial",
+                    theme: "Foundation Fortification",
+                    success: "Dashboard showing net worth, cash flow, and runway; automated tracking; quarterly review ritual established"
+                  }
+                ].map((initiative, idx) => (
+                  <div key={idx} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-xl font-semibold text-gray-900">{idx + 1}. {initiative.name}</h3>
+                      <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                        {initiative.archetype}
+                      </span>
+                    </div>
+
+                    <div className="flex gap-4 mb-4">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-gray-500">Category:</span>
+                        <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded text-sm font-medium">
+                          {initiative.category}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-gray-500">Theme:</span>
+                        <span className="bg-amber-100 text-amber-800 px-2 py-1 rounded text-sm font-medium">
+                          {initiative.theme}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="bg-green-50 p-4 rounded-lg">
+                      <h4 className="font-medium text-green-800 mb-2">Success Looks Like</h4>
+                      <p className="text-green-700">{initiative.success}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+
+          case "monthly":
+            return (
+              <div className="space-y-6">
+                {[
+                  {
+                    month: "April 2025",
+                    subtitle: "Planning & Preparation",
+                    focus: ["Foundation Fortification (primary)", "Professional Positioning (secondary)"],
+                    milestones: "Home office design finalized, blog platform selected, financial dashboard MVP created",
+                    balance: "Heavy on Home and Financial; light on Relationships (saving energy for May gatherings)",
+                    constraints: "Tax deadline April 15, partner's parents visiting April 20-23",
+                    bgColor: "bg-emerald-50",
+                    borderColor: "border-emerald-100",
+                    tagBg: "bg-emerald-100",
+                    tagText: "text-emerald-800"
+                  },
+                  {
+                    month: "May 2025",
+                    subtitle: "Building & Connecting",
+                    focus: ["Connection Cultivation (primary)", "Professional Positioning (secondary)"],
+                    milestones: "First 3 blog posts published, farewell gatherings for departing friends planned, date nights resumed weekly",
+                    balance: "Emphasizes Relationships and Leisure; maintains Purpose work but reduced scope",
+                    constraints: "Memorial Day weekend trip, three-day work conference May 12-14",
+                    bgColor: "bg-blue-50",
+                    borderColor: "border-blue-100",
+                    tagBg: "bg-blue-100",
+                    tagText: "text-blue-800"
+                  },
+                  {
+                    month: "June 2025",
+                    subtitle: "Completion & Celebration",
+                    focus: ["Foundation Fortification (primary)", "Connection Cultivation (secondary)"],
+                    milestones: "Home office fully operational, Q2 financial review completed, 5th blog post live, summer adventure planned",
+                    balance: "Completing Home initiative; celebrating with Leisure activities; preparing Q3 planning",
+                    constraints: "Quarter-end at work (busy period), planning vacation for late July",
+                    bgColor: "bg-violet-50",
+                    borderColor: "border-violet-100",
+                    tagBg: "bg-violet-100",
+                    tagText: "text-violet-800"
+                  }
+                ].map((month) => (
+                  <div key={month.month} className={`${month.bgColor} p-6 rounded-xl border ${month.borderColor}`}>
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 className="text-xl font-semibold text-gray-900">{month.month}</h3>
+                        <p className="text-gray-600 italic">{month.subtitle}</p>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        {month.focus.map((f, i) => (
+                          <span key={i} className={`${month.tagBg} ${month.tagText} px-2 py-1 rounded text-xs`}>
+                            {f}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="grid gap-4">
+                      <div className="bg-white p-3 rounded-lg">
+                        <h4 className="font-medium text-gray-700 text-sm mb-1">Expected Milestones</h4>
+                        <p className="text-sm text-gray-600">{month.milestones}</p>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg">
+                        <h4 className="font-medium text-gray-700 text-sm mb-1">Category Balance</h4>
+                        <p className="text-sm text-gray-600">{month.balance}</p>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg">
+                        <h4 className="font-medium text-gray-700 text-sm mb-1">Known Constraints</h4>
+                        <p className="text-sm text-gray-600">{month.constraints}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            );
+
+          default:
+            return null;
+        }
+      };
+
+      const renderHistoricalContent = () => {
+        return (
+          <div className="bg-gray-50 p-6 rounded-xl">
+            <h3 className="text-xl font-semibold text-gray-900 mb-4">Q1 2025 Retrospective</h3>
+
+            <div className="space-y-6">
+              <div>
+                <h4 className="font-medium text-gray-700 mb-2">Themes</h4>
+                <div className="flex gap-2">
+                  {["Career Clarity", "Health Reset", "Financial Awareness"].map((theme) => (
+                    <span key={theme} className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm">
+                      {theme}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-green-50 p-4 rounded-lg">
+                <h4 className="font-medium text-green-800 mb-2">Key Wins</h4>
+                <ul className="space-y-2 text-green-700">
+                  <li className="flex items-start gap-2">
+                    <Icon name="ChevronRight" className="w-4 h-4 mt-1 flex-shrink-0" />
+                    <span>Established morning routine (80% adherence)</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Icon name="ChevronRight" className="w-4 h-4 mt-1 flex-shrink-0" />
+                    <span>Completed career assessment</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Icon name="ChevronRight" className="w-4 h-4 mt-1 flex-shrink-0" />
+                    <span>Paid off one credit card</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-amber-50 p-4 rounded-lg">
+                <h4 className="font-medium text-amber-800 mb-2">Lessons Learned</h4>
+                <ul className="space-y-2 text-amber-700">
+                  <li className="flex items-start gap-2">
+                    <Icon name="ChevronRight" className="w-4 h-4 mt-1 flex-shrink-0" />
+                    <span>Underestimated time for financial cleanup</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Icon name="ChevronRight" className="w-4 h-4 mt-1 flex-shrink-0" />
+                    <span>Relationship maintenance suffered when health was primary focus</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <Icon name="ChevronRight" className="w-4 h-4 mt-1 flex-shrink-0" />
+                    <span>Need better handoff between monthly themes</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h4 className="font-medium text-blue-800 mb-2">Pattern Noted</h4>
+                <p className="text-blue-700">
+                  Energy Reserve drops predictably week 3 of each month — may be tied to billing cycle stress
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      return (
+        <div className="min-h-screen bg-gray-50 p-6">
+          <div className="max-w-6xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
+                <h1 className="text-3xl font-bold mb-2">LifeBuild Strategic Charter</h1>
+                <div className="flex gap-4 text-sm opacity-90">
+                  <span>Version: Q2 2025</span>
+                  <span>|</span>
+                  <span>Last Update: April 1, 2025</span>
+                  <span>|</span>
+                  <span>Next Review: July 1, 2025</span>
+                </div>
+              </div>
+
+              {/* Tier Tabs */}
+              <div className="border-b bg-gray-50">
+                <div className="flex">
+                  {tiers.map((tier) => (
+                    <button
+                      key={tier.id}
+                      onClick={() => setActiveTier(tier.id)}
+                      className={`flex items-center gap-2 px-6 py-4 font-medium transition-colors ${
+                        activeTier === tier.id
+                          ? "bg-white text-indigo-600 border-b-2 border-indigo-600"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      }`}
+                    >
+                      <Icon name={tier.icon} className="w-5 h-5" />
+                      {tier.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Section Tabs */}
+              <div className="border-b bg-white">
+                <div className="flex px-4">
+                  {sections[activeTier].map((section) => (
+                    <button
+                      key={section.id}
+                      onClick={() =>
+                        setActiveSection((prev) => ({
+                          ...prev,
+                          [activeTier]: section.id
+                        }))
+                      }
+                      className={`px-4 py-3 text-sm font-medium transition-colors ${
+                        activeSection[activeTier] === section.id
+                          ? "text-indigo-600 border-b-2 border-indigo-600"
+                          : "text-gray-500 hover:text-gray-700"
+                      }`}
+                    >
+                      {section.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                {activeTier === "tier1" && renderTier1Content()}
+                {activeTier === "tier2" && renderTier2Content()}
+                {activeTier === "historical" && renderHistoricalContent()}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<StrategicCharterApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
