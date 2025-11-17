@@ -8,7 +8,7 @@ Explore interactive applications built with the Life Build framework. These are 
 
 ## Available Demos
 
-### [Strategic Charter](/static/apps/strategic-charter.html)
+### Strategic Charter
 
 An interactive planning tool for comprehensive life planning and organization.
 
@@ -19,4 +19,4 @@ An interactive planning tool for comprehensive life planning and organization.
 
 **Technology:** React, Tailwind CSS, Lucide Icons
 
-[Launch Strategic Charter →](/static/apps/strategic-charter.html)
+<a href="/static/apps/strategic-charter.html" target="_blank" rel="noopener noreferrer">Launch Strategic Charter →</a>
