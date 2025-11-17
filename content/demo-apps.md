@@ -2,38 +2,93 @@
 title: Demo Apps
 ---
 
-# Demo Apps
+# A Friday Morning with Danvers
 
-Explore interactive applications built with the Life Build framework. These are standalone web applications that demonstrate various aspects of the LifeBuild system.
+Nine months into building his LifeBuild, Danvers has developed a rhythm.
 
-## Available Demos
+What was once overwhelming complexity has become orchestratable.
 
-### Strategic Charter
+Here's a glimpse into his Friday planning ritual.
 
-An interactive planning tool for comprehensive life planning and organization.
+## Chapter 1: The Pre-Meeting Ritual
 
-**Features:**
-- **Tier 1: Life Foundation** - Define your core identity, life categories, and capacity baselines
-- **Tier 2: Quarterly Planning** - Set strategic themes, quarterly initiatives, and monthly focus areas
-- **Historical Log** - Track retrospectives and identify patterns over time
+It's 8:47 AM on a Friday, and Danvers hasn't touched his coffee yet.
 
-**Technology:** React with custom CSS, Source Serif 4 + Inter typography
+Not because he forgot. Because this part requires clarity.
 
-<a href="/static/apps/strategic-charter.html" target="_blank" rel="noopener noreferrer">Launch Strategic Charter →</a>
+He opens the Council Chamber and navigates to his Charter—that "forever but always changing" document he's refined across 37 Friday planning sessions. Most directors call it their soul on paper. Danvers thinks of it as his compass with teeth.
+
+He skims the familiar sections: his active Life Category priorities (Career and Health still holding the top spots, though Relationships is climbing), his core values (*Depth over breadth. Sustainability over heroics. Progress over perfection.*), his operational principles refined from actual experience rather than abstract ideals.
+
+The Charter doesn't tell him what to do this week. It tells him who he's becoming.
+
+The subtle difference matters.
+
+His Energy Reserve is not at his peak, but solid. Processing Power is sharp after yesterday's rest day. Agency feels strong; he's been making decisions that stick. Momentum is building from last week's Gold project completion. Support Infrastructure continues to grow as his AI team learns his patterns.
+
+Go ahead, you nosy son of a gun—look into his soul:
+
+<div style="background: linear-gradient(135deg, #f5f3f0 0%, #e8e4de 100%); padding: 2rem; border-radius: 0.75rem; margin: 2rem 0; border-left: 3px solid #a67c52;">
+  <a href="/static/apps/strategic-charter.html" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #2f2b27; color: #faf9f7; padding: 0.875rem 2rem; border: none; border-radius: 0.5rem; font-weight: 500; text-decoration: none; transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 1px 3px rgba(47, 43, 39, 0.2);">
+    → Explore Danvers' Charter
+  </a>
+  <p style="margin-top: 1rem; color: #635c52; font-style: italic; font-size: 0.9375rem;">See how nine months of weekly refinement creates a living strategic document.</p>
+</div>
+
+Okay. Everything checks out. He's ready for Jarvis.
+
+## Chapter 2: The Council Chamber
+
+Jarvis has been busy.
+
+Where some strategic advisors would present spreadsheets and bullet points, Jarvis knows Danvers thinks in images. So he's prepared something different: a visual lookbook of the past week.
+
+The first page shows three projects side by side—Gold, Silver, Bronze—each with their urushi images evolved to final polish. The Career initiative that dominated his Gold position radiates the deep luster of completed transformative work. His Silver project, a home automation system, gleams with the satisfaction of infrastructure built. The Bronze stack shows 14 tasks completed out of a targeted 16. Not perfect, but honest.
+
+"Here's what I'm seeing," Jarvis begins, his tone practical without being clinical. "You completed 87% of your Bronze commitments—that's your best rate in six weeks. But I notice you pushed the two remaining tasks twice. Both involve phone calls."
+
+Danvers nods. Phone calls have always been his friction point.
+
+"I'm not suggesting we eliminate them," Jarvis continues. "But pattern recognition suggests: when you batch them on Wednesday mornings with coffee, completion rate jumps to 90%. Scattered throughout the week? 60%."
+
+This is what nine months of accumulated intelligence looks like. Not generic productivity advice. Specific patterns from Danvers' own history, surfaced at exactly the moment they're useful.
+
+The second page maps out what's waiting in the Priority Queue—three Gold candidates, seven Silver options, and 34 Bronze tasks ready for selection. Jarvis walks through each stream, highlighting which projects align with this week's energy levels and which might overextend.
+
+"Your Relationships category hasn't had a Gold project in 8 weeks," Jarvis observes. No judgment, just data. "That dinner party planning initiative has been climbing the queue."
+
+Danvers considers this. Jarvis never decides for him—that's the rule. But he does ensure Danvers makes decisions with full context.
+
+By the end of the session, Danvers has clear inputs for his weekly plan: a realistic energy budget, patterns from past performance, strategic themes that matter right now, and a Priority Queue organized by actual readiness rather than wishful thinking.
+
+"Ready to build this week's Work at Hand?" Jarvis asks.
+
+Danvers is.
+
+Step into the Council Chamber yourself:
+
+<div style="background: linear-gradient(135deg, #f5f3f0 0%, #e8e4de 100%); padding: 2rem; border-radius: 0.75rem; margin: 2rem 0; border-left: 3px solid #a67c52;">
+  <a href="/static/apps/weekly-strategic-rhythm.html" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #2f2b27; color: #faf9f7; padding: 0.875rem 2rem; border: none; border-radius: 0.5rem; font-weight: 500; text-decoration: none; transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 1px 3px rgba(47, 43, 39, 0.2);">
+    → Experience the Friday Planning Session
+  </a>
+  <p style="margin-top: 1rem; color: #635c52; font-style: italic; font-size: 0.9375rem;">See how Jarvis transforms last week's data into this week's strategic clarity.</p>
+</div>
+
+## What You've Just Witnessed
+
+Nine months ago, Danvers was drowning in competing priorities and scattered intentions.
+
+Today, he has:
+
+- A living Charter that evolves with each cycle
+- An AI strategic advisor who knows his patterns
+- Visual systems that make complexity navigable
+- Compound capability that makes each week easier than the last
+
+The two demos above let you experience fragments of this system: the contemplative clarity of a refined Charter, and the collaborative intelligence of Friday planning with Jarvis.
+
+These aren't productivity hacks. They're infrastructure for a life you actually want to live in.
 
 ---
 
-### Weekly Strategic Rhythm
-
-Your Friday planning companion for grounded, strategic weekly planning. Guides you through a five-phase process to align your week with your larger vision while accounting for current reality.
-
-**Features:**
-- **Phase 1: Big Picture** - Reconnect with long-term vision and quarterly themes
-- **Phase 2: Last Week Review** - Data-driven analysis of recent execution (Gold/Silver/Bronze streams)
-- **Phase 3: Current Reality** - Assess energy levels, pressures, and available support
-- **Phase 4: This Week's Themes** - Synthesize strategic intentions and success criteria
-- **Phase 5: Adjustments** - Course corrections and strategic insights capture
-
-**Technology:** React with custom CSS, interactive step-by-step workflow
-
-<a href="/static/apps/weekly-strategic-rhythm.html" target="_blank" rel="noopener noreferrer">Launch Weekly Strategic Rhythm →</a>
+**This is LifeBuild. Not a tool you use. A capability you construct.**
