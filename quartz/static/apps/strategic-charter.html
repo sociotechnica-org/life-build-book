@@ -7,8 +7,797 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: #faf9f7;
+      color: #2f2b27;
+      line-height: 1.6;
+    }
+
+    .font-serif {
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 1rem;
+      border: 1px solid #e8e4de;
+      box-shadow: 0 1px 3px rgba(47, 43, 39, 0.08), 0 4px 12px rgba(47, 43, 39, 0.04);
+      overflow: hidden;
+    }
+
+    .card:hover {
+      box-shadow: 0 2px 8px rgba(47, 43, 39, 0.12), 0 8px 24px rgba(47, 43, 39, 0.06);
+    }
+
+    /* Header */
+    .header {
+      background: #2f2b27;
+      padding: 2rem;
+      color: #faf9f7;
+    }
+
+    .header h1 {
+      font-size: 1.875rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.025em;
+    }
+
+    .header-meta {
+      font-size: 0.875rem;
+      color: #b8b0a3;
+    }
+
+    .header-meta span {
+      margin-right: 1rem;
+    }
+
+    /* Tabs */
+    .tier-tabs {
+      display: flex;
+      background: #f5f3f0;
+      border-bottom: 1px solid #e8e4de;
+    }
+
+    .tier-tab {
+      padding: 1.25rem 2rem;
+      font-weight: 500;
+      color: #7d7568;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tier-tab:hover {
+      color: #2f2b27;
+      background: #faf9f7;
+    }
+
+    .tier-tab.active {
+      background: white;
+      color: #2f2b27;
+      border-bottom: 2px solid #a67c52;
+      box-shadow: 0 1px 3px rgba(47, 43, 39, 0.08);
+    }
+
+    .tier-tab:active {
+      transform: translateY(1px);
+    }
+
+    .section-tabs {
+      display: flex;
+      padding: 0 1.5rem;
+      background: white;
+      border-bottom: 1px solid #e8e4de;
+    }
+
+    .section-tab {
+      padding: 1rem 1.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #9a9184;
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .section-tab:hover {
+      color: #635c52;
+    }
+
+    .section-tab.active {
+      color: #2f2b27;
+      border-bottom: 2px solid #a67c52;
+    }
+
+    /* Content */
+    .content {
+      padding: 2rem;
+      background: #faf9f7;
+    }
+
+    .content-block {
+      background: #f5f3f0;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      border: 1px solid #e8e4de;
+      margin-bottom: 2rem;
+    }
+
+    .content-block.white {
+      background: white;
+    }
+
+    .content-block h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #2f2b27;
+    }
+
+    .content-block p {
+      color: #4a453e;
+      line-height: 1.8;
+    }
+
+    .content-block.mission {
+      background: linear-gradient(135deg, #f5f3f0 0%, #e8e4de 100%);
+    }
+
+    /* Values */
+    .value-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      border: 1px solid #e8e4de;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 1px 3px rgba(47, 43, 39, 0.08);
+      transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .value-card:hover {
+      box-shadow: 0 2px 8px rgba(47, 43, 39, 0.12), 0 8px 24px rgba(47, 43, 39, 0.06);
+    }
+
+    .value-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .value-number {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.25rem;
+      color: #a67c52;
+    }
+
+    .value-name {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: #2f2b27;
+    }
+
+    .value-description {
+      color: #635c52;
+      margin-bottom: 1rem;
+    }
+
+    .decision-filter {
+      background: #faf9f7;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border-left: 2px solid #c4b7a6;
+    }
+
+    .filter-label {
+      font-size: 0.75rem;
+      color: #8b8680;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .filter-text {
+      color: #4a453e;
+      font-style: italic;
+    }
+
+    /* Categories */
+    .category-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      border: 1px solid #e8e4de;
+      margin-bottom: 2rem;
+      box-shadow: 0 1px 3px rgba(47, 43, 39, 0.08);
+      border-left: 4px solid #a67c52;
+    }
+
+    .category-card.health {
+      border-left-color: #f43f5e;
+    }
+
+    .category-card.purpose {
+      border-left-color: #3b82f6;
+    }
+
+    .category-card.financial {
+      border-left-color: #10b981;
+    }
+
+    .category-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .category-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .category-title h3 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #2f2b27;
+      margin: 0;
+    }
+
+    .category-advisor {
+      font-size: 0.875rem;
+      color: #8b8680;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      color: #8b8680;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .category-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .category-section p {
+      color: #635c52;
+      line-height: 1.7;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .progress-bar {
+      display: flex;
+      gap: 0.25rem;
+      flex: 1;
+    }
+
+    .progress-segment {
+      height: 0.5rem;
+      flex: 1;
+      border-radius: 9999px;
+      background: #e8e4de;
+      transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .progress-segment.filled {
+      background: #a67c52;
+    }
+
+    .progress-score {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.125rem;
+      color: #2f2b27;
+    }
+
+    /* Tags */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      background: #f5f3f0;
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      color: #635c52;
+      border: 1px solid #e8e4de;
+    }
+
+    /* Capacity Cards */
+    .capacity-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      border: 1px solid #e8e4de;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(47, 43, 39, 0.08);
+      transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .capacity-card:hover {
+      box-shadow: 0 2px 8px rgba(47, 43, 39, 0.12), 0 8px 24px rgba(47, 43, 39, 0.06);
+    }
+
+    .capacity-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .capacity-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .capacity-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      background: #f5f3f0;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #635c52;
+    }
+
+    .capacity-name {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.125rem;
+      font-weight: 500;
+      color: #2f2b27;
+    }
+
+    .capacity-range {
+      background: #f5f3f0;
+      color: #4a453e;
+      padding: 0.375rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid #e8e4de;
+    }
+
+    .capacity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .capacity-info {
+      background: #faf9f7;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border-left: 2px solid #d4cec4;
+    }
+
+    .capacity-info.warning {
+      border-left-color: #fda4af;
+    }
+
+    .capacity-info.recovery {
+      border-left-color: #7d8471;
+    }
+
+    .capacity-info.impact {
+      border-left-color: #a67c52;
+    }
+
+    .capacity-info h4 {
+      font-size: 0.6875rem;
+      color: #8b8680;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .capacity-info p {
+      font-size: 0.875rem;
+      color: #635c52;
+      line-height: 1.6;
+    }
+
+    /* Theme Cards */
+    .theme-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      border: 1px solid #e8e4de;
+      margin-bottom: 2rem;
+      box-shadow: 0 1px 3px rgba(47, 43, 39, 0.08);
+      border-left: 4px solid #a67c52;
+      transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .theme-card:hover {
+      box-shadow: 0 2px 8px rgba(47, 43, 39, 0.12), 0 8px 24px rgba(47, 43, 39, 0.06);
+    }
+
+    .theme-card.sage {
+      border-left-color: #7d8471;
+    }
+
+    .theme-card.moss {
+      border-left-color: #6b7355;
+    }
+
+    .theme-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .theme-number {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.5rem;
+      color: #a67c52;
+    }
+
+    .theme-name {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #2f2b27;
+    }
+
+    .theme-description {
+      color: #635c52;
+      font-style: italic;
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .theme-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .theme-info {
+      background: #faf9f7;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+
+    .theme-info h4 {
+      font-size: 0.6875rem;
+      color: #8b8680;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .theme-info p {
+      font-size: 0.875rem;
+      color: #635c52;
+      line-height: 1.6;
+    }
+
+    .theme-categories {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .theme-categories-label {
+      font-size: 0.875rem;
+      color: #8b8680;
+    }
+
+    /* Initiative Cards */
+    .initiative-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      border: 1px solid #e8e4de;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(47, 43, 39, 0.08);
+      transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .initiative-card:hover {
+      box-shadow: 0 2px 8px rgba(47, 43, 39, 0.12), 0 8px 24px rgba(47, 43, 39, 0.06);
+    }
+
+    .initiative-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    .initiative-title {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+    }
+
+    .initiative-archetype {
+      background: #f5f3f0;
+      color: #635c52;
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      border: 1px solid #e8e4de;
+    }
+
+    .initiative-meta {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .initiative-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .initiative-meta-label {
+      font-size: 0.875rem;
+      color: #8b8680;
+    }
+
+    .initiative-meta-value {
+      background: #f5f3f0;
+      color: #4a453e;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid #e8e4de;
+    }
+
+    .success-block {
+      background: #faf9f7;
+      padding: 1.25rem;
+      border-radius: 0.5rem;
+      border-left: 2px solid #7d8471;
+    }
+
+    .success-block h4 {
+      font-size: 0.6875rem;
+      color: #8b8680;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .success-block p {
+      color: #635c52;
+      line-height: 1.7;
+    }
+
+    /* Month Cards */
+    .month-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      border: 1px solid #e8e4de;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(47, 43, 39, 0.08);
+      border-left: 4px solid #a67c52;
+      transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .month-card:hover {
+      box-shadow: 0 2px 8px rgba(47, 43, 39, 0.12), 0 8px 24px rgba(47, 43, 39, 0.06);
+    }
+
+    .month-card.sage {
+      border-left-color: #7d8471;
+    }
+
+    .month-card.moss {
+      border-left-color: #6b7355;
+    }
+
+    .month-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .month-title h3 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.25rem;
+      font-weight: 500;
+      color: #2f2b27;
+      margin: 0 0 0.25rem 0;
+    }
+
+    .month-subtitle {
+      color: #8b8680;
+      font-style: italic;
+    }
+
+    .month-focus {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .focus-tag {
+      background: #f5f3f0;
+      color: #4a453e;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      border: 1px solid #e8e4de;
+    }
+
+    .month-sections {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .month-info {
+      background: #faf9f7;
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+
+    .month-info h4 {
+      font-size: 0.6875rem;
+      color: #8b8680;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .month-info p {
+      font-size: 0.875rem;
+      color: #635c52;
+      line-height: 1.6;
+    }
+
+    /* Retrospective */
+    .retro-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .retro-block {
+      background: #faf9f7;
+      padding: 1.25rem;
+      border-radius: 0.5rem;
+      border-left: 2px solid #d4cec4;
+    }
+
+    .retro-block.wins {
+      border-left-color: #7d8471;
+    }
+
+    .retro-block.lessons {
+      border-left-color: #a67c52;
+    }
+
+    .retro-block.pattern {
+      border-left-color: #8b8680;
+    }
+
+    .retro-block h4 {
+      font-size: 0.6875rem;
+      color: #8b8680;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+    }
+
+    .retro-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .retro-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      color: #635c52;
+      margin-bottom: 0.75rem;
+    }
+
+    .retro-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    .retro-icon {
+      color: #7d8471;
+      margin-top: 0.25rem;
+    }
+
+    .retro-icon.clay {
+      color: #a67c52;
+    }
+
+    /* Quarter Info */
+    .quarter-info {
+      background: #f5f3f0;
+      padding: 1.25rem;
+      border-radius: 0.5rem;
+      border: 1px solid #e8e4de;
+      margin-bottom: 2rem;
+    }
+
+    .quarter-info p {
+      color: #4a453e;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    .quarter-info span {
+      color: #8b8680;
+      font-weight: 400;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.875rem;
+      color: #8b8680;
+    }
+
+    /* Icons (simple SVG) */
+    .icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .icon-small {
+      width: 1rem;
+      height: 1rem;
+    }
+  </style>
 </head>
 <body>
   <div id="root"></div>
@@ -16,17 +805,44 @@
   <script type="text/babel">
     const { useState } = React;
 
-    // Icon components
-    const Icon = ({ name, className }) => {
-      const ref = React.useRef(null);
-      React.useEffect(() => {
-        if (ref.current) {
-          ref.current.innerHTML = '';
-          const icon = lucide.createElement(lucide.icons[name]);
-          ref.current.appendChild(icon);
-        }
-      }, [name]);
-      return <span ref={ref} className={className} style={{display: 'inline-flex', alignItems: 'center'}} />;
+    // Simple SVG icons
+    const Icons = {
+      Compass: () => (
+        <svg className="icon" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"/>
+          <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+        </svg>
+      ),
+      Calendar: () => (
+        <svg className="icon" viewBox="0 0 24 24">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+          <line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/>
+          <line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+      ),
+      BookOpen: () => (
+        <svg className="icon" viewBox="0 0 24 24">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+      ),
+      Heart: () => (
+        <svg className="icon" viewBox="0 0 24 24">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      ),
+      Check: () => (
+        <svg className="icon icon-small" viewBox="0 0 24 24">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      ),
+      Lightbulb: () => (
+        <svg className="icon icon-small" viewBox="0 0 24 24">
+          <path d="M9 21h6"/>
+          <path d="M12 3a6 6 0 0 0-3 11.197V16a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1.803A6 6 0 0 0 12 3z"/>
+        </svg>
+      )
     };
 
     const StrategicCharterApp = () => {
@@ -38,9 +854,9 @@
       });
 
       const tiers = [
-        { id: "tier1", label: "Tier 1: Life Foundation", icon: "Target" },
-        { id: "tier2", label: "Tier 2: Quarterly Planning", icon: "Calendar" },
-        { id: "historical", label: "Historical Log", icon: "History" }
+        { id: "tier1", label: "Life Foundation", icon: "Compass" },
+        { id: "tier2", label: "Quarterly Planning", icon: "Calendar" },
+        { id: "historical", label: "Historical Log", icon: "BookOpen" }
       ];
 
       const sections = {
@@ -59,77 +875,79 @@
         ]
       };
 
+      const renderIcon = (name) => {
+        const IconComponent = Icons[name];
+        return IconComponent ? <IconComponent /> : null;
+      };
+
       const renderTier1Content = () => {
         switch (activeSection.tier1) {
           case "identity":
             return (
-              <div className="space-y-8">
-                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-xl border border-indigo-100">
-                  <h3 className="text-xl font-semibold text-indigo-900 mb-3">Mission Statement</h3>
-                  <p className="text-gray-700 leading-relaxed text-lg">
+              <div>
+                <div className="content-block mission">
+                  <h3 className="font-serif">Mission Statement</h3>
+                  <p style={{fontSize: '1.125rem'}}>
                     To cultivate a life of intentional growth and meaningful contribution, building systems that compound over time while remaining present for the people and experiences that matter most.
                   </p>
                 </div>
 
-                <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-100">
-                  <h3 className="text-xl font-semibold text-amber-900 mb-3">Vision Statement (5-10 Years)</h3>
-                  <p className="text-gray-700 leading-relaxed">
+                <div className="content-block">
+                  <h3 className="font-serif">Vision Statement</h3>
+                  <p className="section-label">5-10 Year Horizon</p>
+                  <p>
                     By 2030, I am a recognized expert in my field with a thriving consulting practice, financially independent with 3+ years of runway, living in a home that reflects my values, surrounded by deep relationships, and physically capable of enjoying adventures with those I love. My work directly improves the lives of thousands, and I have built systems that allow me to contribute meaningfully while maintaining space for rest, creativity, and spontaneous joy.
                   </p>
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Core Values</h3>
-                  <div className="grid gap-4">
-                    {[
-                      {
-                        name: "Intentional Growth",
-                        description: "I choose deliberate progress over comfortable stagnation.",
-                        filter: "Does this stretch me toward who I'm becoming, not just who I am?"
-                      },
-                      {
-                        name: "Authentic Connection",
-                        description: "I prioritize depth over breadth in relationships.",
-                        filter: "Am I showing up as my full self, or performing a version I think others want?"
-                      },
-                      {
-                        name: "Sustainable Excellence",
-                        description: "I pursue quality through consistent effort, not heroic sprints.",
-                        filter: "Can I maintain this pace and standard for years, not weeks?"
-                      },
-                      {
-                        name: "Generous Contribution",
-                        description: "I create value for others as the foundation of my own prosperity.",
-                        filter: "Does this serve more than just my immediate interests?"
-                      }
-                    ].map((value, idx) => (
-                      <div key={idx} className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                        <h4 className="font-semibold text-gray-900 mb-2">{idx + 1}. {value.name}</h4>
-                        <p className="text-gray-700 mb-3">{value.description}</p>
-                        <div className="bg-gray-50 p-3 rounded-md">
-                          <span className="text-sm font-medium text-gray-600">Decision Filter:</span>
-                          <p className="text-sm text-gray-700 italic mt-1">{value.filter}</p>
-                        </div>
+                  <h3 className="font-serif" style={{marginBottom: '1.5rem', fontSize: '1.5rem'}}>Core Values</h3>
+                  {[
+                    {
+                      name: "Intentional Growth",
+                      description: "I choose deliberate progress over comfortable stagnation.",
+                      filter: "Does this stretch me toward who I'm becoming, not just who I am?"
+                    },
+                    {
+                      name: "Authentic Connection",
+                      description: "I prioritize depth over breadth in relationships.",
+                      filter: "Am I showing up as my full self, or performing a version I think others want?"
+                    },
+                    {
+                      name: "Sustainable Excellence",
+                      description: "I pursue quality through consistent effort, not heroic sprints.",
+                      filter: "Can I maintain this pace and standard for years, not weeks?"
+                    },
+                    {
+                      name: "Generous Contribution",
+                      description: "I create value for others as the foundation of my own prosperity.",
+                      filter: "Does this serve more than just my immediate interests?"
+                    }
+                  ].map((value, idx) => (
+                    <div key={idx} className="value-card">
+                      <div className="value-header">
+                        <span className="value-number">{idx + 1}</span>
+                        <span className="value-name">{value.name}</span>
                       </div>
-                    ))}
-                  </div>
+                      <p className="value-description">{value.description}</p>
+                      <div className="decision-filter">
+                        <p className="filter-label">Decision Filter</p>
+                        <p className="filter-text">{value.filter}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             );
 
           case "categories":
             return (
-              <div className="space-y-6">
+              <div>
                 {[
                   {
                     name: "Health",
                     advisor: "Maya",
-                    icon: "Heart",
-                    bgColor: "bg-rose-50",
-                    borderColor: "border-rose-100",
-                    barColor: "bg-rose-500",
-                    tagBg: "bg-rose-100",
-                    tagText: "text-rose-800",
+                    className: "health",
                     success: "Consistent energy throughout the day, sleeping deeply, moving joyfully, eating intuitively without restriction",
                     baseline: { score: 6, label: "Good sleep habits, inconsistent exercise, stress eating patterns emerging" },
                     dependencies: ["Purpose (energy for meaningful work)", "Relationships (shared activities)", "Growth (learning capacity)"]
@@ -137,12 +955,7 @@
                   {
                     name: "Purpose",
                     advisor: "Atlas",
-                    icon: "Compass",
-                    bgColor: "bg-blue-50",
-                    borderColor: "border-blue-100",
-                    barColor: "bg-blue-500",
-                    tagBg: "bg-blue-100",
-                    tagText: "text-blue-800",
+                    className: "purpose",
                     success: "Work that challenges and fulfills, clear career trajectory, daily sense of contribution and competence",
                     baseline: { score: 7, label: "Engaged with current role, building toward independence, some uncertainty about next transition" },
                     dependencies: ["Financial (runway for transitions)", "Growth (skill development)", "Health (sustained capacity)"]
@@ -150,59 +963,48 @@
                   {
                     name: "Financial",
                     advisor: "Sterling",
-                    icon: "TrendingUp",
-                    bgColor: "bg-emerald-50",
-                    borderColor: "border-emerald-100",
-                    barColor: "bg-emerald-500",
-                    tagBg: "bg-emerald-100",
-                    tagText: "text-emerald-800",
+                    className: "financial",
                     success: "Financial peace through adequate reserves, diversified income, spending aligned with values, generosity without anxiety",
                     baseline: { score: 5, label: "Stable income but building reserves, some debt, unclear long-term strategy" },
                     dependencies: ["Purpose (income source)", "Home (major expense)", "Community (giving capacity)"]
                   }
                 ].map((category) => (
-                  <div key={category.name} className={`${category.bgColor} p-6 rounded-xl border ${category.borderColor}`}>
-                    <div className="flex items-center gap-3 mb-4">
-                      <Icon name={category.icon} className="w-6 h-6" />
-                      <h3 className="text-xl font-semibold text-gray-900">{category.name}</h3>
-                      <span className="text-sm text-gray-500 ml-auto">Advisor: {category.advisor}</span>
+                  <div key={category.name} className={`category-card ${category.className}`}>
+                    <div className="category-header">
+                      <div className="category-title">
+                        {renderIcon("Heart")}
+                        <h3>{category.name}</h3>
+                      </div>
+                      <span className="category-advisor">Advisor: {category.advisor}</span>
                     </div>
 
-                    <div className="space-y-4">
-                      <div>
-                        <h4 className="font-medium text-gray-700 mb-1">Success Descriptor</h4>
-                        <p className="text-gray-600">{category.success}</p>
-                      </div>
+                    <div className="category-section">
+                      <p className="section-label">Success Descriptor</p>
+                      <p>{category.success}</p>
+                    </div>
 
-                      <div>
-                        <h4 className="font-medium text-gray-700 mb-2">Current Baseline</h4>
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-1">
-                            {[...Array(10)].map((_, i) => (
-                              <div
-                                key={i}
-                                className={`w-6 h-3 rounded-sm ${
-                                  i < category.baseline.score
-                                    ? category.barColor
-                                    : "bg-gray-200"
-                                }`}
-                              />
-                            ))}
-                          </div>
-                          <span className="font-semibold">{category.baseline.score}/10</span>
-                        </div>
-                        <p className="text-sm text-gray-600 mt-2">{category.baseline.label}</p>
-                      </div>
-
-                      <div>
-                        <h4 className="font-medium text-gray-700 mb-2">Key Interdependencies</h4>
-                        <div className="flex flex-wrap gap-2">
-                          {category.dependencies.map((dep, i) => (
-                            <span key={i} className="bg-white px-3 py-1 rounded-full text-sm text-gray-700 border">
-                              {dep}
-                            </span>
+                    <div className="category-section">
+                      <p className="section-label">Current Baseline</p>
+                      <div className="progress-container">
+                        <div className="progress-bar">
+                          {[...Array(10)].map((_, i) => (
+                            <div
+                              key={i}
+                              className={`progress-segment ${i < category.baseline.score ? 'filled' : ''}`}
+                            />
                           ))}
                         </div>
+                        <span className="progress-score">{category.baseline.score}/10</span>
+                      </div>
+                      <p style={{fontSize: '0.875rem'}}>{category.baseline.label}</p>
+                    </div>
+
+                    <div className="category-section">
+                      <p className="section-label">Key Interdependencies</p>
+                      <div className="tags">
+                        {category.dependencies.map((dep, i) => (
+                          <span key={i} className="tag">{dep}</span>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -212,11 +1014,10 @@
 
           case "capacity":
             return (
-              <div className="space-y-6">
+              <div>
                 {[
                   {
                     name: "Energy Reserve",
-                    icon: "Zap",
                     range: "6-8",
                     warning: "Caffeine dependence increasing, skipping workouts, irritability with partner, dread about Mondays",
                     recovery: "Early bedtime (9pm) for 3+ days, nature walk without phone, protective weekend with no commitments",
@@ -224,7 +1025,6 @@
                   },
                   {
                     name: "Processing Power",
-                    icon: "Brain",
                     range: "7-8",
                     warning: "Re-reading paragraphs, difficulty finding words, simple decisions feel overwhelming, forgetting mid-task",
                     recovery: "Brain dump all open loops, single-task for a day, reduce information intake, puzzle or strategy game",
@@ -232,7 +1032,6 @@
                   },
                   {
                     name: "Agency",
-                    icon: "Target",
                     range: "7-9",
                     warning: '"What\'s the point" thinking, avoiding planning, feeling reactive rather than proactive, victim language',
                     recovery: "Complete one small win, revisit past successes, make a choice (any choice), physical accomplishment",
@@ -240,7 +1039,6 @@
                   },
                   {
                     name: "Momentum",
-                    icon: "TrendingUp",
                     range: "5-7",
                     warning: "Project stalls without clear blockers, starting things without finishing, low completion rate this month",
                     recovery: "Stack easy wins, reduce WIP to 1-2 items, celebrate completions explicitly, break next milestone smaller",
@@ -248,34 +1046,35 @@
                   },
                   {
                     name: "Support Infrastructure",
-                    icon: "Users",
                     range: "6-7",
                     warning: "Missing appointments, inbox > 50 unreads, can't find files, eating out due to empty fridge",
                     recovery: "Admin day to clear backlog, meal prep Sunday, digital declutter session, delegate or automate one thing",
                     impact: "Below 5 = infrastructure repair is the priority; 6-7 = normal operations; 8+ = systems running smoothly"
                   }
                 ].map((attr) => (
-                  <div key={attr.name} className="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
-                    <div className="flex items-center gap-3 mb-4">
-                      <Icon name={attr.icon} className="w-5 h-5 text-indigo-600" />
-                      <h3 className="text-lg font-semibold text-gray-900">{attr.name}</h3>
-                      <span className="ml-auto bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium">
-                        Typical: {attr.range}
-                      </span>
+                  <div key={attr.name} className="capacity-card">
+                    <div className="capacity-header">
+                      <div className="capacity-title">
+                        <div className="capacity-icon">
+                          {renderIcon("Compass")}
+                        </div>
+                        <span className="capacity-name">{attr.name}</span>
+                      </div>
+                      <span className="capacity-range">Typical: {attr.range}</span>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-4">
-                      <div className="bg-red-50 p-3 rounded-lg">
-                        <h4 className="font-medium text-red-800 text-sm mb-2">Warning Signs</h4>
-                        <p className="text-sm text-red-700">{attr.warning}</p>
+                    <div className="capacity-grid">
+                      <div className="capacity-info warning">
+                        <h4>Warning Signs</h4>
+                        <p>{attr.warning}</p>
                       </div>
-                      <div className="bg-green-50 p-3 rounded-lg">
-                        <h4 className="font-medium text-green-800 text-sm mb-2">Recovery Strategies</h4>
-                        <p className="text-sm text-green-700">{attr.recovery}</p>
+                      <div className="capacity-info recovery">
+                        <h4>Recovery Strategies</h4>
+                        <p>{attr.recovery}</p>
                       </div>
-                      <div className="bg-blue-50 p-3 rounded-lg">
-                        <h4 className="font-medium text-blue-800 text-sm mb-2">Work Capacity Impact</h4>
-                        <p className="text-sm text-blue-700">{attr.impact}</p>
+                      <div className="capacity-info impact">
+                        <h4>Work Capacity Impact</h4>
+                        <p>{attr.impact}</p>
                       </div>
                     </div>
                   </div>
@@ -292,9 +1091,9 @@
         switch (activeSection.tier2) {
           case "themes":
             return (
-              <div className="space-y-6">
-                <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                  <p className="text-gray-700 font-medium">Current Quarter: Q2 2025 (April - June)</p>
+              <div>
+                <div className="quarter-info">
+                  <p>Current Quarter: Q2 2025 <span>· April – June</span></p>
                 </div>
 
                 {[
@@ -304,10 +1103,7 @@
                     whyNow: "Recent energy dips signal that current infrastructure can't support planned growth",
                     visionConnection: "Sustainable excellence requires reliable systems, not heroic effort",
                     categories: ["Health", "Home", "Financial"],
-                    bgColor: "bg-amber-50",
-                    borderColor: "border-amber-100",
-                    tagBg: "bg-amber-100",
-                    tagText: "text-amber-800"
+                    className: ""
                   },
                   {
                     name: "Professional Positioning",
@@ -315,10 +1111,7 @@
                     whyNow: "18-24 months from target independence date; need to start building now",
                     visionConnection: "Recognized expert status requires consistent public contribution",
                     categories: ["Purpose", "Growth", "Community"],
-                    bgColor: "bg-blue-50",
-                    borderColor: "border-blue-100",
-                    tagBg: "bg-blue-100",
-                    tagText: "text-blue-800"
+                    className: "sage"
                   },
                   {
                     name: "Connection Cultivation",
@@ -326,33 +1119,31 @@
                     whyNow: "Partner mentioned feeling disconnected; two close friends moving away in summer",
                     visionConnection: "Deep relationships are the foundation, not the reward, of meaningful life",
                     categories: ["Relationships", "Leisure"],
-                    bgColor: "bg-rose-50",
-                    borderColor: "border-rose-100",
-                    tagBg: "bg-rose-100",
-                    tagText: "text-rose-800"
+                    className: "moss"
                   }
                 ].map((theme, idx) => (
-                  <div key={idx} className={`${theme.bgColor} p-6 rounded-xl border ${theme.borderColor}`}>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">{idx + 1}. {theme.name}</h3>
-                    <p className="text-gray-700 italic mb-4">{theme.description}</p>
+                  <div key={idx} className={`theme-card ${theme.className}`}>
+                    <div className="theme-header">
+                      <span className="theme-number">{idx + 1}</span>
+                      <span className="theme-name">{theme.name}</span>
+                    </div>
+                    <p className="theme-description">{theme.description}</p>
 
-                    <div className="grid md:grid-cols-2 gap-4 mb-4">
-                      <div className="bg-white p-3 rounded-lg">
-                        <h4 className="font-medium text-gray-700 text-sm mb-1">Why Now</h4>
-                        <p className="text-sm text-gray-600">{theme.whyNow}</p>
+                    <div className="theme-grid">
+                      <div className="theme-info">
+                        <h4>Why Now</h4>
+                        <p>{theme.whyNow}</p>
                       </div>
-                      <div className="bg-white p-3 rounded-lg">
-                        <h4 className="font-medium text-gray-700 text-sm mb-1">Vision Connection</h4>
-                        <p className="text-sm text-gray-600">{theme.visionConnection}</p>
+                      <div className="theme-info">
+                        <h4>Vision Connection</h4>
+                        <p>{theme.visionConnection}</p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-600">Primary Categories:</span>
+                    <div className="theme-categories">
+                      <span className="theme-categories-label">Primary Categories:</span>
                       {theme.categories.map((cat, i) => (
-                        <span key={i} className={`${theme.tagBg} ${theme.tagText} px-2 py-1 rounded text-sm`}>
-                          {cat}
-                        </span>
+                        <span key={i} className="tag">{cat}</span>
                       ))}
                     </div>
                   </div>
@@ -362,7 +1153,7 @@
 
           case "initiatives":
             return (
-              <div className="space-y-6">
+              <div>
                 {[
                   {
                     name: "Home Office Renovation",
@@ -386,32 +1177,29 @@
                     success: "Dashboard showing net worth, cash flow, and runway; automated tracking; quarterly review ritual established"
                   }
                 ].map((initiative, idx) => (
-                  <div key={idx} className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-xl font-semibold text-gray-900">{idx + 1}. {initiative.name}</h3>
-                      <span className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
-                        {initiative.archetype}
-                      </span>
+                  <div key={idx} className="initiative-card">
+                    <div className="initiative-header">
+                      <div className="initiative-title">
+                        <span className="value-number">{idx + 1}</span>
+                        <span className="value-name">{initiative.name}</span>
+                      </div>
+                      <span className="initiative-archetype">{initiative.archetype}</span>
                     </div>
 
-                    <div className="flex gap-4 mb-4">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-500">Category:</span>
-                        <span className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded text-sm font-medium">
-                          {initiative.category}
-                        </span>
+                    <div className="initiative-meta">
+                      <div className="initiative-meta-item">
+                        <span className="initiative-meta-label">Category:</span>
+                        <span className="initiative-meta-value">{initiative.category}</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-500">Theme:</span>
-                        <span className="bg-amber-100 text-amber-800 px-2 py-1 rounded text-sm font-medium">
-                          {initiative.theme}
-                        </span>
+                      <div className="initiative-meta-item">
+                        <span className="initiative-meta-label">Theme:</span>
+                        <span className="initiative-meta-value">{initiative.theme}</span>
                       </div>
                     </div>
 
-                    <div className="bg-green-50 p-4 rounded-lg">
-                      <h4 className="font-medium text-green-800 mb-2">Success Looks Like</h4>
-                      <p className="text-green-700">{initiative.success}</p>
+                    <div className="success-block">
+                      <h4>Success Looks Like</h4>
+                      <p>{initiative.success}</p>
                     </div>
                   </div>
                 ))}
@@ -420,7 +1208,7 @@
 
           case "monthly":
             return (
-              <div className="space-y-6">
+              <div>
                 {[
                   {
                     month: "April 2025",
@@ -429,10 +1217,7 @@
                     milestones: "Home office design finalized, blog platform selected, financial dashboard MVP created",
                     balance: "Heavy on Home and Financial; light on Relationships (saving energy for May gatherings)",
                     constraints: "Tax deadline April 15, partner's parents visiting April 20-23",
-                    bgColor: "bg-emerald-50",
-                    borderColor: "border-emerald-100",
-                    tagBg: "bg-emerald-100",
-                    tagText: "text-emerald-800"
+                    className: ""
                   },
                   {
                     month: "May 2025",
@@ -441,10 +1226,7 @@
                     milestones: "First 3 blog posts published, farewell gatherings for departing friends planned, date nights resumed weekly",
                     balance: "Emphasizes Relationships and Leisure; maintains Purpose work but reduced scope",
                     constraints: "Memorial Day weekend trip, three-day work conference May 12-14",
-                    bgColor: "bg-blue-50",
-                    borderColor: "border-blue-100",
-                    tagBg: "bg-blue-100",
-                    tagText: "text-blue-800"
+                    className: "sage"
                   },
                   {
                     month: "June 2025",
@@ -453,39 +1235,34 @@
                     milestones: "Home office fully operational, Q2 financial review completed, 5th blog post live, summer adventure planned",
                     balance: "Completing Home initiative; celebrating with Leisure activities; preparing Q3 planning",
                     constraints: "Quarter-end at work (busy period), planning vacation for late July",
-                    bgColor: "bg-violet-50",
-                    borderColor: "border-violet-100",
-                    tagBg: "bg-violet-100",
-                    tagText: "text-violet-800"
+                    className: "moss"
                   }
                 ].map((month) => (
-                  <div key={month.month} className={`${month.bgColor} p-6 rounded-xl border ${month.borderColor}`}>
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
-                        <h3 className="text-xl font-semibold text-gray-900">{month.month}</h3>
-                        <p className="text-gray-600 italic">{month.subtitle}</p>
+                  <div key={month.month} className={`month-card ${month.className}`}>
+                    <div className="month-header">
+                      <div className="month-title">
+                        <h3>{month.month}</h3>
+                        <p className="month-subtitle">{month.subtitle}</p>
                       </div>
-                      <div className="flex flex-col gap-1">
+                      <div className="month-focus">
                         {month.focus.map((f, i) => (
-                          <span key={i} className={`${month.tagBg} ${month.tagText} px-2 py-1 rounded text-xs`}>
-                            {f}
-                          </span>
+                          <span key={i} className="focus-tag">{f}</span>
                         ))}
                       </div>
                     </div>
 
-                    <div className="grid gap-4">
-                      <div className="bg-white p-3 rounded-lg">
-                        <h4 className="font-medium text-gray-700 text-sm mb-1">Expected Milestones</h4>
-                        <p className="text-sm text-gray-600">{month.milestones}</p>
+                    <div className="month-sections">
+                      <div className="month-info">
+                        <h4>Expected Milestones</h4>
+                        <p>{month.milestones}</p>
                       </div>
-                      <div className="bg-white p-3 rounded-lg">
-                        <h4 className="font-medium text-gray-700 text-sm mb-1">Category Balance</h4>
-                        <p className="text-sm text-gray-600">{month.balance}</p>
+                      <div className="month-info">
+                        <h4>Category Balance</h4>
+                        <p>{month.balance}</p>
                       </div>
-                      <div className="bg-white p-3 rounded-lg">
-                        <h4 className="font-medium text-gray-700 text-sm mb-1">Known Constraints</h4>
-                        <p className="text-sm text-gray-600">{month.constraints}</p>
+                      <div className="month-info">
+                        <h4>Known Constraints</h4>
+                        <p>{month.constraints}</p>
                       </div>
                     </div>
                   </div>
@@ -500,135 +1277,121 @@
 
       const renderHistoricalContent = () => {
         return (
-          <div className="bg-gray-50 p-6 rounded-xl">
-            <h3 className="text-xl font-semibold text-gray-900 mb-4">Q1 2025 Retrospective</h3>
+          <div className="content-block white">
+            <h3 className="font-serif" style={{marginBottom: '1.5rem'}}>Q1 2025 Retrospective</h3>
 
-            <div className="space-y-6">
-              <div>
-                <h4 className="font-medium text-gray-700 mb-2">Themes</h4>
-                <div className="flex gap-2">
-                  {["Career Clarity", "Health Reset", "Financial Awareness"].map((theme) => (
-                    <span key={theme} className="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm">
-                      {theme}
-                    </span>
-                  ))}
-                </div>
+            <div className="retro-section">
+              <p className="section-label">Themes</p>
+              <div className="tags">
+                {["Career Clarity", "Health Reset", "Financial Awareness"].map((theme) => (
+                  <span key={theme} className="tag">{theme}</span>
+                ))}
               </div>
+            </div>
 
-              <div className="bg-green-50 p-4 rounded-lg">
-                <h4 className="font-medium text-green-800 mb-2">Key Wins</h4>
-                <ul className="space-y-2 text-green-700">
-                  <li className="flex items-start gap-2">
-                    <Icon name="ChevronRight" className="w-4 h-4 mt-1 flex-shrink-0" />
+            <div className="retro-section">
+              <div className="retro-block wins">
+                <h4>Key Wins</h4>
+                <ul className="retro-list">
+                  <li>
+                    <span className="retro-icon">{renderIcon("Check")}</span>
                     <span>Established morning routine (80% adherence)</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="ChevronRight" className="w-4 h-4 mt-1 flex-shrink-0" />
+                  <li>
+                    <span className="retro-icon">{renderIcon("Check")}</span>
                     <span>Completed career assessment</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="ChevronRight" className="w-4 h-4 mt-1 flex-shrink-0" />
+                  <li>
+                    <span className="retro-icon">{renderIcon("Check")}</span>
                     <span>Paid off one credit card</span>
                   </li>
                 </ul>
               </div>
+            </div>
 
-              <div className="bg-amber-50 p-4 rounded-lg">
-                <h4 className="font-medium text-amber-800 mb-2">Lessons Learned</h4>
-                <ul className="space-y-2 text-amber-700">
-                  <li className="flex items-start gap-2">
-                    <Icon name="ChevronRight" className="w-4 h-4 mt-1 flex-shrink-0" />
+            <div className="retro-section">
+              <div className="retro-block lessons">
+                <h4>Lessons Learned</h4>
+                <ul className="retro-list">
+                  <li>
+                    <span className="retro-icon clay">{renderIcon("Lightbulb")}</span>
                     <span>Underestimated time for financial cleanup</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="ChevronRight" className="w-4 h-4 mt-1 flex-shrink-0" />
+                  <li>
+                    <span className="retro-icon clay">{renderIcon("Lightbulb")}</span>
                     <span>Relationship maintenance suffered when health was primary focus</span>
                   </li>
-                  <li className="flex items-start gap-2">
-                    <Icon name="ChevronRight" className="w-4 h-4 mt-1 flex-shrink-0" />
+                  <li>
+                    <span className="retro-icon clay">{renderIcon("Lightbulb")}</span>
                     <span>Need better handoff between monthly themes</span>
                   </li>
                 </ul>
               </div>
+            </div>
 
-              <div className="bg-blue-50 p-4 rounded-lg">
-                <h4 className="font-medium text-blue-800 mb-2">Pattern Noted</h4>
-                <p className="text-blue-700">
-                  Energy Reserve drops predictably week 3 of each month — may be tied to billing cycle stress
-                </p>
-              </div>
+            <div className="retro-block pattern">
+              <h4>Pattern Noted</h4>
+              <p style={{color: '#635c52', lineHeight: 1.7}}>
+                Energy Reserve drops predictably week 3 of each month — may be tied to billing cycle stress
+              </p>
             </div>
           </div>
         );
       };
 
       return (
-        <div className="min-h-screen bg-gray-50 p-6">
-          <div className="max-w-6xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-              {/* Header */}
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
-                <h1 className="text-3xl font-bold mb-2">LifeBuild Strategic Charter</h1>
-                <div className="flex gap-4 text-sm opacity-90">
-                  <span>Version: Q2 2025</span>
-                  <span>|</span>
-                  <span>Last Update: April 1, 2025</span>
-                  <span>|</span>
-                  <span>Next Review: July 1, 2025</span>
-                </div>
-              </div>
-
-              {/* Tier Tabs */}
-              <div className="border-b bg-gray-50">
-                <div className="flex">
-                  {tiers.map((tier) => (
-                    <button
-                      key={tier.id}
-                      onClick={() => setActiveTier(tier.id)}
-                      className={`flex items-center gap-2 px-6 py-4 font-medium transition-colors ${
-                        activeTier === tier.id
-                          ? "bg-white text-indigo-600 border-b-2 border-indigo-600"
-                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
-                      }`}
-                    >
-                      <Icon name={tier.icon} className="w-5 h-5" />
-                      {tier.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Section Tabs */}
-              <div className="border-b bg-white">
-                <div className="flex px-4">
-                  {sections[activeTier].map((section) => (
-                    <button
-                      key={section.id}
-                      onClick={() =>
-                        setActiveSection((prev) => ({
-                          ...prev,
-                          [activeTier]: section.id
-                        }))
-                      }
-                      className={`px-4 py-3 text-sm font-medium transition-colors ${
-                        activeSection[activeTier] === section.id
-                          ? "text-indigo-600 border-b-2 border-indigo-600"
-                          : "text-gray-500 hover:text-gray-700"
-                      }`}
-                    >
-                      {section.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="p-6">
-                {activeTier === "tier1" && renderTier1Content()}
-                {activeTier === "tier2" && renderTier2Content()}
-                {activeTier === "historical" && renderHistoricalContent()}
+        <div className="container">
+          <div className="card">
+            <div className="header">
+              <h1 className="font-serif">Strategic Charter</h1>
+              <div className="header-meta">
+                <span>Q2 2025</span>
+                <span>·</span>
+                <span>Last Update: April 1, 2025</span>
+                <span>·</span>
+                <span>Next Review: July 1, 2025</span>
               </div>
             </div>
+
+            <div className="tier-tabs">
+              {tiers.map((tier) => (
+                <button
+                  key={tier.id}
+                  onClick={() => setActiveTier(tier.id)}
+                  className={`tier-tab ${activeTier === tier.id ? 'active' : ''}`}
+                >
+                  {renderIcon(tier.icon)}
+                  {tier.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="section-tabs">
+              {sections[activeTier].map((section) => (
+                <button
+                  key={section.id}
+                  onClick={() =>
+                    setActiveSection((prev) => ({
+                      ...prev,
+                      [activeTier]: section.id
+                    }))
+                  }
+                  className={`section-tab ${activeSection[activeTier] === section.id ? 'active' : ''}`}
+                >
+                  {section.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="content">
+              {activeTier === "tier1" && renderTier1Content()}
+              {activeTier === "tier2" && renderTier2Content()}
+              {activeTier === "historical" && renderHistoricalContent()}
+            </div>
+          </div>
+
+          <div className="footer">
+            <p>LifeBuild · Strategic Planning for Intentional Living</p>
           </div>
         </div>
       );
