@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weekly Strategic Rhythm | Jarvis Look Book</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: #faf9f7;
+      color: #2f2b27;
+      line-height: 1.6;
+    }
+
+    .font-serif {
+      font-family: 'Source Serif 4', Georgia, serif;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid #e8e4de;
+    }
+
+    .header h1 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 2rem;
+      font-weight: 500;
+      color: #2f2b27;
+      margin-bottom: 0.5rem;
+    }
+
+    .header-subtitle {
+      color: #8b8680;
+      font-size: 1rem;
+    }
+
+    .header-date {
+      margin-top: 1rem;
+      color: #a67c52;
+      font-weight: 500;
+    }
+
+    /* Progress Steps */
+    .progress-bar {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    .progress-bar::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #e8e4de;
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+
+    .progress-step {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .step-circle {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background: white;
+      border: 2px solid #e8e4de;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 500;
+      color: #9a9184;
+      transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 0.5rem;
+    }
+
+    .step-circle.active {
+      background: #a67c52;
+      border-color: #a67c52;
+      color: white;
+    }
+
+    .step-circle.completed {
+      background: #7d8471;
+      border-color: #7d8471;
+      color: white;
+    }
+
+    .step-label {
+      font-size: 0.75rem;
+      color: #9a9184;
+      text-align: center;
+      max-width: 80px;
+      transition: color 400ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .step-label.active {
+      color: #2f2b27;
+      font-weight: 500;
+    }
+
+    /* Section Card */
+    .section-card {
+      background: white;
+      border-radius: 1rem;
+      border: 1px solid #e8e4de;
+      box-shadow: 0 1px 3px rgba(47, 43, 39, 0.08), 0 4px 12px rgba(47, 43, 39, 0.04);
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-header {
+      margin-bottom: 2rem;
+    }
+
+    .section-number {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 0.875rem;
+      color: #a67c52;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #2f2b27;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-description {
+      color: #7d7568;
+      line-height: 1.7;
+    }
+
+    /* Data Display */
+    .data-block {
+      background: #faf9f7;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #e8e4de;
+    }
+
+    .data-label {
+      font-size: 0.6875rem;
+      color: #8b8680;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .data-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #e8e4de;
+    }
+
+    .data-row:last-child {
+      border-bottom: none;
+    }
+
+    .data-key {
+      color: #4a453e;
+      font-weight: 500;
+    }
+
+    .data-value {
+      color: #635c52;
+    }
+
+    .data-value.highlight {
+      color: #a67c52;
+      font-weight: 600;
+    }
+
+    .data-value.success {
+      color: #7d8471;
+      font-weight: 600;
+    }
+
+    .data-value.warning {
+      color: #b45309;
+      font-weight: 600;
+    }
+
+    /* Progress Bars */
+    .progress-display {
+      margin-top: 0.5rem;
+    }
+
+    .progress-track {
+      height: 0.5rem;
+      background: #e8e4de;
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-bottom: 0.25rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #a67c52;
+      border-radius: 9999px;
+      transition: width 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .progress-fill.gold {
+      background: #d97706;
+    }
+
+    .progress-fill.silver {
+      background: #8b8680;
+    }
+
+    .progress-fill.bronze {
+      background: #a67c52;
+    }
+
+    /* Category Tags */
+    .category-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .category-tag {
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.8125rem;
+      border: 1px solid #e8e4de;
+      background: white;
+      color: #635c52;
+    }
+
+    .category-tag.active {
+      background: #7d8471;
+      border-color: #7d8471;
+      color: white;
+    }
+
+    .category-tag.neglected {
+      background: #fef3c7;
+      border-color: #fcd34d;
+      color: #92400e;
+    }
+
+    /* Input Fields */
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 0.875rem;
+      color: #4a453e;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .input-hint {
+      font-size: 0.8125rem;
+      color: #9a9184;
+      font-style: italic;
+      margin-bottom: 0.75rem;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 1px solid #d4cec4;
+      border-radius: 0.5rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 0.9375rem;
+      color: #2f2b27;
+      background: white;
+      resize: vertical;
+      min-height: 100px;
+      transition: border-color 400ms cubic-bezier(0.4, 0, 0.2, 1);
+      line-height: 1.6;
+    }
+
+    textarea:focus {
+      outline: none;
+      border-color: #a67c52;
+      box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1);
+    }
+
+    textarea::placeholder {
+      color: #b8b0a3;
+    }
+
+    /* Energy Slider */
+    .energy-slider {
+      margin: 1.5rem 0;
+    }
+
+    .slider-track {
+      position: relative;
+      height: 2.5rem;
+      background: linear-gradient(to right, #fecaca, #fef3c7, #d9f99d);
+      border-radius: 0.5rem;
+      cursor: pointer;
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+      font-size: 0.75rem;
+      color: #9a9184;
+    }
+
+    .energy-value {
+      text-align: center;
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 2rem;
+      color: #2f2b27;
+      margin-top: 1rem;
+    }
+
+    /* Checkbox List */
+    .checkbox-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem 0;
+    }
+
+    .checkbox {
+      width: 1.25rem;
+      height: 1.25rem;
+      border: 2px solid #d4cec4;
+      border-radius: 0.25rem;
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+      transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .checkbox.checked {
+      background: #7d8471;
+      border-color: #7d8471;
+    }
+
+    .checkbox-label {
+      color: #4a453e;
+      line-height: 1.5;
+    }
+
+    /* Reflection Prompt */
+    .reflection-prompt {
+      background: linear-gradient(135deg, #f5f3f0 0%, #e8e4de 100%);
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      margin-bottom: 1.5rem;
+      border-left: 3px solid #a67c52;
+    }
+
+    .prompt-text {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.125rem;
+      color: #4a453e;
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    /* Alert Box */
+    .alert-box {
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .alert-title {
+      font-weight: 600;
+      color: #92400e;
+      margin-bottom: 0.25rem;
+      font-size: 0.875rem;
+    }
+
+    .alert-text {
+      color: #78350f;
+      font-size: 0.875rem;
+    }
+
+    /* Button */
+    .button {
+      background: #2f2b27;
+      color: #faf9f7;
+      padding: 0.875rem 2rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 500;
+      font-size: 0.9375rem;
+      cursor: pointer;
+      transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 3px rgba(47, 43, 39, 0.2);
+    }
+
+    .button:hover {
+      background: #4a453e;
+      box-shadow: 0 2px 8px rgba(47, 43, 39, 0.3);
+    }
+
+    .button:active {
+      transform: translateY(1px);
+    }
+
+    .button.secondary {
+      background: white;
+      color: #4a453e;
+      border: 1px solid #d4cec4;
+    }
+
+    .button.secondary:hover {
+      background: #f5f3f0;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+    }
+
+    /* Insight Card */
+    .insight-card {
+      background: white;
+      border: 1px solid #d4cec4;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .insight-type {
+      font-size: 0.6875rem;
+      color: #a67c52;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .insight-text {
+      color: #4a453e;
+      line-height: 1.6;
+    }
+
+    /* Summary Section */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .summary-item {
+      background: #faf9f7;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      border: 1px solid #e8e4de;
+    }
+
+    .summary-label {
+      font-size: 0.6875rem;
+      color: #8b8680;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .summary-value {
+      color: #2f2b27;
+      font-weight: 500;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid #e8e4de;
+    }
+
+    .jarvis-signature {
+      color: #9a9184;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const JarvisLookBook = () => {
+      const [currentStep, setCurrentStep] = useState(0);
+      const [completedSteps, setCompletedSteps] = useState([]);
+
+      // Director inputs
+      const [inputs, setInputs] = useState({
+        visionAlignment: '',
+        driftNotes: '',
+        energyLevel: 6,
+        externalPressures: '',
+        supportAvailable: '',
+        nonNegotiables: '',
+        weeklyThemes: '',
+        successDefinition: '',
+        weekType: 'balanced',
+        strategicInsights: '',
+        courseCorrections: ''
+      });
+
+      // Sample data that would come from the system
+      const weeklyData = {
+        gold: {
+          name: "Launch Professional Blog",
+          tasksCompleted: 3,
+          tasksPlanned: 5,
+          progress: 45,
+          status: "On Track"
+        },
+        silver: {
+          name: "Home Office Renovation",
+          tasksCompleted: 2,
+          tasksPlanned: 4,
+          progress: 30,
+          status: "Slightly Behind"
+        },
+        bronze: {
+          completed: 8,
+          target: 10,
+          modeMet: true
+        },
+        categoriesWorked: ["Purpose", "Home", "Financial"],
+        categoriesNeglected: ["Health", "Relationships", "Leisure"],
+        pausedProjects: [
+          { name: "Quarterly Financial Review", reason: "Waiting on bank statements" }
+        ],
+        abandonedProjects: []
+      };
+
+      const quarterlyAlerts = [
+        {
+          type: "warning",
+          message: "Health category has received 0% attention for 3 consecutive weeks"
+        }
+      ];
+
+      const steps = [
+        { id: 1, label: "Big Picture" },
+        { id: 2, label: "Last Week" },
+        { id: 3, label: "Current Reality" },
+        { id: 4, label: "This Week" },
+        { id: 5, label: "Adjustments" }
+      ];
+
+      const handleInputChange = (field, value) => {
+        setInputs(prev => ({ ...prev, [field]: value }));
+      };
+
+      const nextStep = () => {
+        if (!completedSteps.includes(currentStep)) {
+          setCompletedSteps([...completedSteps, currentStep]);
+        }
+        if (currentStep < 4) {
+          setCurrentStep(currentStep + 1);
+        }
+      };
+
+      const prevStep = () => {
+        if (currentStep > 0) {
+          setCurrentStep(currentStep - 1);
+        }
+      };
+
+      const renderStep = () => {
+        switch (currentStep) {
+          case 0:
+            return (
+              <div className="section-card">
+                <div className="section-header">
+                  <div className="section-number">Phase One</div>
+                  <h2 className="section-title">Grounding in the Big Picture</h2>
+                  <p className="section-description">
+                    Before diving into the week ahead, let's take a moment to reconnect with where you're headed. This isn't about deep philosophical reflection—just a quick touchpoint to ensure this week's actions serve your larger intentions.
+                  </p>
+                </div>
+
+                <div className="reflection-prompt">
+                  <p className="prompt-text">
+                    Your vision for 2030 centers on becoming a recognized expert with a thriving consulting practice, financial independence, and deep relationships. Your Q2 themes are Foundation Fortification, Professional Positioning, and Connection Cultivation.
+                  </p>
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label">How aligned does last week feel with these intentions?</label>
+                  <p className="input-hint">Consider: Did your actions move you closer to your vision, or did you drift into reactive mode?</p>
+                  <textarea
+                    value={inputs.visionAlignment}
+                    onChange={(e) => handleInputChange('visionAlignment', e.target.value)}
+                    placeholder="Reflect on the alignment between your stated intentions and actual trajectory..."
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label">Any drift worth noting?</label>
+                  <p className="input-hint">Sometimes drift reveals important information about what actually matters to us.</p>
+                  <textarea
+                    value={inputs.driftNotes}
+                    onChange={(e) => handleInputChange('driftNotes', e.target.value)}
+                    placeholder="Note any gaps between where you intended to focus and where your attention actually went..."
+                  />
+                </div>
+
+                <div className="button-group">
+                  <div></div>
+                  <button className="button" onClick={nextStep}>Continue to Last Week →</button>
+                </div>
+              </div>
+            );
+
+          case 1:
+            return (
+              <div className="section-card">
+                <div className="section-header">
+                  <div className="section-number">Phase Two</div>
+                  <h2 className="section-title">Reviewing Recent Execution</h2>
+                  <p className="section-description">
+                    Here's what the data shows about last week. No judgment—just clear-eyed observation of where your energy actually went.
+                  </p>
+                </div>
+
+                <div className="data-block">
+                  <div className="data-label">Gold Stream: {weeklyData.gold.name}</div>
+                  <div className="data-row">
+                    <span className="data-key">Tasks Completed</span>
+                    <span className="data-value">{weeklyData.gold.tasksCompleted} of {weeklyData.gold.tasksPlanned}</span>
+                  </div>
+                  <div className="progress-display">
+                    <div className="progress-track">
+                      <div className="progress-fill gold" style={{width: `${weeklyData.gold.progress}%`}}></div>
+                    </div>
+                  </div>
+                  <div className="data-row">
+                    <span className="data-key">Overall Progress</span>
+                    <span className="data-value highlight">{weeklyData.gold.progress}%</span>
+                  </div>
+                  <div className="data-row">
+                    <span className="data-key">Status</span>
+                    <span className="data-value success">{weeklyData.gold.status}</span>
+                  </div>
+                </div>
+
+                <div className="data-block">
+                  <div className="data-label">Silver Stream: {weeklyData.silver.name}</div>
+                  <div className="data-row">
+                    <span className="data-key">Tasks Completed</span>
+                    <span className="data-value">{weeklyData.silver.tasksCompleted} of {weeklyData.silver.tasksPlanned}</span>
+                  </div>
+                  <div className="progress-display">
+                    <div className="progress-track">
+                      <div className="progress-fill silver" style={{width: `${weeklyData.silver.progress}%`}}></div>
+                    </div>
+                  </div>
+                  <div className="data-row">
+                    <span className="data-key">Overall Progress</span>
+                    <span className="data-value">{weeklyData.silver.progress}%</span>
+                  </div>
+                  <div className="data-row">
+                    <span className="data-key">Status</span>
+                    <span className="data-value warning">{weeklyData.silver.status}</span>
+                  </div>
+                </div>
+
+                <div className="data-block">
+                  <div className="data-label">Bronze Stream: Maintenance & Quick Wins</div>
+                  <div className="data-row">
+                    <span className="data-key">Tasks Completed</span>
+                    <span className="data-value">{weeklyData.bronze.completed} of {weeklyData.bronze.target} target</span>
+                  </div>
+                  <div className="progress-display">
+                    <div className="progress-track">
+                      <div className="progress-fill bronze" style={{width: `${(weeklyData.bronze.completed / weeklyData.bronze.target) * 100}%`}}></div>
+                    </div>
+                  </div>
+                  <div className="data-row">
+                    <span className="data-key">Mode Setting Met</span>
+                    <span className={`data-value ${weeklyData.bronze.modeMet ? 'success' : 'warning'}`}>
+                      {weeklyData.bronze.modeMet ? 'Yes' : 'No'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="data-block">
+                  <div className="data-label">Category Distribution</div>
+                  <p style={{color: '#635c52', marginBottom: '0.75rem', fontSize: '0.875rem'}}>
+                    Where your attention went last week:
+                  </p>
+                  <div className="category-grid">
+                    {weeklyData.categoriesWorked.map(cat => (
+                      <span key={cat} className="category-tag active">{cat}</span>
+                    ))}
+                  </div>
+                  <p style={{color: '#635c52', margin: '1rem 0 0.75rem', fontSize: '0.875rem'}}>
+                    Categories that received no attention:
+                  </p>
+                  <div className="category-grid">
+                    {weeklyData.categoriesNeglected.map(cat => (
+                      <span key={cat} className="category-tag neglected">{cat}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {weeklyData.pausedProjects.length > 0 && (
+                  <div className="data-block">
+                    <div className="data-label">Paused Projects</div>
+                    {weeklyData.pausedProjects.map((project, idx) => (
+                      <div key={idx} className="data-row">
+                        <span className="data-key">{project.name}</span>
+                        <span className="data-value">{project.reason}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="button-group">
+                  <button className="button secondary" onClick={prevStep}>← Back</button>
+                  <button className="button" onClick={nextStep}>Continue to Current Reality →</button>
+                </div>
+              </div>
+            );
+
+          case 2:
+            return (
+              <div className="section-card">
+                <div className="section-header">
+                  <div className="section-number">Phase Three</div>
+                  <h2 className="section-title">Assessing Current Reality</h2>
+                  <p className="section-description">
+                    Before we plan, we need to honestly assess what you're bringing into this week. Your capacity and constraints matter as much as your ambitions.
+                  </p>
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label">Energy Reserve Self-Assessment</label>
+                  <p className="input-hint">Where are you right now? Consider: sleep quality, physical vitality, emotional reserves, mental clarity.</p>
+                  <div className="energy-slider">
+                    <input
+                      type="range"
+                      min="1"
+                      max="10"
+                      value={inputs.energyLevel}
+                      onChange={(e) => handleInputChange('energyLevel', parseInt(e.target.value))}
+                      style={{width: '100%', cursor: 'pointer'}}
+                    />
+                    <div className="slider-labels">
+                      <span>Depleted</span>
+                      <span>Moderate</span>
+                      <span>Energized</span>
+                    </div>
+                    <div className="energy-value">{inputs.energyLevel}/10</div>
+                  </div>
+                </div>
+
+                {inputs.energyLevel <= 5 && (
+                  <div className="alert-box">
+                    <div className="alert-title">Low Energy Detected</div>
+                    <div className="alert-text">
+                      Your recovery strategies include: early bedtime for 3+ days, nature walk without phone, protective weekend. Consider whether this week should prioritize recovery over advancement.
+                    </div>
+                  </div>
+                )}
+
+                <div className="input-group">
+                  <label className="input-label">External Pressures & Deadlines This Week</label>
+                  <p className="input-hint">What's on your calendar that can't move? What external forces are you navigating?</p>
+                  <textarea
+                    value={inputs.externalPressures}
+                    onChange={(e) => handleInputChange('externalPressures', e.target.value)}
+                    placeholder="List work deadlines, family commitments, appointments, travel, etc..."
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label">Available Support Infrastructure</label>
+                  <p className="input-hint">Who or what can you lean on this week? What systems are working well?</p>
+                  <textarea
+                    value={inputs.supportAvailable}
+                    onChange={(e) => handleInputChange('supportAvailable', e.target.value)}
+                    placeholder="Partner available for household tasks, meal prep done, etc..."
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label">Non-Negotiables Already Committed</label>
+                  <p className="input-hint">What absolutely must happen this week, regardless of everything else?</p>
+                  <textarea
+                    value={inputs.nonNegotiables}
+                    onChange={(e) => handleInputChange('nonNegotiables', e.target.value)}
+                    placeholder="Things that are already locked in and cannot be rescheduled..."
+                  />
+                </div>
+
+                <div className="button-group">
+                  <button className="button secondary" onClick={prevStep}>← Back</button>
+                  <button className="button" onClick={nextStep}>Continue to This Week →</button>
+                </div>
+              </div>
+            );
+
+          case 3:
+            return (
+              <div className="section-card">
+                <div className="section-header">
+                  <div className="section-number">Phase Four</div>
+                  <h2 className="section-title">Synthesizing This Week's Strategic Themes</h2>
+                  <p className="section-description">
+                    Now we bring it all together. Given your big-picture goals, last week's execution, and current reality—what should guide this week?
+                  </p>
+                </div>
+
+                <div className="reflection-prompt">
+                  <p className="prompt-text">
+                    Based on what you've shared: Energy at {inputs.energyLevel}/10, Gold project on track at 45%, Health and Relationships have been neglected, and you're in month two of Q2 with Foundation Fortification as primary theme.
+                  </p>
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label">What 1-3 themes should guide this week?</label>
+                  <p className="input-hint">These aren't tasks—they're strategic intentions that help you prioritize when decisions arise.</p>
+                  <textarea
+                    value={inputs.weeklyThemes}
+                    onChange={(e) => handleInputChange('weeklyThemes', e.target.value)}
+                    placeholder="Example: 'Protect energy while maintaining momentum' or 'Restore relationship connection without sacrificing Gold progress'..."
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label">What type of week is this?</label>
+                  <div style={{marginTop: '0.75rem'}}>
+                    {[
+                      { id: 'push', label: 'Push-Forward Week', desc: 'Conditions support ambitious progress' },
+                      { id: 'balanced', label: 'Balanced Week', desc: 'Steady progress while maintaining' },
+                      { id: 'consolidation', label: 'Consolidation Week', desc: 'Focus on finishing, not starting' },
+                      { id: 'recovery', label: 'Recovery Week', desc: 'Prioritize rest and infrastructure repair' }
+                    ].map(type => (
+                      <div
+                        key={type.id}
+                        className="checkbox-item"
+                        onClick={() => handleInputChange('weekType', type.id)}
+                      >
+                        <div className={`checkbox ${inputs.weekType === type.id ? 'checked' : ''}`}>
+                          {inputs.weekType === type.id && (
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                              <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                          )}
+                        </div>
+                        <div>
+                          <div className="checkbox-label" style={{fontWeight: 500}}>{type.label}</div>
+                          <div style={{fontSize: '0.8125rem', color: '#9a9184'}}>{type.desc}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label">What does success look like for this specific week?</label>
+                  <p className="input-hint">Be concrete but realistic. What would feel like a genuine win by Friday?</p>
+                  <textarea
+                    value={inputs.successDefinition}
+                    onChange={(e) => handleInputChange('successDefinition', e.target.value)}
+                    placeholder="Example: 'Published one blog post, had two quality conversations with partner, maintained exercise 3x, and didn't feel exhausted by Friday'..."
+                  />
+                </div>
+
+                <div className="button-group">
+                  <button className="button secondary" onClick={prevStep}>← Back</button>
+                  <button className="button" onClick={nextStep}>Continue to Adjustments →</button>
+                </div>
+              </div>
+            );
+
+          case 4:
+            return (
+              <div className="section-card">
+                <div className="section-header">
+                  <div className="section-number">Phase Five</div>
+                  <h2 className="section-title">Adjusting Plans (When Needed)</h2>
+                  <p className="section-description">
+                    Sometimes the strategic rhythm reveals that our plans need updating. This isn't failure—it's intelligence. Let's check for any course corrections needed.
+                  </p>
+                </div>
+
+                {quarterlyAlerts.map((alert, idx) => (
+                  <div key={idx} className="alert-box">
+                    <div className="alert-title">Course Correction Indicator</div>
+                    <div className="alert-text">{alert.message}</div>
+                  </div>
+                ))}
+
+                <div className="reflection-prompt">
+                  <p className="prompt-text">
+                    You're 6 weeks into Q2. Your quarterly initiatives (Home Office Renovation, Launch Professional Blog, Quarterly Financial Review System) have varying progress. The Health category pattern you noted in Q1 (week 3 energy drops) may be recurring.
+                  </p>
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label">Do any quarterly goals need mid-course correction?</label>
+                  <p className="input-hint">Consider: Are timelines still realistic? Have priorities shifted? Are resources available as expected?</p>
+                  <textarea
+                    value={inputs.courseCorrections}
+                    onChange={(e) => handleInputChange('courseCorrections', e.target.value)}
+                    placeholder="Flag any initiatives that need scope adjustment, timeline shifts, or resource reallocation..."
+                  />
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label">Strategic Insights to Capture</label>
+                  <p className="input-hint">What have you learned this session that should inform future planning? Patterns, realizations, adjustments?</p>
+                  <textarea
+                    value={inputs.strategicInsights}
+                    onChange={(e) => handleInputChange('strategicInsights', e.target.value)}
+                    placeholder="Example: 'My energy pattern is consistent—need to proactively schedule recovery in week 3' or 'Professional Positioning requires more sustained attention than I'm giving'..."
+                  />
+                </div>
+
+                <div style={{marginTop: '2rem'}}>
+                  <h3 className="font-serif" style={{fontSize: '1.25rem', marginBottom: '1rem', color: '#2f2b27'}}>
+                    Session Summary
+                  </h3>
+                  <div className="summary-grid">
+                    <div className="summary-item">
+                      <div className="summary-label">Current Energy</div>
+                      <div className="summary-value">{inputs.energyLevel}/10</div>
+                    </div>
+                    <div className="summary-item">
+                      <div className="summary-label">Week Type</div>
+                      <div className="summary-value" style={{textTransform: 'capitalize'}}>{inputs.weekType.replace('-', ' ')}</div>
+                    </div>
+                  </div>
+                  {inputs.weeklyThemes && (
+                    <div className="insight-card" style={{marginTop: '1rem'}}>
+                      <div className="insight-type">This Week's Themes</div>
+                      <div className="insight-text">{inputs.weeklyThemes}</div>
+                    </div>
+                  )}
+                  {inputs.successDefinition && (
+                    <div className="insight-card">
+                      <div className="insight-type">Success Definition</div>
+                      <div className="insight-text">{inputs.successDefinition}</div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="button-group">
+                  <button className="button secondary" onClick={prevStep}>← Back</button>
+                  <button className="button" onClick={() => alert('Session complete! Your strategic rhythm data would be saved and ready for Jarvis to help build your weekly plan.')}>
+                    Complete Session ✓
+                  </button>
+                </div>
+              </div>
+            );
+
+          default:
+            return null;
+        }
+      };
+
+      return (
+        <div className="container">
+          <div className="header">
+            <h1>Weekly Strategic Rhythm</h1>
+            <p className="header-subtitle">Your Friday Planning Companion</p>
+            <p className="header-date">Week of May 12, 2025</p>
+          </div>
+
+          <div className="progress-bar">
+            {steps.map((step, idx) => (
+              <div
+                key={step.id}
+                className="progress-step"
+                onClick={() => completedSteps.includes(idx) || idx <= currentStep ? setCurrentStep(idx) : null}
+              >
+                <div className={`step-circle ${
+                  idx === currentStep ? 'active' :
+                  completedSteps.includes(idx) ? 'completed' : ''
+                }`}>
+                  {completedSteps.includes(idx) && idx !== currentStep ? '✓' : step.id}
+                </div>
+                <span className={`step-label ${idx === currentStep ? 'active' : ''}`}>
+                  {step.label}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          {renderStep()}
+
+          <div className="footer">
+            <p className="jarvis-signature">
+              Prepared by Jarvis, your Strategic Advisor
+            </p>
+          </div>
+        </div>
+      );
+    };
+
+    ReactDOM.render(<JarvisLookBook />, document.getElementById('root'));
+  </script>
+</body>
+</html>
