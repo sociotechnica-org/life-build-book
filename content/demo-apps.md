@@ -92,3 +92,36 @@ These aren't productivity hacks. They're infrastructure for a life you actually 
 ---
 
 **This is LifeBuild. Not a tool you use. A capability you construct.**
+
+---
+
+# Experimental Agentic Demo
+
+## First Contact: The Magical 72 Hours
+
+Before Danvers had his Charter. Before the Friday planning ritual. Before the nine months of compound capability.
+
+There was a conversation.
+
+In this experimental demo, you'll witness what happens in the first five minutes when someone meets Jarvis for the first time. This isn't a polished experience—it's an early prototype where **the AI says the quiet parts out loud**.
+
+As you chat with Jarvis, watch the right sidebar. You'll see:
+
+- **Real-time profile extraction** as Jarvis identifies your "Wow Profile" (Relief Seeker, Empire Builder, Strategic Thinker, etc.)
+- **Crisis scoring** that measures your current urgency level
+- **Life domain mapping** showing which areas of your life need attention
+- **Director attributes** being inferred from your language patterns
+- **Success metrics** tracking how quickly Jarvis moves you from overwhelm to actionable clarity
+
+The goal? Within five minutes, generate your first set of **Quest Cards**—small, concrete actions designed for your specific situation.
+
+This is what "agentic" means in LifeBuild: not a chatbot answering questions, but an intelligent system actively building your profile, detecting patterns, and constructing personalized interventions in real-time.
+
+**Warning**: This demo uses the live Claude API. You'll need an Anthropic API key, and Jarvis will be genuinely responsive (not scripted). The insights you see are being extracted from your actual responses.
+
+<div style="background: linear-gradient(135deg, #2f2b27 0%, #1a1816 100%); padding: 2rem; border-radius: 0.75rem; margin: 2rem 0; border-left: 3px solid #4f46e5;">
+  <a href="/static/apps/first-contact-demo.html" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #4f46e5; color: #ffffff; padding: 0.875rem 2rem; border: none; border-radius: 0.5rem; font-weight: 500; text-decoration: none; transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 1px 3px rgba(79, 70, 229, 0.3);">
+    → Launch First Contact Demo
+  </a>
+  <p style="margin-top: 1rem; color: #9ca3af; font-style: italic; font-size: 0.9375rem;">Experience the magic wand question that starts everything.</p>
+</div>
