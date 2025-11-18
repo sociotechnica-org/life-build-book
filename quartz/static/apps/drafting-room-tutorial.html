@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeBuild - Drafting Room Tutorial: Stage 1</title>
+  <style>
+    /* ========================================
+       RESET & BASE STYLES
+       ======================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background-color: #F5F1E8;
+      color: #2C2C2C;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ========================================
+       PROGRESS BAR
+       ======================================== */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: white;
+      border-bottom: 2px solid #E0DDD5;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    #stage-label {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2C2C2C;
+    }
+
+    .progress-visual {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .progress-blocks {
+      display: flex;
+      gap: 8px;
+    }
+
+    .progress-block {
+      width: 40px;
+      height: 40px;
+      border: 2px solid #E0DDD5;
+      border-radius: 6px;
+      background: white;
+      transition: all 0.5s ease;
+    }
+
+    .progress-block.filled {
+      background: #D4A574;
+      border-color: #D4A574;
+      box-shadow: 0 2px 8px rgba(212, 165, 116, 0.3);
+    }
+
+    #progress-percentage {
+      font-size: 16px;
+      color: #666;
+      min-width: 100px;
+      text-align: right;
+    }
+
+    .pulse-highlight {
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .update-animation {
+      animation: update-flash 0.5s ease;
+    }
+
+    @keyframes update-flash {
+      0% { background: white; }
+      50% { background: #FFF9F0; }
+      100% { background: white; }
+    }
+
+    /* ========================================
+       LAYOUT
+       ======================================== */
+    .main-container {
+      display: flex;
+      margin-top: 60px;
+      min-height: calc(100vh - 60px - 180px); /* Account for header and footer */
+      padding-bottom: 180px; /* Space for Marvin's dialogue */
+    }
+
+    /* ========================================
+       PLANNING QUEUE SIDEBAR
+       ======================================== */
+    .sidebar {
+      width: 180px;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #planning-queue-pile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      opacity: 0.4;
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+
+    #planning-queue-pile.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #planning-queue-pile:hover {
+      transform: scale(1.05);
+    }
+
+    .queue-icon {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      margin-bottom: 12px;
+    }
+
+    .paper-stack {
+      position: absolute;
+      width: 60px;
+      height: 70px;
+      background: white;
+      border: 2px solid #D4A574;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .paper-stack:nth-child(1) {
+      top: 0;
+      left: 0;
+      transform: rotate(-3deg);
+    }
+
+    .paper-stack:nth-child(2) {
+      top: 5px;
+      left: 10px;
+      transform: rotate(2deg);
+    }
+
+    .paper-stack:nth-child(3) {
+      top: 10px;
+      left: 5px;
+      transform: rotate(-1deg);
+    }
+
+    .queue-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2C2C2C;
+      text-align: center;
+    }
+
+    #queue-count {
+      display: block;
+      font-size: 24px;
+      color: #D4A574;
+      margin-top: 8px;
+      font-weight: 700;
+    }
+
+    /* ========================================
+       MAIN CONTENT AREA
+       ======================================== */
+    .content-area {
+      flex: 1;
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* ========================================
+       OPTIONS MENU
+       ======================================== */
+    #options-menu {
+      display: none;
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    #options-menu h2 {
+      font-size: 24px;
+      margin-bottom: 30px;
+      color: #2C2C2C;
+    }
+
+    .option-item {
+      padding: 16px 24px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 2px solid #E0DDD5;
+      background: white;
+      cursor: not-allowed;
+      opacity: 0.4;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .option-item.active {
+      opacity: 1;
+      cursor: pointer;
+      border-color: #D4A574;
+      background: #FFF9F0;
+    }
+
+    .option-item.active:hover {
+      transform: translateX(4px);
+      box-shadow: 0 4px 12px rgba(212, 165, 116, 0.2);
+    }
+
+    .option-letter {
+      font-weight: 700;
+      color: #D4A574;
+      margin-right: 8px;
+    }
+
+    .option-arrow {
+      display: none;
+      position: absolute;
+      right: 24px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #D4A574;
+      font-size: 24px;
+    }
+
+    .option-item.active .option-arrow {
+      display: block;
+    }
+
+    /* ========================================
+       STAGE 1 FORM
+       ======================================== */
+    #stage1-form {
+      display: none;
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .form-group {
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 16px;
+      font-weight: 600;
+      color: #2C2C2C;
+      margin-bottom: 12px;
+    }
+
+    .form-input,
+    .form-textarea,
+    .form-select {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px;
+      border: 2px solid #E0DDD5;
+      border-radius: 8px;
+      background: white;
+      color: #2C2C2C;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-input:focus,
+    .form-textarea:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: #D4A574;
+      box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+    }
+
+    .highlight-glow {
+      animation: glow 1.5s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% {
+        border-color: #E0DDD5;
+        box-shadow: 0 0 0 0 rgba(212, 165, 116, 0);
+      }
+      50% {
+        border-color: #D4A574;
+        box-shadow: 0 0 0 6px rgba(212, 165, 116, 0.2);
+      }
+    }
+
+    .validate-btn {
+      display: none;
+      margin-top: 12px;
+      padding: 10px 24px;
+      background: #7A9B76;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .validate-btn:hover {
+      background: #6A8B66;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(122, 155, 118, 0.3);
+    }
+
+    .saved-indicator {
+      position: absolute;
+      right: 0;
+      bottom: -28px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #7A9B76;
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .saved-indicator.visible {
+      opacity: 1;
+    }
+
+    .checkmark {
+      font-size: 18px;
+    }
+
+    /* Category dropdown specific */
+    .category-options {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 2px solid #D4A574;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      z-index: 10;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .category-option {
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .category-option:hover {
+      background: #FFF9F0;
+    }
+
+    .category-option.suggested {
+      background: #FFF9F0;
+      border-left: 4px solid #D4A574;
+      font-weight: 600;
+    }
+
+    .continue-btn {
+      display: none;
+      margin-top: 40px;
+      padding: 16px 32px;
+      background: #D4A574;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .continue-btn:hover {
+      background: #C49564;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 165, 116, 0.3);
+    }
+
+    .completion-highlight {
+      animation: completion-pulse 1s ease;
+    }
+
+    @keyframes completion-pulse {
+      0% { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+      50% { box-shadow: 0 8px 40px rgba(212, 165, 116, 0.4); }
+      100% { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    }
+
+    /* ========================================
+       PLANNING QUEUE MODAL
+       ======================================== */
+    #planning-queue-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .queue-modal-content {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 50px rgba(0,0,0,0.2);
+      max-width: 500px;
+      width: 90%;
+    }
+
+    .queue-modal-content h3 {
+      font-size: 24px;
+      margin-bottom: 24px;
+      color: #2C2C2C;
+    }
+
+    .queue-item {
+      padding: 20px;
+      background: #FFF9F0;
+      border-radius: 8px;
+      border-left: 4px solid #D4A574;
+      margin-bottom: 20px;
+    }
+
+    .project-title {
+      display: block;
+      font-size: 18px;
+      font-weight: 600;
+      color: #2C2C2C;
+      margin-bottom: 8px;
+    }
+
+    .project-stage {
+      display: inline-block;
+      margin-right: 16px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .project-category {
+      display: inline-block;
+      color: #666;
+      font-style: italic;
+      font-size: 14px;
+    }
+
+    .close-modal {
+      padding: 12px 24px;
+      background: #E0DDD5;
+      color: #2C2C2C;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .close-modal:hover {
+      background: #D0CDC5;
+    }
+
+    /* ========================================
+       MARVIN'S DIALOGUE
+       ======================================== */
+    #marvin-dialogue {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 180px;
+      background: white;
+      border-top: 2px solid #E0DDD5;
+      display: flex;
+      align-items: center;
+      padding: 30px 40px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+      z-index: 100;
+    }
+
+    .marvin-avatar {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #D4A574 0%, #C49564 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin-right: 30px;
+      box-shadow: 0 4px 16px rgba(212, 165, 116, 0.3);
+      flex-shrink: 0;
+    }
+
+    .dialogue-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .marvin-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #D4A574;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    #marvin-text {
+      font-size: 18px;
+      color: #2C2C2C;
+      line-height: 1.6;
+    }
+
+    #continue-btn {
+      padding: 12px 28px;
+      background: #D4A574;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-left: auto;
+      align-self: flex-end;
+    }
+
+    #continue-btn:hover {
+      background: #C49564;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
+    }
+
+    /* ========================================
+       CELEBRATION ANIMATION
+       ======================================== */
+    #celebration-animation {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 80px;
+      z-index: 2000;
+      pointer-events: none;
+    }
+
+    .sparkle {
+      animation: sparkle 1.5s ease-in-out;
+    }
+
+    @keyframes sparkle {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+      }
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.2) rotate(180deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.8) rotate(360deg);
+      }
+    }
+
+    /* ========================================
+       UTILITY CLASSES
+       ======================================== */
+    .fade-in {
+      animation: fadeIn 0.5s ease;
+    }
+
+    .fade-out {
+      animation: fadeOut 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(20px); }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress Bar -->
+  <div id="progress-bar">
+    <div id="stage-label">Stage 1 of 4 - Identified</div>
+    <div class="progress-visual">
+      <div class="progress-blocks">
+        <div class="progress-block filled" id="progress-block-1"></div>
+        <div class="progress-block" id="progress-block-2"></div>
+        <div class="progress-block" id="progress-block-3"></div>
+        <div class="progress-block" id="progress-block-4"></div>
+      </div>
+      <div id="progress-percentage">25% Complete</div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="main-container">
+
+    <!-- Sidebar: Planning Queue -->
+    <div class="sidebar">
+      <div id="planning-queue-pile">
+        <div class="queue-icon">
+          <div class="paper-stack"></div>
+          <div class="paper-stack"></div>
+          <div class="paper-stack"></div>
+        </div>
+        <div class="queue-label">Planning<br>Queue</div>
+        <span id="queue-count">(0)</span>
+      </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="content-area">
+
+      <!-- Options Menu -->
+      <div id="options-menu">
+        <h2>What would you like to do?</h2>
+        <div class="option-item" id="option-a">
+          <span class="option-letter">(A)</span>
+          Resume an existing project
+        </div>
+        <div class="option-item active" id="option-b">
+          <span class="option-letter">(B)</span>
+          Start a new project
+          <span class="option-arrow">→ ✓</span>
+        </div>
+        <div class="option-item" id="option-c">
+          <span class="option-letter">(C)</span>
+          Brainstorm project titles
+        </div>
+        <div class="option-item" id="option-d">
+          <span class="option-letter">(D)</span>
+          Review work orders
+        </div>
+        <div class="option-item" id="option-e">
+          <span class="option-letter">(E)</span>
+          Clean up the queue
+        </div>
+      </div>
+
+      <!-- Stage 1 Form -->
+      <div id="stage1-form">
+        <!-- Title Input -->
+        <div class="form-group">
+          <label class="form-label">What's the project?</label>
+          <input type="text" class="form-input" id="title-input" readonly>
+          <button class="validate-btn" id="title-validate-btn">✓ Correct</button>
+        </div>
+
+        <!-- Description Input -->
+        <div class="form-group">
+          <label class="form-label">Tell me a bit about it (1-2 sentences)</label>
+          <textarea class="form-textarea" id="description-input" readonly></textarea>
+          <button class="validate-btn" id="description-validate-btn">✓ Correct</button>
+        </div>
+
+        <!-- Category Selection -->
+        <div class="form-group">
+          <label class="form-label">Which Life Category?</label>
+          <div style="position: relative;">
+            <select class="form-select" id="category-dropdown" disabled>
+              <option value="">Select a category...</option>
+              <option value="Health & Well-Being" id="category-health">Health & Well-Being</option>
+              <option value="Purpose & Spirituality">Purpose & Spirituality</option>
+              <option value="Financial Resources">Financial Resources</option>
+              <option value="Relationships">Relationships</option>
+              <option value="Home & Environment">Home & Environment</option>
+              <option value="Community & Contributions">Community & Contributions</option>
+              <option value="Leisure & Lifestyle">Leisure & Lifestyle</option>
+              <option value="Personal Growth & Learning">Personal Growth & Learning</option>
+            </select>
+            <button class="validate-btn" id="category-validate-btn">✓ Correct</button>
+          </div>
+        </div>
+
+        <!-- Continue Button -->
+        <button class="continue-btn" id="stage2-continue-btn">Continue to Stage 2 →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Planning Queue Modal -->
+  <div id="planning-queue-modal"></div>
+
+  <!-- Celebration Animation -->
+  <div id="celebration-animation">✨</div>
+
+  <!-- Marvin's Dialogue -->
+  <div id="marvin-dialogue">
+    <div class="marvin-avatar">🤖</div>
+    <div class="dialogue-content">
+      <div class="marvin-name">Marvin</div>
+      <div id="marvin-text"></div>
+    </div>
+    <button id="continue-btn">Continue →</button>
+  </div>
+
+  <script>
+    // ========================================
+    // NARRATIVE SCRIPT
+    // ========================================
+    const stage1NarrativeScript = [
+      // OPENING: Marvin's Welcome
+      {
+        id: 'welcome-1',
+        speaker: 'marvin',
+        text: "Welcome to the Drafting Room. I'm Marvin—think of me as your project planning specialist.",
+        highlight: null,
+        waitForClick: null,
+        action: null
+      },
+
+      {
+        id: 'welcome-2',
+        speaker: 'marvin',
+        text: "My job is to help you transform ideas into executable plans. No vague 'I should do something about that'—we're building clear roadmaps with objectives, tasks, and sequences.",
+        highlight: null,
+        waitForClick: null,
+        action: null
+      },
+
+      {
+        id: 'tutorial-intro',
+        speaker: 'marvin',
+        text: "Before we dive in, let me show you how this works. We'll run through creating one simple project together so you understand the rhythm. Sound good?",
+        highlight: null,
+        waitForClick: null,
+        action: null
+      },
+
+      // TUTORIAL PROJECT SETUP
+      {
+        id: 'tutorial-project',
+        speaker: 'marvin',
+        text: "We'll create a real but simple project—something like scheduling a doctor's appointment. The goal isn't the project itself; it's learning the 4-stage workflow.",
+        highlight: 'progress-bar',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('progress-bar').classList.add('pulse-highlight');
+          setTimeout(() => {
+            document.getElementById('progress-bar').classList.remove('pulse-highlight');
+          }, 3000);
+        }
+      },
+
+      // OPTIONS MENU
+      {
+        id: 'options-intro',
+        speaker: 'marvin',
+        text: "Normally when you enter the Drafting Room, I'd show you several options based on what you need.",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          document.getElementById('options-menu').style.display = 'block';
+          document.getElementById('options-menu').classList.add('fade-in');
+        }
+      },
+
+      {
+        id: 'options-menu',
+        speaker: 'marvin',
+        text: "You could resume an existing project, start fresh, brainstorm a bunch of titles, review work orders from other rooms, or clean up stale projects.",
+        highlight: 'options-menu',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('options-menu').classList.add('pulse-highlight');
+          setTimeout(() => {
+            document.getElementById('options-menu').classList.remove('pulse-highlight');
+          }, 3000);
+        }
+      },
+
+      {
+        id: 'options-tutorial',
+        speaker: 'marvin',
+        text: "For this tutorial, we're going straight to option (B)—starting a new project from scratch. That's the green one there.",
+        highlight: 'option-b',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('option-b').classList.add('pulse-highlight');
+        }
+      },
+
+      {
+        id: 'select-option-b',
+        speaker: 'marvin',
+        text: "Go ahead and click on option (B) to get started.",
+        highlight: 'option-b',
+        waitForClick: 'option-b',
+        action: null
+      },
+
+      // STAGE 1 BEGINS: IDENTIFIED
+      {
+        id: 'stage1-intro',
+        speaker: 'marvin',
+        text: "Perfect. This is Stage 1—Identified. It's the fastest stage: just 2 minutes to capture the idea before it evaporates.",
+        highlight: 'progress-bar',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('options-menu').style.display = 'none';
+          document.getElementById('stage1-form').style.display = 'block';
+          document.getElementById('stage1-form').classList.add('fade-in');
+          document.getElementById('option-b').classList.remove('pulse-highlight');
+        }
+      },
+
+      // TITLE INPUT
+      {
+        id: 'ask-title',
+        speaker: 'marvin',
+        text: "What's the project? Give me a quick title.",
+        highlight: 'title-input',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('title-input').classList.add('highlight-glow');
+        }
+      },
+
+      {
+        id: 'title-autofill',
+        speaker: 'marvin',
+        text: "Let's say: 'Schedule annual physical'",
+        highlight: 'title-input',
+        waitForClick: null,
+        action: () => {
+          typeText('title-input', 'Schedule annual physical', 50);
+        }
+      },
+
+      {
+        id: 'title-validate',
+        speaker: 'marvin',
+        text: "Title: 'Schedule annual physical'. Is that correct?",
+        highlight: 'title-validate-btn',
+        waitForClick: 'title-validate-btn',
+        action: () => {
+          document.getElementById('title-validate-btn').style.display = 'inline-block';
+          document.getElementById('title-validate-btn').classList.add('pulse-highlight');
+        }
+      },
+
+      {
+        id: 'title-confirmed',
+        speaker: 'marvin',
+        text: "Great.",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          showSavedIndicator('title-input');
+          document.getElementById('title-validate-btn').style.display = 'none';
+          document.getElementById('title-validate-btn').classList.remove('pulse-highlight');
+          document.getElementById('title-input').classList.remove('highlight-glow');
+        }
+      },
+
+      // DESCRIPTION INPUT
+      {
+        id: 'ask-description',
+        speaker: 'marvin',
+        text: "Now tell me a bit about it—just 1-2 sentences.",
+        highlight: 'description-input',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('description-input').classList.add('highlight-glow');
+        }
+      },
+
+      {
+        id: 'description-autofill',
+        speaker: 'marvin',
+        text: "Something like: 'I haven't been to the doctor in 2 years, need to get a checkup'",
+        highlight: 'description-input',
+        waitForClick: null,
+        action: () => {
+          typeText('description-input', "I haven't been to the doctor in 2 years, need to get a checkup", 40);
+        }
+      },
+
+      {
+        id: 'description-validate',
+        speaker: 'marvin',
+        text: "Description: 'I haven't been to the doctor in 2 years, need to get a checkup'. Correct?",
+        highlight: 'description-validate-btn',
+        waitForClick: 'description-validate-btn',
+        action: () => {
+          document.getElementById('description-validate-btn').style.display = 'inline-block';
+          document.getElementById('description-validate-btn').classList.add('pulse-highlight');
+        }
+      },
+
+      {
+        id: 'description-confirmed',
+        speaker: 'marvin',
+        text: "Perfect.",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          showSavedIndicator('description-input');
+          document.getElementById('description-validate-btn').style.display = 'none';
+          document.getElementById('description-validate-btn').classList.remove('pulse-highlight');
+          document.getElementById('description-input').classList.remove('highlight-glow');
+        }
+      },
+
+      // CATEGORY SELECTION
+      {
+        id: 'ask-category',
+        speaker: 'marvin',
+        text: "Last piece: which Life Category does this belong to?",
+        highlight: 'category-dropdown',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('category-dropdown').classList.add('highlight-glow');
+          document.getElementById('category-dropdown').disabled = false;
+        }
+      },
+
+      {
+        id: 'category-options',
+        speaker: 'marvin',
+        text: "We have eight Life Categories. This looks like Health & Well-Being to me.",
+        highlight: 'category-dropdown',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('category-health').classList.add('suggested');
+        }
+      },
+
+      {
+        id: 'category-select',
+        speaker: 'marvin',
+        text: "Go ahead and select Health & Well-Being from the dropdown.",
+        highlight: 'category-dropdown',
+        waitForClick: 'category-change',
+        action: () => {
+          document.getElementById('category-dropdown').classList.add('pulse-highlight');
+        }
+      },
+
+      {
+        id: 'category-validate',
+        speaker: 'marvin',
+        text: "Category: Health & Well-Being. Correct?",
+        highlight: 'category-validate-btn',
+        waitForClick: 'category-validate-btn',
+        action: () => {
+          document.getElementById('category-dropdown').classList.remove('pulse-highlight');
+          document.getElementById('category-validate-btn').style.display = 'inline-block';
+          document.getElementById('category-validate-btn').classList.add('pulse-highlight');
+        }
+      },
+
+      {
+        id: 'category-confirmed',
+        speaker: 'marvin',
+        text: "Excellent.",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          showSavedIndicator('category-dropdown');
+          document.getElementById('category-validate-btn').style.display = 'none';
+          document.getElementById('category-validate-btn').classList.remove('pulse-highlight');
+          document.getElementById('category-dropdown').classList.remove('highlight-glow');
+        }
+      },
+
+      // STAGE 1 COMPLETION
+      {
+        id: 'stage1-complete',
+        speaker: 'marvin',
+        text: "That's Stage 1—Identified. We captured the idea quickly: title, description, category.",
+        highlight: 'stage1-form',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('stage1-form').classList.add('completion-highlight');
+          setTimeout(() => {
+            document.getElementById('stage1-form').classList.remove('completion-highlight');
+          }, 1000);
+        }
+      },
+
+      {
+        id: 'planning-queue-intro',
+        speaker: 'marvin',
+        text: "The project now lives in your Planning Queue—see that pile of papers over there on the left?",
+        highlight: 'planning-queue-pile',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('planning-queue-pile').classList.remove('inactive');
+          document.getElementById('planning-queue-pile').classList.add('active');
+          document.getElementById('planning-queue-pile').classList.add('pulse-highlight');
+          document.getElementById('queue-count').textContent = '(1)';
+          setTimeout(() => {
+            document.getElementById('planning-queue-pile').classList.remove('pulse-highlight');
+          }, 3000);
+        }
+      },
+
+      {
+        id: 'planning-queue-click',
+        speaker: 'marvin',
+        text: "Click on it to see what's inside.",
+        highlight: 'planning-queue-pile',
+        waitForClick: 'planning-queue-pile',
+        action: () => {
+          document.getElementById('planning-queue-pile').classList.add('pulse-highlight');
+        }
+      },
+
+      {
+        id: 'planning-queue-view',
+        speaker: 'marvin',
+        text: "There's your project—'Schedule annual physical' at Stage 1 of 4. You can leave it here for days or weeks if you want, and come back to finish it later.",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          document.getElementById('planning-queue-pile').classList.remove('pulse-highlight');
+          showPlanningQueueModal();
+        }
+      },
+
+      {
+        id: 'planning-queue-autosave',
+        speaker: 'marvin',
+        text: "Everything autosaves as you go. Notice those little 'Saved ✓' indicators that appeared after each field? That's me making sure you never lose progress.",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          closePlanningQueueModal();
+        }
+      },
+
+      {
+        id: 'stage1-flexibility',
+        speaker: 'marvin',
+        text: "Most people pause between stages—maybe you capture 5 project titles in Stage 1 quickly, then come back later to flesh them out. Totally fine.",
+        highlight: 'planning-queue-pile',
+        waitForClick: null,
+        action: null
+      },
+
+      // TRANSITION TO STAGE 2
+      {
+        id: 'ready-for-stage2',
+        speaker: 'marvin',
+        text: "But for this tutorial, let's keep going. Ready for Stage 2—where we define what success actually looks like?",
+        highlight: 'progress-bar',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('progress-block-2').classList.add('pulse-highlight');
+          setTimeout(() => {
+            document.getElementById('progress-block-2').classList.remove('pulse-highlight');
+          }, 3000);
+        }
+      },
+
+      {
+        id: 'advance-to-stage2',
+        speaker: 'marvin',
+        text: "Click 'Continue to Stage 2' when you're ready.",
+        highlight: 'stage2-continue-btn',
+        waitForClick: 'stage2-continue-btn',
+        action: () => {
+          document.getElementById('stage2-continue-btn').style.display = 'block';
+          document.getElementById('stage2-continue-btn').classList.add('pulse-highlight');
+        }
+      },
+
+      // END OF STAGE 1
+      {
+        id: 'stage1-transition',
+        speaker: 'marvin',
+        text: "Here we go... (This is where Stage 2 would begin, but that's not built yet!)",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          document.getElementById('stage1-form').classList.add('fade-out');
+          updateProgressBar(2);
+          showMiniCelebration();
+        }
+      }
+    ];
+
+    // ========================================
+    // STATE MANAGEMENT
+    // ========================================
+    let currentScriptIndex = 0;
+    let waitingForClick = null;
+
+    // ========================================
+    // HELPER FUNCTIONS
+    // ========================================
+
+    function typeText(elementId, text, speed) {
+      const element = document.getElementById(elementId);
+      let i = 0;
+      element.value = '';
+      const typing = setInterval(() => {
+        if (i < text.length) {
+          element.value += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(typing);
+        }
+      }, speed);
+    }
+
+    function showSavedIndicator(elementId) {
+      const element = document.getElementById(elementId);
+      const indicator = document.createElement('div');
+      indicator.className = 'saved-indicator';
+      indicator.innerHTML = '<span class="checkmark">✓</span> Saved';
+
+      element.parentElement.appendChild(indicator);
+
+      setTimeout(() => indicator.classList.add('visible'), 50);
+
+      setTimeout(() => {
+        indicator.classList.remove('visible');
+        setTimeout(() => indicator.remove(), 300);
+      }, 2000);
+    }
+
+    function updateProgressBar(stage) {
+      const stageNames = ['Identified', 'Scoped', 'Drafted', 'Prioritized'];
+      document.getElementById('stage-label').textContent = `Stage ${stage} of 4 - ${stageNames[stage - 1]}`;
+
+      const percentage = (stage / 4) * 100;
+      document.getElementById('progress-percentage').textContent = `${Math.round(percentage)}% Complete`;
+
+      for (let i = 1; i <= 4; i++) {
+        const block = document.getElementById(`progress-block-${i}`);
+        if (i <= stage) {
+          block.classList.add('filled');
+        } else {
+          block.classList.remove('filled');
+        }
+      }
+
+      document.getElementById('progress-bar').classList.add('update-animation');
+      setTimeout(() => {
+        document.getElementById('progress-bar').classList.remove('update-animation');
+      }, 500);
+    }
+
+    function showPlanningQueueModal() {
+      const modal = document.getElementById('planning-queue-modal');
+      modal.innerHTML = `
+        <div class="queue-modal-content">
+          <h3>Planning Queue (1 project)</h3>
+          <div class="queue-item">
+            <span class="project-title">Schedule annual physical</span>
+            <span class="project-stage">●○○○ Stage 1/4</span>
+            <span class="project-category">Health & Well-Being</span>
+          </div>
+          <button id="close-queue-modal" class="close-modal">Close</button>
+        </div>
+      `;
+      modal.style.display = 'flex';
+      modal.classList.add('fade-in');
+
+      document.getElementById('close-queue-modal').addEventListener('click', closePlanningQueueModal);
+    }
+
+    function closePlanningQueueModal() {
+      const modal = document.getElementById('planning-queue-modal');
+      modal.classList.remove('fade-in');
+      modal.classList.add('fade-out');
+      setTimeout(() => {
+        modal.style.display = 'none';
+        modal.classList.remove('fade-out');
+        advanceScript();
+      }, 300);
+    }
+
+    function showMiniCelebration() {
+      const celebration = document.getElementById('celebration-animation');
+      celebration.style.display = 'block';
+      celebration.classList.add('sparkle');
+
+      setTimeout(() => {
+        celebration.style.display = 'none';
+        celebration.classList.remove('sparkle');
+      }, 1500);
+    }
+
+    // ========================================
+    // NARRATIVE ENGINE
+    // ========================================
+
+    function advanceScript() {
+      if (currentScriptIndex >= stage1NarrativeScript.length) {
+        return; // End of script
+      }
+
+      const step = stage1NarrativeScript[currentScriptIndex];
+
+      // Update Marvin's dialogue
+      document.getElementById('marvin-text').textContent = step.text;
+
+      // Execute action if present
+      if (step.action) {
+        step.action();
+      }
+
+      // Check if we need to wait for a click
+      if (step.waitForClick) {
+        waitingForClick = step.waitForClick;
+        document.getElementById('continue-btn').style.display = 'none';
+      } else {
+        waitingForClick = null;
+        document.getElementById('continue-btn').style.display = 'block';
+      }
+
+      currentScriptIndex++;
+    }
+
+    // ========================================
+    // EVENT LISTENERS
+    // ========================================
+
+    // Continue button (advances when no specific click is needed)
+    document.getElementById('continue-btn').addEventListener('click', () => {
+      if (!waitingForClick) {
+        advanceScript();
+      }
+    });
+
+    // Option B click
+    document.getElementById('option-b').addEventListener('click', () => {
+      if (waitingForClick === 'option-b') {
+        advanceScript();
+      }
+    });
+
+    // Title validation
+    document.getElementById('title-validate-btn').addEventListener('click', () => {
+      if (waitingForClick === 'title-validate-btn') {
+        advanceScript();
+      }
+    });
+
+    // Description validation
+    document.getElementById('description-validate-btn').addEventListener('click', () => {
+      if (waitingForClick === 'description-validate-btn') {
+        advanceScript();
+      }
+    });
+
+    // Category change (special case - advance when dropdown changes)
+    document.getElementById('category-dropdown').addEventListener('change', (e) => {
+      if (waitingForClick === 'category-change' && e.target.value === 'Health & Well-Being') {
+        advanceScript();
+      }
+    });
+
+    // Category validation
+    document.getElementById('category-validate-btn').addEventListener('click', () => {
+      if (waitingForClick === 'category-validate-btn') {
+        advanceScript();
+      }
+    });
+
+    // Planning Queue click
+    document.getElementById('planning-queue-pile').addEventListener('click', () => {
+      if (waitingForClick === 'planning-queue-pile') {
+        // Don't advance yet - modal will handle it
+      }
+    });
+
+    // Stage 2 continue button
+    document.getElementById('stage2-continue-btn').addEventListener('click', () => {
+      if (waitingForClick === 'stage2-continue-btn') {
+        advanceScript();
+      }
+    });
+
+    // ========================================
+    // INITIALIZATION
+    // ========================================
+
+    window.addEventListener('DOMContentLoaded', () => {
+      advanceScript();
+    });
+  </script>
+
+</body>
+</html>
