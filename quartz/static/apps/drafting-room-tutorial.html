@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LifeBuild - Drafting Room Tutorial: Stage 1</title>
+  <title>LifeBuild - Drafting Room Tutorial: Complete Experience</title>
   <style>
     /* ========================================
        RESET & BASE STYLES
@@ -105,8 +105,8 @@
     .main-container {
       display: flex;
       margin-top: 60px;
-      min-height: calc(100vh - 60px - 180px); /* Account for header and footer */
-      padding-bottom: 180px; /* Space for Marvin's dialogue */
+      min-height: calc(100vh - 60px - 180px);
+      padding-bottom: 180px;
     }
 
     /* ========================================
@@ -195,7 +195,7 @@
     .content-area {
       flex: 1;
       padding: 40px;
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
     }
 
@@ -368,39 +368,6 @@
       font-size: 18px;
     }
 
-    /* Category dropdown specific */
-    .category-options {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: white;
-      border: 2px solid #D4A574;
-      border-top: none;
-      border-radius: 0 0 8px 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      z-index: 10;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    .category-option {
-      padding: 12px 16px;
-      cursor: pointer;
-      transition: background 0.2s ease;
-    }
-
-    .category-option:hover {
-      background: #FFF9F0;
-    }
-
-    .category-option.suggested {
-      background: #FFF9F0;
-      border-left: 4px solid #D4A574;
-      font-weight: 600;
-    }
-
     .continue-btn {
       display: none;
       margin-top: 40px;
@@ -429,6 +396,436 @@
       0% { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
       50% { box-shadow: 0 8px 40px rgba(212, 165, 116, 0.4); }
       100% { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    }
+
+    /* ========================================
+       STAGE 2 FORM
+       ======================================== */
+    #stage2-form {
+      display: none;
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .objectives-list {
+      list-style: none;
+      padding: 20px;
+      background: #FFF9F0;
+      border-radius: 8px;
+      border-left: 4px solid #D4A574;
+    }
+
+    .objectives-list li {
+      padding: 8px 0;
+      font-size: 16px;
+      color: #2C2C2C;
+    }
+
+    .objectives-list li:before {
+      content: "•";
+      color: #D4A574;
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+    }
+
+    .deadline-display {
+      display: inline-block;
+      padding: 8px 16px;
+      background: #FFF9F0;
+      border-radius: 6px;
+      border: 2px solid #D4A574;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .archetype-options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .archetype-option {
+      padding: 16px;
+      border: 2px solid #E0DDD5;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .archetype-option:hover {
+      border-color: #D4A574;
+      background: #FFF9F0;
+    }
+
+    .archetype-option.selected {
+      border-color: #D4A574;
+      background: #FFF9F0;
+      border-width: 3px;
+    }
+
+    .archetype-radio {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #E0DDD5;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .archetype-option.selected .archetype-radio {
+      border-color: #D4A574;
+    }
+
+    .archetype-option.selected .archetype-radio:after {
+      content: "";
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: #D4A574;
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .archetype-label {
+      flex: 1;
+    }
+
+    .archetype-name {
+      font-weight: 600;
+      font-size: 16px;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .archetype-description {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .archetype-checkmark {
+      display: none;
+      color: #7A9B76;
+      font-size: 24px;
+    }
+
+    .archetype-option.selected .archetype-checkmark {
+      display: block;
+    }
+
+    .traits-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .trait-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .trait-label {
+      font-weight: 600;
+      font-size: 14px;
+      color: #2C2C2C;
+    }
+
+    .trait-select {
+      padding: 10px 12px;
+      border: 2px solid #E0DDD5;
+      border-radius: 6px;
+      font-size: 14px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .trait-select:hover,
+    .trait-select:focus {
+      border-color: #D4A574;
+      outline: none;
+    }
+
+    .trait-change-indicator {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #D4A574;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .trait-change-indicator.visible {
+      display: flex;
+    }
+
+    /* ========================================
+       STAGE 3 FORM
+       ======================================== */
+    #stage3-form {
+      display: none;
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .task-cards-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .task-card {
+      background: white;
+      border: 2px solid #E0DDD5;
+      border-radius: 8px;
+      padding: 20px;
+      min-height: 180px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .task-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+
+    .task-card.will-delete {
+      border-color: #E57373;
+      background: #FFEBEE;
+    }
+
+    .task-number {
+      position: absolute;
+      top: 8px;
+      left: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #999;
+    }
+
+    .task-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+
+    .task-delete-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: #E57373;
+      color: white;
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .task-card.will-delete .task-delete-btn {
+      display: flex;
+    }
+
+    .task-delete-btn:hover {
+      background: #D32F2F;
+      transform: scale(1.1);
+    }
+
+    @keyframes cardShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px) rotate(-1deg); }
+      75% { transform: translateX(5px) rotate(1deg); }
+    }
+
+    .task-card.shaking {
+      animation: cardShake 0.3s ease;
+    }
+
+    @keyframes cardSlideOut {
+      from {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translateX(-100px) scale(0.8);
+      }
+    }
+
+    .task-card.removing {
+      animation: cardSlideOut 0.4s ease forwards;
+    }
+
+    /* ========================================
+       STAGE 4 FORM
+       ======================================== */
+    #stage4-form {
+      display: none;
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .queue-list {
+      list-style: none;
+      margin-top: 24px;
+    }
+
+    .queue-list-item {
+      padding: 16px 20px;
+      border: 2px solid #E0DDD5;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .queue-item-number {
+      font-weight: 700;
+      font-size: 18px;
+      color: #999;
+      min-width: 30px;
+    }
+
+    .queue-item-details {
+      flex: 1;
+    }
+
+    .queue-item-title {
+      font-weight: 600;
+      font-size: 16px;
+      color: #2C2C2C;
+    }
+
+    .queue-item-meta {
+      font-size: 14px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .queue-item-category {
+      font-style: italic;
+    }
+
+    .queue-item-archetype {
+      color: #999;
+    }
+
+    .queue-list-item.new-project {
+      background: #FFF9F0;
+      border-color: #D4A574;
+      border-width: 3px;
+      box-shadow: 0 4px 16px rgba(212, 165, 116, 0.3);
+    }
+
+    .queue-list-item.new-project .queue-item-number {
+      color: #D4A574;
+    }
+
+    .insertion-arrows {
+      display: none;
+      color: #D4A574;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .queue-list-item.new-project .insertion-arrows {
+      display: block;
+    }
+
+    /* ========================================
+       FINAL CELEBRATION
+       ======================================== */
+    #final-celebration {
+      display: none;
+      background: white;
+      padding: 60px 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .celebration-icon {
+      font-size: 80px;
+      margin-bottom: 24px;
+      animation: celebrationBounce 1s ease infinite;
+    }
+
+    @keyframes celebrationBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .celebration-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #2C2C2C;
+      margin-bottom: 16px;
+    }
+
+    .celebration-message {
+      font-size: 18px;
+      color: #666;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto 32px;
+    }
+
+    .celebration-stats {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      margin: 32px 0;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 36px;
+      font-weight: 700;
+      color: #D4A574;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 8px;
     }
 
     /* ========================================
@@ -658,7 +1055,7 @@
 
   <!-- Main Container -->
   <div class="main-container">
-
+    
     <!-- Sidebar: Planning Queue -->
     <div class="sidebar">
       <div id="planning-queue-pile">
@@ -674,7 +1071,7 @@
 
     <!-- Main Content Area -->
     <div class="content-area">
-
+      
       <!-- Options Menu -->
       <div id="options-menu">
         <h2>What would you like to do?</h2>
@@ -703,21 +1100,18 @@
 
       <!-- Stage 1 Form -->
       <div id="stage1-form">
-        <!-- Title Input -->
         <div class="form-group">
           <label class="form-label">What's the project?</label>
           <input type="text" class="form-input" id="title-input" readonly>
           <button class="validate-btn" id="title-validate-btn">✓ Correct</button>
         </div>
 
-        <!-- Description Input -->
         <div class="form-group">
           <label class="form-label">Tell me a bit about it (1-2 sentences)</label>
           <textarea class="form-textarea" id="description-input" readonly></textarea>
           <button class="validate-btn" id="description-validate-btn">✓ Correct</button>
         </div>
 
-        <!-- Category Selection -->
         <div class="form-group">
           <label class="form-label">Which Life Category?</label>
           <div style="position: relative;">
@@ -736,8 +1130,88 @@
           </div>
         </div>
 
-        <!-- Continue Button -->
         <button class="continue-btn" id="stage2-continue-btn">Continue to Stage 2 →</button>
+      </div>
+
+      <!-- Stage 2 Form -->
+      <div id="stage2-form">
+        <h2 style="margin-bottom: 24px;">Stage 2: Define Success</h2>
+        
+        <div class="form-group">
+          <label class="form-label">Objectives</label>
+          <ul class="objectives-list" id="objectives-list">
+            <!-- Will be populated by script -->
+          </ul>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Deadline</label>
+          <div class="deadline-display" id="deadline-display">By end of month</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Project Type (Archetype)</label>
+          <div class="archetype-options" id="archetype-options">
+            <!-- Will be populated by script -->
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Traits</label>
+          <div class="traits-grid" id="traits-grid">
+            <!-- Will be populated by script -->
+          </div>
+        </div>
+
+        <button class="continue-btn" id="stage3-continue-btn">Continue to Stage 3 →</button>
+      </div>
+
+      <!-- Stage 3 Form -->
+      <div id="stage3-form">
+        <h2 style="margin-bottom: 24px;">Stage 3: Build Task List</h2>
+        <p style="color: #666; margin-bottom: 24px;">Here's your task list based on the objectives and archetype:</p>
+        <div class="task-cards-container" id="task-cards-container">
+          <!-- Will be populated by script -->
+        </div>
+        <button class="continue-btn" id="stage4-continue-btn">Continue to Stage 4 →</button>
+      </div>
+
+      <!-- Stage 4 Form -->
+      <div id="stage4-form">
+        <h2 style="margin-bottom: 24px;">Stage 4: Set Priority</h2>
+        <p style="color: #666; margin-bottom: 24px;">Here's your current Priority Queue. Where should this project fit?</p>
+        <ul class="queue-list" id="queue-list">
+          <!-- Will be populated by script -->
+        </ul>
+        <button class="continue-btn" id="complete-btn">Complete Project Creation →</button>
+      </div>
+
+      <!-- Final Celebration -->
+      <div id="final-celebration">
+        <div class="celebration-icon">🎉</div>
+        <h1 class="celebration-title">Project Created Successfully!</h1>
+        <p class="celebration-message">
+          You've just completed your first project using the 4-stage creation process. 
+          "Schedule annual physical" is now fully planned and ready to activate whenever you choose.
+        </p>
+        <div class="celebration-stats">
+          <div class="stat-item">
+            <span class="stat-number">4</span>
+            <span class="stat-label">Stages Complete</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">6</span>
+            <span class="stat-label">Tasks Created</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">~12</span>
+            <span class="stat-label">Minutes Invested</span>
+          </div>
+        </div>
+        <p style="color: #666; font-size: 16px; margin-top: 32px;">
+          This process works the same way for every project—from simple Quick Tasks to major Initiatives. 
+          You've learned the rhythm. Now you can plan anything.
+        </p>
       </div>
 
     </div>
@@ -761,10 +1235,10 @@
 
   <script>
     // ========================================
-    // NARRATIVE SCRIPT
+    // COMPLETE NARRATIVE SCRIPT (ALL STAGES)
     // ========================================
-    const stage1NarrativeScript = [
-      // OPENING: Marvin's Welcome
+    const completeNarrativeScript = [
+      // STAGE 1 SCRIPT (keeping your original)
       {
         id: 'welcome-1',
         speaker: 'marvin',
@@ -773,7 +1247,7 @@
         waitForClick: null,
         action: null
       },
-
+      
       {
         id: 'welcome-2',
         speaker: 'marvin',
@@ -782,7 +1256,7 @@
         waitForClick: null,
         action: null
       },
-
+      
       {
         id: 'tutorial-intro',
         speaker: 'marvin',
@@ -791,8 +1265,7 @@
         waitForClick: null,
         action: null
       },
-
-      // TUTORIAL PROJECT SETUP
+      
       {
         id: 'tutorial-project',
         speaker: 'marvin',
@@ -806,8 +1279,7 @@
           }, 3000);
         }
       },
-
-      // OPTIONS MENU
+      
       {
         id: 'options-intro',
         speaker: 'marvin',
@@ -819,7 +1291,7 @@
           document.getElementById('options-menu').classList.add('fade-in');
         }
       },
-
+      
       {
         id: 'options-menu',
         speaker: 'marvin',
@@ -833,7 +1305,7 @@
           }, 3000);
         }
       },
-
+      
       {
         id: 'options-tutorial',
         speaker: 'marvin',
@@ -844,7 +1316,7 @@
           document.getElementById('option-b').classList.add('pulse-highlight');
         }
       },
-
+      
       {
         id: 'select-option-b',
         speaker: 'marvin',
@@ -853,8 +1325,7 @@
         waitForClick: 'option-b',
         action: null
       },
-
-      // STAGE 1 BEGINS: IDENTIFIED
+      
       {
         id: 'stage1-intro',
         speaker: 'marvin',
@@ -868,8 +1339,7 @@
           document.getElementById('option-b').classList.remove('pulse-highlight');
         }
       },
-
-      // TITLE INPUT
+      
       {
         id: 'ask-title',
         speaker: 'marvin',
@@ -880,7 +1350,7 @@
           document.getElementById('title-input').classList.add('highlight-glow');
         }
       },
-
+      
       {
         id: 'title-autofill',
         speaker: 'marvin',
@@ -891,7 +1361,7 @@
           typeText('title-input', 'Schedule annual physical', 50);
         }
       },
-
+      
       {
         id: 'title-validate',
         speaker: 'marvin',
@@ -903,7 +1373,7 @@
           document.getElementById('title-validate-btn').classList.add('pulse-highlight');
         }
       },
-
+      
       {
         id: 'title-confirmed',
         speaker: 'marvin',
@@ -917,8 +1387,7 @@
           document.getElementById('title-input').classList.remove('highlight-glow');
         }
       },
-
-      // DESCRIPTION INPUT
+      
       {
         id: 'ask-description',
         speaker: 'marvin',
@@ -929,7 +1398,7 @@
           document.getElementById('description-input').classList.add('highlight-glow');
         }
       },
-
+      
       {
         id: 'description-autofill',
         speaker: 'marvin',
@@ -940,7 +1409,7 @@
           typeText('description-input', "I haven't been to the doctor in 2 years, need to get a checkup", 40);
         }
       },
-
+      
       {
         id: 'description-validate',
         speaker: 'marvin',
@@ -952,7 +1421,7 @@
           document.getElementById('description-validate-btn').classList.add('pulse-highlight');
         }
       },
-
+      
       {
         id: 'description-confirmed',
         speaker: 'marvin',
@@ -966,8 +1435,7 @@
           document.getElementById('description-input').classList.remove('highlight-glow');
         }
       },
-
-      // CATEGORY SELECTION
+      
       {
         id: 'ask-category',
         speaker: 'marvin',
@@ -979,7 +1447,7 @@
           document.getElementById('category-dropdown').disabled = false;
         }
       },
-
+      
       {
         id: 'category-options',
         speaker: 'marvin',
@@ -990,7 +1458,7 @@
           document.getElementById('category-health').classList.add('suggested');
         }
       },
-
+      
       {
         id: 'category-select',
         speaker: 'marvin',
@@ -1001,7 +1469,7 @@
           document.getElementById('category-dropdown').classList.add('pulse-highlight');
         }
       },
-
+      
       {
         id: 'category-validate',
         speaker: 'marvin',
@@ -1014,7 +1482,7 @@
           document.getElementById('category-validate-btn').classList.add('pulse-highlight');
         }
       },
-
+      
       {
         id: 'category-confirmed',
         speaker: 'marvin',
@@ -1028,8 +1496,7 @@
           document.getElementById('category-dropdown').classList.remove('highlight-glow');
         }
       },
-
-      // STAGE 1 COMPLETION
+      
       {
         id: 'stage1-complete',
         speaker: 'marvin',
@@ -1043,7 +1510,7 @@
           }, 1000);
         }
       },
-
+      
       {
         id: 'planning-queue-intro',
         speaker: 'marvin',
@@ -1051,7 +1518,6 @@
         highlight: 'planning-queue-pile',
         waitForClick: null,
         action: () => {
-          document.getElementById('planning-queue-pile').classList.remove('inactive');
           document.getElementById('planning-queue-pile').classList.add('active');
           document.getElementById('planning-queue-pile').classList.add('pulse-highlight');
           document.getElementById('queue-count').textContent = '(1)';
@@ -1060,7 +1526,7 @@
           }, 3000);
         }
       },
-
+      
       {
         id: 'planning-queue-click',
         speaker: 'marvin',
@@ -1071,7 +1537,7 @@
           document.getElementById('planning-queue-pile').classList.add('pulse-highlight');
         }
       },
-
+      
       {
         id: 'planning-queue-view',
         speaker: 'marvin',
@@ -1080,10 +1546,10 @@
         waitForClick: null,
         action: () => {
           document.getElementById('planning-queue-pile').classList.remove('pulse-highlight');
-          showPlanningQueueModal();
+          showPlanningQueueModal(1);
         }
       },
-
+      
       {
         id: 'planning-queue-autosave',
         speaker: 'marvin',
@@ -1094,7 +1560,7 @@
           closePlanningQueueModal();
         }
       },
-
+      
       {
         id: 'stage1-flexibility',
         speaker: 'marvin',
@@ -1103,8 +1569,7 @@
         waitForClick: null,
         action: null
       },
-
-      // TRANSITION TO STAGE 2
+      
       {
         id: 'ready-for-stage2',
         speaker: 'marvin',
@@ -1118,7 +1583,7 @@
           }, 3000);
         }
       },
-
+      
       {
         id: 'advance-to-stage2',
         speaker: 'marvin',
@@ -1130,18 +1595,438 @@
           document.getElementById('stage2-continue-btn').classList.add('pulse-highlight');
         }
       },
-
-      // END OF STAGE 1
+      
+      // STAGE 2 BEGINS
       {
-        id: 'stage1-transition',
+        id: 'stage2-transition',
         speaker: 'marvin',
-        text: "Here we go... (This is where Stage 2 would begin, but that's not built yet!)",
+        text: "Stage 2—Scoped. This typically takes about 10 minutes. We're defining what success looks like before we think about tasks.",
         highlight: null,
         waitForClick: null,
         action: () => {
-          document.getElementById('stage1-form').classList.add('fade-out');
+          document.getElementById('stage1-form').style.display = 'none';
+          document.getElementById('stage2-form').style.display = 'block';
+          document.getElementById('stage2-form').classList.add('fade-in');
           updateProgressBar(2);
           showMiniCelebration();
+        }
+      },
+      
+      {
+        id: 'stage2-objectives-intro',
+        speaker: 'marvin',
+        text: "First: what are the objectives? What specific outcomes would mean this project succeeded?",
+        highlight: 'objectives-list',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('objectives-list').classList.add('highlight-glow');
+        }
+      },
+      
+      {
+        id: 'stage2-objectives-populate',
+        speaker: 'marvin',
+        text: "For a doctor's appointment, you might say: get appointment scheduled, complete the exam, get lab results, and discuss results with the doctor.",
+        highlight: 'objectives-list',
+        waitForClick: null,
+        action: () => {
+          const objectives = [
+            'Get appointment scheduled',
+            'Complete physical exam',
+            'Get lab results',
+            'Discuss results with doctor'
+          ];
+          populateObjectives(objectives);
+        }
+      },
+      
+      {
+        id: 'stage2-objectives-confirm',
+        speaker: 'marvin',
+        text: "Those four objectives capture everything. Clear success criteria, right?",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          showSavedIndicator('objectives-list');
+          document.getElementById('objectives-list').classList.remove('highlight-glow');
+        }
+      },
+      
+      {
+        id: 'stage2-deadline',
+        speaker: 'marvin',
+        text: "Any deadline? Let's say 'by end of month'—gives you reasonable time to schedule and complete.",
+        highlight: 'deadline-display',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('deadline-display').classList.add('pulse-highlight');
+          setTimeout(() => {
+            document.getElementById('deadline-display').classList.remove('pulse-highlight');
+            showSavedIndicator('deadline-display');
+          }, 1500);
+        }
+      },
+      
+      {
+        id: 'stage2-archetype-intro',
+        speaker: 'marvin',
+        text: "Now: what type of project is this? We call these 'archetypes'—patterns that help me generate appropriate task lists.",
+        highlight: 'archetype-options',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('archetype-options').classList.add('highlight-glow');
+          populateArchetypes();
+        }
+      },
+      
+      {
+        id: 'stage2-archetype-explain',
+        speaker: 'marvin',
+        text: "There are six archetypes. This one looks like a Quick Task to me—one-shot work with minimal planning. See it highlighted there?",
+        highlight: 'archetype-quick-task',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('archetype-quick-task').classList.add('pulse-highlight');
+          setTimeout(() => {
+            document.getElementById('archetype-quick-task').classList.remove('pulse-highlight');
+          }, 2000);
+        }
+      },
+      
+      {
+        id: 'stage2-archetype-select',
+        speaker: 'marvin',
+        text: "Go ahead and click on Quick Task to select it.",
+        highlight: 'archetype-quick-task',
+        waitForClick: 'archetype-quick-task',
+        action: () => {
+          document.getElementById('archetype-quick-task').classList.add('pulse-highlight');
+        }
+      },
+      
+      {
+        id: 'stage2-archetype-confirmed',
+        speaker: 'marvin',
+        text: "Perfect. Quick Task it is.",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          document.getElementById('archetype-quick-task').classList.remove('pulse-highlight');
+          document.getElementById('archetype-options').classList.remove('highlight-glow');
+          showSavedIndicator('archetype-options');
+        }
+      },
+      
+      {
+        id: 'stage2-traits-intro',
+        speaker: 'marvin',
+        text: "Last piece: traits. These characterize the project and help with prioritization later.",
+        highlight: 'traits-grid',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('traits-grid').classList.add('highlight-glow');
+          populateTraits();
+        }
+      },
+      
+      {
+        id: 'stage2-traits-suggest',
+        speaker: 'marvin',
+        text: "Based on Quick Task archetype, I'd suggest: Urgency Normal, Importance High, Complexity Simple, Scale Minor, Support Self.",
+        highlight: 'traits-grid',
+        waitForClick: null,
+        action: null
+      },
+      
+      {
+        id: 'stage2-traits-adjust',
+        speaker: 'marvin',
+        text: "Actually, you've been putting this off for 2 years—let's bump Urgency from Normal to High. Click that dropdown to change it.",
+        highlight: 'trait-urgency',
+        waitForClick: 'trait-urgency-change',
+        action: () => {
+          document.getElementById('trait-urgency').classList.add('pulse-highlight');
+        }
+      },
+      
+      {
+        id: 'stage2-traits-confirmed',
+        speaker: 'marvin',
+        text: "There we go. Urgency: High. That's more accurate. The other traits look good.",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          document.getElementById('trait-urgency').classList.remove('pulse-highlight');
+          document.getElementById('traits-grid').classList.remove('highlight-glow');
+          showSavedIndicator('traits-grid');
+        }
+      },
+      
+      {
+        id: 'stage2-complete',
+        speaker: 'marvin',
+        text: "That's Stage 2—Scoped. We've defined success: clear objectives, deadline, archetype, and traits. Now we know what we're building toward.",
+        highlight: 'stage2-form',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('stage2-form').classList.add('completion-highlight');
+          setTimeout(() => {
+            document.getElementById('stage2-form').classList.remove('completion-highlight');
+          }, 1000);
+          updatePlanningQueueCount(2);
+        }
+      },
+      
+      {
+        id: 'advance-to-stage3',
+        speaker: 'marvin',
+        text: "Ready for Stage 3—where we build the actual task list? This is the fun part. Click 'Continue to Stage 3' when ready.",
+        highlight: 'stage3-continue-btn',
+        waitForClick: 'stage3-continue-btn',
+        action: () => {
+          document.getElementById('stage3-continue-btn').style.display = 'block';
+          document.getElementById('stage3-continue-btn').classList.add('pulse-highlight');
+        }
+      },
+      
+      // STAGE 3 BEGINS
+      {
+        id: 'stage3-transition',
+        speaker: 'marvin',
+        text: "Stage 3—Drafted. This usually takes 30 minutes to get right, but we'll move faster since I'm doing the heavy lifting.",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          document.getElementById('stage2-form').style.display = 'none';
+          document.getElementById('stage3-form').style.display = 'block';
+          document.getElementById('stage3-form').classList.add('fade-in');
+          updateProgressBar(3);
+          showMiniCelebration();
+        }
+      },
+      
+      {
+        id: 'stage3-generate-intro',
+        speaker: 'marvin',
+        text: "I'll generate a task list based on your objectives and the Quick Task archetype. Give me a moment...",
+        highlight: 'task-cards-container',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('task-cards-container').classList.add('highlight-glow');
+        }
+      },
+      
+      {
+        id: 'stage3-tasks-appear',
+        speaker: 'marvin',
+        text: "Here we go. Seven tasks that will get you from 'need appointment' to 'results discussed'.",
+        highlight: 'task-cards-container',
+        waitForClick: null,
+        action: () => {
+          const initialTasks = [
+            'Find doctor accepting new patients',
+            'Check insurance coverage',
+            'Call to schedule appointment',
+            'Complete pre-visit paperwork',
+            'Attend physical exam',
+            'Complete lab work',
+            'Schedule follow-up for results discussion'
+          ];
+          populateTaskCards(initialTasks);
+          setTimeout(() => {
+            document.getElementById('task-cards-container').classList.remove('highlight-glow');
+          }, 2000);
+        }
+      },
+      
+      {
+        id: 'stage3-review',
+        speaker: 'marvin',
+        text: "Take a look. Does this capture everything? Normally you'd add, remove, or reorder tasks here. See anything that doesn't fit?",
+        highlight: null,
+        waitForClick: null,
+        action: null
+      },
+      
+      {
+        id: 'stage3-task-issue',
+        speaker: 'marvin',
+        text: "Actually, that first task—'Find doctor accepting new patients'—you already have a doctor, right? Let's remove that one.",
+        highlight: 'task-card-1',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('task-card-1').classList.add('will-delete');
+          document.getElementById('task-card-1').classList.add('pulse-highlight');
+        }
+      },
+      
+      {
+        id: 'stage3-delete-task',
+        speaker: 'marvin',
+        text: "Click the X button on that card to delete it.",
+        highlight: 'task-card-1',
+        waitForClick: 'task-delete-1',
+        action: null
+      },
+      
+      {
+        id: 'stage3-task-removed',
+        speaker: 'marvin',
+        text: "There we go. Down to six tasks, all relevant. Much better.",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          // Renumber remaining cards
+          setTimeout(() => {
+            renumberTaskCards();
+            showSavedIndicator('task-cards-container');
+          }, 500);
+        }
+      },
+      
+      {
+        id: 'stage3-complete',
+        speaker: 'marvin',
+        text: "That's Stage 3—Drafted. You now have a complete, sequenced task list. When this project activates, these tasks will populate your kanban board ready to work.",
+        highlight: 'stage3-form',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('stage3-form').classList.add('completion-highlight');
+          setTimeout(() => {
+            document.getElementById('stage3-form').classList.remove('completion-highlight');
+          }, 1000);
+          updatePlanningQueueCount(3);
+        }
+      },
+      
+      {
+        id: 'advance-to-stage4',
+        speaker: 'marvin',
+        text: "One more stage: prioritization. Where does this project fit relative to your other work? Click 'Continue to Stage 4' when ready.",
+        highlight: 'stage4-continue-btn',
+        waitForClick: 'stage4-continue-btn',
+        action: () => {
+          document.getElementById('stage4-continue-btn').style.display = 'block';
+          document.getElementById('stage4-continue-btn').classList.add('pulse-highlight');
+        }
+      },
+      
+      // STAGE 4 BEGINS
+      {
+        id: 'stage4-transition',
+        speaker: 'marvin',
+        text: "Stage 4—Prioritized. This is the final stage: typically 5 minutes. We're placing this project in your Priority Queue.",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          document.getElementById('stage3-form').style.display = 'none';
+          document.getElementById('stage4-form').style.display = 'block';
+          document.getElementById('stage4-form').classList.add('fade-in');
+          updateProgressBar(4);
+          showMiniCelebration();
+        }
+      },
+      
+      {
+        id: 'stage4-queue-intro',
+        speaker: 'marvin',
+        text: "This is your current Priority Queue—all the fully-planned projects waiting to be activated. Let's see where your doctor's appointment should fit.",
+        highlight: 'queue-list',
+        waitForClick: null,
+        action: () => {
+          populateQueueList();
+          document.getElementById('queue-list').classList.add('highlight-glow');
+        }
+      },
+      
+      {
+        id: 'stage4-queue-explain',
+        speaker: 'marvin',
+        text: "You've got five projects here already. Some are big initiatives, some are systems, some are maintenance. Your annual physical needs to fit somewhere in this list.",
+        highlight: null,
+        waitForClick: null,
+        action: null
+      },
+      
+      {
+        id: 'stage4-placement',
+        speaker: 'marvin',
+        text: "Given the High urgency we set earlier, I'd suggest position 4—important enough to happen soon, but not blocking the bigger projects ahead of it. Sound reasonable?",
+        highlight: 'queue-item-4',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('queue-item-4').classList.add('pulse-highlight');
+          setTimeout(() => {
+            document.getElementById('queue-item-4').classList.remove('pulse-highlight');
+          }, 2000);
+        }
+      },
+      
+      {
+        id: 'stage4-placement-confirm',
+        speaker: 'marvin',
+        text: "See it there at position 4? It's highlighted. That's where it'll sit until Cameron helps you select work during Friday planning.",
+        highlight: 'queue-item-4',
+        waitForClick: null,
+        action: () => {
+          showSavedIndicator('queue-list');
+          document.getElementById('queue-list').classList.remove('highlight-glow');
+        }
+      },
+      
+      {
+        id: 'stage4-queue-update',
+        speaker: 'marvin',
+        text: "The Planning Queue now shows this at Stage 4 of 4—fully planned. It's graduated from 'in development' to 'ready to activate'.",
+        highlight: 'planning-queue-pile',
+        waitForClick: null,
+        action: () => {
+          updatePlanningQueueCount(4);
+          document.getElementById('planning-queue-pile').classList.add('pulse-highlight');
+          setTimeout(() => {
+            document.getElementById('planning-queue-pile').classList.remove('pulse-highlight');
+          }, 2000);
+        }
+      },
+      
+      {
+        id: 'stage4-complete',
+        speaker: 'marvin',
+        text: "That's Stage 4—Prioritized. Your project is now fully planned and positioned in your Priority Queue. Whenever you're ready to work on it, it's there waiting.",
+        highlight: 'stage4-form',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('stage4-form').classList.add('completion-highlight');
+          setTimeout(() => {
+            document.getElementById('stage4-form').classList.remove('completion-highlight');
+          }, 1000);
+        }
+      },
+      
+      {
+        id: 'tutorial-complete',
+        speaker: 'marvin',
+        text: "And that's the complete 4-stage process. Every project you create goes through these same steps—from Quick Tasks to Epic Initiatives. You've learned the rhythm. Click 'Complete Project Creation' to finish.",
+        highlight: 'complete-btn',
+        waitForClick: 'complete-btn',
+        action: () => {
+          document.getElementById('complete-btn').style.display = 'block';
+          document.getElementById('complete-btn').classList.add('pulse-highlight');
+        }
+      },
+      
+      // FINAL CELEBRATION
+      {
+        id: 'final-celebration',
+        speaker: 'marvin',
+        text: "Excellent work. You've successfully created your first project using the Drafting Room. This is how you transform ideas into actionable plans—every single time.",
+        highlight: null,
+        waitForClick: null,
+        action: () => {
+          document.getElementById('stage4-form').style.display = 'none';
+          document.getElementById('final-celebration').style.display = 'block';
+          document.getElementById('final-celebration').classList.add('fade-in');
+          showBigCelebration();
         }
       }
     ];
@@ -1155,7 +2040,7 @@
     // ========================================
     // HELPER FUNCTIONS
     // ========================================
-
+    
     function typeText(elementId, text, speed) {
       const element = document.getElementById(elementId);
       let i = 0;
@@ -1175,11 +2060,11 @@
       const indicator = document.createElement('div');
       indicator.className = 'saved-indicator';
       indicator.innerHTML = '<span class="checkmark">✓</span> Saved';
-
+      
       element.parentElement.appendChild(indicator);
-
+      
       setTimeout(() => indicator.classList.add('visible'), 50);
-
+      
       setTimeout(() => {
         indicator.classList.remove('visible');
         setTimeout(() => indicator.remove(), 300);
@@ -1189,10 +2074,10 @@
     function updateProgressBar(stage) {
       const stageNames = ['Identified', 'Scoped', 'Drafted', 'Prioritized'];
       document.getElementById('stage-label').textContent = `Stage ${stage} of 4 - ${stageNames[stage - 1]}`;
-
+      
       const percentage = (stage / 4) * 100;
       document.getElementById('progress-percentage').textContent = `${Math.round(percentage)}% Complete`;
-
+      
       for (let i = 1; i <= 4; i++) {
         const block = document.getElementById(`progress-block-${i}`);
         if (i <= stage) {
@@ -1201,21 +2086,22 @@
           block.classList.remove('filled');
         }
       }
-
+      
       document.getElementById('progress-bar').classList.add('update-animation');
       setTimeout(() => {
         document.getElementById('progress-bar').classList.remove('update-animation');
       }, 500);
     }
 
-    function showPlanningQueueModal() {
+    function showPlanningQueueModal(stage) {
       const modal = document.getElementById('planning-queue-modal');
+      const stageDots = '●'.repeat(stage) + '○'.repeat(4 - stage);
       modal.innerHTML = `
         <div class="queue-modal-content">
           <h3>Planning Queue (1 project)</h3>
           <div class="queue-item">
             <span class="project-title">Schedule annual physical</span>
-            <span class="project-stage">●○○○ Stage 1/4</span>
+            <span class="project-stage">${stageDots} Stage ${stage}/4</span>
             <span class="project-category">Health & Well-Being</span>
           </div>
           <button id="close-queue-modal" class="close-modal">Close</button>
@@ -1223,7 +2109,7 @@
       `;
       modal.style.display = 'flex';
       modal.classList.add('fade-in');
-
+      
       document.getElementById('close-queue-modal').addEventListener('click', closePlanningQueueModal);
     }
 
@@ -1238,37 +2124,221 @@
       }, 300);
     }
 
+    function updatePlanningQueueCount(stage) {
+      const stageDots = '●'.repeat(stage) + '○'.repeat(4 - stage);
+      // In a real app, this would update the queue display
+      // For now, just visual feedback
+    }
+
     function showMiniCelebration() {
       const celebration = document.getElementById('celebration-animation');
       celebration.style.display = 'block';
       celebration.classList.add('sparkle');
-
+      
       setTimeout(() => {
         celebration.style.display = 'none';
         celebration.classList.remove('sparkle');
       }, 1500);
     }
 
+    function showBigCelebration() {
+      // Could add confetti or other effects here
+      showMiniCelebration();
+    }
+
+    function populateObjectives(objectives) {
+      const list = document.getElementById('objectives-list');
+      list.innerHTML = '';
+      objectives.forEach(obj => {
+        const li = document.createElement('li');
+        li.textContent = obj;
+        list.appendChild(li);
+      });
+    }
+
+    function populateArchetypes() {
+      const container = document.getElementById('archetype-options');
+      const archetypes = [
+        { id: 'quick-task', name: 'Quick Task', desc: 'One-shot, minimal planning' },
+        { id: 'discovery', name: 'Discovery Mission', desc: 'Research, reduce uncertainty' },
+        { id: 'critical', name: 'Critical Response', desc: 'Urgent, time-sensitive' },
+        { id: 'maintenance', name: 'Maintenance Loop', desc: 'Recurring, perpetual' },
+        { id: 'system', name: 'System Build', desc: 'Infrastructure, automation' },
+        { id: 'initiative', name: 'Initiative', desc: 'Move life forward, one-time' }
+      ];
+
+      container.innerHTML = '';
+      archetypes.forEach(arch => {
+        const div = document.createElement('div');
+        div.className = 'archetype-option';
+        div.id = `archetype-${arch.id}`;
+        div.innerHTML = `
+          <div class="archetype-radio"></div>
+          <div class="archetype-label">
+            <span class="archetype-name">${arch.name}</span>
+            <span class="archetype-description">${arch.desc}</span>
+          </div>
+          <span class="archetype-checkmark">✓</span>
+        `;
+        container.appendChild(div);
+
+        div.addEventListener('click', () => {
+          if (waitingForClick === `archetype-${arch.id}`) {
+            div.classList.add('selected');
+            advanceScript();
+          }
+        });
+      });
+    }
+
+    function populateTraits() {
+      const container = document.getElementById('traits-grid');
+      const traits = [
+        { id: 'urgency', label: 'Urgency', options: ['Low', 'Normal', 'High', 'Critical'], default: 'Normal' },
+        { id: 'importance', label: 'Importance', options: ['Low', 'Normal', 'High', 'Critical'], default: 'High' },
+        { id: 'complexity', label: 'Complexity', options: ['Simple', 'Moderate', 'Complicated', 'Complex'], default: 'Simple' },
+        { id: 'scale', label: 'Scale', options: ['Micro', 'Minor', 'Major', 'Epic'], default: 'Minor' },
+        { id: 'support', label: 'Support', options: ['Self', 'AI', 'Other Human', 'Software'], default: 'Self' }
+      ];
+
+      container.innerHTML = '';
+      traits.forEach(trait => {
+        const div = document.createElement('div');
+        div.className = 'trait-item';
+        div.id = `trait-${trait.id}`;
+        
+        const select = document.createElement('select');
+        select.className = 'trait-select';
+        select.id = `trait-${trait.id}-select`;
+        
+        trait.options.forEach(opt => {
+          const option = document.createElement('option');
+          option.value = opt;
+          option.textContent = opt;
+          if (opt === trait.default) {
+            option.selected = true;
+          }
+          select.appendChild(option);
+        });
+
+        const changeIndicator = document.createElement('div');
+        changeIndicator.className = 'trait-change-indicator';
+        changeIndicator.innerHTML = '→ Changed';
+
+        div.innerHTML = `<span class="trait-label">${trait.label}</span>`;
+        div.appendChild(select);
+        div.appendChild(changeIndicator);
+        container.appendChild(div);
+
+        if (trait.id === 'urgency') {
+          select.addEventListener('change', (e) => {
+            if (waitingForClick === 'trait-urgency-change' && e.target.value === 'High') {
+              changeIndicator.classList.add('visible');
+              setTimeout(() => advanceScript(), 500);
+            }
+          });
+        }
+      });
+    }
+
+    function populateTaskCards(tasks) {
+      const container = document.getElementById('task-cards-container');
+      container.innerHTML = '';
+      
+      tasks.forEach((task, index) => {
+        const card = document.createElement('div');
+        card.className = 'task-card';
+        card.id = `task-card-${index + 1}`;
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'task-delete-btn';
+        deleteBtn.innerHTML = '×';
+        deleteBtn.onclick = () => {
+          if (waitingForClick === `task-delete-${index + 1}`) {
+            card.classList.add('shaking');
+            setTimeout(() => {
+              card.classList.remove('shaking');
+              card.classList.add('removing');
+              setTimeout(() => {
+                card.remove();
+                advanceScript();
+              }, 400);
+            }, 300);
+          }
+        };
+        
+        card.innerHTML = `
+          <div class="task-number">[${index + 1}]</div>
+          <div class="task-content">${task}</div>
+        `;
+        card.appendChild(deleteBtn);
+        
+        container.appendChild(card);
+      });
+    }
+
+    function renumberTaskCards() {
+      const cards = document.querySelectorAll('.task-card');
+      cards.forEach((card, index) => {
+        const numberSpan = card.querySelector('.task-number');
+        numberSpan.textContent = `[${index + 1}]`;
+        card.id = `task-card-${index + 1}`;
+      });
+    }
+
+    function populateQueueList() {
+      const list = document.getElementById('queue-list');
+      const projects = [
+        { title: 'Kitchen Renovation', category: 'Home', archetype: 'Initiative' },
+        { title: 'Client Proposal Template', category: 'Purpose', archetype: 'System Build' },
+        { title: 'Exercise Routine', category: 'Health', archetype: 'Initiative' },
+        { title: 'Schedule annual physical', category: 'Health', archetype: 'Quick Task', isNew: true },
+        { title: 'Budget Review System', category: 'Finances', archetype: 'System Build' }
+      ];
+
+      list.innerHTML = '';
+      projects.forEach((project, index) => {
+        const li = document.createElement('li');
+        li.className = 'queue-list-item';
+        li.id = `queue-item-${index + 1}`;
+        if (project.isNew) {
+          li.classList.add('new-project');
+        }
+        
+        li.innerHTML = `
+          <div class="queue-item-number">${index + 1}.</div>
+          <div class="queue-item-details">
+            <div class="queue-item-title">${project.title}</div>
+            <div class="queue-item-meta">
+              <span class="queue-item-category">${project.category}</span>
+              <span class="queue-item-separator"> - </span>
+              <span class="queue-item-archetype">${project.archetype}</span>
+            </div>
+          </div>
+          ${project.isNew ? '<div class="insertion-arrows">► ◄</div>' : ''}
+        `;
+        
+        list.appendChild(li);
+      });
+    }
+
     // ========================================
     // NARRATIVE ENGINE
     // ========================================
-
+    
     function advanceScript() {
-      if (currentScriptIndex >= stage1NarrativeScript.length) {
-        return; // End of script
+      if (currentScriptIndex >= completeNarrativeScript.length) {
+        return;
       }
 
-      const step = stage1NarrativeScript[currentScriptIndex];
-
-      // Update Marvin's dialogue
+      const step = completeNarrativeScript[currentScriptIndex];
+      
       document.getElementById('marvin-text').textContent = step.text;
-
-      // Execute action if present
+      
       if (step.action) {
         step.action();
       }
-
-      // Check if we need to wait for a click
+      
       if (step.waitForClick) {
         waitingForClick = step.waitForClick;
         document.getElementById('continue-btn').style.display = 'none';
@@ -1276,66 +2346,76 @@
         waitingForClick = null;
         document.getElementById('continue-btn').style.display = 'block';
       }
-
+      
       currentScriptIndex++;
     }
 
     // ========================================
     // EVENT LISTENERS
     // ========================================
-
-    // Continue button (advances when no specific click is needed)
+    
     document.getElementById('continue-btn').addEventListener('click', () => {
       if (!waitingForClick) {
         advanceScript();
       }
     });
 
-    // Option B click
     document.getElementById('option-b').addEventListener('click', () => {
       if (waitingForClick === 'option-b') {
         advanceScript();
       }
     });
 
-    // Title validation
     document.getElementById('title-validate-btn').addEventListener('click', () => {
       if (waitingForClick === 'title-validate-btn') {
         advanceScript();
       }
     });
 
-    // Description validation
     document.getElementById('description-validate-btn').addEventListener('click', () => {
       if (waitingForClick === 'description-validate-btn') {
         advanceScript();
       }
     });
 
-    // Category change (special case - advance when dropdown changes)
     document.getElementById('category-dropdown').addEventListener('change', (e) => {
       if (waitingForClick === 'category-change' && e.target.value === 'Health & Well-Being') {
         advanceScript();
       }
     });
 
-    // Category validation
     document.getElementById('category-validate-btn').addEventListener('click', () => {
       if (waitingForClick === 'category-validate-btn') {
         advanceScript();
       }
     });
 
-    // Planning Queue click
     document.getElementById('planning-queue-pile').addEventListener('click', () => {
       if (waitingForClick === 'planning-queue-pile') {
         advanceScript();
       }
     });
 
-    // Stage 2 continue button
     document.getElementById('stage2-continue-btn').addEventListener('click', () => {
       if (waitingForClick === 'stage2-continue-btn') {
+        advanceScript();
+      }
+    });
+
+    document.getElementById('stage3-continue-btn').addEventListener('click', () => {
+      if (waitingForClick === 'stage3-continue-btn') {
+        advanceScript();
+      }
+    });
+
+    document.getElementById('stage4-continue-btn').addEventListener('click', () => {
+      if (waitingForClick === 'stage4-continue-btn') {
+        advanceScript();
+      }
+    });
+
+    document.getElementById('complete-btn').addEventListener('click', () => {
+      if (waitingForClick === 'complete-btn') {
         advanceScript();
       }
     });
@@ -1343,7 +2423,7 @@
     // ========================================
     // INITIALIZATION
     // ========================================
-
+    
     window.addEventListener('DOMContentLoaded', () => {
       advanceScript();
     });
