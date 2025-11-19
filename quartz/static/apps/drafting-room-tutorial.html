@@ -696,16 +696,7 @@
       text-align: center;
     }
 
-    .celebration-icon {
-      font-size: 80px;
-      margin-bottom: 24px;
-      animation: celebrationBounce 1s ease infinite;
-    }
-
-    @keyframes celebrationBounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
+    /* Celebration icon removed */
 
     .celebration-title {
       font-size: 32px;
@@ -1043,20 +1034,20 @@
       <div id="stage1-form">
         <div class="form-group">
           <label class="form-label">What's the project?</label>
-          <input type="text" class="form-input" id="title-input" readonly>
+          <input type="text" class="form-input" id="title-input">
           <button class="validate-btn" id="title-validate-btn">✓ Correct</button>
         </div>
 
         <div class="form-group">
           <label class="form-label">Tell me a bit about it (1-2 sentences)</label>
-          <textarea class="form-textarea" id="description-input" readonly></textarea>
+          <textarea class="form-textarea" id="description-input"></textarea>
           <button class="validate-btn" id="description-validate-btn">✓ Correct</button>
         </div>
 
         <div class="form-group">
           <label class="form-label">Which Life Category?</label>
           <div style="position: relative;">
-            <select class="form-select" id="category-dropdown" disabled>
+            <select class="form-select" id="category-dropdown">
               <option value="">Select a category...</option>
               <option value="Health & Well-Being" id="category-health">Health & Well-Being</option>
               <option value="Purpose & Spirituality">Purpose & Spirituality</option>
@@ -1119,7 +1110,6 @@
 
       <!-- Final Celebration -->
       <div id="final-celebration">
-        <div class="celebration-icon">🌱</div>
         <h1 class="celebration-title">Project Created Successfully!</h1>
         <p class="celebration-message">
           You've just completed your first project using the 3-stage creation process.
@@ -1147,8 +1137,7 @@
   <!-- Planning Queue Modal -->
   <div id="planning-queue-modal"></div>
 
-  <!-- Celebration Animation -->
-  <div id="celebration-animation">🌱</div>
+  <!-- Celebration Animation (removed) -->
 
   <!-- Marvin's Dialogue -->
   <div id="marvin-dialogue">
@@ -1310,7 +1299,6 @@
         waitForClick: null,
         action: () => {
           document.getElementById('category-dropdown').classList.add('highlight-glow');
-          document.getElementById('category-dropdown').disabled = false;
           document.getElementById('category-dropdown').value = 'Health & Well-Being';
           setTimeout(() => {
             showSavedIndicator('category-dropdown');
@@ -1440,14 +1428,10 @@
         highlight: null,
         waitForClick: null,
         action: () => {
-          document.getElementById('stage1-form').style.display = 'none';
-          document.getElementById('stage2-form').style.display = 'block';
-          document.getElementById('stage2-form').classList.add('fade-in');
           updateProgressBar(2);
-          showMiniCelebration();
         }
       },
-      
+
       {
         id: 'stage2-objectives-intro',
         speaker: 'marvin',
@@ -1455,6 +1439,9 @@
         highlight: 'objectives-list',
         waitForClick: null,
         action: () => {
+          document.getElementById('stage1-form').style.display = 'none';
+          document.getElementById('stage2-form').style.display = 'block';
+          document.getElementById('stage2-form').classList.add('fade-in');
           document.getElementById('objectives-list').classList.add('highlight-glow');
         }
       },
@@ -1647,7 +1634,6 @@
           document.getElementById('stage3-form').style.display = 'block';
           document.getElementById('stage3-form').classList.add('fade-in');
           updateProgressBar(3);
-          showMiniCelebration();
         }
       },
       
@@ -1768,7 +1754,6 @@
           document.getElementById('stage3-form').style.display = 'none';
           document.getElementById('final-celebration').style.display = 'block';
           document.getElementById('final-celebration').classList.add('fade-in');
-          showBigCelebration();
         }
       }
     ];
@@ -1890,21 +1875,7 @@
       // For now, just visual feedback
     }
 
-    function showMiniCelebration() {
-      const celebration = document.getElementById('celebration-animation');
-      celebration.style.display = 'block';
-      celebration.classList.add('sparkle');
-      
-      setTimeout(() => {
-        celebration.style.display = 'none';
-        celebration.classList.remove('sparkle');
-      }, 1500);
-    }
-
-    function showBigCelebration() {
-      // Could add confetti or other effects here
-      showMiniCelebration();
-    }
+    // Celebration animations removed for cleaner UX
 
     function populateObjectives(objectives) {
       const list = document.getElementById('objectives-list');
