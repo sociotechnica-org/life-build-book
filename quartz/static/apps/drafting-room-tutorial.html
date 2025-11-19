@@ -584,20 +584,21 @@
     }
 
     .task-cards-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
       margin-top: 24px;
+      max-width: 600px;
     }
 
     .task-card {
       background: white;
       border: 2px solid #E0DDD5;
       border-radius: 8px;
-      padding: 20px;
-      min-height: 180px;
+      padding: 16px 20px 16px 60px;
+      min-height: 60px;
       display: flex;
-      flex-direction: column;
+      align-items: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.05);
       transition: all 0.3s ease;
       position: relative;
@@ -615,22 +616,19 @@
 
     .task-number {
       position: absolute;
-      top: 8px;
-      left: 12px;
-      font-size: 12px;
+      top: 50%;
+      left: 16px;
+      transform: translateY(-50%);
+      font-size: 18px;
       font-weight: 700;
       color: #999;
     }
 
     .task-content {
       flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 20px 0;
       font-size: 15px;
       line-height: 1.4;
+      color: #2C2C2C;
     }
 
     .task-delete-btn {
@@ -684,86 +682,6 @@
 
     .task-card.removing {
       animation: cardSlideOut 0.4s ease forwards;
-    }
-
-    /* ========================================
-       STAGE 4 FORM
-       ======================================== */
-    #stage4-form {
-      display: none;
-      background: white;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    }
-
-    .queue-list {
-      list-style: none;
-      margin-top: 24px;
-    }
-
-    .queue-list-item {
-      padding: 16px 20px;
-      border: 2px solid #E0DDD5;
-      border-radius: 8px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      transition: all 0.3s ease;
-    }
-
-    .queue-item-number {
-      font-weight: 700;
-      font-size: 18px;
-      color: #999;
-      min-width: 30px;
-    }
-
-    .queue-item-details {
-      flex: 1;
-    }
-
-    .queue-item-title {
-      font-weight: 600;
-      font-size: 16px;
-      color: #2C2C2C;
-    }
-
-    .queue-item-meta {
-      font-size: 14px;
-      color: #666;
-      margin-top: 4px;
-    }
-
-    .queue-item-category {
-      font-style: italic;
-    }
-
-    .queue-item-archetype {
-      color: #999;
-    }
-
-    .queue-list-item.new-project {
-      background: #FFF9F0;
-      border-color: #D4A574;
-      border-width: 3px;
-      box-shadow: 0 4px 16px rgba(212, 165, 116, 0.3);
-    }
-
-    .queue-list-item.new-project .queue-item-number {
-      color: #D4A574;
-    }
-
-    .insertion-arrows {
-      display: none;
-      color: #D4A574;
-      font-size: 24px;
-      font-weight: 700;
-    }
-
-    .queue-list-item.new-project .insertion-arrows {
-      display: block;
     }
 
     /* ========================================
@@ -960,6 +878,14 @@
       line-height: 1.6;
     }
 
+    .nav-buttons {
+      display: flex;
+      gap: 12px;
+      margin-left: auto;
+      align-self: flex-end;
+    }
+
+    #back-btn,
     #continue-btn {
       padding: 12px 28px;
       background: #D4A574;
@@ -970,8 +896,22 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      margin-left: auto;
-      align-self: flex-end;
+    }
+
+    #back-btn {
+      background: #E0DDD5;
+      color: #2C2C2C;
+    }
+
+    #back-btn:hover {
+      background: #D0CDC5;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(208, 205, 197, 0.3);
+    }
+
+    #back-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
 
     #continue-btn:hover {
@@ -1043,15 +983,14 @@
 
   <!-- Progress Bar -->
   <div id="progress-bar">
-    <div id="stage-label">Stage 1 of 4 - Identified</div>
+    <div id="stage-label">Stage 1 of 3 - Identified</div>
     <div class="progress-visual">
       <div class="progress-blocks">
         <div class="progress-block filled" id="progress-block-1"></div>
         <div class="progress-block" id="progress-block-2"></div>
         <div class="progress-block" id="progress-block-3"></div>
-        <div class="progress-block" id="progress-block-4"></div>
       </div>
-      <div id="progress-percentage">25% Complete</div>
+      <div id="progress-percentage">33% Complete</div>
     </div>
   </div>
 
@@ -1175,16 +1114,6 @@
         <div class="task-cards-container" id="task-cards-container">
           <!-- Will be populated by script -->
         </div>
-        <button class="continue-btn" id="stage4-continue-btn">Continue to Stage 4 →</button>
-      </div>
-
-      <!-- Stage 4 Form -->
-      <div id="stage4-form">
-        <h2 style="margin-bottom: 24px;">Stage 4: Set Priority</h2>
-        <p style="color: #666; margin-bottom: 24px;">Here's your current Priority Queue. Where should this project fit?</p>
-        <ul class="queue-list" id="queue-list">
-          <!-- Will be populated by script -->
-        </ul>
         <button class="continue-btn" id="complete-btn">Complete Project Creation →</button>
       </div>
 
@@ -1193,12 +1122,12 @@
         <div class="celebration-icon">🎉</div>
         <h1 class="celebration-title">Project Created Successfully!</h1>
         <p class="celebration-message">
-          You've just completed your first project using the 4-stage creation process. 
+          You've just completed your first project using the 3-stage creation process.
           "Schedule annual physical" is now fully planned and ready to activate whenever you choose.
         </p>
         <div class="celebration-stats">
           <div class="stat-item">
-            <span class="stat-number">4</span>
+            <span class="stat-number">3</span>
             <span class="stat-label">Stages Complete</span>
           </div>
           <div class="stat-item">
@@ -1206,13 +1135,13 @@
             <span class="stat-label">Tasks Created</span>
           </div>
           <div class="stat-item">
-            <span class="stat-number">~12</span>
+            <span class="stat-number">~8</span>
             <span class="stat-label">Minutes Invested</span>
           </div>
         </div>
         <p style="color: #666; font-size: 16px; margin-top: 32px;">
-          This process works the same way for every project—from simple Quick Tasks to major Initiatives. 
-          You've learned the rhythm. Now you can plan anything.
+          This process works the same way for every project—from simple Quick Tasks to major Initiatives.
+          You've learned the rhythm. Now you can plan anything. Prioritization happens later in the Sorting Room.
         </p>
       </div>
 
@@ -1232,7 +1161,10 @@
       <div class="marvin-name">Marvin</div>
       <div id="marvin-text"></div>
     </div>
-    <button id="continue-btn">Continue →</button>
+    <div class="nav-buttons">
+      <button id="back-btn">← Back</button>
+      <button id="continue-btn">Continue →</button>
+    </div>
   </div>
 
   <script>
@@ -1271,7 +1203,7 @@
       {
         id: 'tutorial-project',
         speaker: 'marvin',
-        text: "We'll create a real but simple project—something like scheduling a doctor's appointment. The goal isn't the project itself; it's learning the 4-stage workflow.",
+        text: "We'll create a real but simple project—something like scheduling a doctor's appointment. The goal isn't the project itself; it's learning the 3-stage workflow.",
         highlight: 'progress-bar',
         waitForClick: null,
         action: () => {
@@ -1543,7 +1475,7 @@
       {
         id: 'planning-queue-view',
         speaker: 'marvin',
-        text: "There's your project—'Schedule annual physical' at Stage 1 of 4. You can leave it here for days or weeks if you want, and come back to finish it later.",
+        text: "There's your project—'Schedule annual physical' at Stage 1 of 3. You can leave it here for days or weeks if you want, and come back to finish it later.",
         highlight: null,
         waitForClick: null,
         action: () => {
@@ -1688,6 +1620,7 @@
         highlight: 'archetype-quick-task',
         waitForClick: null,
         action: () => {
+          document.getElementById('archetype-options').classList.remove('highlight-glow');
           document.getElementById('archetype-quick-task').classList.add('pulse-highlight');
           setTimeout(() => {
             document.getElementById('archetype-quick-task').classList.remove('pulse-highlight');
@@ -1728,6 +1661,9 @@
         action: () => {
           document.getElementById('traits-grid').classList.add('highlight-glow');
           populateTraits();
+          setTimeout(() => {
+            document.getElementById('traits-grid').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 300);
         }
       },
       
@@ -1782,7 +1718,7 @@
       {
         id: 'advance-to-stage3',
         speaker: 'marvin',
-        text: "Ready for Stage 3—where we build the actual task list? This is the fun part. Click 'Continue to Stage 3' when ready.",
+        text: "Ready for Stage 3—where we build the actual task list and finish up? This is the fun part. Click 'Continue to Stage 3' when ready.",
         highlight: 'stage3-continue-btn',
         waitForClick: 'stage3-continue-btn',
         action: () => {
@@ -1900,115 +1836,11 @@
           updatePlanningQueueCount(3);
         }
       },
-      
-      {
-        id: 'advance-to-stage4',
-        speaker: 'marvin',
-        text: "One more stage: prioritization. Where does this project fit relative to your other work? Click 'Continue to Stage 4' when ready.",
-        highlight: 'stage4-continue-btn',
-        waitForClick: 'stage4-continue-btn',
-        action: () => {
-          document.getElementById('stage4-continue-btn').style.display = 'block';
-          document.getElementById('stage4-continue-btn').classList.add('pulse-highlight');
-        }
-      },
-      
-      // STAGE 4 BEGINS
-      {
-        id: 'stage4-transition',
-        speaker: 'marvin',
-        text: "Stage 4—Prioritized. This is the final stage: typically 5 minutes. We're placing this project in your Priority Queue.",
-        highlight: null,
-        waitForClick: null,
-        action: () => {
-          document.getElementById('stage3-form').style.display = 'none';
-          document.getElementById('stage4-form').style.display = 'block';
-          document.getElementById('stage4-form').classList.add('fade-in');
-          updateProgressBar(4);
-          showMiniCelebration();
-        }
-      },
-      
-      {
-        id: 'stage4-queue-intro',
-        speaker: 'marvin',
-        text: "This is your current Priority Queue—all the fully-planned projects waiting to be activated. Let's see where your doctor's appointment should fit.",
-        highlight: 'queue-list',
-        waitForClick: null,
-        action: () => {
-          populateQueueList();
-          document.getElementById('queue-list').classList.add('highlight-glow');
-        }
-      },
-      
-      {
-        id: 'stage4-queue-explain',
-        speaker: 'marvin',
-        text: "You've got five projects here already. Some are big initiatives, some are systems, some are maintenance. Your annual physical needs to fit somewhere in this list.",
-        highlight: null,
-        waitForClick: null,
-        action: null
-      },
-      
-      {
-        id: 'stage4-placement',
-        speaker: 'marvin',
-        text: "Given the High urgency we set earlier, I'd suggest position 4—important enough to happen soon, but not blocking the bigger projects ahead of it. Sound reasonable?",
-        highlight: 'queue-item-4',
-        waitForClick: null,
-        action: () => {
-          document.getElementById('queue-item-4').classList.add('pulse-highlight');
-          setTimeout(() => {
-            document.getElementById('queue-item-4').classList.remove('pulse-highlight');
-          }, 2000);
-        }
-      },
-      
-      {
-        id: 'stage4-placement-confirm',
-        speaker: 'marvin',
-        text: "See it there at position 4? It's highlighted. That's where it'll sit until Cameron helps you select work during Friday planning.",
-        highlight: 'queue-item-4',
-        waitForClick: null,
-        action: () => {
-          showSavedIndicator('queue-list');
-          document.getElementById('queue-list').classList.remove('highlight-glow');
-        }
-      },
-      
-      {
-        id: 'stage4-queue-update',
-        speaker: 'marvin',
-        text: "The Planning Queue now shows this at Stage 4 of 4—fully planned. It's graduated from 'in development' to 'ready to activate'.",
-        highlight: 'planning-queue-pile',
-        waitForClick: null,
-        action: () => {
-          updatePlanningQueueCount(4);
-          document.getElementById('planning-queue-pile').classList.add('pulse-highlight');
-          setTimeout(() => {
-            document.getElementById('planning-queue-pile').classList.remove('pulse-highlight');
-          }, 2000);
-        }
-      },
-      
-      {
-        id: 'stage4-complete',
-        speaker: 'marvin',
-        text: "That's Stage 4—Prioritized. Your project is now fully planned and positioned in your Priority Queue. Whenever you're ready to work on it, it's there waiting.",
-        highlight: 'stage4-form',
-        waitForClick: null,
-        action: () => {
-          document.getElementById('stage4-form').classList.add('completion-highlight');
-          setTimeout(() => {
-            document.getElementById('stage4-form').classList.remove('completion-highlight');
-          }, 1000);
-        }
-      },
-      
+
       {
         id: 'tutorial-complete',
         speaker: 'marvin',
-        text: "And that's the complete 4-stage process. Every project you create goes through these same steps—from Quick Tasks to Epic Initiatives. You've learned the rhythm. Click 'Complete Project Creation' to finish.",
+        text: "And that's the complete 3-stage process. Every project you create goes through these same steps—from Quick Tasks to Epic Initiatives. You've learned the rhythm. Prioritization happens later in the Sorting Room. Click 'Complete Project Creation' to finish.",
         highlight: 'complete-btn',
         waitForClick: 'complete-btn',
         action: () => {
@@ -2025,7 +1857,7 @@
         highlight: null,
         waitForClick: null,
         action: () => {
-          document.getElementById('stage4-form').style.display = 'none';
+          document.getElementById('stage3-form').style.display = 'none';
           document.getElementById('final-celebration').style.display = 'block';
           document.getElementById('final-celebration').classList.add('fade-in');
           showBigCelebration();
@@ -2074,13 +1906,13 @@
     }
 
     function updateProgressBar(stage) {
-      const stageNames = ['Identified', 'Scoped', 'Drafted', 'Prioritized'];
-      document.getElementById('stage-label').textContent = `Stage ${stage} of 4 - ${stageNames[stage - 1]}`;
-      
-      const percentage = (stage / 4) * 100;
+      const stageNames = ['Identified', 'Scoped', 'Drafted'];
+      document.getElementById('stage-label').textContent = `Stage ${stage} of 3 - ${stageNames[stage - 1]}`;
+
+      const percentage = (stage / 3) * 100;
       document.getElementById('progress-percentage').textContent = `${Math.round(percentage)}% Complete`;
-      
-      for (let i = 1; i <= 4; i++) {
+
+      for (let i = 1; i <= 3; i++) {
         const block = document.getElementById(`progress-block-${i}`);
         if (i <= stage) {
           block.classList.add('filled');
@@ -2088,7 +1920,7 @@
           block.classList.remove('filled');
         }
       }
-      
+
       document.getElementById('progress-bar').classList.add('update-animation');
       setTimeout(() => {
         document.getElementById('progress-bar').classList.remove('update-animation');
@@ -2097,13 +1929,13 @@
 
     function showPlanningQueueModal(stage) {
       const modal = document.getElementById('planning-queue-modal');
-      const stageDots = '●'.repeat(stage) + '○'.repeat(4 - stage);
+      const stageDots = '●'.repeat(stage) + '○'.repeat(3 - stage);
       modal.innerHTML = `
         <div class="queue-modal-content">
           <h3>Planning Queue (1 project)</h3>
           <div class="queue-item">
             <span class="project-title">Schedule annual physical</span>
-            <span class="project-stage">${stageDots} Stage ${stage}/4</span>
+            <span class="project-stage">${stageDots} Stage ${stage}/3</span>
             <span class="project-category">Health & Well-Being</span>
           </div>
           <button id="close-queue-modal" class="close-modal">Close</button>
@@ -2111,7 +1943,7 @@
       `;
       modal.style.display = 'flex';
       modal.classList.add('fade-in');
-      
+
       document.getElementById('close-queue-modal').addEventListener('click', closePlanningQueueModal);
     }
 
@@ -2127,7 +1959,7 @@
     }
 
     function updatePlanningQueueCount(stage) {
-      const stageDots = '●'.repeat(stage) + '○'.repeat(4 - stage);
+      const stageDots = '●'.repeat(stage) + '○'.repeat(3 - stage);
       // In a real app, this would update the queue display
       // For now, just visual feedback
     }
@@ -2270,7 +2102,7 @@
         };
         
         card.innerHTML = `
-          <div class="task-number">[${index + 1}]</div>
+          <div class="task-number">${index + 1}</div>
           <div class="task-content">${task}</div>
         `;
         card.appendChild(deleteBtn);
@@ -2283,64 +2115,28 @@
       const cards = document.querySelectorAll('.task-card');
       cards.forEach((card, index) => {
         const numberSpan = card.querySelector('.task-number');
-        numberSpan.textContent = `[${index + 1}]`;
+        numberSpan.textContent = `${index + 1}`;
         card.id = `task-card-${index + 1}`;
-      });
-    }
-
-    function populateQueueList() {
-      const list = document.getElementById('queue-list');
-      const projects = [
-        { title: 'Kitchen Renovation', category: 'Home', archetype: 'Initiative' },
-        { title: 'Client Proposal Template', category: 'Purpose', archetype: 'System Build' },
-        { title: 'Exercise Routine', category: 'Health', archetype: 'Initiative' },
-        { title: 'Schedule annual physical', category: 'Health', archetype: 'Quick Task', isNew: true },
-        { title: 'Budget Review System', category: 'Finances', archetype: 'System Build' }
-      ];
-
-      list.innerHTML = '';
-      projects.forEach((project, index) => {
-        const li = document.createElement('li');
-        li.className = 'queue-list-item';
-        li.id = `queue-item-${index + 1}`;
-        if (project.isNew) {
-          li.classList.add('new-project');
-        }
-        
-        li.innerHTML = `
-          <div class="queue-item-number">${index + 1}.</div>
-          <div class="queue-item-details">
-            <div class="queue-item-title">${project.title}</div>
-            <div class="queue-item-meta">
-              <span class="queue-item-category">${project.category}</span>
-              <span class="queue-item-separator"> - </span>
-              <span class="queue-item-archetype">${project.archetype}</span>
-            </div>
-          </div>
-          ${project.isNew ? '<div class="insertion-arrows">► ◄</div>' : ''}
-        `;
-        
-        list.appendChild(li);
       });
     }
 
     // ========================================
     // NARRATIVE ENGINE
     // ========================================
-    
+
     function advanceScript() {
       if (currentScriptIndex >= completeNarrativeScript.length) {
         return;
       }
 
       const step = completeNarrativeScript[currentScriptIndex];
-      
+
       document.getElementById('marvin-text').textContent = step.text;
-      
+
       if (step.action) {
         step.action();
       }
-      
+
       if (step.waitForClick) {
         waitingForClick = step.waitForClick;
         document.getElementById('continue-btn').style.display = 'none';
@@ -2348,18 +2144,34 @@
         waitingForClick = null;
         document.getElementById('continue-btn').style.display = 'block';
       }
-      
+
+      // Update back button state
+      document.getElementById('back-btn').disabled = currentScriptIndex === 0;
+
       currentScriptIndex++;
+    }
+
+    function goBackScript() {
+      if (currentScriptIndex <= 1) {
+        return;
+      }
+
+      currentScriptIndex -= 2; // Go back 2 because advanceScript increments
+      advanceScript();
     }
 
     // ========================================
     // EVENT LISTENERS
     // ========================================
-    
+
     document.getElementById('continue-btn').addEventListener('click', () => {
       if (!waitingForClick) {
         advanceScript();
       }
+    });
+
+    document.getElementById('back-btn').addEventListener('click', () => {
+      goBackScript();
     });
 
     document.getElementById('option-b').addEventListener('click', () => {
@@ -2406,12 +2218,6 @@
 
     document.getElementById('stage3-continue-btn').addEventListener('click', () => {
       if (waitingForClick === 'stage3-continue-btn') {
-        advanceScript();
-      }
-    });
-
-    document.getElementById('stage4-continue-btn').addEventListener('click', () => {
-      if (waitingForClick === 'stage4-continue-btn') {
         advanceScript();
       }
     });
