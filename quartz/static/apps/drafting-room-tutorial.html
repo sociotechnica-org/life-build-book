@@ -1076,7 +1076,7 @@
 
       <!-- Stage 2 Form -->
       <div id="stage2-form">
-        <h2 style="margin-bottom: 24px;">Stage 2: Define Success</h2>
+        <h2 style="margin-bottom: 24px;">Stage 2: Scoped</h2>
         
         <div class="form-group">
           <label class="form-label">Objectives</label>
@@ -1318,7 +1318,21 @@
           }, 1500);
         }
       },
-      
+
+      {
+        id: 'stage1-review',
+        speaker: 'marvin',
+        text: "Take a look at what I've drafted. Feel free to edit the description or change the category if you'd like. When it looks right, click Continue.",
+        highlight: 'stage1-form',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('stage1-form').classList.add('pulse-highlight');
+          setTimeout(() => {
+            document.getElementById('stage1-form').classList.remove('pulse-highlight');
+          }, 2000);
+        }
+      },
+
       {
         id: 'stage1-complete',
         speaker: 'marvin',
@@ -1386,16 +1400,16 @@
       {
         id: 'stage1-flexibility',
         speaker: 'marvin',
-        text: "Most people pause between stages—maybe you capture 5 project titles in Stage 1 quickly, then come back later to flesh them out. Totally fine.",
+        text: "Many people pause between planning stages—maybe you capture 5 project ideas in Stage 1, then come back later to scope them out. That's the purpose of this queue: to capture ideas to be planned in the future.",
         highlight: 'planning-queue-pile',
         waitForClick: null,
         action: null
       },
-      
+
       {
         id: 'ready-for-stage2',
         speaker: 'marvin',
-        text: "But for this tutorial, let's keep going. Ready for Stage 2—where we define what success actually looks like?",
+        text: "For this tutorial though, we're going to plan this one all the way through. Ready for Stage 2?",
         highlight: 'progress-bar',
         waitForClick: null,
         action: () => {
@@ -1558,7 +1572,7 @@
       {
         id: 'stage2-traits-suggest',
         speaker: 'marvin',
-        text: "Based on Quick Task archetype, I'm drafting these: Urgency Normal, Importance High, Complexity Simple, Scale Minor, Support Self.",
+        text: "Based on Quick Task archetype, I've selected: Urgency Normal, Importance High, Complexity Simple, Scale Minor, Support Self.",
         highlight: 'traits-grid',
         waitForClick: null,
         action: null
@@ -1567,21 +1581,33 @@
       {
         id: 'stage2-traits-adjust',
         speaker: 'marvin',
-        text: "Let's imagine you're two years overdue on this appointment. What urgency level would match that situation? I've set it to High, but adjust if you'd like.",
+        text: "Let's imagine you're two years overdue on this appointment. Would you like to change Urgency from Normal to High to reflect that?",
         highlight: 'trait-urgency',
         waitForClick: null,
         action: () => {
-          document.getElementById('trait-urgency').classList.add('pulse-highlight');
-          // Pre-set to High
-          document.getElementById('trait-urgency-select').value = 'High';
+          document.getElementById('trait-urgency').classList.add('highlight-glow');
+          document.getElementById('trait-urgency-select').classList.add('pulse-highlight');
           setTimeout(() => {
-            document.getElementById('trait-urgency').classList.remove('pulse-highlight');
-            document.getElementById('traits-grid').classList.remove('highlight-glow');
-            showSavedIndicator('traits-grid');
+            document.getElementById('trait-urgency').classList.remove('highlight-glow');
+            document.getElementById('trait-urgency-select').classList.remove('pulse-highlight');
+          }, 3000);
+        }
+      },
+
+      {
+        id: 'stage2-review',
+        speaker: 'marvin',
+        text: "Take a look at the objectives, deadline, archetype, and traits. Make any changes you'd like, then click Continue.",
+        highlight: 'stage2-form',
+        waitForClick: null,
+        action: () => {
+          document.getElementById('stage2-form').classList.add('pulse-highlight');
+          setTimeout(() => {
+            document.getElementById('stage2-form').classList.remove('pulse-highlight');
           }, 2000);
         }
       },
-      
+
       {
         id: 'stage2-complete',
         speaker: 'marvin',
@@ -2024,6 +2050,43 @@
     // NARRATIVE ENGINE
     // ========================================
 
+    function syncFormVisibility(scriptId) {
+      // Determine which form should be visible based on script ID
+      const optionsMenu = document.getElementById('options-menu');
+      const stage1Form = document.getElementById('stage1-form');
+      const stage2Form = document.getElementById('stage2-form');
+      const stage3Form = document.getElementById('stage3-form');
+      const finalCelebration = document.getElementById('final-celebration');
+
+      // Hide all forms first
+      optionsMenu.style.display = 'none';
+      stage1Form.style.display = 'none';
+      stage2Form.style.display = 'none';
+      stage3Form.style.display = 'none';
+      finalCelebration.style.display = 'none';
+
+      // Show appropriate form based on script position
+      if (scriptId.includes('options') || scriptId.includes('select-option-b')) {
+        optionsMenu.style.display = 'block';
+      } else if (scriptId.includes('stage1') || scriptId.includes('ask-title') ||
+                 scriptId.includes('ask-description') || scriptId.includes('ask-category') ||
+                 scriptId.includes('planning-queue')) {
+        stage1Form.style.display = 'block';
+      } else if (scriptId.includes('stage2') && !scriptId.includes('advance-to-stage2')) {
+        stage2Form.style.display = 'block';
+      } else if (scriptId.includes('stage3') && !scriptId.includes('advance-to-stage3')) {
+        stage3Form.style.display = 'block';
+      } else if (scriptId === 'final-celebration') {
+        finalCelebration.style.display = 'block';
+      } else if (scriptId.includes('advance-to-stage2') || scriptId.includes('ready-for-stage2') || scriptId.includes('stage1-flexibility')) {
+        stage1Form.style.display = 'block';
+      } else if (scriptId.includes('advance-to-stage3')) {
+        stage2Form.style.display = 'block';
+      } else if (scriptId.includes('tutorial-complete')) {
+        stage3Form.style.display = 'block';
+      }
+    }
+
     function advanceScript() {
       if (currentScriptIndex >= completeNarrativeScript.length) {
         return;
@@ -2032,6 +2095,9 @@
       const step = completeNarrativeScript[currentScriptIndex];
 
       document.getElementById('marvin-text').textContent = step.text;
+
+      // Sync form visibility based on current script step
+      syncFormVisibility(step.id);
 
       if (step.action) {
         step.action();
@@ -2058,9 +2124,6 @@
 
       // Clear all active typing animations
       clearAllTypingAnimations();
-
-      // Reset form states when going back
-      resetFormState();
 
       currentScriptIndex -= 2; // Go back 2 because advanceScript increments
       advanceScript();
