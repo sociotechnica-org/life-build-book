@@ -1875,8 +1875,15 @@
     // HELPER FUNCTIONS
     // ========================================
     
+    let activeTypingIntervals = [];
+
     function typeText(elementId, text, speed) {
       const element = document.getElementById(elementId);
+
+      // Clear any existing typing intervals
+      activeTypingIntervals.forEach(interval => clearInterval(interval));
+      activeTypingIntervals = [];
+
       let i = 0;
       element.value = '';
       const typing = setInterval(() => {
@@ -1885,8 +1892,19 @@
           i++;
         } else {
           clearInterval(typing);
+          const index = activeTypingIntervals.indexOf(typing);
+          if (index > -1) {
+            activeTypingIntervals.splice(index, 1);
+          }
         }
       }, speed);
+
+      activeTypingIntervals.push(typing);
+    }
+
+    function clearAllTypingAnimations() {
+      activeTypingIntervals.forEach(interval => clearInterval(interval));
+      activeTypingIntervals = [];
     }
 
     function showSavedIndicator(elementId) {
@@ -2156,8 +2174,49 @@
         return;
       }
 
+      // Clear all active typing animations
+      clearAllTypingAnimations();
+
+      // Reset form states when going back
+      resetFormState();
+
       currentScriptIndex -= 2; // Go back 2 because advanceScript increments
       advanceScript();
+    }
+
+    function resetFormState() {
+      // Clear all form inputs
+      document.getElementById('title-input').value = '';
+      document.getElementById('description-input').value = '';
+      document.getElementById('category-dropdown').value = '';
+
+      // Hide validate buttons
+      document.getElementById('title-validate-btn').style.display = 'none';
+      document.getElementById('description-validate-btn').style.display = 'none';
+      document.getElementById('category-validate-btn').style.display = 'none';
+
+      // Remove highlight classes
+      document.getElementById('title-input').classList.remove('highlight-glow');
+      document.getElementById('description-input').classList.remove('highlight-glow');
+      document.getElementById('category-dropdown').classList.remove('highlight-glow', 'pulse-highlight');
+
+      // Remove pulse highlights from buttons
+      document.getElementById('title-validate-btn').classList.remove('pulse-highlight');
+      document.getElementById('description-validate-btn').classList.remove('pulse-highlight');
+      document.getElementById('category-validate-btn').classList.remove('pulse-highlight');
+
+      // Reset continue buttons
+      document.getElementById('stage2-continue-btn').style.display = 'none';
+      document.getElementById('stage3-continue-btn').style.display = 'none';
+      document.getElementById('complete-btn').style.display = 'none';
+
+      // Remove pulse highlights from continue buttons
+      document.getElementById('stage2-continue-btn').classList.remove('pulse-highlight');
+      document.getElementById('stage3-continue-btn').classList.remove('pulse-highlight');
+      document.getElementById('complete-btn').classList.remove('pulse-highlight');
+
+      // Clear saved indicators
+      document.querySelectorAll('.saved-indicator').forEach(el => el.remove());
     }
 
     // ========================================
