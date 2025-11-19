@@ -1119,7 +1119,7 @@
 
       <!-- Final Celebration -->
       <div id="final-celebration">
-        <div class="celebration-icon">🎉</div>
+        <div class="celebration-icon">🌱</div>
         <h1 class="celebration-title">Project Created Successfully!</h1>
         <p class="celebration-message">
           You've just completed your first project using the 3-stage creation process.
@@ -1133,10 +1133,6 @@
           <div class="stat-item">
             <span class="stat-number">6</span>
             <span class="stat-label">Tasks Created</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">~8</span>
-            <span class="stat-label">Minutes Invested</span>
           </div>
         </div>
         <p style="color: #666; font-size: 16px; margin-top: 32px;">
@@ -1152,7 +1148,7 @@
   <div id="planning-queue-modal"></div>
 
   <!-- Celebration Animation -->
-  <div id="celebration-animation">✨</div>
+  <div id="celebration-animation">🌱</div>
 
   <!-- Marvin's Dialogue -->
   <div id="marvin-dialogue">
@@ -1176,16 +1172,16 @@
       {
         id: 'welcome-1',
         speaker: 'marvin',
-        text: "Welcome to the Drafting Room. I'm Marvin—think of me as your project planning specialist.",
+        text: "Welcome to the Drafting Room. I'm Marvin, and I'm here to make planning projects easy for you.",
         highlight: null,
         waitForClick: null,
         action: null
       },
-      
+
       {
         id: 'welcome-2',
         speaker: 'marvin',
-        text: "My job is to help you transform ideas into executable plans. No vague 'I should do something about that'—we're building clear roadmaps with objectives, tasks, and sequences.",
+        text: "Here's how we work together: I'll draft the plan and do all the heavy lifting. You review, edit, and approve. I make suggestions, you decide. Sound good?",
         highlight: null,
         waitForClick: null,
         action: null
@@ -1263,7 +1259,7 @@
       {
         id: 'stage1-intro',
         speaker: 'marvin',
-        text: "Perfect. This is Stage 1—Identified. It's the fastest stage: just 2 minutes to capture the idea before it evaporates.",
+        text: "Perfect. This is Stage 1—Identified. We're just capturing the basic idea here.",
         highlight: 'progress-bar',
         waitForClick: null,
         action: () => {
@@ -1277,157 +1273,49 @@
       {
         id: 'ask-title',
         speaker: 'marvin',
-        text: "What's the project? Give me a quick title.",
+        text: "First, what's the project? I'll draft a title for you.",
         highlight: 'title-input',
         waitForClick: null,
         action: () => {
           document.getElementById('title-input').classList.add('highlight-glow');
-        }
-      },
-      
-      {
-        id: 'title-autofill',
-        speaker: 'marvin',
-        text: "Let's say: 'Schedule annual physical'",
-        highlight: 'title-input',
-        waitForClick: null,
-        action: () => {
-          typeText('title-input', 'Schedule annual physical', 50);
-        }
-      },
-      
-      {
-        id: 'title-validate',
-        speaker: 'marvin',
-        text: "Title: 'Schedule annual physical'. Is that correct?",
-        highlight: 'title-validate-btn',
-        waitForClick: 'title-validate-btn',
-        action: () => {
-          document.getElementById('title-validate-btn').style.display = 'inline-block';
-          document.getElementById('title-validate-btn').classList.add('pulse-highlight');
-        }
-      },
-      
-      {
-        id: 'title-confirmed',
-        speaker: 'marvin',
-        text: "Great.",
-        highlight: null,
-        waitForClick: null,
-        action: () => {
-          showSavedIndicator('title-input');
-          document.getElementById('title-validate-btn').style.display = 'none';
-          document.getElementById('title-validate-btn').classList.remove('pulse-highlight');
-          document.getElementById('title-input').classList.remove('highlight-glow');
+          document.getElementById('title-input').value = 'Schedule annual physical';
+          setTimeout(() => {
+            showSavedIndicator('title-input');
+            document.getElementById('title-input').classList.remove('highlight-glow');
+          }, 1500);
         }
       },
       
       {
         id: 'ask-description',
         speaker: 'marvin',
-        text: "Now tell me a bit about it—just 1-2 sentences.",
+        text: "Now a quick description to capture the context.",
         highlight: 'description-input',
         waitForClick: null,
         action: () => {
           document.getElementById('description-input').classList.add('highlight-glow');
-        }
-      },
-      
-      {
-        id: 'description-autofill',
-        speaker: 'marvin',
-        text: "Something like: 'I haven't been to the doctor in 2 years, need to get a checkup'",
-        highlight: 'description-input',
-        waitForClick: null,
-        action: () => {
-          typeText('description-input', "I haven't been to the doctor in 2 years, need to get a checkup", 40);
-        }
-      },
-      
-      {
-        id: 'description-validate',
-        speaker: 'marvin',
-        text: "Description: 'I haven't been to the doctor in 2 years, need to get a checkup'. Correct?",
-        highlight: 'description-validate-btn',
-        waitForClick: 'description-validate-btn',
-        action: () => {
-          document.getElementById('description-validate-btn').style.display = 'inline-block';
-          document.getElementById('description-validate-btn').classList.add('pulse-highlight');
-        }
-      },
-      
-      {
-        id: 'description-confirmed',
-        speaker: 'marvin',
-        text: "Perfect.",
-        highlight: null,
-        waitForClick: null,
-        action: () => {
-          showSavedIndicator('description-input');
-          document.getElementById('description-validate-btn').style.display = 'none';
-          document.getElementById('description-validate-btn').classList.remove('pulse-highlight');
-          document.getElementById('description-input').classList.remove('highlight-glow');
+          document.getElementById('description-input').value = "Haven't been to the doctor in 2 years, need to get a checkup";
+          setTimeout(() => {
+            showSavedIndicator('description-input');
+            document.getElementById('description-input').classList.remove('highlight-glow');
+          }, 1500);
         }
       },
       
       {
         id: 'ask-category',
         speaker: 'marvin',
-        text: "Last piece: which Life Category does this belong to?",
+        text: "Last piece: which Life Category? I'm thinking Health & Well-Being for this one.",
         highlight: 'category-dropdown',
         waitForClick: null,
         action: () => {
           document.getElementById('category-dropdown').classList.add('highlight-glow');
           document.getElementById('category-dropdown').disabled = false;
-        }
-      },
-      
-      {
-        id: 'category-options',
-        speaker: 'marvin',
-        text: "We have eight Life Categories. This looks like Health & Well-Being to me.",
-        highlight: 'category-dropdown',
-        waitForClick: null,
-        action: () => {
-          document.getElementById('category-health').classList.add('suggested');
-        }
-      },
-      
-      {
-        id: 'category-select',
-        speaker: 'marvin',
-        text: "Go ahead and select Health & Well-Being from the dropdown.",
-        highlight: 'category-dropdown',
-        waitForClick: 'category-change',
-        action: () => {
-          document.getElementById('category-dropdown').classList.add('pulse-highlight');
-        }
-      },
-      
-      {
-        id: 'category-validate',
-        speaker: 'marvin',
-        text: "Category: Health & Well-Being. Correct?",
-        highlight: 'category-validate-btn',
-        waitForClick: 'category-validate-btn',
-        action: () => {
-          document.getElementById('category-dropdown').classList.remove('pulse-highlight');
-          document.getElementById('category-validate-btn').style.display = 'inline-block';
-          document.getElementById('category-validate-btn').classList.add('pulse-highlight');
-        }
-      },
-      
-      {
-        id: 'category-confirmed',
-        speaker: 'marvin',
-        text: "Excellent.",
-        highlight: null,
-        waitForClick: null,
-        action: () => {
-          showSavedIndicator('category-dropdown');
-          document.getElementById('category-validate-btn').style.display = 'none';
-          document.getElementById('category-validate-btn').classList.remove('pulse-highlight');
-          document.getElementById('category-dropdown').classList.remove('highlight-glow');
+          document.getElementById('category-dropdown').value = 'Health & Well-Being';
+          setTimeout(() => {
+            showSavedIndicator('category-dropdown');
+            document.getElementById('category-dropdown').classList.remove('highlight-glow');
+          }, 1500);
         }
       },
       
@@ -1534,7 +1422,7 @@
       {
         id: 'stage2-transition',
         speaker: 'marvin',
-        text: "Stage 2—Scoped. This typically takes about 10 minutes. We're defining what success looks like before we think about tasks.",
+        text: "Stage 2—Scoped. Now we define what success looks like before we think about tasks.",
         highlight: null,
         waitForClick: null,
         action: () => {
@@ -1670,33 +1558,27 @@
       {
         id: 'stage2-traits-suggest',
         speaker: 'marvin',
-        text: "Based on Quick Task archetype, I'd suggest: Urgency Normal, Importance High, Complexity Simple, Scale Minor, Support Self.",
+        text: "Based on Quick Task archetype, I'm drafting these: Urgency Normal, Importance High, Complexity Simple, Scale Minor, Support Self.",
         highlight: 'traits-grid',
         waitForClick: null,
         action: null
       },
-      
+
       {
         id: 'stage2-traits-adjust',
         speaker: 'marvin',
-        text: "Actually, you've been putting this off for 2 years—let's bump Urgency from Normal to High. Click that dropdown to change it.",
+        text: "Let's imagine you're two years overdue on this appointment. What urgency level would match that situation? I've set it to High, but adjust if you'd like.",
         highlight: 'trait-urgency',
-        waitForClick: 'trait-urgency-change',
-        action: () => {
-          document.getElementById('trait-urgency').classList.add('pulse-highlight');
-        }
-      },
-      
-      {
-        id: 'stage2-traits-confirmed',
-        speaker: 'marvin',
-        text: "There we go. Urgency: High. That's more accurate. The other traits look good.",
-        highlight: null,
         waitForClick: null,
         action: () => {
-          document.getElementById('trait-urgency').classList.remove('pulse-highlight');
-          document.getElementById('traits-grid').classList.remove('highlight-glow');
-          showSavedIndicator('traits-grid');
+          document.getElementById('trait-urgency').classList.add('pulse-highlight');
+          // Pre-set to High
+          document.getElementById('trait-urgency-select').value = 'High';
+          setTimeout(() => {
+            document.getElementById('trait-urgency').classList.remove('pulse-highlight');
+            document.getElementById('traits-grid').classList.remove('highlight-glow');
+            showSavedIndicator('traits-grid');
+          }, 2000);
         }
       },
       
@@ -1731,7 +1613,7 @@
       {
         id: 'stage3-transition',
         speaker: 'marvin',
-        text: "Stage 3—Drafted. This usually takes 30 minutes to get right, but we'll move faster since I'm doing the heavy lifting.",
+        text: "Stage 3—Drafted. Now I'll build the task list for you.",
         highlight: null,
         waitForClick: null,
         action: () => {
