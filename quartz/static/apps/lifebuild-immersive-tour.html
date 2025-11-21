@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeBuild | Jess' Priority Story</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --purpose: #7B9EA8;
+      --home: #9B8B7E;
+      --finances: #8B9D6F;
+      --health: #E8B4A0;
+      --gold: #D8A650;
+      --silver: #C5CED8;
+      --bronze: #C48B5A;
+      --ink: #2f2b27;
+      --muted: #8b8680;
+      --paper: #faf9f7;
+      --border: #e8e4de;
+      --shadow: 0 18px 48px rgba(0,0,0,0.08);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: radial-gradient(circle at 15% 20%, rgba(255,255,255,0.8), transparent 40%), #f5f3f0;
+      color: var(--ink);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding-bottom: 140px; /* room for table bar */
+    }
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 8;
+      backdrop-filter: blur(10px);
+      background: rgba(250,249,247,0.88);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      font-weight: 600;
+    }
+    .nav a {
+      text-decoration: none;
+      color: var(--muted);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.75rem;
+      transition: color 160ms ease, background 160ms ease;
+    }
+    .nav a.active { color: var(--ink); background: rgba(0,0,0,0.04); }
+    .nav a:hover { color: var(--ink); }
+    .pill {
+      background: #2f2b27;
+      color: #faf9f7;
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+    }
+    .shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      box-shadow: 0 16px 32px rgba(0,0,0,0.06);
+      padding: 1.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    h1 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(1.6rem, 1.6vw + 1rem, 2.2rem);
+      color: var(--ink);
+      margin-bottom: 0.35rem;
+    }
+    .sub { color: var(--muted); margin-bottom: 1rem; }
+    .story-overlay {
+      max-width: 980px;
+      margin: 1.25rem auto 0;
+      padding: 0 1.5rem;
+    }
+    .story-bubble {
+      border: 1px solid rgba(0,0,0,0.06);
+      border-radius: 1rem;
+      padding: 1.1rem 1rem;
+      background: linear-gradient(145deg, #ffffff, #f2efe8);
+      color: var(--ink);
+      box-shadow: 0 22px 42px rgba(0,0,0,0.22);
+      backdrop-filter: blur(4px);
+      margin-bottom: 1rem;
+    }
+    .story-bubble h2 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--ink);
+    }
+    .story-text {
+      font-size: 1rem;
+      color: var(--ink);
+      line-height: 1.7;
+    }
+    .story-text p { margin-bottom: 0.35rem; }
+    .story-text p:last-child { margin-bottom: 0; }
+    .story-text em {
+      color: var(--muted);
+    }
+    .story-prompts {
+      margin-top: 0.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .story-cta {
+      background: #2f2b27;
+      color: #faf9f7;
+      border: none;
+      border-radius: 0.75rem;
+      padding: 0.65rem 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
+    }
+    .story-cta.secondary {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+    .story-cta:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .story-cta:not(:disabled):hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(0,0,0,0.14);
+    }
+    .story-link { color: var(--ink); font-weight: 600; cursor: pointer; }
+    .chapter-tag {
+      margin: 1rem 0;
+      padding: 0.75rem 1rem;
+      border-radius: 0.85rem;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, rgba(197,206,216,0.08), rgba(139,157,111,0.08));
+      color: var(--ink);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-weight: 600;
+    }
+    .map-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .cat {
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1rem;
+      background: linear-gradient(145deg, #fff, #f8f6f3);
+      position: relative;
+      overflow: hidden;
+    }
+    .cat h3 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.2rem;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .cat .count { color: var(--muted); font-size: 0.95rem; }
+    .project {
+      margin-top: 0.6rem;
+      padding: 0.75rem;
+      border-radius: 0.8rem;
+      border: 1px solid var(--border);
+      background: #fff;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.04);
+    }
+    .project .title { font-weight: 700; color: var(--ink); }
+    .project .meta { color: var(--muted); font-size: 0.9rem; }
+    .project .progress {
+      height: 8px;
+      background: #f1efe9;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 0.35rem;
+    }
+    .project .bar { height: 100%; border-radius: 999px; }
+    .table-bar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.96);
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -12px 24px rgba(0,0,0,0.06);
+      padding: 0.9rem 1.5rem;
+      z-index: 9;
+    }
+    .table-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .slot {
+      border: 1px solid var(--border);
+      border-radius: 0.9rem;
+      padding: 0.75rem;
+      background: #fff;
+      min-height: 110px;
+      position: relative;
+      overflow: hidden;
+    }
+    .slot h4 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1rem;
+      margin-bottom: 0.35rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .slot .body { font-weight: 700; color: var(--ink); }
+    .slot .meta { color: var(--muted); font-size: 0.9rem; }
+    .actions {
+      margin-top: 1rem;
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      background: #2f2b27;
+      color: #faf9f7;
+      border: none;
+      border-radius: 0.8rem;
+      padding: 0.75rem 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+      transition: transform 140ms ease, box-shadow 140ms ease;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 16px 28px rgba(0,0,0,0.14); }
+    .btn.secondary {
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+    .kanban {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    .col {
+      border: 1px solid var(--border);
+      border-radius: 0.9rem;
+      padding: 0.75rem;
+      background: #fff;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.05);
+      min-height: 180px;
+    }
+    .col h4 { font-size: 1rem; margin-bottom: 0.4rem; font-family: 'Source Serif 4', Georgia, serif; }
+    .task {
+      padding: 0.65rem 0.7rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      background: #f7f4ef;
+      margin-bottom: 0.45rem;
+      cursor: pointer;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.05);
+      transition: transform 140ms ease, box-shadow 140ms ease;
+    }
+    .task:hover { transform: translateY(-1px); box-shadow: 0 12px 22px rgba(0,0,0,0.08); }
+    .pulse {
+      animation: pulse 700ms ease;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(216,166,80,0.4); }
+      100% { box-shadow: 0 0 0 18px rgba(216,166,80,0); }
+    }
+    .progress-ring {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: conic-gradient(var(--finances) calc(var(--pct) * 1%), #f1efe9 0);
+      display: grid;
+      place-items: center;
+      margin: 0.8rem auto 0;
+      position: relative;
+    }
+    .progress-ring::after {
+      content: attr(data-label);
+      position: absolute;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .status {
+      margin-top: 1rem;
+      padding: 0.8rem 1rem;
+      border-radius: 0.85rem;
+      border: 1px solid var(--border);
+      background: linear-gradient(115deg, rgba(197,206,216,0.2), rgba(139,157,111,0.18));
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .status .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--silver);
+      box-shadow: 0 0 0 6px rgba(197,206,216,0.25);
+    }
+    .stack-visual {
+      position: relative;
+      min-height: 104px;
+      padding-top: 10px;
+    }
+    .stack-card {
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      border-radius: 0.8rem;
+      padding: 0.65rem 0.75rem;
+      background: #f7f4ef;
+      border: 1px solid var(--border);
+      box-shadow: 0 12px 22px rgba(0,0,0,0.08);
+      transform: translateY(var(--y, 0));
+      backdrop-filter: saturate(90%);
+      transition: transform 160ms ease, box-shadow 160ms ease;
+    }
+    .stack-card.layer-1 { --y: 18px; opacity: 0.55; }
+    .stack-card.layer-2 { --y: 12px; opacity: 0.7; }
+    .stack-card.layer-3 { --y: 6px; opacity: 0.85; }
+    .stack-card.layer-4 { --y: 0px; opacity: 1; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const categories = {
+      purpose: { name: 'Purpose', color: 'var(--purpose)' },
+      home: { name: 'Home', color: 'var(--home)' },
+      finances: { name: 'Finances', color: 'var(--finances)' },
+      health: { name: 'Health', color: 'var(--health)' },
+      growth: { name: 'Personal Growth', color: 'var(--growth)' },
+    };
+
+    const bronzeStacks = {
+      home: { top: 'Fix leaky kitchen faucet', extra: 6 },
+      finances: { top: 'Return overdue library books', extra: 11 },
+      purpose: { top: 'RSVP for Olivia’s birthday', extra: 9 },
+    };
+
+    const initialTasks = {
+      todo: ['Deep clean interior', 'Research pricing', 'Repair cabinet latch', 'Write listing draft'],
+      doing: [],
+      review: [],
+      done: [],
+    };
+
+    const TableBar = ({ table }) => (
+      <div className="table-bar">
+        <div className="table-grid">
+          <div className="slot" style={{ borderColor: 'rgba(216,166,80,0.6)', background: 'linear-gradient(145deg, rgba(216,166,80,0.12), #fff)' }}>
+            <h4>Gold</h4>
+            <div className="body">{table.gold.title || 'Empty'}</div>
+            <div className="meta">{table.gold.meta}</div>
+            {table.gold.progress !== undefined && (
+              <div className="progress" style={{ marginTop: '0.4rem' }}>
+                <div className="bar" style={{ width: `${Math.round((table.gold.progress || 0) * 100)}%`, background: 'var(--gold)' }}></div>
+              </div>
+            )}
+          </div>
+          <div className="slot" style={{ borderColor: 'rgba(197,206,216,0.7)', background: 'linear-gradient(145deg, rgba(197,206,216,0.14), #fff)' }}>
+            <h4>Silver</h4>
+            <div className="body">{table.silver.title || 'Empty'}</div>
+            <div className="meta">{table.silver.meta}</div>
+            {table.silver.progress !== undefined && (
+              <div className="progress" style={{ marginTop: '0.4rem' }}>
+                <div className="bar" style={{ width: `${Math.round((table.silver.progress || 0) * 100)}%`, background: 'var(--silver)' }}></div>
+              </div>
+            )}
+          </div>
+          <div className="slot" style={{ borderColor: 'rgba(196,139,90,0.7)', background: 'linear-gradient(145deg, rgba(196,139,90,0.12), #fff)' }}>
+            <h4>Bronze</h4>
+            <div className="stack-visual">
+              <div className="stack-card layer-1"></div>
+              <div className="stack-card layer-2"></div>
+              <div className="stack-card layer-3"></div>
+              <div className="stack-card layer-4">
+                <div className="body">{table.bronze.title}</div>
+                <div className="meta">{table.bronze.meta}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
+    const LifeMap = ({ table }) => {
+      const catList = ['purpose', 'home', 'finances', 'health', 'growth'];
+      return (
+        <div className="card">
+          <div className="map-grid">
+            {catList.map((id) => {
+              const cat = categories[id];
+              if (!cat) return null;
+              return (
+                <div key={id} className="cat" style={{ borderColor: cat.color }}>
+                  <h3><span style={{ color: cat.color }}>●</span> {cat.name}</h3>
+                  <div className="count">Active spotlight + Bronze stack</div>
+                  {table.gold && table.gold.category === id && (
+                    <div className="project">
+                      <div className="title">{table.gold.title}</div>
+                      <div className="meta">Gold · {table.gold.progress ? Math.round(table.gold.progress * 100) + '%' : 'Fresh'}</div>
+                      {table.gold.progress >= 0 && (
+                        <div className="progress">
+                          <div className="bar" style={{ width: `${Math.round((table.gold.progress || 0) * 100)}%`, background: cat.color }}></div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {table.silver && table.silver.category === id && (
+                    <div className="project">
+                      <div className="title">{table.silver.title}</div>
+                      <div className="meta">Silver · {Math.round(table.silver.progress * 100)}%</div>
+                      <div className="progress">
+                        <div className="bar" style={{ width: `${Math.round(table.silver.progress * 100)}%`, background: cat.color }}></div>
+                      </div>
+                    </div>
+                  )}
+                  {bronzeStacks[id] && (
+                    <div className="stack-visual" style={{ marginTop: '0.4rem' }}>
+                      <div className="stack-card layer-1"></div>
+                      <div className="stack-card layer-2"></div>
+                      <div className="stack-card layer-3"></div>
+                      <div className="stack-card layer-4">
+                        <div className="title">{bronzeStacks[id].top}</div>
+                        <div className="meta">Bronze stack · +{bronzeStacks[id].extra} more</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    };
+
+    const DraftingRoom = () => (
+      <div className="card">
+        <div className="project" style={{ borderColor: 'var(--gold)', boxShadow: '0 12px 26px rgba(216,166,80,0.2)' }}>
+          <div className="title">Sell Camper Van</div>
+          <div className="meta">Gold Candidate · Plans done · Crisis trigger</div>
+          <ul style={{ marginTop: '0.4rem', paddingLeft: '1rem', color: 'var(--muted)', fontSize: '0.95rem' }}>
+            <li>Clean + photo professionally</li>
+            <li>List on 3 platforms</li>
+            <li>Sell & transfer title in 3 weeks</li>
+          </ul>
+        </div>
+        <div className="project" style={{ marginTop: '0.7rem' }}>
+          <div className="title">Launch Consulting</div>
+          <div className="meta">Current Gold · 60% · Will pause if swapped</div>
+        </div>
+      </div>
+    );
+
+    const SortingRoom = ({ state }) => (
+      <div className="card">
+        <div className="map-grid">
+          <div className="project" style={{ borderColor: state.table.gold.title === 'Launch Consulting' ? 'var(--gold)' : 'var(--border)', background: '#fffaf3' }}>
+            <div className="title">{state.table.gold.title}</div>
+            <div className="meta">Gold · {Math.round((state.table.gold.progress || 0) * 100)}% · Currently on Table</div>
+          </div>
+          <div className={`project ${state.table.gold.title !== 'Launch Consulting' ? 'pulse' : ''}`} style={{ borderColor: 'var(--gold)' }}>
+            <div className="title">Sell Camper Van</div>
+            <div className="meta">Gold candidate · Ready to activate</div>
+            <div className="actions" style={{ marginTop: '0.5rem' }}>
+              <button className="btn" onClick={state.swapGold}>Activate Camper as Gold</button>
+            </div>
+          </div>
+          <div className="project">
+            <div className="title">Gold Queue</div>
+            {state.goldQueue.map((item, idx) => (
+              <div key={item.title} className="meta">{idx + 1}. {item.title} · {item.meta}</div>
+            ))}
+          </div>
+        </div>
+        <div className="status">
+          <div className="dot"></div>
+          <div>{state.status}</div>
+        </div>
+      </div>
+    );
+
+    const ActivationMap = ({ state }) => (
+      <div className="card">
+        <div className="map-grid">
+          <div className="cat" style={{ borderColor: categories.purpose.color }}>
+            <h3><span style={{ color: categories.purpose.color }}>●</span> Purpose</h3>
+            <div className="project">
+              <div className="title">Launch Consulting</div>
+              <div className="meta">{state.goldQueue.find(q => q.title === 'Launch Consulting') ? 'Paused · In Gold queue' : 'Active'}</div>
+            </div>
+          </div>
+          <div className="cat" style={{ borderColor: categories.finances.color }}>
+            <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
+            <div className="project pulse">
+              <div className="title">{state.table.gold.title}</div>
+              <div className="meta">Gold · On Table & in Finances</div>
+            </div>
+            <div className="project">
+              <div className="title">Automate Monthly Budget Review</div>
+              <div className="meta">Silver candidate</div>
+            </div>
+          </div>
+          <div className="cat" style={{ borderColor: categories.home.color }}>
+            <h3><span style={{ color: categories.home.color }}>●</span> Home</h3>
+            <div className="project">
+              <div className="title">Build Backyard Deck</div>
+              <div className="meta">In Gold queue · 50%</div>
+            </div>
+            <div className="project">
+              <div className="title">Plan Family Camping Trip</div>
+              <div className="meta">Live · 33%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
+    const ProjectBoard = ({ state }) => {
+      const moveTask = (from, to, task) => {
+        state.setTasks((prev) => {
+          const next = { ...prev, [from]: prev[from].filter(t => t !== task), [to]: [...prev[to], task] };
+          const doneCount = next.done.length + next.review.length + next.doing.length;
+          const progress = Math.min((doneCount / 12), 1);
+          state.setCamperProgress(progress);
+          return next;
+        });
+      };
+      const clickTask = (from) => (task) => {
+        if (from === 'todo') return moveTask('todo', 'doing', task);
+        if (from === 'doing') return moveTask('doing', 'review', task);
+        if (from === 'review') return moveTask('review', 'done', task);
+      };
+      const pct = Math.round(state.camperProgress * 100);
+      return (
+        <div className="card">
+          <div className="kanban">
+            {['todo','doing','review','done'].map((col) => (
+              <div key={col} className="col">
+                <h4>{col === 'todo' ? 'To-Do' : col === 'doing' ? 'Doing' : col === 'review' ? 'Review' : 'Done'}</h4>
+                {state.tasks[col].map((task) => (
+                  <div key={task} className="task" onClick={() => clickTask(col)(task)}>{task}</div>
+                ))}
+              </div>
+            ))}
+          </div>
+          <div className="progress-ring" style={{ '--pct': pct }} data-label={`${pct}%`}></div>
+          <div className="status">
+            <div className="dot"></div>
+            <div>{pct >= 40 ? 'Momentum established · Buyers incoming' : 'First tasks in motion · keep pushing'}</div>
+          </div>
+        </div>
+      );
+    };
+
+    const FinanceZoom = ({ state }) => (
+      <div className="card">
+        <div className="map-grid">
+          <div className="cat" style={{ borderColor: categories.finances.color }}>
+            <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
+            <div className="project">
+              <div className="title">Sell Camper Van</div>
+              <div className="meta">{Math.round(state.camperProgress * 100)}% · Stage: {state.camperProgress >= 1 ? 'Decoration' : state.camperProgress >= 0.4 ? 'Polish' : 'Color Emergence'}</div>
+              <div className="progress"><div className="bar" style={{ width: `${Math.round(state.camperProgress * 100)}%`, background: categories.finances.color }}></div></div>
+            </div>
+            <div className="project">
+              <div className="title">Automate Monthly Budget Review</div>
+              <div className="meta">Silver candidate</div>
+            </div>
+            <div className="project">
+              <div className="title">Mortgage Refinance</div>
+              <div className="meta">Queued</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+
+    const SortingReturn = ({ state }) => (
+      <div className="card">
+        <div className="map-grid">
+          <div className="project" style={{ borderColor: 'var(--gold)', boxShadow: '0 12px 26px rgba(216,166,80,0.2)' }}>
+            <div className="title">{state.table.gold.title === 'Sell Camper Van' ? 'Sell Camper Van' : 'Sell Camper Van'}</div>
+            <div className="meta">Complete · Decoration stage</div>
+          </div>
+          <div className="project">
+            <div className="title">Launch Consulting</div>
+            <div className="meta">Gold Candidate · Paused at 60%</div>
+            <div className="actions" style={{ marginTop: '0.5rem' }}>
+              <button className="btn" onClick={state.reactivateConsulting}>Reactivate Consulting</button>
+            </div>
+          </div>
+          <div className="project">
+            <div className="title">Gold Queue</div>
+            {state.goldQueue.map((item, idx) => (
+              <div key={item.title} className="meta">{idx + 1}. {item.title}</div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+
+    const App = () => {
+      const [chapter, setChapter] = React.useState(0);
+      const [table, setTable] = React.useState({
+        gold: { title: 'Launch Consulting', meta: 'Purpose · Gold · 60%', category: 'purpose', progress: 0.6 },
+        silver: { title: 'Set Up Automated Prescription Delivery', meta: 'Health · Silver · 71%', category: 'health', progress: 0.71 },
+        bronze: { title: 'Fix leaky kitchen faucet', meta: 'Home · Bronze · +11 more' },
+      });
+      const [goldQueue, setGoldQueue] = React.useState([
+        { title: 'Sell Camper Van', meta: 'Finances · Gold · Crisis', category: 'finances', progress: 0 },
+        { title: 'Build Backyard Deck', meta: 'Home · Gold · 50%', category: 'home', progress: 0.5 },
+      ]);
+      const [status, setStatus] = React.useState('Consulting active. Camper ready to activate.');
+      const [tasks, setTasks] = React.useState(initialTasks);
+      const [camperProgress, setCamperProgress] = React.useState(0);
+
+      const camperActive = table.gold.title === 'Sell Camper Van';
+      const camperPct = Math.round(camperProgress * 100);
+
+      const swapGold = () => {
+        if (camperActive) return;
+        const camper = goldQueue.find(g => g.title === 'Sell Camper Van') || goldQueue[0];
+        if (!camper) return;
+        const remaining = goldQueue.filter(g => g.title !== camper.title);
+        const previous = table.gold;
+        setTable({
+          gold: camper,
+          silver: table.silver,
+          bronze: table.bronze,
+        });
+        setGoldQueue([previous, ...remaining]);
+        setStatus('Camper active. Consulting preserved in Gold queue.');
+      };
+
+      const fastForward = () => {
+        setTasks({ todo: [], doing: [], review: [], done: ['All tasks'] });
+        setCamperProgress(1);
+        if (table.gold.title === 'Sell Camper Van') {
+          setTable((prev) => ({ ...prev, gold: { ...prev.gold, progress: 1, meta: 'Finances · Gold · Complete' } }));
+        }
+      };
+
+      const reactivateConsulting = () => {
+        setTable({
+          gold: { title: 'Launch Consulting', meta: 'Purpose · Gold · 60%', category: 'purpose', progress: 0.6 },
+          silver: { title: 'Set Up Automated Prescription Delivery', meta: 'Health · Silver · 71%', category: 'health', progress: 0.71 },
+          bronze: table.bronze,
+        });
+        setGoldQueue((prev) => prev.filter(p => p.title !== 'Launch Consulting' && p.title !== 'Sell Camper Van'));
+        setStatus('Consulting back on Table. Camper archived as done.');
+      };
+
+      const chapterStories = [
+        {
+          label: 'Chapter 1',
+          title: 'Life Map · Jess at pace',
+          lines: [
+            { text: '“Jess scans his Life Map—Gold consulting up front, deck work simmering, a stack of Bronze chores behaving for once.”', tone: 'em' },
+            { text: '“Then his wife says: list the camper this week or I’m doing it myself.”', tone: 'em' },
+            { text: 'He remembers crafting this project two weeks ago in the Drafting Room.' },
+          ],
+          prompts: [
+            { label: 'Head to the Drafting Room', onClick: () => setChapter(1) },
+          ],
+        },
+        {
+          label: 'Chapter 2',
+          title: 'Drafting Room · Crisis surfaces',
+          lines: [
+            { text: 'Gold queue, crisis on top.' },
+            { text: 'Jess planned “Sell Camper Van” two weeks ago (Stage 4). Wife’s ultimatum makes it urgent.' },
+          ],
+          prompts: [
+            { label: 'Open Sorting Room', onClick: () => setChapter(2) },
+            { label: 'Back to Life Map', onClick: () => setChapter(0), variant: 'secondary' },
+          ],
+        },
+        {
+          label: 'Chapter 3',
+          title: 'Sorting Room · Hard choice',
+          lines: [
+            { text: 'Pick the Gold that matters now.' },
+            { text: 'Jess must pause consulting and activate the camper sale. Progress will be preserved.' },
+          ],
+          prompts: [
+            { label: camperActive ? 'Camper activated' : 'Activate Camper as Gold', onClick: camperActive ? null : () => swapGold(), disabled: camperActive },
+            { label: 'Show updated Life Map', onClick: () => setChapter(3), disabled: !camperActive },
+            { label: 'Back to Drafting Room', onClick: () => setChapter(1), variant: 'secondary' },
+          ],
+        },
+        {
+          label: 'Chapter 4',
+          title: 'Life Map · Activation lands',
+          lines: [
+            { text: 'Table updated · Consulting preserved.' },
+            { text: 'Camper is now Gold. Consulting sits paused in Purpose. Finance shows dual presence.' },
+          ],
+          prompts: [
+            { label: 'Open Project Board', onClick: () => setChapter(4) },
+            { label: 'Back to Sorting Room', onClick: () => setChapter(2), variant: 'secondary' },
+          ],
+        },
+        {
+          label: 'Chapter 5',
+          title: 'Project Board · Execute',
+          lines: [
+            { text: 'Sell Camper Van · Work at Hand.' },
+            { text: 'Move the first tasks. Progress fills; Bronze keeps pace in background.' },
+          ],
+          prompts: [
+            { label: 'Fast forward 2 weeks', onClick: () => { fastForward(); setChapter(5); } },
+            { label: 'Back to Life Map', onClick: () => setChapter(3), variant: 'secondary' },
+          ],
+        },
+        {
+          label: 'Chapter 6',
+          title: 'Finances · Progress check',
+          lines: [
+            { text: `Camper sale at ${camperPct}%. Budget automation queued. Mortgage refinance waiting.` },
+          ],
+          prompts: [
+            { label: 'Resume in Sorting Room', onClick: () => setChapter(6) },
+            { label: 'Back to Project Board', onClick: () => setChapter(4), variant: 'secondary' },
+          ],
+        },
+        {
+          label: 'Chapter 7',
+          title: 'Sorting Room · Resume rhythm',
+          lines: [
+            { text: 'Decoration stage achieved; consulting is still waiting at the top. Reactivate with one click.' },
+          ],
+          prompts: [
+            { label: 'Reactivate Consulting', onClick: () => reactivateConsulting() },
+            { label: 'Back to Finances', onClick: () => setChapter(5), variant: 'secondary' },
+          ],
+        },
+      ];
+
+      const currentStory = chapterStories[chapter] || chapterStories[0];
+
+      const screen = () => {
+        if (chapter === 0) return <LifeMap table={table} />;
+        if (chapter === 1) return <DraftingRoom />;
+        if (chapter === 2) return <SortingRoom state={{ swapGold, table, status, goldQueue }} />;
+        if (chapter === 3) return <ActivationMap state={{ table, goldQueue }} />;
+        if (chapter === 4) return <ProjectBoard state={{ tasks, setTasks, camperProgress, setCamperProgress }} />;
+        if (chapter === 5) return <FinanceZoom state={{ camperProgress }} />;
+        return <SortingReturn state={{ reactivateConsulting, goldQueue, table }} />;
+      };
+
+      return (
+        <>
+          <div className="story-overlay">
+            <div className="story-bubble">
+              <div className="chapter-tag">{currentStory.label}</div>
+              <h2>{currentStory.title}</h2>
+              <div className="story-text">
+                {currentStory.lines.map((line, idx) => (
+                  <p key={idx}>{line.tone === 'em' ? <em>{line.text}</em> : line.text}</p>
+                ))}
+              </div>
+              {currentStory.prompts?.length ? (
+                <div className="story-prompts">
+                  {currentStory.prompts.map((prompt) => (
+                    <button
+                      key={prompt.label}
+                      className={`story-cta${prompt.variant === 'secondary' ? ' secondary' : ''}`}
+                      onClick={prompt.onClick}
+                      disabled={prompt.disabled}
+                    >
+                      {prompt.label}
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          </div>
+          <div className="nav">
+            <div className="nav-links">
+              <a className={chapter===1 ? 'active' : ''} onClick={() => setChapter(1)}>Drafting Room</a>
+              <a className={chapter===2 || chapter===6 ? 'active' : ''} onClick={() => setChapter(2)}>Sorting Room</a>
+              <a>Roster Room</a>
+              <a className={chapter===0 || chapter===3 ? 'active' : ''} onClick={() => setChapter(0)}>Life Map</a>
+            </div>
+            <div className="pill">Jess · Director</div>
+          </div>
+          <div className="shell">
+            {screen()}
+          </div>
+          <TableBar table={table} />
+        </>
+      );
+    };
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
