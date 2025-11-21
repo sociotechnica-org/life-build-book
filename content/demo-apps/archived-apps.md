@@ -1,8 +1,12 @@
 ---
-title: Demo Apps
+title: Archived Apps
 ---
 
-# A Friday Morning with Danvers
+# Archived Demo Apps
+
+Older interactive walkthroughs that are still handy for showing the lineage of the LifeBuild system.
+
+## A Friday Morning with Danvers
 
 Nine months into building his LifeBuild, Danvers has developed a rhythm.
 
