@@ -744,34 +744,7 @@
       </div>
     );
 
-    const ActivationMap = ({ state }) => (
-      <div className="card">
-        <div className="map-grid">
-          <div className="cat" style={{ borderColor: categories.finances.color }}>
-            <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
-            <div className="project pulse">
-              <div className="title">{state.table.gold.title}</div>
-              <div className="meta">Gold · On Table & in Finances</div>
-            </div>
-            <div className="project">
-              <div className="title">Automate Monthly Budget Review</div>
-              <div className="meta">Silver candidate</div>
-            </div>
-          </div>
-          <div className="cat" style={{ borderColor: categories.home.color }}>
-            <h3><span style={{ color: categories.home.color }}>●</span> Home</h3>
-            <div className="project">
-              <div className="title">Build Backyard Deck</div>
-              <div className="meta">In Gold queue · 50%</div>
-            </div>
-            <div className="project">
-              <div className="title">Plan Family Camping Trip</div>
-              <div className="meta">Live · 33%</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    const ActivationMap = ({ state }) => <LifeMap table={state.table} />;
 
     const ProjectBoard = ({ state }) => {
       const moveTask = (from, to, task) => {
