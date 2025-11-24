@@ -189,7 +189,13 @@
       align-items: center;
       gap: 0.4rem;
     }
-    .cat .count { color: var(--muted); font-size: 0.95rem; }
+    .cat .count { color: var(--muted); font-size: 0.9rem; }
+    .active-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 1.4rem;
+    }
     .project {
       margin-top: 0.6rem;
       padding: 0.75rem;
@@ -197,6 +203,91 @@
       border: 1px solid var(--border);
       background: #fff;
       box-shadow: 0 8px 18px rgba(0,0,0,0.04);
+    }
+    .planted-label {
+      margin-top: 0.9rem;
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .planted-grid {
+      margin-top: 0.25rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.4rem;
+    }
+    .planted-card {
+      padding: 0.45rem 0.55rem;
+      border-radius: 0.8rem;
+      border: 1px dashed rgba(47,43,39,0.2);
+      background: rgba(255,255,255,0.94);
+      font-size: 0.72rem;
+      line-height: 1.25;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.04);
+    }
+    .planted-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      opacity: 0.7;
+      pointer-events: none;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4);
+    }
+    .planted-card[data-automation="ai"] {
+      box-shadow: 0 10px 24px rgba(123,158,168,0.22);
+    }
+    .planted-card[data-automation="service"] {
+      box-shadow: 0 10px 24px rgba(155,139,126,0.22);
+    }
+    .planted-card[data-automation="system"] {
+      box-shadow: 0 10px 24px rgba(196,139,90,0.18);
+    }
+    .planted-card[data-attention="idle"] {
+      opacity: 0.55;
+      filter: grayscale(0.1);
+    }
+    .planted-card[data-attention="soon"] {
+      border-color: rgba(216,166,80,0.6);
+      box-shadow: 0 14px 26px rgba(216,166,80,0.28);
+    }
+    .planted-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.3rem;
+      margin-bottom: 0.15rem;
+    }
+    .planted-badge {
+      font-size: 0.58rem;
+      padding: 0.08rem 0.3rem;
+      border-radius: 999px;
+      background: rgba(47,43,39,0.08);
+      font-weight: 600;
+      display: inline-flex;
+      gap: 0.25rem;
+      align-items: center;
+      white-space: nowrap;
+    }
+    .planted-title {
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.05rem;
+      font-size: 0.82rem;
+    }
+    .planted-line {
+      color: var(--muted);
+      font-size: 0.68rem;
+      margin-bottom: 0.12rem;
+    }
+    .planted-line.schedule {
+      margin-top: 0.1rem;
+      font-weight: 600;
+      color: #5f574d;
     }
     .project .title { font-weight: 700; color: var(--ink); }
     .project .meta { color: var(--muted); font-size: 0.9rem; }
@@ -342,45 +433,20 @@
       background: var(--silver);
       box-shadow: 0 0 0 6px rgba(197,206,216,0.25);
     }
-    .stack-visual {
-      position: relative;
-      min-height: 104px;
-      padding-top: 10px;
-    }
-    .stack-card {
-      position: absolute;
-      left: 8px;
-      right: 8px;
-      border-radius: 0.8rem;
-      padding: 0.65rem 0.75rem;
-      background: #f7f4ef;
-      border: 1px solid var(--border);
-      box-shadow: 0 12px 22px rgba(0,0,0,0.08);
-      transform: translateY(var(--y, 0));
-      backdrop-filter: saturate(90%);
-      transition: transform 160ms ease, box-shadow 160ms ease;
-    }
-    .stack-card.layer-1 { --y: 18px; opacity: 0.55; }
-    .stack-card.layer-2 { --y: 12px; opacity: 0.7; }
-    .stack-card.layer-3 { --y: 6px; opacity: 0.85; }
-    .stack-card.layer-4 { --y: 0px; opacity: 1; }
   </style>
 </head>
 <body>
   <div id="root"></div>
   <script type="text/babel">
     const categories = {
-      purpose: { name: 'Purpose', color: 'var(--purpose)' },
       home: { name: 'Home', color: 'var(--home)' },
       finances: { name: 'Finances', color: 'var(--finances)' },
       health: { name: 'Health', color: 'var(--health)' },
-      growth: { name: 'Personal Growth', color: 'var(--growth)' },
     };
 
     const bronzeStacks = {
       home: { top: 'Fix leaky kitchen faucet', extra: 6 },
       finances: { top: 'Return overdue library books', extra: 11 },
-      purpose: { top: 'RSVP for Olivia’s birthday', extra: 9 },
     };
 
     const initialTasks = {
@@ -388,6 +454,141 @@
       doing: [],
       review: [],
       done: [],
+    };
+
+    const automationBadges = {
+      ai: { icon: '🤖', label: 'AI Delegated' },
+      service: { icon: '📅', label: 'Scheduled Service' },
+      system: { icon: '⚙️', label: 'Self-Running System' },
+    };
+
+    const plantedProjects = {
+      home: [
+        {
+          title: 'Lawn Care Service',
+          origin: 'Find and contract weekly lawn maintenance',
+          running: 'Crew arrives every Tuesday morning',
+          maintenance: 'Fully automated, just gets done',
+          status: 'Delegated to Service - Active',
+          automation: 'service',
+          statusDetail: 'Next scheduled: Tue · 7:30am',
+          attention: 'soon',
+        },
+        {
+          title: 'HVAC Maintenance Contract',
+          origin: 'Set up preventative maintenance plan',
+          running: 'Technician visits quarterly for filters and system checks',
+          maintenance: 'Automated reminders, service handles scheduling',
+          status: 'Delegated to Service - Scheduled',
+          automation: 'service',
+          statusDetail: 'Next scheduled: Jul 15',
+          attention: 'idle',
+        },
+        {
+          title: 'House Cleaning Service',
+          origin: 'Research and hire bi-weekly cleaners',
+          running: 'Cleaners come every other Friday',
+          maintenance: 'Fully delegated',
+          status: 'Delegated to Service - Active',
+          automation: 'service',
+          statusDetail: 'Next scheduled: May 10',
+          attention: 'soon',
+        },
+        {
+          title: 'Grocery Delivery Subscription',
+          origin: 'Set up recurring grocery delivery',
+          running: 'Weekly delivery of staples and meal kit ingredients',
+          maintenance: 'Adjust order occasionally',
+          status: 'Ongoing Service - Running',
+          automation: 'service',
+          statusDetail: 'Next delivery: May 3 · 8-10am',
+          attention: 'soon',
+        },
+      ],
+      finances: [
+        {
+          title: 'Automated Bill Payment System',
+          origin: 'Configure auto-pay for all recurring bills',
+          running: '12 bills paid automatically each month',
+          maintenance: 'Review charges quarterly',
+          status: 'Ongoing System - Running',
+          automation: 'system',
+          statusDetail: 'Last review: Apr 1',
+          attention: 'idle',
+        },
+        {
+          title: 'Retirement Contributions',
+          origin: 'Set up automatic investment transfers',
+          running: '$500 to IRA monthly, $200 to kids\' 529 plans',
+          maintenance: 'Annual contribution increase',
+          status: 'Ongoing System - Running',
+          automation: 'system',
+          statusDetail: 'Next increase review: Jan 5',
+          attention: 'idle',
+        },
+        {
+          title: 'Credit Card Rewards Optimization',
+          origin: 'Create system to maximize rewards across 3 cards',
+          running: 'AI tracks spending categories and flags optimal card usage',
+          maintenance: 'Director follows the recommendations',
+          status: 'Delegated to AI - Active',
+          automation: 'ai',
+          statusDetail: 'Last sync: 1 hour ago',
+          attention: 'soon',
+        },
+        {
+          title: 'Tax Document Organization',
+          origin: 'Build digital filing system for receipts and tax docs',
+          running: 'Documents auto-categorize and file throughout the year',
+          maintenance: 'Quarterly review for accuracy',
+          status: 'Ongoing System - Running',
+          automation: 'system',
+          statusDetail: 'Last sweep: 2 days ago',
+          attention: 'idle',
+        },
+        {
+          title: 'Insurance Policy Review Calendar',
+          origin: 'Set up annual review schedule for policies',
+          running: 'Reminders trigger 60 days before renewals',
+          maintenance: 'Director shops alternatives on schedule',
+          status: 'Ongoing System - Scheduled',
+          automation: 'system',
+          statusDetail: 'Next scheduled: Aug 1',
+          attention: 'idle',
+        },
+      ],
+      health: [
+        {
+          title: 'Prescription Delivery Concierge',
+          origin: 'Lock pharmacy auto-refill plus courier window',
+          running: 'Pharmacy and courier coordinate shipments automatically',
+          maintenance: 'Semi-annual review to confirm dosages',
+          status: 'Delegated to Service - Active',
+          automation: 'service',
+          statusDetail: 'Next delivery: Apr 28',
+          attention: 'soon',
+        },
+        {
+          title: 'Biometric Trends Dashboard',
+          origin: 'Connect wearables into single health insight hub',
+          running: 'AI ingests Oura, Whoop, and Apple Health data nightly',
+          maintenance: 'Weekly look-back adjusts recovery goals',
+          status: 'Delegated to AI - Active',
+          automation: 'ai',
+          statusDetail: 'Last sync: overnight',
+          attention: 'soon',
+        },
+        {
+          title: 'Trainer Accountability Sessions',
+          origin: 'Book remote strength coach for twice-weekly sessions',
+          running: 'Trainer runs Tue/Thu morning check-ins over video',
+          maintenance: 'Director confirms block quarterly',
+          status: 'Delegated to Service - Active',
+          automation: 'service',
+          statusDetail: 'Next session: Thu · 6am',
+          attention: 'soon',
+        },
+      ],
     };
 
     const TableBar = ({ table }) => (
@@ -415,22 +616,15 @@
           </div>
           <div className="slot" style={{ borderColor: 'rgba(196,139,90,0.7)', background: 'linear-gradient(145deg, rgba(196,139,90,0.12), #fff)' }}>
             <h4>Bronze</h4>
-            <div className="stack-visual">
-              <div className="stack-card layer-1"></div>
-              <div className="stack-card layer-2"></div>
-              <div className="stack-card layer-3"></div>
-              <div className="stack-card layer-4">
-                <div className="body">{table.bronze.title}</div>
-                <div className="meta">{table.bronze.meta}</div>
-              </div>
-            </div>
+            <div className="body">{table.bronze.title}</div>
+            <div className="meta">{table.bronze.meta}</div>
           </div>
         </div>
       </div>
     );
 
     const LifeMap = ({ table }) => {
-      const catList = ['purpose', 'home', 'finances', 'health', 'growth'];
+      const catList = ['home', 'finances', 'health'];
       return (
         <div className="card">
           <div className="map-grid">
@@ -440,38 +634,62 @@
               return (
                 <div key={id} className="cat" style={{ borderColor: cat.color }}>
                   <h3><span style={{ color: cat.color }}>●</span> {cat.name}</h3>
-                  <div className="count">Active spotlight + Bronze stack</div>
-                  {table.gold && table.gold.category === id && (
-                    <div className="project">
-                      <div className="title">{table.gold.title}</div>
-                      <div className="meta">Gold · {table.gold.progress ? Math.round(table.gold.progress * 100) + '%' : 'Fresh'}</div>
-                      {table.gold.progress >= 0 && (
-                        <div className="progress">
-                          <div className="bar" style={{ width: `${Math.round((table.gold.progress || 0) * 100)}%`, background: cat.color }}></div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                  {table.silver && table.silver.category === id && (
-                    <div className="project">
-                      <div className="title">{table.silver.title}</div>
-                      <div className="meta">Silver · {Math.round(table.silver.progress * 100)}%</div>
-                      <div className="progress">
-                        <div className="bar" style={{ width: `${Math.round(table.silver.progress * 100)}%`, background: cat.color }}></div>
+                  <div className="count">Active</div>
+                  <div className="active-wrap">
+                    {table.gold && table.gold.category === id && (
+                      <div className="project">
+                        <div className="title">{table.gold.title}</div>
+                        <div className="meta">{table.gold.meta}</div>
+                        {table.gold.progress >= 0 && (
+                          <div className="progress">
+                            <div className="bar" style={{ width: `${Math.round((table.gold.progress || 0) * 100)}%`, background: cat.color }}></div>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  )}
-                  {bronzeStacks[id] && (
-                    <div className="stack-visual" style={{ marginTop: '0.4rem' }}>
-                      <div className="stack-card layer-1"></div>
-                      <div className="stack-card layer-2"></div>
-                      <div className="stack-card layer-3"></div>
-                      <div className="stack-card layer-4">
+                    )}
+                    {table.silver && table.silver.category === id && (
+                      <div className="project">
+                        <div className="title">{table.silver.title}</div>
+                        <div className="meta">{table.silver.meta}</div>
+                        <div className="progress">
+                          <div className="bar" style={{ width: `${Math.round(table.silver.progress * 100)}%`, background: cat.color }}></div>
+                        </div>
+                      </div>
+                    )}
+                    {bronzeStacks[id] && (
+                      <div className="project">
                         <div className="title">{bronzeStacks[id].top}</div>
                         <div className="meta">Bronze stack · +{bronzeStacks[id].extra} more</div>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
+                  {plantedProjects[id]?.length ? (
+                    <>
+                      <div className="planted-label">Ongoing</div>
+                      <div className="planted-grid">
+                        {plantedProjects[id].map((project) => {
+                          const badge = automationBadges[project.automation] || automationBadges.system;
+                          return (
+                            <div
+                              key={project.title}
+                              className="planted-card"
+                              data-automation={project.automation}
+                              data-attention={project.attention || 'idle'}
+                            >
+                              <div className="planted-top">
+                                <span className="planted-badge">
+                                  <span>{badge.icon}</span>
+                                  <span>{badge.label}</span>
+                                </span>
+                              </div>
+                              <div className="planted-title">{project.title}</div>
+                              <div className="planted-line schedule">{project.statusDetail || project.status}</div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </>
+                  ) : null}
                 </div>
               );
             })}
@@ -529,13 +747,6 @@
     const ActivationMap = ({ state }) => (
       <div className="card">
         <div className="map-grid">
-          <div className="cat" style={{ borderColor: categories.purpose.color }}>
-            <h3><span style={{ color: categories.purpose.color }}>●</span> Purpose</h3>
-            <div className="project">
-              <div className="title">Launch Consulting</div>
-              <div className="meta">{state.goldQueue.find(q => q.title === 'Launch Consulting') ? 'Paused · In Gold queue' : 'Active'}</div>
-            </div>
-          </div>
           <div className="cat" style={{ borderColor: categories.finances.color }}>
             <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
             <div className="project pulse">
@@ -649,7 +860,7 @@
     const App = () => {
       const [chapter, setChapter] = React.useState(0);
       const [table, setTable] = React.useState({
-        gold: { title: 'Launch Consulting', meta: 'Purpose · Gold · 60%', category: 'purpose', progress: 0.6 },
+        gold: { title: 'Launch Consulting', meta: 'Finances · Gold · 60%', category: 'finances', progress: 0.6 },
         silver: { title: 'Set Up Automated Prescription Delivery', meta: 'Health · Silver · 71%', category: 'health', progress: 0.71 },
         bronze: { title: 'Fix leaky kitchen faucet', meta: 'Home · Bronze · +11 more' },
       });
@@ -689,7 +900,7 @@
 
       const reactivateConsulting = () => {
         setTable({
-          gold: { title: 'Launch Consulting', meta: 'Purpose · Gold · 60%', category: 'purpose', progress: 0.6 },
+          gold: { title: 'Launch Consulting', meta: 'Finances · Gold · 60%', category: 'finances', progress: 0.6 },
           silver: { title: 'Set Up Automated Prescription Delivery', meta: 'Health · Silver · 71%', category: 'health', progress: 0.71 },
           bronze: table.bronze,
         });
@@ -740,7 +951,7 @@
           title: 'Life Map · Activation lands',
           lines: [
             { text: 'Table updated · Consulting preserved.' },
-            { text: 'Camper is now Gold. Consulting sits paused in Purpose. Finance shows dual presence.' },
+            { text: 'Camper is now Gold. Consulting sits paused inside Finances. Finance shows dual presence.' },
           ],
           prompts: [
             { label: 'Open Project Board', onClick: () => setChapter(4) },
