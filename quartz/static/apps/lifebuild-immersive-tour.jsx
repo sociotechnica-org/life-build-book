@@ -965,6 +965,56 @@ const ReactDOM = window.ReactDOM;
         }
       };
 
+      const normalizeProject = (project) => {
+        const safePriority = ['gold', 'silver', 'bronze'].includes(project?.priority) ? project.priority : 'bronze';
+        const safeStatus = project?.status === 'active' ? 'active' : 'ongoing';
+        const safeCategory = project?.category || 'project';
+        const staffing = project?.staffing || {};
+        return {
+          ...project,
+          title: project?.title || 'Untitled Project',
+          description: project?.description || '',
+          priority: safePriority,
+          status: safeStatus,
+          category: safeCategory,
+          staffing: {
+            assigned: Boolean(staffing.assigned),
+            agentId: staffing.agentId || null,
+            agentName: staffing.agentName || null,
+            helpDescription: staffing.helpDescription || null,
+            assignedAt: staffing.assignedAt || null,
+          },
+        };
+      };
+
+      const normalizeAgent = (agent) => {
+        const total = Math.max(1, Number(agent?.capacity?.total) || 3);
+        const used = Math.min(Math.max(0, Number(agent?.capacity?.used) || 0), total);
+        return {
+          ...agent,
+          name: agent?.name || 'Custom Agent',
+          specialization: agent?.specialization || 'Generalist',
+          description: agent?.description || '',
+          avatar: agent?.avatar || '🤖',
+          currentProjects: Array.isArray(agent?.currentProjects) ? agent.currentProjects : [],
+          capacity: {
+            total,
+            used,
+            available: total - used,
+          },
+        };
+      };
+
+      const sanitizeProjects = (data) => {
+        if (!Array.isArray(data)) return MOCK_PROJECTS.map(normalizeProject);
+        return data.map(normalizeProject);
+      };
+
+      const sanitizeAgents = (data) => {
+        if (!Array.isArray(data)) return MOCK_AGENTS.map(normalizeAgent);
+        return data.map(normalizeAgent);
+      };
+
       // Wizard state
       const [currentStep, setCurrentStep] = React.useState(1); // 1, 2, or 3
       const [selectedProject, setSelectedProject] = React.useState(null);
@@ -972,8 +1022,8 @@ const ReactDOM = window.ReactDOM;
       const [selectedAgent, setSelectedAgent] = React.useState(null);
 
       // Data state
-      const [projects, setProjects] = React.useState(() => loadFromStorage('rosterRoom_projects', MOCK_PROJECTS));
-      const [agents, setAgents] = React.useState(() => loadFromStorage('rosterRoom_agents', MOCK_AGENTS));
+      const [projects, setProjects] = React.useState(() => sanitizeProjects(loadFromStorage('rosterRoom_projects', MOCK_PROJECTS)));
+      const [agents, setAgents] = React.useState(() => sanitizeAgents(loadFromStorage('rosterRoom_agents', MOCK_AGENTS)));
 
       // UI state
       const [searchTerm, setSearchTerm] = React.useState('');
@@ -1297,8 +1347,7 @@ const ReactDOM = window.ReactDOM;
 
       // Unstaff Project Action
       const handleUnstaffProject = (project) => {
-        const agent = agents.find(a => a.id === project.staffing.agentId);
-        const categoryLabel = project.category.charAt(0).toUpperCase() + project.category.slice(1);
+        const agent = agents.find(a => a.id === project.staffing?.agentId);
 
         // Update project
         setProjects(prevProjects =>

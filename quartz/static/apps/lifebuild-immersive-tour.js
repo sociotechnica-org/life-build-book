@@ -598,12 +598,57 @@
         return defaultValue;
       }
     };
+    const normalizeProject = (project) => {
+      const safePriority = ["gold", "silver", "bronze"].includes(project == null ? void 0 : project.priority) ? project.priority : "bronze";
+      const safeStatus = (project == null ? void 0 : project.status) === "active" ? "active" : "ongoing";
+      const safeCategory = (project == null ? void 0 : project.category) || "project";
+      const staffing = (project == null ? void 0 : project.staffing) || {};
+      return __spreadProps(__spreadValues({}, project), {
+        title: (project == null ? void 0 : project.title) || "Untitled Project",
+        description: (project == null ? void 0 : project.description) || "",
+        priority: safePriority,
+        status: safeStatus,
+        category: safeCategory,
+        staffing: {
+          assigned: Boolean(staffing.assigned),
+          agentId: staffing.agentId || null,
+          agentName: staffing.agentName || null,
+          helpDescription: staffing.helpDescription || null,
+          assignedAt: staffing.assignedAt || null
+        }
+      });
+    };
+    const normalizeAgent = (agent) => {
+      var _a, _b;
+      const total = Math.max(1, Number((_a = agent == null ? void 0 : agent.capacity) == null ? void 0 : _a.total) || 3);
+      const used = Math.min(Math.max(0, Number((_b = agent == null ? void 0 : agent.capacity) == null ? void 0 : _b.used) || 0), total);
+      return __spreadProps(__spreadValues({}, agent), {
+        name: (agent == null ? void 0 : agent.name) || "Custom Agent",
+        specialization: (agent == null ? void 0 : agent.specialization) || "Generalist",
+        description: (agent == null ? void 0 : agent.description) || "",
+        avatar: (agent == null ? void 0 : agent.avatar) || "\u{1F916}",
+        currentProjects: Array.isArray(agent == null ? void 0 : agent.currentProjects) ? agent.currentProjects : [],
+        capacity: {
+          total,
+          used,
+          available: total - used
+        }
+      });
+    };
+    const sanitizeProjects = (data) => {
+      if (!Array.isArray(data)) return MOCK_PROJECTS.map(normalizeProject);
+      return data.map(normalizeProject);
+    };
+    const sanitizeAgents = (data) => {
+      if (!Array.isArray(data)) return MOCK_AGENTS.map(normalizeAgent);
+      return data.map(normalizeAgent);
+    };
     const [currentStep, setCurrentStep] = React.useState(1);
     const [selectedProject, setSelectedProject] = React.useState(null);
     const [helpDescription, setHelpDescription] = React.useState("");
     const [selectedAgent, setSelectedAgent] = React.useState(null);
-    const [projects, setProjects] = React.useState(() => loadFromStorage("rosterRoom_projects", MOCK_PROJECTS));
-    const [agents, setAgents] = React.useState(() => loadFromStorage("rosterRoom_agents", MOCK_AGENTS));
+    const [projects, setProjects] = React.useState(() => sanitizeProjects(loadFromStorage("rosterRoom_projects", MOCK_PROJECTS)));
+    const [agents, setAgents] = React.useState(() => sanitizeAgents(loadFromStorage("rosterRoom_agents", MOCK_AGENTS)));
     const [searchTerm, setSearchTerm] = React.useState("");
     const [projectSortBy, setProjectSortBy] = React.useState("priority");
     const [reviewSortBy, setReviewSortBy] = React.useState("priority");
@@ -868,8 +913,10 @@
       closeAgentForm();
     };
     const handleUnstaffProject = (project) => {
-      const agent = agents.find((a) => a.id === project.staffing.agentId);
-      const categoryLabel = project.category.charAt(0).toUpperCase() + project.category.slice(1);
+      const agent = agents.find((a) => {
+        var _a;
+        return a.id === ((_a = project.staffing) == null ? void 0 : _a.agentId);
+      });
       setProjects(
         (prevProjects) => prevProjects.map(
           (p) => p.id === project.id ? __spreadProps(__spreadValues({}, p), {
