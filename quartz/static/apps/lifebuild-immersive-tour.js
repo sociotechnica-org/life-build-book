@@ -18,6 +18,8 @@
     return a;
   };
   var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
+  const React = window.React;
+  const ReactDOM = window.ReactDOM;
   const categories = {
     home: { name: "Home", color: "var(--home)" },
     finances: { name: "Finances", color: "var(--finances)" },
