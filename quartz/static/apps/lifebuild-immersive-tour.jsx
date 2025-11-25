@@ -980,6 +980,14 @@ const ReactDOM = window.ReactDOM;
       const [sortBy, setSortBy] = React.useState('priority');
       const [agentFilter, setAgentFilter] = React.useState('all');
       const [isCreatingAgent, setIsCreatingAgent] = React.useState(false);
+      const blankAgentForm = () => ({
+        name: '',
+        specialization: '',
+        description: '',
+        capacity: '3'
+      });
+      const [agentForm, setAgentForm] = React.useState(blankAgentForm);
+      const [agentFormErrors, setAgentFormErrors] = React.useState({});
       const [successMessage, setSuccessMessage] = React.useState('');
       const [expandedAgentId, setExpandedAgentId] = React.useState(null);
 
@@ -1058,6 +1066,85 @@ const ReactDOM = window.ReactDOM;
         return filtered;
       }, [agents, agentFilter]);
 
+      const resetAgentFormState = () => {
+        setAgentForm(blankAgentForm());
+        setAgentFormErrors({});
+      };
+
+      const closeAgentForm = () => {
+        resetAgentFormState();
+        setIsCreatingAgent(false);
+      };
+
+      const handleAgentFieldChange = (field, value) => {
+        setAgentForm((prev) => ({ ...prev, [field]: value }));
+        if (agentFormErrors[field]) {
+          setAgentFormErrors((prev) => {
+            const next = { ...prev };
+            delete next[field];
+            return next;
+          });
+        }
+      };
+
+      const getAgentAvatar = (text = '') => {
+        const normalized = text.toLowerCase();
+        if (normalized.includes('finance') || normalized.includes('money') || normalized.includes('budget')) return '💰';
+        if (normalized.includes('market') || normalized.includes('brand') || normalized.includes('growth')) return '📣';
+        if (normalized.includes('ops') || normalized.includes('system') || normalized.includes('process')) return '🛠️';
+        if (normalized.includes('health') || normalized.includes('wellness') || normalized.includes('care')) return '🌿';
+        if (normalized.includes('home') || normalized.includes('family')) return '🏡';
+        if (normalized.includes('content') || normalized.includes('writing') || normalized.includes('copy')) return '📝';
+        if (normalized.includes('design') || normalized.includes('creative')) return '🎨';
+        return '🤖';
+      };
+
+      const validateAgentForm = () => {
+        const errors = {};
+        if (!agentForm.name.trim()) {
+          errors.name = 'Give your agent a name';
+        }
+        if (!agentForm.specialization.trim()) {
+          errors.specialization = 'Describe their specialty';
+        }
+        setAgentFormErrors(errors);
+        return Object.keys(errors).length === 0;
+      };
+
+      const handleCreateCustomAgent = () => {
+        if (!validateAgentForm()) {
+          return;
+        }
+
+        const name = agentForm.name.trim();
+        const specialization = agentForm.specialization.trim();
+        const description = agentForm.description.trim();
+        const capacity = Math.max(1, Math.min(5, parseInt(agentForm.capacity, 10) || 1));
+
+        const newAgent = {
+          id: `agent-custom-${Date.now()}`,
+          name,
+          specialization,
+          description: description || `Specialized in ${specialization}`,
+          capacity: { total: capacity, used: 0, available: capacity },
+          currentProjects: [],
+          avatar: getAgentAvatar(`${specialization} ${name}`),
+          createdAt: Date.now()
+        };
+
+        setAgents(prev => [newAgent, ...prev]);
+
+        if (currentStep === 2 && selectedProject) {
+          handleAssignAgent(newAgent);
+          return;
+        }
+
+        setSelectedAgent(newAgent);
+        setSuccessMessage(`✓ ${newAgent.name} added to roster`);
+        setTimeout(() => setSuccessMessage(''), 3000);
+        closeAgentForm();
+      };
+
       // Wizard navigation handlers
       const handleSelectProject = (project) => {
         setSelectedProject(project);
@@ -1065,6 +1152,7 @@ const ReactDOM = window.ReactDOM;
       };
 
       const handleBack = () => {
+        closeAgentForm();
         if (currentStep === 2) {
           setSelectedProject(null);
           setHelpDescription('');
@@ -1076,6 +1164,7 @@ const ReactDOM = window.ReactDOM;
       };
 
       const handleCancel = () => {
+        closeAgentForm();
         setCurrentStep(1);
         setSelectedProject(null);
         setHelpDescription('');
@@ -1084,6 +1173,7 @@ const ReactDOM = window.ReactDOM;
       };
 
       const handleStaffAnother = () => {
+        closeAgentForm();
         setSelectedProject(null);
         setHelpDescription('');
         setSelectedAgent(null);
@@ -1144,6 +1234,7 @@ const ReactDOM = window.ReactDOM;
         setSelectedProject(null);
         setHelpDescription('');
         setSelectedAgent(null);
+        closeAgentForm();
       };
 
       // Unstaff Project Action
@@ -1485,7 +1576,22 @@ const ReactDOM = window.ReactDOM;
                     {/* Create Custom Agent Card */}
                     <div className={`agent-card create-agent-card ${isCreatingAgent ? 'expanded' : ''}`}>
                       {!isCreatingAgent ? (
-                        <div onClick={() => setIsCreatingAgent(true)} style={{cursor: 'pointer', textAlign: 'center', width: '100%'}}>
+                        <div
+                          className="create-agent-trigger"
+                          role="button"
+                          tabIndex={0}
+                          onClick={() => {
+                            resetAgentFormState();
+                            setIsCreatingAgent(true);
+                          }}
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter' || event.key === ' ') {
+                              event.preventDefault();
+                              resetAgentFormState();
+                              setIsCreatingAgent(true);
+                            }
+                          }}
+                        >
                           <div className="create-agent-icon">+</div>
                           <div className="create-agent-label">Create Custom Agent</div>
                           <div className="create-agent-hint">Tailored to your needs</div>
@@ -1498,28 +1604,32 @@ const ReactDOM = window.ReactDOM;
                               <span style={{fontSize: '1.5rem'}}>👨‍💼</span>
                               <strong>Devin here!</strong>
                             </div>
-                            <p>I'll help you create an agent tailored to your specific needs. Just fill in the details below.</p>
+                            <p>I'm here to help you tune existing agents and create new ones tailored to your projects.</p>
                           </div>
 
                           {/* Form Fields */}
-                          <div className="form-row">
+                          <div className={`form-row ${agentFormErrors.name ? 'has-error' : ''}`}>
                             <label>Agent Name *</label>
                             <input
                               type="text"
                               placeholder="e.g., Marketing Specialist"
                               maxLength={50}
-                              id="new-agent-name"
+                              value={agentForm.name}
+                              onChange={(e) => handleAgentFieldChange('name', e.target.value)}
                             />
+                            {agentFormErrors.name && <span className="form-error">{agentFormErrors.name}</span>}
                           </div>
 
-                          <div className="form-row">
+                          <div className={`form-row ${agentFormErrors.specialization ? 'has-error' : ''}`}>
                             <label>Specialization *</label>
                             <input
                               type="text"
                               placeholder="e.g., Social Media & Content Marketing"
                               maxLength={50}
-                              id="new-agent-specialization"
+                              value={agentForm.specialization}
+                              onChange={(e) => handleAgentFieldChange('specialization', e.target.value)}
                             />
+                            {agentFormErrors.specialization && <span className="form-error">{agentFormErrors.specialization}</span>}
                           </div>
 
                           <div className="form-row">
@@ -1528,16 +1638,21 @@ const ReactDOM = window.ReactDOM;
                               placeholder="What does this agent help with?"
                               maxLength={200}
                               rows={3}
-                              id="new-agent-description"
+                              value={agentForm.description}
+                              onChange={(e) => handleAgentFieldChange('description', e.target.value)}
                             />
+                            <div className="char-count subtle">{agentForm.description.length}/200</div>
                           </div>
 
                           <div className="form-row">
                             <label>Capacity (max projects)</label>
-                            <select id="new-agent-capacity">
+                            <select
+                              value={agentForm.capacity}
+                              onChange={(e) => handleAgentFieldChange('capacity', e.target.value)}
+                            >
                               <option value="1">1 project</option>
                               <option value="2">2 projects</option>
-                              <option value="3" selected>3 projects</option>
+                              <option value="3">3 projects</option>
                               <option value="4">4 projects</option>
                               <option value="5">5 projects</option>
                             </select>
@@ -1546,56 +1661,22 @@ const ReactDOM = window.ReactDOM;
                           {/* Form Actions */}
                           <div className="form-actions">
                             <button
+                              type="button"
                               className="btn-primary"
-                              onClick={() => {
-                                const name = document.getElementById('new-agent-name').value.trim();
-                                const specialization = document.getElementById('new-agent-specialization').value.trim();
-                                const description = document.getElementById('new-agent-description').value.trim();
-                                const capacity = parseInt(document.getElementById('new-agent-capacity').value);
-
-                                if (!name || !specialization) {
-                                  alert('Please fill in Agent Name and Specialization');
-                                  return;
-                                }
-
-                                // Create new agent
-                                const newAgent = {
-                                  id: `agent-custom-${Date.now()}`,
-                                  name: name,
-                                  specialization: specialization,
-                                  description: description || `Specialized in ${specialization}`,
-                                  capacity: { total: capacity, used: 0, available: capacity },
-                                  currentProjects: [],
-                                  avatar: '👤',
-                                  createdAt: Date.now()
-                                };
-
-                                // Add to agents list
-                                setAgents(prev => [...prev, newAgent]);
-
-                                // If in Step 2, auto-assign to current project
-                                if (currentStep === 2 && selectedProject) {
-                                  handleAssignAgent(newAgent);
-                                }
-
-                                // Reset form
-                                setIsCreatingAgent(false);
-                                document.getElementById('new-agent-name').value = '';
-                                document.getElementById('new-agent-specialization').value = '';
-                                document.getElementById('new-agent-description').value = '';
-                                document.getElementById('new-agent-capacity').value = '3';
+                              disabled={!agentForm.name.trim() || !agentForm.specialization.trim()}
+                              onClick={(event) => {
+                                event.preventDefault();
+                                handleCreateCustomAgent();
                               }}
                             >
-                              {currentStep === 2 ? 'Create & Assign to Project' : 'Create Agent'}
+                              {currentStep === 2 && selectedProject ? `Create & Assign to ${selectedProject.title}` : 'Create Agent'}
                             </button>
                             <button
+                              type="button"
                               className="btn-secondary"
-                              onClick={() => {
-                                setIsCreatingAgent(false);
-                                document.getElementById('new-agent-name').value = '';
-                                document.getElementById('new-agent-specialization').value = '';
-                                document.getElementById('new-agent-description').value = '';
-                                document.getElementById('new-agent-capacity').value = '3';
+                              onClick={(event) => {
+                                event.preventDefault();
+                                closeAgentForm();
                               }}
                             >
                               Cancel

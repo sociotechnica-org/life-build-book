@@ -608,6 +608,14 @@
     const [sortBy, setSortBy] = React.useState("priority");
     const [agentFilter, setAgentFilter] = React.useState("all");
     const [isCreatingAgent, setIsCreatingAgent] = React.useState(false);
+    const blankAgentForm = () => ({
+      name: "",
+      specialization: "",
+      description: "",
+      capacity: "3"
+    });
+    const [agentForm, setAgentForm] = React.useState(blankAgentForm);
+    const [agentFormErrors, setAgentFormErrors] = React.useState({});
     const [successMessage, setSuccessMessage] = React.useState("");
     const [expandedAgentId, setExpandedAgentId] = React.useState(null);
     React.useEffect(() => {
@@ -665,11 +673,80 @@
       }
       return filtered;
     }, [agents, agentFilter]);
+    const resetAgentFormState = () => {
+      setAgentForm(blankAgentForm());
+      setAgentFormErrors({});
+    };
+    const closeAgentForm = () => {
+      resetAgentFormState();
+      setIsCreatingAgent(false);
+    };
+    const handleAgentFieldChange = (field, value) => {
+      setAgentForm((prev) => __spreadProps(__spreadValues({}, prev), { [field]: value }));
+      if (agentFormErrors[field]) {
+        setAgentFormErrors((prev) => {
+          const next = __spreadValues({}, prev);
+          delete next[field];
+          return next;
+        });
+      }
+    };
+    const getAgentAvatar = (text = "") => {
+      const normalized = text.toLowerCase();
+      if (normalized.includes("finance") || normalized.includes("money") || normalized.includes("budget")) return "\u{1F4B0}";
+      if (normalized.includes("market") || normalized.includes("brand") || normalized.includes("growth")) return "\u{1F4E3}";
+      if (normalized.includes("ops") || normalized.includes("system") || normalized.includes("process")) return "\u{1F6E0}\uFE0F";
+      if (normalized.includes("health") || normalized.includes("wellness") || normalized.includes("care")) return "\u{1F33F}";
+      if (normalized.includes("home") || normalized.includes("family")) return "\u{1F3E1}";
+      if (normalized.includes("content") || normalized.includes("writing") || normalized.includes("copy")) return "\u{1F4DD}";
+      if (normalized.includes("design") || normalized.includes("creative")) return "\u{1F3A8}";
+      return "\u{1F916}";
+    };
+    const validateAgentForm = () => {
+      const errors = {};
+      if (!agentForm.name.trim()) {
+        errors.name = "Give your agent a name";
+      }
+      if (!agentForm.specialization.trim()) {
+        errors.specialization = "Describe their specialty";
+      }
+      setAgentFormErrors(errors);
+      return Object.keys(errors).length === 0;
+    };
+    const handleCreateCustomAgent = () => {
+      if (!validateAgentForm()) {
+        return;
+      }
+      const name = agentForm.name.trim();
+      const specialization = agentForm.specialization.trim();
+      const description = agentForm.description.trim();
+      const capacity = Math.max(1, Math.min(5, parseInt(agentForm.capacity, 10) || 1));
+      const newAgent = {
+        id: `agent-custom-${Date.now()}`,
+        name,
+        specialization,
+        description: description || `Specialized in ${specialization}`,
+        capacity: { total: capacity, used: 0, available: capacity },
+        currentProjects: [],
+        avatar: getAgentAvatar(`${specialization} ${name}`),
+        createdAt: Date.now()
+      };
+      setAgents((prev) => [newAgent, ...prev]);
+      if (currentStep === 2 && selectedProject) {
+        handleAssignAgent(newAgent);
+        return;
+      }
+      setSelectedAgent(newAgent);
+      setSuccessMessage(`\u2713 ${newAgent.name} added to roster`);
+      setTimeout(() => setSuccessMessage(""), 3e3);
+      closeAgentForm();
+    };
     const handleSelectProject = (project) => {
       setSelectedProject(project);
       setCurrentStep(2);
     };
     const handleBack = () => {
+      closeAgentForm();
       if (currentStep === 2) {
         setSelectedProject(null);
         setHelpDescription("");
@@ -680,6 +757,7 @@
       }
     };
     const handleCancel = () => {
+      closeAgentForm();
       setCurrentStep(1);
       setSelectedProject(null);
       setHelpDescription("");
@@ -687,6 +765,7 @@
       setSearchTerm("");
     };
     const handleStaffAnother = () => {
+      closeAgentForm();
       setSelectedProject(null);
       setHelpDescription("");
       setSelectedAgent(null);
@@ -728,6 +807,7 @@
       setSelectedProject(null);
       setHelpDescription("");
       setSelectedAgent(null);
+      closeAgentForm();
     };
     const handleUnstaffProject = (project) => {
       const agent = agents.find((a) => a.id === project.staffing.agentId);
@@ -857,75 +937,85 @@
         rows: 3,
         maxLength: 500
       }
-    ), /* @__PURE__ */ React.createElement("div", { className: "char-count" }, helpDescription.length, "/500")), /* @__PURE__ */ React.createElement("div", { className: "agent-selection-section" }, /* @__PURE__ */ React.createElement("h3", null, "Choose an Agent"), /* @__PURE__ */ React.createElement("div", { className: "agent-filters" }, /* @__PURE__ */ React.createElement("button", { className: `filter-btn ${agentFilter === "all" ? "active" : ""}`, onClick: () => setAgentFilter("all") }, "All Agents"), /* @__PURE__ */ React.createElement("button", { className: `filter-btn ${agentFilter === "available" ? "active" : ""}`, onClick: () => setAgentFilter("available") }, "Available Only")), /* @__PURE__ */ React.createElement("div", { className: "agent-list" }, /* @__PURE__ */ React.createElement("div", { className: `agent-card create-agent-card ${isCreatingAgent ? "expanded" : ""}` }, !isCreatingAgent ? /* @__PURE__ */ React.createElement("div", { onClick: () => setIsCreatingAgent(true), style: { cursor: "pointer", textAlign: "center", width: "100%" } }, /* @__PURE__ */ React.createElement("div", { className: "create-agent-icon" }, "+"), /* @__PURE__ */ React.createElement("div", { className: "create-agent-label" }, "Create Custom Agent"), /* @__PURE__ */ React.createElement("div", { className: "create-agent-hint" }, "Tailored to your needs")) : /* @__PURE__ */ React.createElement("div", { className: "agent-form" }, /* @__PURE__ */ React.createElement("div", { className: "devin-callout" }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "1.5rem" } }, "\u{1F468}\u200D\u{1F4BC}"), /* @__PURE__ */ React.createElement("strong", null, "Devin here!")), /* @__PURE__ */ React.createElement("p", null, "I'll help you create an agent tailored to your specific needs. Just fill in the details below.")), /* @__PURE__ */ React.createElement("div", { className: "form-row" }, /* @__PURE__ */ React.createElement("label", null, "Agent Name *"), /* @__PURE__ */ React.createElement(
+    ), /* @__PURE__ */ React.createElement("div", { className: "char-count" }, helpDescription.length, "/500")), /* @__PURE__ */ React.createElement("div", { className: "agent-selection-section" }, /* @__PURE__ */ React.createElement("h3", null, "Choose an Agent"), /* @__PURE__ */ React.createElement("div", { className: "agent-filters" }, /* @__PURE__ */ React.createElement("button", { className: `filter-btn ${agentFilter === "all" ? "active" : ""}`, onClick: () => setAgentFilter("all") }, "All Agents"), /* @__PURE__ */ React.createElement("button", { className: `filter-btn ${agentFilter === "available" ? "active" : ""}`, onClick: () => setAgentFilter("available") }, "Available Only")), /* @__PURE__ */ React.createElement("div", { className: "agent-list" }, /* @__PURE__ */ React.createElement("div", { className: `agent-card create-agent-card ${isCreatingAgent ? "expanded" : ""}` }, !isCreatingAgent ? /* @__PURE__ */ React.createElement(
+      "div",
+      {
+        className: "create-agent-trigger",
+        role: "button",
+        tabIndex: 0,
+        onClick: () => {
+          resetAgentFormState();
+          setIsCreatingAgent(true);
+        },
+        onKeyDown: (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            resetAgentFormState();
+            setIsCreatingAgent(true);
+          }
+        }
+      },
+      /* @__PURE__ */ React.createElement("div", { className: "create-agent-icon" }, "+"),
+      /* @__PURE__ */ React.createElement("div", { className: "create-agent-label" }, "Create Custom Agent"),
+      /* @__PURE__ */ React.createElement("div", { className: "create-agent-hint" }, "Tailored to your needs")
+    ) : /* @__PURE__ */ React.createElement("div", { className: "agent-form" }, /* @__PURE__ */ React.createElement("div", { className: "devin-callout" }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "1.5rem" } }, "\u{1F468}\u200D\u{1F4BC}"), /* @__PURE__ */ React.createElement("strong", null, "Devin here!")), /* @__PURE__ */ React.createElement("p", null, "I'm here to help you tune existing agents and create new ones tailored to your projects.")), /* @__PURE__ */ React.createElement("div", { className: `form-row ${agentFormErrors.name ? "has-error" : ""}` }, /* @__PURE__ */ React.createElement("label", null, "Agent Name *"), /* @__PURE__ */ React.createElement(
       "input",
       {
         type: "text",
         placeholder: "e.g., Marketing Specialist",
         maxLength: 50,
-        id: "new-agent-name"
+        value: agentForm.name,
+        onChange: (e) => handleAgentFieldChange("name", e.target.value)
       }
-    )), /* @__PURE__ */ React.createElement("div", { className: "form-row" }, /* @__PURE__ */ React.createElement("label", null, "Specialization *"), /* @__PURE__ */ React.createElement(
+    ), agentFormErrors.name && /* @__PURE__ */ React.createElement("span", { className: "form-error" }, agentFormErrors.name)), /* @__PURE__ */ React.createElement("div", { className: `form-row ${agentFormErrors.specialization ? "has-error" : ""}` }, /* @__PURE__ */ React.createElement("label", null, "Specialization *"), /* @__PURE__ */ React.createElement(
       "input",
       {
         type: "text",
         placeholder: "e.g., Social Media & Content Marketing",
         maxLength: 50,
-        id: "new-agent-specialization"
+        value: agentForm.specialization,
+        onChange: (e) => handleAgentFieldChange("specialization", e.target.value)
       }
-    )), /* @__PURE__ */ React.createElement("div", { className: "form-row" }, /* @__PURE__ */ React.createElement("label", null, "Description (optional)"), /* @__PURE__ */ React.createElement(
+    ), agentFormErrors.specialization && /* @__PURE__ */ React.createElement("span", { className: "form-error" }, agentFormErrors.specialization)), /* @__PURE__ */ React.createElement("div", { className: "form-row" }, /* @__PURE__ */ React.createElement("label", null, "Description (optional)"), /* @__PURE__ */ React.createElement(
       "textarea",
       {
         placeholder: "What does this agent help with?",
         maxLength: 200,
         rows: 3,
-        id: "new-agent-description"
+        value: agentForm.description,
+        onChange: (e) => handleAgentFieldChange("description", e.target.value)
       }
-    )), /* @__PURE__ */ React.createElement("div", { className: "form-row" }, /* @__PURE__ */ React.createElement("label", null, "Capacity (max projects)"), /* @__PURE__ */ React.createElement("select", { id: "new-agent-capacity" }, /* @__PURE__ */ React.createElement("option", { value: "1" }, "1 project"), /* @__PURE__ */ React.createElement("option", { value: "2" }, "2 projects"), /* @__PURE__ */ React.createElement("option", { value: "3", selected: true }, "3 projects"), /* @__PURE__ */ React.createElement("option", { value: "4" }, "4 projects"), /* @__PURE__ */ React.createElement("option", { value: "5" }, "5 projects"))), /* @__PURE__ */ React.createElement("div", { className: "form-actions" }, /* @__PURE__ */ React.createElement(
+    ), /* @__PURE__ */ React.createElement("div", { className: "char-count subtle" }, agentForm.description.length, "/200")), /* @__PURE__ */ React.createElement("div", { className: "form-row" }, /* @__PURE__ */ React.createElement("label", null, "Capacity (max projects)"), /* @__PURE__ */ React.createElement(
+      "select",
+      {
+        value: agentForm.capacity,
+        onChange: (e) => handleAgentFieldChange("capacity", e.target.value)
+      },
+      /* @__PURE__ */ React.createElement("option", { value: "1" }, "1 project"),
+      /* @__PURE__ */ React.createElement("option", { value: "2" }, "2 projects"),
+      /* @__PURE__ */ React.createElement("option", { value: "3" }, "3 projects"),
+      /* @__PURE__ */ React.createElement("option", { value: "4" }, "4 projects"),
+      /* @__PURE__ */ React.createElement("option", { value: "5" }, "5 projects")
+    )), /* @__PURE__ */ React.createElement("div", { className: "form-actions" }, /* @__PURE__ */ React.createElement(
       "button",
       {
+        type: "button",
         className: "btn-primary",
-        onClick: () => {
-          const name = document.getElementById("new-agent-name").value.trim();
-          const specialization = document.getElementById("new-agent-specialization").value.trim();
-          const description = document.getElementById("new-agent-description").value.trim();
-          const capacity = parseInt(document.getElementById("new-agent-capacity").value);
-          if (!name || !specialization) {
-            alert("Please fill in Agent Name and Specialization");
-            return;
-          }
-          const newAgent = {
-            id: `agent-custom-${Date.now()}`,
-            name,
-            specialization,
-            description: description || `Specialized in ${specialization}`,
-            capacity: { total: capacity, used: 0, available: capacity },
-            currentProjects: [],
-            avatar: "\u{1F464}",
-            createdAt: Date.now()
-          };
-          setAgents((prev) => [...prev, newAgent]);
-          if (currentStep === 2 && selectedProject) {
-            handleAssignAgent(newAgent);
-          }
-          setIsCreatingAgent(false);
-          document.getElementById("new-agent-name").value = "";
-          document.getElementById("new-agent-specialization").value = "";
-          document.getElementById("new-agent-description").value = "";
-          document.getElementById("new-agent-capacity").value = "3";
+        disabled: !agentForm.name.trim() || !agentForm.specialization.trim(),
+        onClick: (event) => {
+          event.preventDefault();
+          handleCreateCustomAgent();
         }
       },
-      currentStep === 2 ? "Create & Assign to Project" : "Create Agent"
+      currentStep === 2 && selectedProject ? `Create & Assign to ${selectedProject.title}` : "Create Agent"
     ), /* @__PURE__ */ React.createElement(
       "button",
       {
+        type: "button",
         className: "btn-secondary",
-        onClick: () => {
-          setIsCreatingAgent(false);
-          document.getElementById("new-agent-name").value = "";
-          document.getElementById("new-agent-specialization").value = "";
-          document.getElementById("new-agent-description").value = "";
-          document.getElementById("new-agent-capacity").value = "3";
+        onClick: (event) => {
+          event.preventDefault();
+          closeAgentForm();
         }
       },
       "Cancel"
