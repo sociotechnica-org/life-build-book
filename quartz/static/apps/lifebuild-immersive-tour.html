@@ -7,6 +7,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <script src="./lifebuild-data.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -669,6 +670,203 @@
       font-weight: 600;
       margin-top: 0.4rem;
     }
+    .project-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .search-input {
+      position: relative;
+    }
+    .search-input input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      padding: 0.65rem 2.5rem 0.65rem 0.9rem;
+      font-size: 0.95rem;
+      background: #fff;
+    }
+    .search-input button {
+      position: absolute;
+      right: 0.6rem;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .sort-pills {
+      display: flex;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+    .sort-pill {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.3rem 0.75rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: #fff;
+      color: var(--muted);
+      transition: background 120ms ease, color 120ms ease, border 120ms ease;
+    }
+    .sort-pill.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #2f2b27;
+      font-weight: 600;
+    }
+    .roster-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      align-items: start;
+    }
+    .roster-column {
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1rem;
+      background: #fff;
+      box-shadow: 0 12px 26px rgba(0,0,0,0.05);
+    }
+    .roster-column h4 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.6rem;
+    }
+    .roster-card {
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      padding: 0.75rem;
+      margin-bottom: 0.6rem;
+      background: #faf9f7;
+      cursor: pointer;
+      transition: border 140ms ease, box-shadow 140ms ease;
+    }
+    .roster-card.selected {
+      border-color: var(--gold);
+      box-shadow: 0 12px 24px rgba(216,166,80,0.25);
+      background: #fff;
+    }
+    .roster-card.disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .roster-meta {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-top: 0.35rem;
+    }
+    .roster-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+      margin-top: 0.4rem;
+    }
+    .roster-tags .chip {
+      font-size: 0.7rem;
+      padding: 0.1rem 0.45rem;
+    }
+    .match-panel {
+      border: 1px dashed var(--border);
+      border-radius: 0.85rem;
+      padding: 0.85rem;
+      background: rgba(255,255,255,0.9);
+      text-align: center;
+    }
+    .match-panel h5 {
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+    .match-panel .summary {
+      font-size: 0.9rem;
+      color: var(--muted);
+      min-height: 48px;
+    }
+    .match-panel button {
+      margin-top: 0.6rem;
+      width: 100%;
+    }
+    .match-list {
+      margin-top: 1rem;
+      border-top: 1px solid var(--border);
+      padding-top: 0.8rem;
+      text-align: left;
+    }
+    .match-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.4rem 0;
+      font-size: 0.9rem;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+    .match-item:last-child {
+      border-bottom: none;
+    }
+    .match-item button {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+    }
+    .create-agent-card {
+      border: 1px dashed var(--border);
+      border-radius: 0.85rem;
+      padding: 0.75rem;
+      margin-bottom: 0.6rem;
+      cursor: pointer;
+      background: rgba(255,255,255,0.7);
+      text-align: center;
+      transition: border 140ms ease, background 140ms ease;
+    }
+    .create-agent-card:hover {
+      border-color: var(--gold);
+      background: #fff;
+    }
+    .agent-form {
+      text-align: left;
+    }
+    .devin-callout {
+      margin-bottom: 0.6rem;
+      border-radius: 0.8rem;
+      background: rgba(197,206,216,0.2);
+      padding: 0.6rem;
+      font-size: 0.9rem;
+    }
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+    .form-row label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .form-row input,
+    .form-row textarea {
+      border: 1px solid var(--border);
+      border-radius: 0.7rem;
+      padding: 0.5rem 0.7rem;
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+    .form-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+    .roster-empty {
+      padding: 0.8rem;
+      border-radius: 0.8rem;
+      background: rgba(0,0,0,0.03);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
@@ -680,11 +878,6 @@
       health: { name: 'Health', color: 'var(--health)' },
     };
 
-    const bronzeStacks = {
-      home: { top: 'Fix leaky kitchen faucet', extra: 6 },
-      finances: { top: 'Return overdue library books', extra: 11 },
-    };
-
     const initialTasks = {
       todo: ['Deep clean interior', 'Research pricing', 'Repair cabinet latch', 'Write listing draft'],
       doing: [],
@@ -694,94 +887,102 @@
 
     const BRONZE_TABLE_LIMIT = 10;
 
-    const initialGoldQueue = [
-      {
-        title: 'Sell Camper Van',
-        meta: 'Finances · Gold · Crisis',
-        category: 'finances',
-        progress: 0.18,
-        stage: 'Stage 4 · Plans final',
-        status: 'Crisis trigger',
-        focus: '2-week sprint',
-      },
-      {
-        title: 'Build Backyard Deck',
-        meta: 'Home · Gold · 50%',
-        category: 'home',
-        progress: 0.5,
-        stage: 'Stage 3 · Materials ready',
-        status: 'Weather window in June',
-      },
-      {
-        title: 'Atlanta Studio Launch',
-        meta: 'Finances · Gold · 22%',
-        category: 'finances',
-        progress: 0.22,
-        stage: 'Stage 2 · Drafting',
-        status: 'Sponsor pitch next week',
-      },
-      {
-        title: 'Osaka Retreat Refresh',
-        meta: 'Home · Gold · 12%',
-        category: 'home',
-        progress: 0.12,
-        stage: 'Stage 2 · Drafting',
-        status: 'Design board ready',
-      },
-    ];
+    if (!window.LifeBuildData) {
+      throw new Error('LifeBuildData module missing');
+    }
 
-    const initialSilverQueue = [
-      {
-        title: 'Mortgage Refinance',
-        meta: 'Finances · Silver · 18%',
-        category: 'finances',
-        progress: 0.18,
-        stage: 'Stage 2 · Drafting',
-        status: 'Rate watch',
-        focus: 'Docs prep',
-      },
-      {
-        title: 'Automate Monthly Budget Review',
-        meta: 'Finances · Silver · 42%',
-        category: 'finances',
-        progress: 0.42,
-        stage: 'Stage 3 · Ready',
-        status: 'Needs 30-min block',
-      },
-      {
-        title: 'Family Travel Insurance Hub',
-        meta: 'Health · Silver · 10%',
-        category: 'health',
-        progress: 0.1,
-        stage: 'Stage 1 · Intake',
-        status: 'Collect policies',
-      },
-      {
-        title: 'House Maintenance Calendar',
-        meta: 'Home · Silver · 28%',
-        category: 'home',
-        progress: 0.28,
-        stage: 'Stage 2 · Drafting',
-        status: 'Waiting on vendor list',
-      },
-    ];
+    const {
+      projects: PROJECTS,
+      queues: projectQueues,
+      bronzeQueue: bronzeQueueSeed,
+      seeds,
+      rosterAssignments,
+      rosterAgents: rosterAgentsSeed,
+      rosterMatches: rosterMatchesSeed,
+    } = window.LifeBuildData;
 
-    const initialBronzeQueue = [
-      { title: 'Fix leaky kitchen faucet', meta: 'Home · Bronze · 45 min', stage: 'Care task', energy: 'Quick win' },
-      { title: 'Touch up paint in hallway', meta: 'Home · Bronze · 1 hr', stage: 'Care task', energy: 'Low focus' },
-      { title: 'Swap HVAC filter', meta: 'Home · Bronze · 10 min', stage: 'Care task', energy: 'Maintenance' },
-      { title: 'Clean out camper gear bin', meta: 'Home · Bronze · 30 min', stage: 'Care task', energy: 'Low focus' },
-      { title: 'Donate old clothes', meta: 'Home · Bronze · 1 trip', stage: 'Care task', energy: 'Weekend errand' },
-      { title: 'Back up family photos', meta: 'Home · Bronze · 40 min', stage: 'Care task', energy: 'Laptop task' },
-      { title: 'Order pantry staples', meta: 'Home · Bronze · 15 min', stage: 'Care task', energy: 'Laptop task' },
-      { title: 'Schedule gutter cleaning', meta: 'Home · Bronze · 5 min', stage: 'Care task', energy: 'Call / text' },
-      { title: 'Replace broken porch bulb', meta: 'Home · Bronze · 5 min', stage: 'Care task', energy: 'Quick win' },
-      { title: 'Update camper insurance card', meta: 'Finances · Bronze · 20 min', stage: 'Care task', energy: 'Laptop task' },
-      { title: 'Sharpen kitchen knives', meta: 'Home · Bronze · 30 min', stage: 'Queue', energy: 'Weekend errand' },
-      { title: 'Reset Wi-Fi passwords', meta: 'Home · Bronze · 30 min', stage: 'Queue', energy: 'Laptop task' },
-      { title: 'Mail birthday cards', meta: 'Home · Bronze · 20 min', stage: 'Queue', energy: 'Low focus' },
-      { title: 'Organize glove box', meta: 'Home · Bronze · 15 min', stage: 'Queue', energy: 'Car errand' },
-    ];
+    const cloneProject = (id) => (PROJECTS[id] ? { ...PROJECTS[id] } : null);
+    const hydrateQueue = (ids = []) => ids.map(cloneProject).filter(Boolean);
+
+    const initialGoldQueue = hydrateQueue(projectQueues?.gold);
+    const initialSilverQueue = hydrateQueue(projectQueues?.silver);
+    const initialBronzeQueue = (bronzeQueueSeed || []).map((card) => ({ ...card }));
+
+    const goldTableSeed = cloneProject(seeds?.goldTable) || {};
+    const silverTableSeed = cloneProject(seeds?.silverTable) || {};
+
+    const buildBronzeStacks = (list = []) => {
+      return list.reduce((acc, card) => {
+        if (!card.category) return acc;
+        if (!acc[card.category]) {
+          acc[card.category] = { top: card.title, extra: 0 };
+        } else {
+          acc[card.category].extra += 1;
+        }
+        return acc;
+      }, {});
+    };
+
+    const tierLabels = {
+      gold: 'Gold',
+      silver: 'Silver',
+      bronze: 'Bronze',
+    };
+
+    const tierWeights = {
+      gold: 0,
+      silver: 1,
+      bronze: 2,
+    };
+
+    const statusWeights = {
+      'Active on Table': 0,
+      'Queued': 1,
+      'Execution Queue': 2,
+    };
+
+    const buildRosterProjects = ({ table, goldQueue, silverQueue, bronzeQueue }) => {
+      const records = new Map();
+      const pushProject = (project, tier, status, extra = {}) => {
+        if (!project) return;
+        const id = project.id || `${tier}-${project.title}`;
+        if (records.has(id)) return;
+        const category = project.category || extra.category || 'home';
+        const description = extra.description || project.status || project.meta || project.stage || project.focus || extra.focus || '';
+        const focus = extra.focus || project.focus || project.status;
+        const tags = [...new Set([tierLabels[tier], categories[category]?.name, status, ...(extra.tags || [])].filter(Boolean))];
+        records.set(id, {
+          id,
+          title: project.title,
+          tier,
+          tierLabel: tierLabels[tier] || 'Bronze',
+          statusLabel: status,
+          category,
+          description,
+          focus,
+          tags,
+          priorityScore: (tierWeights[tier] ?? 99) * 10 + (statusWeights[status] ?? 9),
+        });
+      };
+
+      if (table.gold?.title) pushProject(table.gold, 'gold', 'Active on Table', { focus: table.gold.status });
+      goldQueue.forEach((project) => pushProject(project, 'gold', 'Queued', { focus: project.status }));
+      if (table.silver?.title) pushProject(table.silver, 'silver', 'Active on Table', { focus: table.silver.status });
+      silverQueue.forEach((project) => pushProject(project, 'silver', 'Queued', { focus: project.status }));
+      bronzeQueue.forEach((task) => {
+        pushProject(task, 'bronze', 'Execution Queue', {
+          description: task.meta,
+          focus: task.energy,
+          category: task.category,
+          tags: ['Care', task.energy],
+        });
+      });
+
+      return Array.from(records.values());
+    };
+
+    const rosterAgents = rosterAgentsSeed || [];
+    const rosterMatchesSeedSafe = rosterMatchesSeed || [];
 
     const getBronzeTableSummary = (list) => {
       if (!list.length) return { title: 'No Bronze cards', meta: 'Queue open' };
@@ -793,157 +994,10 @@
       };
     };
 
-    const goldTableSeed = {
-      title: 'Launch Consulting',
-      meta: 'Finances · Gold · 60%',
-      category: 'finances',
-      progress: 0.6,
-      stage: 'Stage 4 · Build',
-      status: 'On Table',
-    };
-
-    const silverTableSeed = {
-      title: 'Set Up Automated Prescription Delivery',
-      meta: 'Health · Silver · 71%',
-      category: 'health',
-      progress: 0.71,
-      stage: 'Stage 4 · Running',
-      status: 'System live',
-    };
-
     const automationBadges = {
       ai: { icon: '🤖', label: 'AI Delegated' },
       service: { icon: '📅', label: 'Scheduled Service' },
       system: { icon: '⚙️', label: 'Self-Running System' },
-    };
-
-    const plantedProjects = {
-      home: [
-        {
-          title: 'Lawn Care Service',
-          origin: 'Find and contract weekly lawn maintenance',
-          running: 'Crew arrives every Tuesday morning',
-          maintenance: 'Fully automated, just gets done',
-          status: 'Delegated to Service - Active',
-          automation: 'service',
-          statusDetail: 'Next scheduled: Tue · 7:30am',
-          attention: 'soon',
-        },
-        {
-          title: 'HVAC Maintenance Contract',
-          origin: 'Set up preventative maintenance plan',
-          running: 'Technician visits quarterly for filters and system checks',
-          maintenance: 'Automated reminders, service handles scheduling',
-          status: 'Delegated to Service - Scheduled',
-          automation: 'service',
-          statusDetail: 'Next scheduled: Jul 15',
-          attention: 'idle',
-        },
-        {
-          title: 'House Cleaning Service',
-          origin: 'Research and hire bi-weekly cleaners',
-          running: 'Cleaners come every other Friday',
-          maintenance: 'Fully delegated',
-          status: 'Delegated to Service - Active',
-          automation: 'service',
-          statusDetail: 'Next scheduled: May 10',
-          attention: 'soon',
-        },
-        {
-          title: 'Grocery Delivery Subscription',
-          origin: 'Set up recurring grocery delivery',
-          running: 'Weekly delivery of staples and meal kit ingredients',
-          maintenance: 'Adjust order occasionally',
-          status: 'Ongoing Service - Running',
-          automation: 'service',
-          statusDetail: 'Next delivery: May 3 · 8-10am',
-          attention: 'soon',
-        },
-      ],
-      finances: [
-        {
-          title: 'Automated Bill Payment System',
-          origin: 'Configure auto-pay for all recurring bills',
-          running: '12 bills paid automatically each month',
-          maintenance: 'Review charges quarterly',
-          status: 'Ongoing System - Running',
-          automation: 'system',
-          statusDetail: 'Last review: Apr 1',
-          attention: 'idle',
-        },
-        {
-          title: 'Retirement Contributions',
-          origin: 'Set up automatic investment transfers',
-          running: '$500 to IRA monthly, $200 to kids\' 529 plans',
-          maintenance: 'Annual contribution increase',
-          status: 'Ongoing System - Running',
-          automation: 'system',
-          statusDetail: 'Next increase review: Jan 5',
-          attention: 'idle',
-        },
-        {
-          title: 'Credit Card Rewards Optimization',
-          origin: 'Create system to maximize rewards across 3 cards',
-          running: 'AI tracks spending categories and flags optimal card usage',
-          maintenance: 'Director follows the recommendations',
-          status: 'Delegated to AI - Active',
-          automation: 'ai',
-          statusDetail: 'Last sync: 1 hour ago',
-          attention: 'soon',
-        },
-        {
-          title: 'Tax Document Organization',
-          origin: 'Build digital filing system for receipts and tax docs',
-          running: 'Documents auto-categorize and file throughout the year',
-          maintenance: 'Quarterly review for accuracy',
-          status: 'Ongoing System - Running',
-          automation: 'system',
-          statusDetail: 'Last sweep: 2 days ago',
-          attention: 'idle',
-        },
-        {
-          title: 'Insurance Policy Review Calendar',
-          origin: 'Set up annual review schedule for policies',
-          running: 'Reminders trigger 60 days before renewals',
-          maintenance: 'Director shops alternatives on schedule',
-          status: 'Ongoing System - Scheduled',
-          automation: 'system',
-          statusDetail: 'Next scheduled: Aug 1',
-          attention: 'idle',
-        },
-      ],
-      health: [
-        {
-          title: 'Prescription Delivery Concierge',
-          origin: 'Lock pharmacy auto-refill plus courier window',
-          running: 'Pharmacy and courier coordinate shipments automatically',
-          maintenance: 'Semi-annual review to confirm dosages',
-          status: 'Delegated to Service - Active',
-          automation: 'service',
-          statusDetail: 'Next delivery: Apr 28',
-          attention: 'soon',
-        },
-        {
-          title: 'Biometric Trends Dashboard',
-          origin: 'Connect wearables into single health insight hub',
-          running: 'AI ingests Oura, Whoop, and Apple Health data nightly',
-          maintenance: 'Weekly look-back adjusts recovery goals',
-          status: 'Delegated to AI - Active',
-          automation: 'ai',
-          statusDetail: 'Last sync: overnight',
-          attention: 'soon',
-        },
-        {
-          title: 'Trainer Accountability Sessions',
-          origin: 'Book remote strength coach for twice-weekly sessions',
-          running: 'Trainer runs Tue/Thu morning check-ins over video',
-          maintenance: 'Director confirms block quarterly',
-          status: 'Delegated to Service - Active',
-          automation: 'service',
-          statusDetail: 'Next session: Thu · 6am',
-          attention: 'soon',
-        },
-      ],
     };
 
     const TableBar = ({ table }) => (
@@ -978,8 +1032,9 @@
       </div>
     );
 
-    const LifeMap = ({ table }) => {
-      const catList = ['home', 'finances', 'health'];
+    const LifeMap = ({ table, bronzeQueue }) => {
+      const catList = Object.keys(categories);
+      const bronzeStacks = React.useMemo(() => buildBronzeStacks(bronzeQueue), [bronzeQueue]);
       return (
         <div className="card">
           <div className="map-grid">
@@ -1018,11 +1073,11 @@
                       </div>
                     )}
                   </div>
-                  {plantedProjects[id]?.length ? (
+                  {rosterAssignments?.[id]?.length ? (
                     <>
                       <div className="planted-label">Ongoing</div>
                       <div className="planted-grid">
-                        {plantedProjects[id].map((project) => {
+                        {rosterAssignments[id].map((project) => {
                           const badge = automationBadges[project.automation] || automationBadges.system;
                           return (
                             <div
@@ -1053,23 +1108,33 @@
       );
     };
 
-    const DraftingRoom = () => (
-      <div className="card">
-        <div className="project" style={{ borderColor: 'var(--gold)', boxShadow: '0 12px 26px rgba(216,166,80,0.2)' }}>
-          <div className="title">Sell Camper Van</div>
-          <div className="meta">Gold Candidate · Plans done · Crisis trigger</div>
-          <ul style={{ marginTop: '0.4rem', paddingLeft: '1rem', color: 'var(--muted)', fontSize: '0.95rem' }}>
-            <li>Clean + photo professionally</li>
-            <li>List on 3 platforms</li>
-            <li>Sell & transfer title in 3 weeks</li>
-          </ul>
+    const DraftingRoom = () => {
+      const camper = PROJECTS.sellCamperVan;
+      const consulting = PROJECTS.launchConsulting;
+      const formatMeta = (project) =>
+        [project?.meta, project?.stage, project?.status].filter(Boolean).join(' · ');
+      return (
+        <div className="card">
+          {camper && (
+            <div className="project" style={{ borderColor: 'var(--gold)', boxShadow: '0 12px 26px rgba(216,166,80,0.2)' }}>
+              <div className="title">{camper.title}</div>
+              <div className="meta">{formatMeta(camper)}</div>
+              <ul style={{ marginTop: '0.4rem', paddingLeft: '1rem', color: 'var(--muted)', fontSize: '0.95rem' }}>
+                <li>Clean + photo professionally</li>
+                <li>List on 3 platforms</li>
+                <li>Sell & transfer title in 3 weeks</li>
+              </ul>
+            </div>
+          )}
+          {consulting && (
+            <div className="project" style={{ marginTop: '0.7rem' }}>
+              <div className="title">{consulting.title}</div>
+              <div className="meta">{formatMeta(consulting)}</div>
+            </div>
+          )}
         </div>
-        <div className="project" style={{ marginTop: '0.7rem' }}>
-          <div className="title">Launch Consulting</div>
-          <div className="meta">Current Gold · 60% · Will pause if swapped</div>
-        </div>
-      </div>
-    );
+      );
+    };
 
     const SortingRoom = ({ state }) => {
       const laneConfig = [
@@ -1128,7 +1193,7 @@
                 {state.openQueue === lane.id && (
                   <div className="queue-body">
                     {lane.queue.map((card, idx) => (
-                      <div key={card.title} className="priority-card">
+                      <div key={card.id || card.title} className="priority-card">
                         <div className="priority-rank">#{idx + 1}</div>
                         <div className="priority-copy">
                           <div className="priority-title">{card.title}</div>
@@ -1142,7 +1207,7 @@
                         <div className="priority-actions">
                           <button className="pill-btn ghost" onClick={() => state.nudgeQueue(lane.id, idx, -1)} disabled={idx === 0}>Move up</button>
                           <button className="pill-btn ghost" onClick={() => state.nudgeQueue(lane.id, idx, 1)} disabled={idx === lane.queue.length - 1}>Move down</button>
-                          <button className="pill-btn" onClick={() => lane.activate(card.title)}>Activate to Table</button>
+                          <button className="pill-btn" onClick={() => lane.activate(card.id)}>Activate to Table</button>
                         </div>
                       </div>
                     ))}
@@ -1175,7 +1240,7 @@
                 <div className="queue-body">
                   <div className="queue-section-title">Tabled ({bronzeTabled.length}/{state.bronzeLimit})</div>
                   {bronzeTabled.map((card, idx) => (
-                    <div key={card.title} className="priority-card tabled">
+                    <div key={card.id || card.title} className="priority-card tabled">
                       <div className="priority-rank">#{idx + 1}</div>
                       <div className="priority-copy">
                         <div className="priority-title">{card.title}</div>
@@ -1194,7 +1259,7 @@
                   ))}
                   <div className="queue-section-title">Queue ({bronzeWaiting.length})</div>
                   {bronzeWaiting.map((card, idx) => (
-                    <div key={card.title} className="priority-card idle">
+                    <div key={card.id || card.title} className="priority-card idle">
                       <div className="priority-rank">#{state.bronzeLimit + idx + 1}</div>
                       <div className="priority-copy">
                         <div className="priority-title">{card.title}</div>
@@ -1220,34 +1285,325 @@
       );
     };
 
-    const ActivationMap = ({ state }) => (
-      <div className="card">
-        <div className="map-grid">
-          <div className="cat" style={{ borderColor: categories.finances.color }}>
-            <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
-            <div className="project pulse">
-              <div className="title">{state.table.gold.title}</div>
-              <div className="meta">Gold · On Table & in Finances</div>
+    const ActivationMap = ({ state }) => {
+      const budgetProject = PROJECTS.automateMonthlyBudgetReview;
+      const deckProject = PROJECTS.buildBackyardDeck;
+      const campingProject = PROJECTS.planFamilyCampingTrip;
+      return (
+        <div className="card">
+          <div className="map-grid">
+            <div className="cat" style={{ borderColor: categories.finances.color }}>
+              <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
+              <div className="project pulse">
+                <div className="title">{state.table.gold.title}</div>
+                <div className="meta">Gold · On Table & in Finances</div>
+              </div>
+              {budgetProject && (
+                <div className="project">
+                  <div className="title">{budgetProject.title}</div>
+                  <div className="meta">{`${budgetProject.meta} · ${budgetProject.stage}`}</div>
+                </div>
+              )}
             </div>
-            <div className="project">
-              <div className="title">Automate Monthly Budget Review</div>
-              <div className="meta">Silver candidate</div>
-            </div>
-          </div>
-          <div className="cat" style={{ borderColor: categories.home.color }}>
-            <h3><span style={{ color: categories.home.color }}>●</span> Home</h3>
-            <div className="project">
-              <div className="title">Build Backyard Deck</div>
-              <div className="meta">In Gold queue · 50%</div>
-            </div>
-            <div className="project">
-              <div className="title">Plan Family Camping Trip</div>
-              <div className="meta">Live · 33%</div>
+            <div className="cat" style={{ borderColor: categories.home.color }}>
+              <h3><span style={{ color: categories.home.color }}>●</span> Home</h3>
+              {deckProject && (
+                <div className="project">
+                  <div className="title">{deckProject.title}</div>
+                  <div className="meta">{`${deckProject.meta} · ${deckProject.stage}`}</div>
+                </div>
+              )}
+              {campingProject && (
+                <div className="project">
+                  <div className="title">{campingProject.title}</div>
+                  <div className="meta">{`${Math.round((campingProject.progress || 0) * 100)}% · ${campingProject.status}`}</div>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    };
+
+    const RosterRoom = ({ state }) => {
+      const readStorage = (key, fallback) => {
+        if (typeof window === 'undefined' || !window.localStorage) return fallback;
+        try {
+          const raw = window.localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch {
+          return fallback;
+        }
+      };
+
+      const [matches, setMatches] = React.useState(() => readStorage('lifebuildRosterMatches', state.matches));
+      const [agents, setAgents] = React.useState(() => {
+        const stored = readStorage('lifebuildRosterAgents', []);
+        return [...state.agents, ...(stored || [])];
+      });
+      const [selectedProject, setSelectedProject] = React.useState(null);
+      const [selectedAgent, setSelectedAgent] = React.useState(null);
+      const [searchTerm, setSearchTerm] = React.useState('');
+      const [sortBy, setSortBy] = React.useState('priority');
+      const [agentFormOpen, setAgentFormOpen] = React.useState(false);
+      const [agentForm, setAgentForm] = React.useState({ name: '', specialty: '', description: '' });
+      const [agentFormError, setAgentFormError] = React.useState('');
+
+      React.useEffect(() => {
+        if (typeof window === 'undefined' || !window.localStorage) return;
+        try {
+          window.localStorage.setItem('lifebuildRosterMatches', JSON.stringify(matches));
+        } catch {}
+      }, [matches]);
+
+      React.useEffect(() => {
+        if (typeof window === 'undefined' || !window.localStorage) return;
+        const customOnly = agents.filter((agent) => agent.isCustom);
+        try {
+          window.localStorage.setItem('lifebuildRosterAgents', JSON.stringify(customOnly));
+        } catch {}
+      }, [agents]);
+
+      const agentLookup = React.useMemo(() => {
+        const map = {};
+        agents.forEach((agent) => { map[agent.id] = agent; });
+        return map;
+      }, [agents]);
+
+      const getAgentLoad = (agentId) => matches.filter((match) => match.agentId === agentId).length;
+      const isAgentAtCapacity = (agent) => {
+        const cap = agent.capacity ?? 3;
+        return getAgentLoad(agent.id) >= cap;
+      };
+
+      const sortOptions = [
+        { id: 'priority', label: 'Priority' },
+        { id: 'status', label: 'Status' },
+        { id: 'category', label: 'Category' },
+        { id: 'alphabetical', label: 'A-Z' },
+      ];
+
+      const projectMatches = React.useMemo(() => {
+        const map = {};
+        matches.forEach((match) => { map[match.projectId] = match; });
+        return map;
+      }, [matches]);
+
+      const filteredProjects = React.useMemo(() => {
+        const query = searchTerm.trim().toLowerCase();
+        const list = state.projects.map((project) => {
+          const match = projectMatches[project.id];
+          return {
+            ...project,
+            assignedAgent: match ? agentLookup[match.agentId]?.name : null,
+          };
+        });
+        const searched = query
+          ? list.filter((project) => {
+              const haystack = [
+                project.title,
+                project.description,
+                project.focus,
+                project.category,
+                project.tags?.join(' '),
+              ]
+                .filter(Boolean)
+                .join(' ')
+                .toLowerCase();
+              return haystack.includes(query);
+            })
+          : list;
+        const sorter = {
+          priority: (a, b) => (a.priorityScore - b.priorityScore) || a.title.localeCompare(b.title),
+          status: (a, b) => (statusWeights[a.statusLabel] ?? 9) - (statusWeights[b.statusLabel] ?? 9) || a.title.localeCompare(b.title),
+          category: (a, b) => (a.category || '').localeCompare(b.category || '') || a.title.localeCompare(b.title),
+          alphabetical: (a, b) => a.title.localeCompare(b.title),
+        }[sortBy] || (() => 0);
+        return [...searched].sort(sorter);
+      }, [state.projects, searchTerm, sortBy, projectMatches, agentLookup]);
+
+      const selectProject = (project) => {
+        setSelectedProject((prev) => (prev?.id === project.id ? null : project));
+      };
+
+      const selectAgent = (agent) => {
+        if (isAgentAtCapacity(agent)) return;
+        setSelectedAgent((prev) => (prev?.id === agent.id ? null : agent));
+      };
+
+      const assignAgent = () => {
+        if (!selectedProject || !selectedAgent) return;
+        setMatches((prev) => {
+          const filtered = prev.filter((m) => m.projectId !== selectedProject.id);
+          return [...filtered, { projectId: selectedProject.id, agentId: selectedAgent.id, status: 'Assigned' }];
+        });
+        setSelectedAgent(null);
+        setSelectedProject(null);
+      };
+
+      const removeMatch = (projectId) => {
+        setMatches((prev) => prev.filter((m) => m.projectId !== projectId));
+      };
+
+      const handleCreateAgent = () => {
+        if (!agentForm.name.trim() || !agentForm.specialty.trim()) {
+          setAgentFormError('Name and specialization required.');
+          return;
+        }
+        const newAgent = {
+          id: `custom-${Date.now()}`,
+          name: agentForm.name.trim(),
+          type: 'Custom Agent',
+          specialty: agentForm.specialty.trim(),
+          description: agentForm.description.trim() || 'Tailored to this week’s plan.',
+          capacity: 2,
+          tags: ['Custom', agentForm.specialty.trim()],
+          isCustom: true,
+        };
+        setAgents((prev) => [...prev, newAgent]);
+        setAgentForm({ name: '', specialty: '', description: '' });
+        setAgentFormError('');
+        setAgentFormOpen(false);
+        setSelectedAgent(newAgent);
+      };
+
+      const resetAgentForm = () => {
+        setAgentForm({ name: '', specialty: '', description: '' });
+        setAgentFormError('');
+        setAgentFormOpen(false);
+      };
+
+      return (
+        <div className="card">
+          <div className="roster-grid">
+            <div className="roster-column">
+              <h4>Projects needing support</h4>
+              <div className="project-controls">
+                <div className="search-input">
+                  <input
+                    value={searchTerm}
+                    onChange={(event) => setSearchTerm(event.target.value)}
+                    placeholder="Search by title, status, or category"
+                  />
+                  {searchTerm && (
+                    <button onClick={() => setSearchTerm('')}>Clear</button>
+                  )}
+                </div>
+                <div className="sort-pills">
+                  {sortOptions.map((option) => (
+                    <span
+                      key={option.id}
+                      className={`sort-pill${sortBy === option.id ? ' active' : ''}`}
+                      onClick={() => setSortBy(option.id)}
+                    >
+                      {option.label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              {filteredProjects.length ? filteredProjects.map((project) => (
+                <div
+                  key={project.id}
+                  className={`roster-card${selectedProject?.id === project.id ? ' selected' : ''}`}
+                  onClick={() => selectProject(project)}
+                >
+                  <div className="title">{project.title}</div>
+                  <div className="roster-meta">{project.tierLabel} · {project.statusLabel}</div>
+                  {project.description && <div className="roster-meta">{project.description}</div>}
+                  {project.assignedAgent && <div className="roster-meta">Staffed by {project.assignedAgent}</div>}
+                  <div className="roster-tags">
+                    {project.tags.map((tag) => (
+                      <span key={tag} className="chip">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              )) : (
+                <div className="roster-empty">No projects match that search.</div>
+              )}
+            </div>
+            <div className="roster-column">
+              <h4>Match</h4>
+              <div className="match-panel">
+                <h5>Selected</h5>
+                <div className="summary">
+                  {selectedProject ? selectedProject.title : 'Pick a project'} · {selectedAgent ? selectedAgent.name : 'pick an agent'}
+                </div>
+                <button className="btn" onClick={assignAgent} disabled={!selectedProject || !selectedAgent}>
+                  Staff Project
+                </button>
+              </div>
+              <div className="match-list">
+                {matches.length ? matches.map((match) => {
+                  const project = state.projects.find((p) => p.id === match.projectId);
+                  const agent = agentLookup[match.agentId];
+                  if (!project || !agent) return null;
+                  return (
+                    <div key={match.projectId} className="match-item">
+                      <span>{project.title} → {agent.name}</span>
+                      <button className="pill-btn ghost" onClick={() => removeMatch(match.projectId)}>Unassign</button>
+                    </div>
+                  );
+                }) : <div className="empty-note">No matches yet</div>}
+              </div>
+            </div>
+            <div className="roster-column">
+              <h4>Agents</h4>
+              {agentFormOpen ? (
+                <div className="roster-card agent-form">
+                  <div className="devin-callout"><strong>Devin</strong>: I’ll help you spin up the perfect helper. Give them a name and a specialty.</div>
+                  <div className="form-row">
+                    <label htmlFor="agentName">Agent name</label>
+                    <input id="agentName" value={agentForm.name} onChange={(e) => setAgentForm((prev) => ({ ...prev, name: e.target.value }))} />
+                  </div>
+                  <div className="form-row">
+                    <label htmlFor="agentSpec">Specialization</label>
+                    <input id="agentSpec" value={agentForm.specialty} onChange={(e) => setAgentForm((prev) => ({ ...prev, specialty: e.target.value }))} />
+                  </div>
+                  <div className="form-row">
+                    <label htmlFor="agentDesc">Description</label>
+                    <textarea id="agentDesc" rows={3} value={agentForm.description} onChange={(e) => setAgentForm((prev) => ({ ...prev, description: e.target.value }))}></textarea>
+                  </div>
+                  {agentFormError && <div className="roster-meta" style={{ color: 'var(--gold)' }}>{agentFormError}</div>}
+                  <div className="form-actions">
+                    <button className="btn" onClick={handleCreateAgent}>Create & Select</button>
+                    <button className="btn secondary" onClick={resetAgentForm}>Cancel</button>
+                  </div>
+                </div>
+              ) : (
+                <div className="create-agent-card" onClick={() => setAgentFormOpen(true)}>
+                  <div className="title">＋ Create Custom Agent</div>
+                  <div className="roster-meta">Tune a helper with Devin</div>
+                </div>
+              )}
+              {agents.map((agent) => {
+                const disabled = isAgentAtCapacity(agent);
+                const load = getAgentLoad(agent.id);
+                const capacity = agent.capacity ?? 3;
+                return (
+                  <div
+                    key={agent.id}
+                    className={`roster-card${selectedAgent?.id === agent.id ? ' selected' : ''}${disabled ? ' disabled' : ''}`}
+                    onClick={() => selectAgent(agent)}
+                  >
+                    <div className="title">{agent.name}</div>
+                    <div className="roster-meta">{agent.type}</div>
+                    <div className="roster-meta">{agent.specialty}</div>
+                    <div className="roster-meta">{load}/{capacity} assignments</div>
+                    {agent.description && <div className="roster-meta">{agent.description}</div>}
+                    {disabled && <div className="roster-meta">At capacity</div>}
+                    <div className="roster-tags">
+                      {agent.tags?.map((tag) => (
+                        <span key={tag} className="chip">{tag}</span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      );
+    };
 
     const ProjectBoard = ({ state }) => {
       const moveTask = (from, to, task) => {
@@ -1286,52 +1642,70 @@
       );
     };
 
-    const FinanceZoom = ({ state }) => (
-      <div className="card">
-        <div className="map-grid">
-          <div className="cat" style={{ borderColor: categories.finances.color }}>
-            <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
-            <div className="project">
-              <div className="title">Sell Camper Van</div>
-              <div className="meta">{Math.round(state.camperProgress * 100)}% · Stage: {state.camperProgress >= 1 ? 'Decoration' : state.camperProgress >= 0.4 ? 'Polish' : 'Color Emergence'}</div>
-              <div className="progress"><div className="bar" style={{ width: `${Math.round(state.camperProgress * 100)}%`, background: categories.finances.color }}></div></div>
-            </div>
-            <div className="project">
-              <div className="title">Automate Monthly Budget Review</div>
-              <div className="meta">Silver candidate</div>
-            </div>
-            <div className="project">
-              <div className="title">Mortgage Refinance</div>
-              <div className="meta">Queued</div>
+    const FinanceZoom = ({ state }) => {
+      const camper = PROJECTS.sellCamperVan;
+      const budgetProject = PROJECTS.automateMonthlyBudgetReview;
+      const refinanceProject = PROJECTS.mortgageRefinance;
+      const camperPct = Math.round(state.camperProgress * 100);
+      const camperStage = state.camperProgress >= 1 ? 'Decoration' : state.camperProgress >= 0.4 ? 'Polish' : 'Color Emergence';
+      return (
+        <div className="card">
+          <div className="map-grid">
+            <div className="cat" style={{ borderColor: categories.finances.color }}>
+              <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
+              {camper && (
+                <div className="project">
+                  <div className="title">{camper.title}</div>
+                  <div className="meta">{`${camperPct}% · Stage: ${camperStage}`}</div>
+                  <div className="progress"><div className="bar" style={{ width: `${camperPct}%`, background: categories.finances.color }}></div></div>
+                </div>
+              )}
+              {budgetProject && (
+                <div className="project">
+                  <div className="title">{budgetProject.title}</div>
+                  <div className="meta">{`${budgetProject.meta} · ${budgetProject.stage}`}</div>
+                </div>
+              )}
+              {refinanceProject && (
+                <div className="project">
+                  <div className="title">{refinanceProject.title}</div>
+                  <div className="meta">{`${refinanceProject.meta} · ${refinanceProject.stage}`}</div>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    };
 
-    const SortingReturn = ({ state }) => (
-      <div className="card">
-        <div className="map-grid">
-          <div className="project" style={{ borderColor: 'var(--gold)', boxShadow: '0 12px 26px rgba(216,166,80,0.2)' }}>
-            <div className="title">{state.table.gold.title === 'Sell Camper Van' ? 'Sell Camper Van' : 'Sell Camper Van'}</div>
-            <div className="meta">Complete · Decoration stage</div>
-          </div>
-          <div className="project">
-            <div className="title">Launch Consulting</div>
-            <div className="meta">Gold Candidate · Paused at 60%</div>
-            <div className="actions" style={{ marginTop: '0.5rem' }}>
-              <button className="btn" onClick={state.reactivateConsulting}>Reactivate Consulting</button>
+    const SortingReturn = ({ state }) => {
+      const consulting = PROJECTS.launchConsulting;
+      return (
+        <div className="card">
+          <div className="map-grid">
+            <div className="project" style={{ borderColor: 'var(--gold)', boxShadow: '0 12px 26px rgba(216,166,80,0.2)' }}>
+              <div className="title">{state.table.gold.title}</div>
+              <div className="meta">Complete · Decoration stage</div>
+            </div>
+            {consulting && (
+              <div className="project">
+                <div className="title">{consulting.title}</div>
+                <div className="meta">{`${consulting.meta} · ${consulting.stage}`}</div>
+                <div className="actions" style={{ marginTop: '0.5rem' }}>
+                  <button className="btn" onClick={state.reactivateConsulting}>Reactivate Consulting</button>
+                </div>
+              </div>
+            )}
+            <div className="project">
+              <div className="title">Gold Queue</div>
+              {state.goldQueue.map((item, idx) => (
+                <div key={item.id || item.title} className="meta">{idx + 1}. {item.title}</div>
+              ))}
             </div>
           </div>
-          <div className="project">
-            <div className="title">Gold Queue</div>
-            {state.goldQueue.map((item, idx) => (
-              <div key={item.title} className="meta">{idx + 1}. {item.title}</div>
-            ))}
-          </div>
         </div>
-      </div>
-    );
+      );
+    };
 
     const App = () => {
       const [chapter, setChapter] = React.useState(0);
@@ -1348,7 +1722,12 @@
       const [tasks, setTasks] = React.useState(initialTasks);
       const [camperProgress, setCamperProgress] = React.useState(0);
 
-      const camperActive = table.gold.title === 'Sell Camper Van';
+      const rosterProjects = React.useMemo(
+        () => buildRosterProjects({ table, goldQueue, silverQueue, bronzeQueue }),
+        [table, goldQueue, silverQueue, bronzeQueue]
+      );
+
+      const camperActive = table.gold.id === PROJECTS.sellCamperVan?.id;
       const camperPct = Math.round(camperProgress * 100);
 
       const toggleQueue = (lane) => setOpenQueue((prev) => (prev === lane ? null : lane));
@@ -1380,33 +1759,36 @@
         });
       };
 
-      const activateLane = (lane, title) => {
+      const activateLane = (lane, projectId) => {
+        if (!projectId) return;
         const setter = lane === 'gold' ? setGoldQueue : setSilverQueue;
         setter((prev) => {
-          const idx = prev.findIndex((card) => card.title === title);
+          const idx = prev.findIndex((card) => card.id === projectId);
           if (idx === -1) return prev;
           const candidate = prev[idx];
           const currentActive = table[lane];
-          const filtered = prev.filter((card, cIdx) => cIdx !== idx && card.title !== currentActive.title);
+          const filtered = prev.filter(
+            (card, cIdx) => cIdx !== idx && (!currentActive?.id || card.id !== currentActive.id)
+          );
           setTable((prevTable) => ({ ...prevTable, [lane]: candidate }));
           setStatus(`${candidate.title} moved to ${lane === 'gold' ? 'Gold' : 'Silver'} Table.`);
-          return currentActive.title ? [currentActive, ...filtered] : filtered;
+          return currentActive?.id && currentActive.id !== candidate.id ? [currentActive, ...filtered] : filtered;
         });
       };
 
-      const activateGold = (title) => activateLane('gold', title);
-      const activateSilver = (title) => activateLane('silver', title);
+      const activateGold = (projectId) => activateLane('gold', projectId);
+      const activateSilver = (projectId) => activateLane('silver', projectId);
 
       const swapGold = () => {
         if (camperActive) return;
-        activateGold('Sell Camper Van');
+        activateGold(PROJECTS.sellCamperVan?.id);
         setStatus('Camper active. Consulting preserved in Gold queue.');
       };
 
       const fastForward = () => {
         setTasks({ todo: [], doing: [], review: [], done: ['All tasks'] });
         setCamperProgress(1);
-        if (table.gold.title === 'Sell Camper Van') {
+        if (table.gold.id === PROJECTS.sellCamperVan?.id) {
           setTable((prev) => ({ ...prev, gold: { ...prev.gold, progress: 1, meta: 'Finances · Gold · Complete' } }));
         }
       };
@@ -1443,8 +1825,10 @@
       const reactivateConsulting = () => {
         const currentActive = table.gold;
         setGoldQueue((prev) => {
-          const filtered = prev.filter((card) => card.title !== goldTableSeed.title && card.title !== currentActive.title);
-          if (currentActive.title === goldTableSeed.title) return filtered;
+          const filtered = prev.filter(
+            (card) => card.id !== goldTableSeed.id && (!currentActive?.id || card.id !== currentActive.id)
+          );
+          if (!currentActive?.id || currentActive.id === goldTableSeed.id) return filtered;
           return [currentActive, ...filtered];
         });
         setTable((prevTable) => ({ ...prevTable, gold: { ...goldTableSeed } }));
@@ -1535,12 +1919,24 @@
             { label: 'Back to Finances', onClick: () => setChapter(5), variant: 'secondary' },
           ],
         },
+        {
+          label: 'Chapter 8',
+          title: 'Roster Room · Delegation check',
+          lines: [
+            { text: 'Jess reviews every ongoing system—services, AI automations, and human helpers—in one grid.' },
+            { text: 'Each category shows who is covering the work before he locks the week.' },
+          ],
+          prompts: [
+            { label: 'Back to Life Map', onClick: () => setChapter(0) },
+            { label: 'Return to Sorting Room', onClick: () => setChapter(2), variant: 'secondary' },
+          ],
+        },
       ];
 
       const currentStory = chapterStories[chapter] || chapterStories[0];
 
       const screen = () => {
-        if (chapter === 0) return <LifeMap table={table} />;
+        if (chapter === 0) return <LifeMap table={table} bronzeQueue={bronzeQueue} />;
         if (chapter === 1) return <DraftingRoom />;
         if (chapter === 2) {
           return (
@@ -1567,7 +1963,20 @@
         if (chapter === 3) return <ActivationMap state={{ table, goldQueue }} />;
         if (chapter === 4) return <ProjectBoard state={{ tasks, setTasks, camperProgress, setCamperProgress }} />;
         if (chapter === 5) return <FinanceZoom state={{ camperProgress }} />;
-        return <SortingReturn state={{ reactivateConsulting, goldQueue, table }} />;
+        if (chapter === 6) return <SortingReturn state={{ reactivateConsulting, goldQueue, table }} />;
+        if (chapter === 7) {
+          return (
+            <RosterRoom
+              state={{
+                assignments: rosterAssignments,
+                projects: rosterProjects,
+                agents: rosterAgents,
+                matches: rosterMatchesSeedSafe,
+              }}
+            />
+          );
+        }
+        return <LifeMap table={table} bronzeQueue={bronzeQueue} />;
       };
 
       return (
@@ -1601,7 +2010,7 @@
             <div className="nav-links">
               <a className={chapter===1 ? 'active' : ''} onClick={() => setChapter(1)}>Drafting Room</a>
               <a className={chapter===2 || chapter===6 ? 'active' : ''} onClick={() => setChapter(2)}>Sorting Room</a>
-              <a>Roster Room</a>
+              <a className={chapter===7 ? 'active' : ''} onClick={() => setChapter(7)}>Roster Room</a>
               <a className={chapter===0 || chapter===3 ? 'active' : ''} onClick={() => setChapter(0)}>Life Map</a>
             </div>
             <div className="pill">Jess · Director</div>
