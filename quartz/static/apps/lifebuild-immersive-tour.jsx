@@ -1,876 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LifeBuild | Jess' Priority Story</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-  <script src="./lifebuild-data.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --purpose: #7B9EA8;
-      --home: #9B8B7E;
-      --finances: #8B9D6F;
-      --health: #E8B4A0;
-      --gold: #D8A650;
-      --silver: #C5CED8;
-      --bronze: #C48B5A;
-      --ink: #2f2b27;
-      --muted: #8b8680;
-      --paper: #faf9f7;
-      --border: #e8e4de;
-      --shadow: 0 18px 48px rgba(0,0,0,0.08);
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: radial-gradient(circle at 15% 20%, rgba(255,255,255,0.8), transparent 40%), #f5f3f0;
-      color: var(--ink);
-      line-height: 1.6;
-      min-height: 100vh;
-      padding-bottom: 140px; /* room for table bar */
-    }
-    .nav {
-      position: sticky;
-      top: 0;
-      z-index: 8;
-      backdrop-filter: blur(10px);
-      background: rgba(250,249,247,0.88);
-      border-bottom: 1px solid var(--border);
-      padding: 0.9rem 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .nav-links {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      font-weight: 600;
-    }
-    .nav a {
-      text-decoration: none;
-      color: var(--muted);
-      padding: 0.5rem 0.75rem;
-      border-radius: 0.75rem;
-      transition: color 160ms ease, background 160ms ease;
-    }
-    .nav a.active { color: var(--ink); background: rgba(0,0,0,0.04); }
-    .nav a:hover { color: var(--ink); }
-    .pill {
-      background: #2f2b27;
-      color: #faf9f7;
-      padding: 0.45rem 0.75rem;
-      border-radius: 999px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.12);
-    }
-    .shell {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1.5rem;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      box-shadow: 0 16px 32px rgba(0,0,0,0.06);
-      padding: 1.25rem;
-      position: relative;
-      overflow: hidden;
-    }
-    h1 {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-weight: 600;
-      font-size: clamp(1.6rem, 1.6vw + 1rem, 2.2rem);
-      color: var(--ink);
-      margin-bottom: 0.35rem;
-    }
-    .sub { color: var(--muted); margin-bottom: 1rem; }
-    .story-overlay {
-      max-width: 980px;
-      margin: 1.25rem auto 0;
-      padding: 0 1.5rem;
-    }
-    .story-bubble {
-      border: 1px solid rgba(0,0,0,0.06);
-      border-radius: 1rem;
-      padding: 1.1rem 1rem;
-      background: linear-gradient(145deg, #ffffff, #f2efe8);
-      color: var(--ink);
-      box-shadow: 0 22px 42px rgba(0,0,0,0.22);
-      backdrop-filter: blur(4px);
-      margin-bottom: 1rem;
-    }
-    .story-bubble h2 {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-      color: var(--ink);
-    }
-    .story-text {
-      font-size: 1rem;
-      color: var(--ink);
-      line-height: 1.7;
-    }
-    .story-text p { margin-bottom: 0.35rem; }
-    .story-text p:last-child { margin-bottom: 0; }
-    .story-text em {
-      color: var(--muted);
-    }
-    .story-prompts {
-      margin-top: 0.8rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-    .story-cta {
-      background: #2f2b27;
-      color: #faf9f7;
-      border: none;
-      border-radius: 0.75rem;
-      padding: 0.65rem 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.12);
-      transition: transform 140ms ease, box-shadow 140ms ease, background 140ms ease;
-    }
-    .story-cta.secondary {
-      background: #fff;
-      color: var(--ink);
-      border: 1px solid var(--border);
-      box-shadow: none;
-    }
-    .story-cta:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-    .story-cta:not(:disabled):hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 28px rgba(0,0,0,0.14);
-    }
-    .chapter-tag {
-      margin: 1rem 0;
-      padding: 0.75rem 1rem;
-      border-radius: 0.85rem;
-      border: 1px solid var(--border);
-      background: linear-gradient(135deg, rgba(197,206,216,0.08), rgba(139,157,111,0.08));
-      color: var(--ink);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-weight: 600;
-    }
-    .map-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1rem;
-    }
-    .cat {
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1rem;
-      background: linear-gradient(145deg, #fff, #f8f6f3);
-      position: relative;
-      overflow: hidden;
-    }
-    .cat h3 {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-size: 1.2rem;
-      margin-bottom: 0.35rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .cat .count { color: var(--muted); font-size: 0.9rem; }
-    .active-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-      margin-bottom: 1.4rem;
-    }
-    .project {
-      margin-top: 0.6rem;
-      padding: 0.75rem;
-      border-radius: 0.8rem;
-      border: 1px solid var(--border);
-      background: #fff;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.04);
-    }
-    .planted-label {
-      margin-top: 0.9rem;
-      font-size: 0.74rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      font-weight: 600;
-    }
-    .planted-grid {
-      margin-top: 0.25rem;
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 0.4rem;
-    }
-    .planted-card {
-      padding: 0.45rem 0.55rem;
-      border-radius: 0.8rem;
-      border: 1px dashed rgba(47,43,39,0.2);
-      background: rgba(255,255,255,0.94);
-      font-size: 0.72rem;
-      line-height: 1.25;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.04);
-    }
-    .planted-card::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      opacity: 0.7;
-      pointer-events: none;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.4);
-    }
-    .planted-card[data-automation="ai"] {
-      box-shadow: 0 10px 24px rgba(123,158,168,0.22);
-    }
-    .planted-card[data-automation="service"] {
-      box-shadow: 0 10px 24px rgba(155,139,126,0.22);
-    }
-    .planted-card[data-automation="system"] {
-      box-shadow: 0 10px 24px rgba(196,139,90,0.18);
-    }
-    .planted-card[data-attention="idle"] {
-      opacity: 0.55;
-      filter: grayscale(0.1);
-    }
-    .planted-card[data-attention="soon"] {
-      border-color: rgba(216,166,80,0.6);
-      box-shadow: 0 14px 26px rgba(216,166,80,0.28);
-    }
-    .planted-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.3rem;
-      margin-bottom: 0.15rem;
-    }
-    .planted-badge {
-      font-size: 0.58rem;
-      padding: 0.08rem 0.3rem;
-      border-radius: 999px;
-      background: rgba(47,43,39,0.08);
-      font-weight: 600;
-      display: inline-flex;
-      gap: 0.25rem;
-      align-items: center;
-      white-space: nowrap;
-    }
-    .planted-title {
-      font-weight: 600;
-      color: var(--ink);
-      margin-bottom: 0.05rem;
-      font-size: 0.82rem;
-    }
-    .planted-line {
-      color: var(--muted);
-      font-size: 0.68rem;
-      margin-bottom: 0.12rem;
-    }
-    .planted-line.schedule {
-      margin-top: 0.1rem;
-      font-weight: 600;
-      color: #5f574d;
-    }
-    .project .title { font-weight: 700; color: var(--ink); }
-    .project .meta { color: var(--muted); font-size: 0.9rem; }
-    .project .progress {
-      height: 8px;
-      background: #f1efe9;
-      border-radius: 999px;
-      overflow: hidden;
-      margin-top: 0.35rem;
-    }
-    .project .bar { height: 100%; border-radius: 999px; }
-    .table-bar {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255,255,255,0.96);
-      border-top: 1px solid var(--border);
-      box-shadow: 0 -12px 24px rgba(0,0,0,0.06);
-      padding: 0.9rem 1.5rem;
-      z-index: 9;
-    }
-    .table-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 0.75rem;
-      align-items: center;
-    }
-    .slot {
-      border: 1px solid var(--border);
-      border-radius: 0.9rem;
-      padding: 0.75rem;
-      background: #fff;
-      min-height: 110px;
-      position: relative;
-      overflow: hidden;
-    }
-    .slot h4 {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-size: 1rem;
-      margin-bottom: 0.35rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-    .slot .body { font-weight: 700; color: var(--ink); }
-    .slot .meta { color: var(--muted); font-size: 0.9rem; }
-    .actions {
-      margin-top: 1rem;
-      display: flex;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-    }
-    .btn {
-      background: #2f2b27;
-      color: #faf9f7;
-      border: none;
-      border-radius: 0.8rem;
-      padding: 0.75rem 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: 0 12px 24px rgba(0,0,0,0.12);
-      transition: transform 140ms ease, box-shadow 140ms ease;
-    }
-    .btn:hover { transform: translateY(-1px); box-shadow: 0 16px 28px rgba(0,0,0,0.14); }
-    .btn.secondary {
-      background: #fff;
-      color: var(--ink);
-      border: 1px solid var(--border);
-      box-shadow: none;
-    }
-    .kanban {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 0.75rem;
-      margin-top: 0.75rem;
-    }
-    .col {
-      border: 1px solid var(--border);
-      border-radius: 0.9rem;
-      padding: 0.75rem;
-      background: #fff;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.05);
-      min-height: 180px;
-    }
-    .col h4 { font-size: 1rem; margin-bottom: 0.4rem; font-family: 'Source Serif 4', Georgia, serif; }
-    .task {
-      padding: 0.65rem 0.7rem;
-      border-radius: 0.75rem;
-      border: 1px solid var(--border);
-      background: #f7f4ef;
-      margin-bottom: 0.45rem;
-      cursor: pointer;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.05);
-      transition: transform 140ms ease, box-shadow 140ms ease;
-    }
-    .task:hover { transform: translateY(-1px); box-shadow: 0 12px 22px rgba(0,0,0,0.08); }
-    .pulse {
-      animation: pulse 700ms ease;
-    }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(216,166,80,0.4); }
-      100% { box-shadow: 0 0 0 18px rgba(216,166,80,0); }
-    }
-    .progress-ring {
-      width: 90px;
-      height: 90px;
-      border-radius: 50%;
-      background: conic-gradient(var(--finances) calc(var(--pct) * 1%), #f1efe9 0);
-      display: grid;
-      place-items: center;
-      margin: 0.8rem auto 0;
-      position: relative;
-    }
-    .progress-ring::after {
-      content: attr(data-label);
-      position: absolute;
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: #fff;
-      display: grid;
-      place-items: center;
-      color: var(--ink);
-      font-weight: 700;
-      font-size: 0.95rem;
-    }
-    .status {
-      margin-top: 1rem;
-      padding: 0.8rem 1rem;
-      border-radius: 0.85rem;
-      border: 1px solid var(--border);
-      background: linear-gradient(115deg, rgba(197,206,216,0.2), rgba(139,157,111,0.18));
-      color: var(--ink);
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-    }
-    .status .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--silver);
-      box-shadow: 0 0 0 6px rgba(197,206,216,0.25);
-    }
-    .sorting-room {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-    .sorting-header {
-      display: flex;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
-      align-items: flex-start;
-    }
-    .sorting-banner {
-      flex: 1;
-      padding: 0.85rem 1rem;
-      border-radius: 0.95rem;
-      border: 1px solid var(--border);
-      background: linear-gradient(125deg, rgba(216,166,80,0.18), rgba(197,206,216,0.2));
-      color: var(--ink);
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-      position: relative;
-      overflow: hidden;
-    }
-    .sorting-banner::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 10% 50%, rgba(255,255,255,0.5), transparent 45%);
-      pointer-events: none;
-    }
-    .sorting-banner .pulse-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--gold);
-      box-shadow: 0 0 0 0 rgba(216,166,80,0.5);
-      animation: flashPing 2.2s ease-in-out infinite;
-    }
-    @keyframes flashPing {
-      0% { box-shadow: 0 0 0 0 rgba(216,166,80,0.6); opacity: 1; }
-      70% { box-shadow: 0 0 0 10px rgba(216,166,80,0); opacity: 0.65; }
-      100% { box-shadow: 0 0 0 0 rgba(216,166,80,0); opacity: 1; }
-    }
-    .queue-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1rem;
-      align-items: start;
-    }
-    .queue-column {
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1rem;
-      background: #fff;
-      box-shadow: 0 14px 30px rgba(0,0,0,0.05);
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-      position: relative;
-    }
-    .lane-head {
-      display: flex;
-      justify-content: space-between;
-      gap: 0.6rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .lane-info {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-    .lane-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      box-shadow: 0 0 0 8px rgba(0,0,0,0.04);
-    }
-    .lane-label {
-      font-weight: 700;
-      color: var(--ink);
-      font-size: 0.98rem;
-    }
-    .lane-desc {
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-    .pill-btn {
-      border: none;
-      border-radius: 999px;
-      padding: 0.4rem 0.85rem;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      background: #2f2b27;
-      color: #faf9f7;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.12);
-      transition: transform 140ms ease, box-shadow 140ms ease;
-    }
-    .pill-btn:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-    .pill-btn:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 24px rgba(0,0,0,0.16);
-    }
-    .pill-btn.ghost {
-      background: rgba(0,0,0,0.04);
-      color: var(--ink);
-      box-shadow: none;
-      border: 1px solid var(--border);
-    }
-    .lane-table-card {
-      border: 1px solid var(--border);
-      border-radius: 0.85rem;
-      padding: 0.75rem;
-      background: linear-gradient(140deg, rgba(216,166,80,0.08), #fff);
-    }
-    .lane-table-card[data-lane="silver"] {
-      background: linear-gradient(140deg, rgba(197,206,216,0.12), #fff);
-    }
-    .lane-table-card[data-lane="bronze"] {
-      background: linear-gradient(140deg, rgba(196,139,90,0.12), #fff);
-    }
-    .lane-table-card .card-label {
-      text-transform: uppercase;
-      font-size: 0.7rem;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      font-weight: 600;
-    }
-    .lane-title-main {
-      font-weight: 700;
-      margin-top: 0.2rem;
-      color: var(--ink);
-    }
-    .lane-meta {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-top: 0.15rem;
-    }
-    .mini-progress {
-      margin-top: 0.5rem;
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(0,0,0,0.06);
-      overflow: hidden;
-    }
-    .mini-progress .mini-bar {
-      height: 100%;
-      border-radius: inherit;
-    }
-    .queue-body {
-      display: flex;
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-    .priority-card {
-      border: 1px solid var(--border);
-      border-radius: 0.85rem;
-      padding: 0.7rem;
-      display: flex;
-      gap: 0.6rem;
-      align-items: flex-start;
-      background: #fffdf9;
-    }
-    .priority-card.tabled {
-      background: #fff7ed;
-    }
-    .priority-card.idle {
-      background: #f7f5f2;
-    }
-    .priority-rank {
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: var(--muted);
-      width: 32px;
-    }
-    .priority-title {
-      font-weight: 600;
-      color: var(--ink);
-      margin-bottom: 0.1rem;
-    }
-    .priority-meta {
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-    .priority-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.3rem;
-      margin-top: 0.35rem;
-    }
-    .chip {
-      font-size: 0.72rem;
-      padding: 0.15rem 0.5rem;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,0.08);
-      color: var(--ink);
-      font-weight: 600;
-      background: rgba(255,255,255,0.9);
-    }
-    .chip.muted {
-      background: rgba(47,43,39,0.08);
-      color: var(--muted);
-    }
-    .chip.outline {
-      border-style: dashed;
-    }
-    .priority-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-      min-width: 120px;
-    }
-    .empty-note {
-      padding: 0.8rem;
-      border-radius: 0.75rem;
-      background: rgba(0,0,0,0.03);
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-    .queue-section-title {
-      text-transform: uppercase;
-      font-size: 0.72rem;
-      letter-spacing: 0.08em;
-      color: var(--muted);
-      font-weight: 600;
-      margin-top: 0.4rem;
-    }
-    .project-controls {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-bottom: 0.75rem;
-    }
-    .search-input {
-      position: relative;
-    }
-    .search-input input {
-      width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 0.85rem;
-      padding: 0.65rem 2.5rem 0.65rem 0.9rem;
-      font-size: 0.95rem;
-      background: #fff;
-    }
-    .search-input button {
-      position: absolute;
-      right: 0.6rem;
-      top: 50%;
-      transform: translateY(-50%);
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      color: var(--muted);
-      font-weight: 600;
-    }
-    .sort-pills {
-      display: flex;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-    .sort-pill {
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 0.3rem 0.75rem;
-      font-size: 0.85rem;
-      cursor: pointer;
-      background: #fff;
-      color: var(--muted);
-      transition: background 120ms ease, color 120ms ease, border 120ms ease;
-    }
-    .sort-pill.active {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: #2f2b27;
-      font-weight: 600;
-    }
-    .roster-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1rem;
-      align-items: start;
-    }
-    .roster-column {
-      border: 1px solid var(--border);
-      border-radius: 1rem;
-      padding: 1rem;
-      background: #fff;
-      box-shadow: 0 12px 26px rgba(0,0,0,0.05);
-    }
-    .roster-column h4 {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-size: 1.1rem;
-      margin-bottom: 0.6rem;
-    }
-    .roster-card {
-      border: 1px solid var(--border);
-      border-radius: 0.85rem;
-      padding: 0.75rem;
-      margin-bottom: 0.6rem;
-      background: #faf9f7;
-      cursor: pointer;
-      transition: border 140ms ease, box-shadow 140ms ease;
-    }
-    .roster-card.selected {
-      border-color: var(--gold);
-      box-shadow: 0 12px 24px rgba(216,166,80,0.25);
-      background: #fff;
-    }
-    .roster-card.disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-    .roster-meta {
-      color: var(--muted);
-      font-size: 0.88rem;
-      margin-top: 0.35rem;
-    }
-    .roster-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.35rem;
-      margin-top: 0.4rem;
-    }
-    .roster-tags .chip {
-      font-size: 0.7rem;
-      padding: 0.1rem 0.45rem;
-    }
-    .match-panel {
-      border: 1px dashed var(--border);
-      border-radius: 0.85rem;
-      padding: 0.85rem;
-      background: rgba(255,255,255,0.9);
-      text-align: center;
-    }
-    .match-panel h5 {
-      margin-bottom: 0.5rem;
-      font-size: 1rem;
-    }
-    .match-panel .summary {
-      font-size: 0.9rem;
-      color: var(--muted);
-      min-height: 48px;
-    }
-    .match-panel button {
-      margin-top: 0.6rem;
-      width: 100%;
-    }
-    .match-list {
-      margin-top: 1rem;
-      border-top: 1px solid var(--border);
-      padding-top: 0.8rem;
-      text-align: left;
-    }
-    .match-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.4rem 0;
-      font-size: 0.9rem;
-      border-bottom: 1px solid rgba(0,0,0,0.04);
-    }
-    .match-item:last-child {
-      border-bottom: none;
-    }
-    .match-item button {
-      font-size: 0.75rem;
-      padding: 0.2rem 0.5rem;
-    }
-    .create-agent-card {
-      border: 1px dashed var(--border);
-      border-radius: 0.85rem;
-      padding: 0.75rem;
-      margin-bottom: 0.6rem;
-      cursor: pointer;
-      background: rgba(255,255,255,0.7);
-      text-align: center;
-      transition: border 140ms ease, background 140ms ease;
-    }
-    .create-agent-card:hover {
-      border-color: var(--gold);
-      background: #fff;
-    }
-    .agent-form {
-      text-align: left;
-    }
-    .devin-callout {
-      margin-bottom: 0.6rem;
-      border-radius: 0.8rem;
-      background: rgba(197,206,216,0.2);
-      padding: 0.6rem;
-      font-size: 0.9rem;
-    }
-    .form-row {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      margin-bottom: 0.5rem;
-    }
-    .form-row label {
-      font-size: 0.85rem;
-      color: var(--muted);
-      font-weight: 600;
-    }
-    .form-row input,
-    .form-row textarea {
-      border: 1px solid var(--border);
-      border-radius: 0.7rem;
-      padding: 0.5rem 0.7rem;
-      font-size: 0.9rem;
-      font-family: inherit;
-    }
-    .form-actions {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-top: 0.5rem;
-    }
-    .roster-empty {
-      padding: 0.8rem;
-      border-radius: 0.8rem;
-      background: rgba(0,0,0,0.03);
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-  </style>
-</head>
-<body>
-  <div id="root"></div>
-  <script type="text/babel">
     const categories = {
       home: { name: 'Home', color: 'var(--home)' },
       finances: { name: 'Finances', color: 'var(--finances)' },
@@ -886,29 +13,232 @@
 
     const BRONZE_TABLE_LIMIT = 10;
 
-    if (!window.LifeBuildData) {
-      throw new Error('LifeBuildData module missing');
-    }
+    const cloneData = (value) => JSON.parse(JSON.stringify(value));
 
-    const {
-      projects: PROJECTS,
-      queues: projectQueues,
-      bronzeQueue: bronzeQueueSeed,
-      seeds,
-      rosterAssignments,
-      rosterAgents: rosterAgentsSeed,
-      rosterMatches: rosterMatchesSeed,
-    } = window.LifeBuildData;
+    const DEFAULT_GOLD_QUEUE = [
+      {
+        title: 'Sell Camper Van',
+        meta: 'Finances · Gold · Crisis',
+        category: 'finances',
+        progress: 0.18,
+        stage: 'Stage 4 · Plans final',
+        status: 'Crisis trigger',
+        focus: '2-week sprint',
+      },
+      {
+        title: 'Build Backyard Deck',
+        meta: 'Home · Gold · 50%',
+        category: 'home',
+        progress: 0.5,
+        stage: 'Stage 3 · Materials ready',
+        status: 'Weather window in June',
+      },
+      {
+        title: 'Atlanta Studio Launch',
+        meta: 'Finances · Gold · 22%',
+        category: 'finances',
+        progress: 0.22,
+        stage: 'Stage 2 · Drafting',
+        status: 'Sponsor pitch next week',
+      },
+      {
+        title: 'Osaka Retreat Refresh',
+        meta: 'Home · Gold · 12%',
+        category: 'home',
+        progress: 0.12,
+        stage: 'Stage 2 · Drafting',
+        status: 'Design board ready',
+      },
+    ];
 
-    const cloneProject = (id) => (PROJECTS[id] ? { ...PROJECTS[id] } : null);
-    const hydrateQueue = (ids = []) => ids.map(cloneProject).filter(Boolean);
+    const DEFAULT_SILVER_QUEUE = [
+      {
+        title: 'Mortgage Refinance',
+        meta: 'Finances · Silver · 18%',
+        category: 'finances',
+        progress: 0.18,
+        stage: 'Stage 2 · Drafting',
+        status: 'Rate watch',
+        focus: 'Docs prep',
+      },
+      {
+        title: 'Automate Monthly Budget Review',
+        meta: 'Finances · Silver · 42%',
+        category: 'finances',
+        progress: 0.42,
+        stage: 'Stage 3 · Ready',
+        status: 'Needs 30-min block',
+      },
+      {
+        title: 'Family Travel Insurance Hub',
+        meta: 'Health · Silver · 10%',
+        category: 'health',
+        progress: 0.1,
+        stage: 'Stage 1 · Intake',
+        status: 'Collect policies',
+      },
+      {
+        title: 'House Maintenance Calendar',
+        meta: 'Home · Silver · 28%',
+        category: 'home',
+        progress: 0.28,
+        stage: 'Stage 2 · Drafting',
+        status: 'Waiting on vendor list',
+      },
+    ];
 
-    const initialGoldQueue = hydrateQueue(projectQueues?.gold);
-    const initialSilverQueue = hydrateQueue(projectQueues?.silver);
-    const initialBronzeQueue = (bronzeQueueSeed || []).map((card) => ({ ...card }));
+    const DEFAULT_BRONZE_QUEUE = [
+      { title: 'Fix leaky kitchen faucet', meta: 'Home · Bronze · 45 min', stage: 'Care task', energy: 'Quick win' },
+      { title: 'Touch up paint in hallway', meta: 'Home · Bronze · 1 hr', stage: 'Care task', energy: 'Low focus' },
+      { title: 'Swap HVAC filter', meta: 'Home · Bronze · 10 min', stage: 'Care task', energy: 'Maintenance' },
+      { title: 'Clean out camper gear bin', meta: 'Home · Bronze · 30 min', stage: 'Care task', energy: 'Low focus' },
+      { title: 'Donate old clothes', meta: 'Home · Bronze · 1 trip', stage: 'Care task', energy: 'Weekend errand' },
+      { title: 'Back up family photos', meta: 'Home · Bronze · 40 min', stage: 'Care task', energy: 'Laptop task' },
+      { title: 'Order pantry staples', meta: 'Home · Bronze · 15 min', stage: 'Care task', energy: 'Laptop task' },
+      { title: 'Schedule gutter cleaning', meta: 'Home · Bronze · 5 min', stage: 'Care task', energy: 'Call / text' },
+      { title: 'Replace broken porch bulb', meta: 'Home · Bronze · 5 min', stage: 'Care task', energy: 'Quick win' },
+      { title: 'Update camper insurance card', meta: 'Finances · Bronze · 20 min', stage: 'Care task', energy: 'Laptop task' },
+      { title: 'Sharpen kitchen knives', meta: 'Home · Bronze · 30 min', stage: 'Queue', energy: 'Weekend errand' },
+      { title: 'Reset Wi-Fi passwords', meta: 'Home · Bronze · 30 min', stage: 'Queue', energy: 'Laptop task' },
+      { title: 'Mail birthday cards', meta: 'Home · Bronze · 20 min', stage: 'Queue', energy: 'Low focus' },
+      { title: 'Organize glove box', meta: 'Home · Bronze · 15 min', stage: 'Queue', energy: 'Car errand' },
+    ];
 
-    const goldTableSeed = cloneProject(seeds?.goldTable) || {};
-    const silverTableSeed = cloneProject(seeds?.silverTable) || {};
+    const getBronzeTableSummary = (list) => {
+      if (!list.length) return { title: 'No Bronze cards', meta: 'Queue open' };
+      const tabledCount = Math.min(BRONZE_TABLE_LIMIT, list.length);
+      const remaining = Math.max(tabledCount - 1, 0);
+      return {
+        title: list[0].title,
+        meta: remaining ? `+${remaining} tabled` : 'Queue open',
+      };
+    };
+
+    const DEFAULT_GOLD_TABLE = {
+      title: 'Launch Consulting',
+      meta: 'Finances · Gold · 60%',
+      category: 'finances',
+      progress: 0.6,
+      stage: 'Stage 4 · Build',
+      status: 'On Table',
+    };
+
+    const DEFAULT_SILVER_TABLE = {
+      title: 'Set Up Automated Prescription Delivery',
+      meta: 'Health · Silver · 71%',
+      category: 'health',
+      progress: 0.71,
+      stage: 'Stage 4 · Running',
+      status: 'System live',
+    };
+
+    const automationBadges = {
+      ai: { icon: '🤖', label: 'AI Delegated' },
+      service: { icon: '📅', label: 'Scheduled Service' },
+      system: { icon: '⚙️', label: 'Self-Running System' },
+    };
+
+    const DEFAULT_PLANTED_PROJECTS = {
+      home: [
+        {
+          title: 'Lawn Care Service',
+          status: 'Delegated to Service - Active',
+          automation: 'service',
+          statusDetail: 'Next scheduled: Tue · 7:30am',
+          attention: 'soon',
+        },
+        {
+          title: 'HVAC Maintenance Contract',
+          status: 'Delegated to Service - Scheduled',
+          automation: 'service',
+          statusDetail: 'Next scheduled: Jul 15',
+          attention: 'idle',
+        },
+        {
+          title: 'House Cleaning Service',
+          status: 'Delegated to Service - Active',
+          automation: 'service',
+          statusDetail: 'Next scheduled: May 10',
+          attention: 'soon',
+        },
+        {
+          title: 'Grocery Delivery Subscription',
+          status: 'Ongoing Service - Running',
+          automation: 'service',
+          statusDetail: 'Next delivery: May 3 · 8-10am',
+          attention: 'soon',
+        },
+      ],
+      finances: [
+        {
+          title: 'Automated Bill Payment System',
+          status: 'Ongoing System - Running',
+          automation: 'system',
+          statusDetail: 'Last review: Apr 1',
+          attention: 'idle',
+        },
+        {
+          title: 'Retirement Contributions',
+          status: 'Ongoing System - Running',
+          automation: 'system',
+          statusDetail: 'Next increase review: Jan 5',
+          attention: 'idle',
+        },
+        {
+          title: 'Credit Card Rewards Optimization',
+          status: 'Delegated to AI - Active',
+          automation: 'ai',
+          statusDetail: 'Last sync: 1 hour ago',
+          attention: 'soon',
+        },
+        {
+          title: 'Tax Document Organization',
+          status: 'Ongoing System - Running',
+          automation: 'system',
+          statusDetail: 'Last sweep: 2 days ago',
+          attention: 'idle',
+        },
+        {
+          title: 'Insurance Policy Review Calendar',
+          status: 'Ongoing System - Scheduled',
+          automation: 'system',
+          statusDetail: 'Next scheduled: Aug 1',
+          attention: 'idle',
+        },
+      ],
+      health: [
+        {
+          title: 'Prescription Delivery Concierge',
+          status: 'Delegated to Service - Active',
+          automation: 'service',
+          statusDetail: 'Next delivery: Apr 28',
+          attention: 'soon',
+        },
+        {
+          title: 'Biometric Trends Dashboard',
+          status: 'Delegated to AI - Active',
+          automation: 'ai',
+          statusDetail: 'Last sync: overnight',
+          attention: 'soon',
+        },
+        {
+          title: 'Trainer Accountability Sessions',
+          status: 'Delegated to Service - Active',
+          automation: 'service',
+          statusDetail: 'Next session: Thu · 6am',
+          attention: 'soon',
+        },
+      ],
+    };
+
+    const getDefaultData = () => ({
+      goldQueue: cloneData(DEFAULT_GOLD_QUEUE),
+      silverQueue: cloneData(DEFAULT_SILVER_QUEUE),
+      bronzeQueue: cloneData(DEFAULT_BRONZE_QUEUE),
+      goldTable: cloneData(DEFAULT_GOLD_TABLE),
+      silverTable: cloneData(DEFAULT_SILVER_TABLE),
+      plantedProjects: cloneData(DEFAULT_PLANTED_PROJECTS),
+    });
 
     const buildBronzeStacks = (list = []) => {
       return list.reduce((acc, card) => {
@@ -922,93 +252,99 @@
       }, {});
     };
 
-    const tierLabels = {
-      gold: 'Gold',
-      silver: 'Silver',
-      bronze: 'Bronze',
+    const hydrateLifeBuildData = () => {
+      if (typeof window === 'undefined' || !window.LifeBuildData) {
+        return getDefaultData();
+      }
+
+      try {
+        const {
+          projects,
+          queues,
+          seeds,
+          bronzeQueue,
+          plantedProjects,
+          rosterAssignments,
+        } = window.LifeBuildData;
+
+        const cloneProject = (id) => (projects?.[id] ? { ...projects[id] } : null);
+        const hydrateQueue = (ids = []) => (Array.isArray(ids) ? ids.map(cloneProject).filter(Boolean) : []);
+
+        const goldQueue = hydrateQueue(queues?.gold);
+        const silverQueue = hydrateQueue(queues?.silver);
+        const bronzeQueueData = Array.isArray(bronzeQueue) ? bronzeQueue.map((card) => ({ ...card })) : [];
+        const goldTable = cloneProject(seeds?.goldTable);
+        const silverTable = cloneProject(seeds?.silverTable);
+        const planted = plantedProjects || rosterAssignments;
+
+        const defaults = getDefaultData();
+
+        return {
+          goldQueue: goldQueue.length ? goldQueue : defaults.goldQueue,
+          silverQueue: silverQueue.length ? silverQueue : defaults.silverQueue,
+          bronzeQueue: bronzeQueueData.length ? bronzeQueueData : defaults.bronzeQueue,
+          goldTable: goldTable || defaults.goldTable,
+          silverTable: silverTable || defaults.silverTable,
+          plantedProjects: planted ? cloneData(planted) : defaults.plantedProjects,
+        };
+      } catch (error) {
+        console.warn('Failed to hydrate LifeBuildData:', error);
+        return getDefaultData();
+      }
     };
 
-    const tierWeights = {
-      gold: 0,
-      silver: 1,
-      bronze: 2,
-    };
+    const {
+      goldQueue: initialGoldQueue,
+      silverQueue: initialSilverQueue,
+      bronzeQueue: initialBronzeQueue,
+      goldTable: goldTableSeed,
+      silverTable: silverTableSeed,
+      plantedProjects,
+    } = hydrateLifeBuildData();
 
-    const statusWeights = {
-      'Active on Table': 0,
-      'Queued': 1,
-      'Execution Queue': 2,
-    };
+    const bronzeStacks = buildBronzeStacks(initialBronzeQueue);
 
-    const buildRosterProjects = ({ table, goldQueue, silverQueue, bronzeQueue }) => {
-      const records = new Map();
-      const pushProject = (project, tier, status, extra = {}) => {
-        if (!project) return;
-        const id = project.id || `${tier}-${project.title}`;
-        if (records.has(id)) return;
-        const category = project.category || extra.category || 'home';
-        const description = extra.description || project.status || project.meta || project.stage || project.focus || extra.focus || '';
-        const focus = extra.focus || project.focus || project.status;
-        const tags = [...new Set([tierLabels[tier], categories[category]?.name, status, ...(extra.tags || [])].filter(Boolean))];
-        records.set(id, {
-          id,
-          title: project.title,
-          tier,
-          tierLabel: tierLabels[tier] || 'Bronze',
-          statusLabel: status,
-          category,
-          description,
-          focus,
-          tags,
-          priorityScore: (tierWeights[tier] ?? 99) * 10 + (statusWeights[status] ?? 9),
-        });
-      };
+    const TableBar = ({ table }) => {
+      // Load Roster Room projects to show agent assignments
+      const [rosterProjects, setRosterProjects] = React.useState([]);
 
-      if (table.gold?.title) pushProject(table.gold, 'gold', 'Active on Table', { focus: table.gold.status });
-      goldQueue.forEach((project) => pushProject(project, 'gold', 'Queued', { focus: project.status }));
-      if (table.silver?.title) pushProject(table.silver, 'silver', 'Active on Table', { focus: table.silver.status });
-      silverQueue.forEach((project) => pushProject(project, 'silver', 'Queued', { focus: project.status }));
-      bronzeQueue.forEach((task) => {
-        pushProject(task, 'bronze', 'Execution Queue', {
-          description: task.meta,
-          focus: task.energy,
-          category: task.category,
-          tags: ['Care', task.energy],
-        });
-      });
+      const loadRosterProjects = React.useCallback(() => {
+        try {
+          const stored = localStorage.getItem('rosterRoom_projects');
+          if (stored) {
+            const projects = JSON.parse(stored);
+            setRosterProjects(projects.filter(p => p.staffing.assigned && p.status === 'active'));
+          }
+        } catch (error) {
+          console.warn('Failed to load roster projects:', error);
+        }
+      }, []);
 
-      return Array.from(records.values());
-    };
+      React.useEffect(() => {
+        loadRosterProjects();
 
-    const rosterAgents = rosterAgentsSeed || [];
-    const rosterMatchesSeedSafe = rosterMatchesSeed || [];
+        // Listen for custom roster update events
+        const handleRosterUpdate = () => loadRosterProjects();
+        window.addEventListener('rosterUpdated', handleRosterUpdate);
 
-    const getBronzeTableSummary = (list) => {
-      if (!list.length) return { title: 'No Bronze cards', meta: 'Queue open' };
-      const tabledCount = Math.min(BRONZE_TABLE_LIMIT, list.length);
-      const remaining = Math.max(tabledCount - 1, 0);
-      return {
-        title: list[0].title,
-        meta: remaining ? `+${remaining} tabled` : 'Queue open',
-      };
-    };
+        return () => {
+          window.removeEventListener('rosterUpdated', handleRosterUpdate);
+        };
+      }, [loadRosterProjects]);
 
-    const automationBadges = {
-      ai: { icon: '🤖', label: 'AI Delegated' },
-      service: { icon: '📅', label: 'Scheduled Service' },
-      system: { icon: '⚙️', label: 'Self-Running System' },
-    };
+      // Find staffed agent for table projects
+      const goldStaffing = rosterProjects.find(p => p.title === table.gold.title);
+      const silverStaffing = rosterProjects.find(p => p.title === table.silver.title);
 
-    const TableBar = ({ table }) => (
-      <div className="table-bar">
-        <div className="table-grid">
-          <div className="slot" style={{ borderColor: 'rgba(216,166,80,0.6)', background: 'linear-gradient(145deg, rgba(216,166,80,0.12), #fff)' }}>
-            <h4>Gold</h4>
-            <div className="body">{table.gold.title || 'Empty'}</div>
-            <div className="meta">{table.gold.meta}</div>
-            {table.gold.progress !== undefined && (
-              <div className="progress" style={{ marginTop: '0.4rem' }}>
-                <div className="bar" style={{ width: `${Math.round((table.gold.progress || 0) * 100)}%`, background: 'var(--gold)' }}></div>
+      return (
+        <div className="table-bar">
+          <div className="table-grid">
+            <div className="slot" style={{ borderColor: 'rgba(216,166,80,0.6)', background: 'linear-gradient(145deg, rgba(216,166,80,0.12), #fff)' }}>
+              <h4>Gold</h4>
+              <div className="body">{table.gold.title || 'Empty'}</div>
+              <div className="meta">
+                {table.gold.meta}
+                {goldStaffing && ` · 👤 ${goldStaffing.staffing.agentName}`}
               </div>
               {table.gold.progress !== undefined && (
                 <div className="progress" style={{ marginTop: '0.4rem' }}>
@@ -1039,9 +375,37 @@
       );
     };
 
-    const LifeMap = ({ table, bronzeQueue }) => {
-      const catList = Object.keys(categories);
-      const bronzeStacks = React.useMemo(() => buildBronzeStacks(bronzeQueue), [bronzeQueue]);
+    const LifeMap = ({ table }) => {
+      const catList = ['home', 'finances', 'health'];
+
+      // Load Roster Room projects to show agent assignments
+      const [rosterProjects, setRosterProjects] = React.useState([]);
+
+      const loadRosterProjects = React.useCallback(() => {
+        try {
+          const stored = localStorage.getItem('rosterRoom_projects');
+          if (stored) {
+            const projects = JSON.parse(stored);
+            // Filter for all staffed projects (both active on table and ongoing)
+            setRosterProjects(projects.filter(p => p.staffing.assigned));
+          }
+        } catch (error) {
+          console.warn('Failed to load roster projects:', error);
+        }
+      }, []);
+
+      React.useEffect(() => {
+        loadRosterProjects();
+
+        // Listen for custom roster update events
+        const handleRosterUpdate = () => loadRosterProjects();
+        window.addEventListener('rosterUpdated', handleRosterUpdate);
+
+        return () => {
+          window.removeEventListener('rosterUpdated', handleRosterUpdate);
+        };
+      }, [loadRosterProjects]);
+
       return (
         <div className="card">
           <div className="map-grid">
@@ -1098,11 +462,32 @@
                       </div>
                     )}
                   </div>
-                  {rosterAssignments?.[id]?.length ? (
+                  {(plantedProjects[id]?.length || rosterProjects.filter(p => p.category === id && p.status === 'ongoing').length) ? (
                     <>
                       <div className="planted-label">Ongoing</div>
                       <div className="planted-grid">
-                        {rosterAssignments[id].map((project) => {
+                        {/* Roster Room staffed projects (ongoing only) */}
+                        {rosterProjects.filter(p => p.category === id && p.status === 'ongoing').map((project) => {
+                          return (
+                            <div
+                              key={project.id}
+                              className="planted-card"
+                              data-automation="ai"
+                              data-attention="idle"
+                            >
+                              <div className="planted-top">
+                                <span className="planted-badge">
+                                  <span>👤</span>
+                                  <span>Agent Staffed</span>
+                                </span>
+                              </div>
+                              <div className="planted-title">{project.title}</div>
+                              <div className="planted-line schedule">Staffed: {project.staffing.agentName}</div>
+                            </div>
+                          );
+                        })}
+                        {/* Original planted projects */}
+                        {plantedProjects[id]?.map((project) => {
                           const badge = automationBadges[project.automation] || automationBadges.system;
                           return (
                             <div
@@ -1133,33 +518,23 @@
       );
     };
 
-    const DraftingRoom = () => {
-      const camper = PROJECTS.sellCamperVan;
-      const consulting = PROJECTS.launchConsulting;
-      const formatMeta = (project) =>
-        [project?.meta, project?.stage, project?.status].filter(Boolean).join(' · ');
-      return (
-        <div className="card">
-          {camper && (
-            <div className="project" style={{ borderColor: 'var(--gold)', boxShadow: '0 12px 26px rgba(216,166,80,0.2)' }}>
-              <div className="title">{camper.title}</div>
-              <div className="meta">{formatMeta(camper)}</div>
-              <ul style={{ marginTop: '0.4rem', paddingLeft: '1rem', color: 'var(--muted)', fontSize: '0.95rem' }}>
-                <li>Clean + photo professionally</li>
-                <li>List on 3 platforms</li>
-                <li>Sell & transfer title in 3 weeks</li>
-              </ul>
-            </div>
-          )}
-          {consulting && (
-            <div className="project" style={{ marginTop: '0.7rem' }}>
-              <div className="title">{consulting.title}</div>
-              <div className="meta">{formatMeta(consulting)}</div>
-            </div>
-          )}
+    const DraftingRoom = () => (
+      <div className="card">
+        <div className="project" style={{ borderColor: 'var(--gold)', boxShadow: '0 12px 26px rgba(216,166,80,0.2)' }}>
+          <div className="title">Sell Camper Van</div>
+          <div className="meta">Gold Candidate · Plans done · Crisis trigger</div>
+          <ul style={{ marginTop: '0.4rem', paddingLeft: '1rem', color: 'var(--muted)', fontSize: '0.95rem' }}>
+            <li>Clean + photo professionally</li>
+            <li>List on 3 platforms</li>
+            <li>Sell & transfer title in 3 weeks</li>
+          </ul>
         </div>
-      );
-    };
+        <div className="project" style={{ marginTop: '0.7rem' }}>
+          <div className="title">Launch Consulting</div>
+          <div className="meta">Current Gold · 60% · Will pause if swapped</div>
+        </div>
+      </div>
+    );
 
     const SortingRoom = ({ state }) => {
       const laneConfig = [
@@ -1218,7 +593,7 @@
                 {state.openQueue === lane.id && (
                   <div className="queue-body">
                     {lane.queue.map((card, idx) => (
-                      <div key={card.id || card.title} className="priority-card">
+                      <div key={card.title} className="priority-card">
                         <div className="priority-rank">#{idx + 1}</div>
                         <div className="priority-copy">
                           <div className="priority-title">{card.title}</div>
@@ -1232,7 +607,7 @@
                         <div className="priority-actions">
                           <button className="pill-btn ghost" onClick={() => state.nudgeQueue(lane.id, idx, -1)} disabled={idx === 0}>Move up</button>
                           <button className="pill-btn ghost" onClick={() => state.nudgeQueue(lane.id, idx, 1)} disabled={idx === lane.queue.length - 1}>Move down</button>
-                          <button className="pill-btn" onClick={() => lane.activate(card.id)}>Activate to Table</button>
+                          <button className="pill-btn" onClick={() => lane.activate(card.title)}>Activate to Table</button>
                         </div>
                       </div>
                     ))}
@@ -1265,7 +640,7 @@
                 <div className="queue-body">
                   <div className="queue-section-title">Tabled ({bronzeTabled.length}/{state.bronzeLimit})</div>
                   {bronzeTabled.map((card, idx) => (
-                    <div key={card.id || card.title} className="priority-card tabled">
+                    <div key={card.title} className="priority-card tabled">
                       <div className="priority-rank">#{idx + 1}</div>
                       <div className="priority-copy">
                         <div className="priority-title">{card.title}</div>
@@ -1284,7 +659,7 @@
                   ))}
                   <div className="queue-section-title">Queue ({bronzeWaiting.length})</div>
                   {bronzeWaiting.map((card, idx) => (
-                    <div key={card.id || card.title} className="priority-card idle">
+                    <div key={card.title} className="priority-card idle">
                       <div className="priority-rank">#{state.bronzeLimit + idx + 1}</div>
                       <div className="priority-copy">
                         <div className="priority-title">{card.title}</div>
@@ -1310,325 +685,34 @@
       );
     };
 
-    const ActivationMap = ({ state }) => {
-      const budgetProject = PROJECTS.automateMonthlyBudgetReview;
-      const deckProject = PROJECTS.buildBackyardDeck;
-      const campingProject = PROJECTS.planFamilyCampingTrip;
-      return (
-        <div className="card">
-          <div className="map-grid">
-            <div className="cat" style={{ borderColor: categories.finances.color }}>
-              <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
-              <div className="project pulse">
-                <div className="title">{state.table.gold.title}</div>
-                <div className="meta">Gold · On Table & in Finances</div>
-              </div>
-              {budgetProject && (
-                <div className="project">
-                  <div className="title">{budgetProject.title}</div>
-                  <div className="meta">{`${budgetProject.meta} · ${budgetProject.stage}`}</div>
-                </div>
-              )}
+    const ActivationMap = ({ state }) => (
+      <div className="card">
+        <div className="map-grid">
+          <div className="cat" style={{ borderColor: categories.finances.color }}>
+            <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
+            <div className="project pulse">
+              <div className="title">{state.table.gold.title}</div>
+              <div className="meta">Gold · On Table & in Finances</div>
             </div>
-            <div className="cat" style={{ borderColor: categories.home.color }}>
-              <h3><span style={{ color: categories.home.color }}>●</span> Home</h3>
-              {deckProject && (
-                <div className="project">
-                  <div className="title">{deckProject.title}</div>
-                  <div className="meta">{`${deckProject.meta} · ${deckProject.stage}`}</div>
-                </div>
-              )}
-              {campingProject && (
-                <div className="project">
-                  <div className="title">{campingProject.title}</div>
-                  <div className="meta">{`${Math.round((campingProject.progress || 0) * 100)}% · ${campingProject.status}`}</div>
-                </div>
-              )}
+            <div className="project">
+              <div className="title">Automate Monthly Budget Review</div>
+              <div className="meta">Silver candidate</div>
+            </div>
+          </div>
+          <div className="cat" style={{ borderColor: categories.home.color }}>
+            <h3><span style={{ color: categories.home.color }}>●</span> Home</h3>
+            <div className="project">
+              <div className="title">Build Backyard Deck</div>
+              <div className="meta">In Gold queue · 50%</div>
+            </div>
+            <div className="project">
+              <div className="title">Plan Family Camping Trip</div>
+              <div className="meta">Live · 33%</div>
             </div>
           </div>
         </div>
-      );
-    };
-
-    const RosterRoom = ({ state }) => {
-      const readStorage = (key, fallback) => {
-        if (typeof window === 'undefined' || !window.localStorage) return fallback;
-        try {
-          const raw = window.localStorage.getItem(key);
-          return raw ? JSON.parse(raw) : fallback;
-        } catch {
-          return fallback;
-        }
-      };
-
-      const [matches, setMatches] = React.useState(() => readStorage('lifebuildRosterMatches', state.matches));
-      const [agents, setAgents] = React.useState(() => {
-        const stored = readStorage('lifebuildRosterAgents', []);
-        return [...state.agents, ...(stored || [])];
-      });
-      const [selectedProject, setSelectedProject] = React.useState(null);
-      const [selectedAgent, setSelectedAgent] = React.useState(null);
-      const [searchTerm, setSearchTerm] = React.useState('');
-      const [sortBy, setSortBy] = React.useState('priority');
-      const [agentFormOpen, setAgentFormOpen] = React.useState(false);
-      const [agentForm, setAgentForm] = React.useState({ name: '', specialty: '', description: '' });
-      const [agentFormError, setAgentFormError] = React.useState('');
-
-      React.useEffect(() => {
-        if (typeof window === 'undefined' || !window.localStorage) return;
-        try {
-          window.localStorage.setItem('lifebuildRosterMatches', JSON.stringify(matches));
-        } catch {}
-      }, [matches]);
-
-      React.useEffect(() => {
-        if (typeof window === 'undefined' || !window.localStorage) return;
-        const customOnly = agents.filter((agent) => agent.isCustom);
-        try {
-          window.localStorage.setItem('lifebuildRosterAgents', JSON.stringify(customOnly));
-        } catch {}
-      }, [agents]);
-
-      const agentLookup = React.useMemo(() => {
-        const map = {};
-        agents.forEach((agent) => { map[agent.id] = agent; });
-        return map;
-      }, [agents]);
-
-      const getAgentLoad = (agentId) => matches.filter((match) => match.agentId === agentId).length;
-      const isAgentAtCapacity = (agent) => {
-        const cap = agent.capacity ?? 3;
-        return getAgentLoad(agent.id) >= cap;
-      };
-
-      const sortOptions = [
-        { id: 'priority', label: 'Priority' },
-        { id: 'status', label: 'Status' },
-        { id: 'category', label: 'Category' },
-        { id: 'alphabetical', label: 'A-Z' },
-      ];
-
-      const projectMatches = React.useMemo(() => {
-        const map = {};
-        matches.forEach((match) => { map[match.projectId] = match; });
-        return map;
-      }, [matches]);
-
-      const filteredProjects = React.useMemo(() => {
-        const query = searchTerm.trim().toLowerCase();
-        const list = state.projects.map((project) => {
-          const match = projectMatches[project.id];
-          return {
-            ...project,
-            assignedAgent: match ? agentLookup[match.agentId]?.name : null,
-          };
-        });
-        const searched = query
-          ? list.filter((project) => {
-              const haystack = [
-                project.title,
-                project.description,
-                project.focus,
-                project.category,
-                project.tags?.join(' '),
-              ]
-                .filter(Boolean)
-                .join(' ')
-                .toLowerCase();
-              return haystack.includes(query);
-            })
-          : list;
-        const sorter = {
-          priority: (a, b) => (a.priorityScore - b.priorityScore) || a.title.localeCompare(b.title),
-          status: (a, b) => (statusWeights[a.statusLabel] ?? 9) - (statusWeights[b.statusLabel] ?? 9) || a.title.localeCompare(b.title),
-          category: (a, b) => (a.category || '').localeCompare(b.category || '') || a.title.localeCompare(b.title),
-          alphabetical: (a, b) => a.title.localeCompare(b.title),
-        }[sortBy] || (() => 0);
-        return [...searched].sort(sorter);
-      }, [state.projects, searchTerm, sortBy, projectMatches, agentLookup]);
-
-      const selectProject = (project) => {
-        setSelectedProject((prev) => (prev?.id === project.id ? null : project));
-      };
-
-      const selectAgent = (agent) => {
-        if (isAgentAtCapacity(agent)) return;
-        setSelectedAgent((prev) => (prev?.id === agent.id ? null : agent));
-      };
-
-      const assignAgent = () => {
-        if (!selectedProject || !selectedAgent) return;
-        setMatches((prev) => {
-          const filtered = prev.filter((m) => m.projectId !== selectedProject.id);
-          return [...filtered, { projectId: selectedProject.id, agentId: selectedAgent.id, status: 'Assigned' }];
-        });
-        setSelectedAgent(null);
-        setSelectedProject(null);
-      };
-
-      const removeMatch = (projectId) => {
-        setMatches((prev) => prev.filter((m) => m.projectId !== projectId));
-      };
-
-      const handleCreateAgent = () => {
-        if (!agentForm.name.trim() || !agentForm.specialty.trim()) {
-          setAgentFormError('Name and specialization required.');
-          return;
-        }
-        const newAgent = {
-          id: `custom-${Date.now()}`,
-          name: agentForm.name.trim(),
-          type: 'Custom Agent',
-          specialty: agentForm.specialty.trim(),
-          description: agentForm.description.trim() || 'Tailored to this week’s plan.',
-          capacity: 2,
-          tags: ['Custom', agentForm.specialty.trim()],
-          isCustom: true,
-        };
-        setAgents((prev) => [...prev, newAgent]);
-        setAgentForm({ name: '', specialty: '', description: '' });
-        setAgentFormError('');
-        setAgentFormOpen(false);
-        setSelectedAgent(newAgent);
-      };
-
-      const resetAgentForm = () => {
-        setAgentForm({ name: '', specialty: '', description: '' });
-        setAgentFormError('');
-        setAgentFormOpen(false);
-      };
-
-      return (
-        <div className="card">
-          <div className="roster-grid">
-            <div className="roster-column">
-              <h4>Projects needing support</h4>
-              <div className="project-controls">
-                <div className="search-input">
-                  <input
-                    value={searchTerm}
-                    onChange={(event) => setSearchTerm(event.target.value)}
-                    placeholder="Search by title, status, or category"
-                  />
-                  {searchTerm && (
-                    <button onClick={() => setSearchTerm('')}>Clear</button>
-                  )}
-                </div>
-                <div className="sort-pills">
-                  {sortOptions.map((option) => (
-                    <span
-                      key={option.id}
-                      className={`sort-pill${sortBy === option.id ? ' active' : ''}`}
-                      onClick={() => setSortBy(option.id)}
-                    >
-                      {option.label}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              {filteredProjects.length ? filteredProjects.map((project) => (
-                <div
-                  key={project.id}
-                  className={`roster-card${selectedProject?.id === project.id ? ' selected' : ''}`}
-                  onClick={() => selectProject(project)}
-                >
-                  <div className="title">{project.title}</div>
-                  <div className="roster-meta">{project.tierLabel} · {project.statusLabel}</div>
-                  {project.description && <div className="roster-meta">{project.description}</div>}
-                  {project.assignedAgent && <div className="roster-meta">Staffed by {project.assignedAgent}</div>}
-                  <div className="roster-tags">
-                    {project.tags.map((tag) => (
-                      <span key={tag} className="chip">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              )) : (
-                <div className="roster-empty">No projects match that search.</div>
-              )}
-            </div>
-            <div className="roster-column">
-              <h4>Match</h4>
-              <div className="match-panel">
-                <h5>Selected</h5>
-                <div className="summary">
-                  {selectedProject ? selectedProject.title : 'Pick a project'} · {selectedAgent ? selectedAgent.name : 'pick an agent'}
-                </div>
-                <button className="btn" onClick={assignAgent} disabled={!selectedProject || !selectedAgent}>
-                  Staff Project
-                </button>
-              </div>
-              <div className="match-list">
-                {matches.length ? matches.map((match) => {
-                  const project = state.projects.find((p) => p.id === match.projectId);
-                  const agent = agentLookup[match.agentId];
-                  if (!project || !agent) return null;
-                  return (
-                    <div key={match.projectId} className="match-item">
-                      <span>{project.title} → {agent.name}</span>
-                      <button className="pill-btn ghost" onClick={() => removeMatch(match.projectId)}>Unassign</button>
-                    </div>
-                  );
-                }) : <div className="empty-note">No matches yet</div>}
-              </div>
-            </div>
-            <div className="roster-column">
-              <h4>Agents</h4>
-              {agentFormOpen ? (
-                <div className="roster-card agent-form">
-                  <div className="devin-callout"><strong>Devin</strong>: I’ll help you spin up the perfect helper. Give them a name and a specialty.</div>
-                  <div className="form-row">
-                    <label htmlFor="agentName">Agent name</label>
-                    <input id="agentName" value={agentForm.name} onChange={(e) => setAgentForm((prev) => ({ ...prev, name: e.target.value }))} />
-                  </div>
-                  <div className="form-row">
-                    <label htmlFor="agentSpec">Specialization</label>
-                    <input id="agentSpec" value={agentForm.specialty} onChange={(e) => setAgentForm((prev) => ({ ...prev, specialty: e.target.value }))} />
-                  </div>
-                  <div className="form-row">
-                    <label htmlFor="agentDesc">Description</label>
-                    <textarea id="agentDesc" rows={3} value={agentForm.description} onChange={(e) => setAgentForm((prev) => ({ ...prev, description: e.target.value }))}></textarea>
-                  </div>
-                  {agentFormError && <div className="roster-meta" style={{ color: 'var(--gold)' }}>{agentFormError}</div>}
-                  <div className="form-actions">
-                    <button className="btn" onClick={handleCreateAgent}>Create & Select</button>
-                    <button className="btn secondary" onClick={resetAgentForm}>Cancel</button>
-                  </div>
-                </div>
-              ) : (
-                <div className="create-agent-card" onClick={() => setAgentFormOpen(true)}>
-                  <div className="title">＋ Create Custom Agent</div>
-                  <div className="roster-meta">Tune a helper with Devin</div>
-                </div>
-              )}
-              {agents.map((agent) => {
-                const disabled = isAgentAtCapacity(agent);
-                const load = getAgentLoad(agent.id);
-                const capacity = agent.capacity ?? 3;
-                return (
-                  <div
-                    key={agent.id}
-                    className={`roster-card${selectedAgent?.id === agent.id ? ' selected' : ''}${disabled ? ' disabled' : ''}`}
-                    onClick={() => selectAgent(agent)}
-                  >
-                    <div className="title">{agent.name}</div>
-                    <div className="roster-meta">{agent.type}</div>
-                    <div className="roster-meta">{agent.specialty}</div>
-                    <div className="roster-meta">{load}/{capacity} assignments</div>
-                    {agent.description && <div className="roster-meta">{agent.description}</div>}
-                    {disabled && <div className="roster-meta">At capacity</div>}
-                    <div className="roster-tags">
-                      {agent.tags?.map((tag) => (
-                        <span key={tag} className="chip">{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      );
-    };
+      </div>
+    );
 
     const ProjectBoard = ({ state }) => {
       const moveTask = (from, to, task) => {
@@ -1667,70 +751,52 @@
       );
     };
 
-    const FinanceZoom = ({ state }) => {
-      const camper = PROJECTS.sellCamperVan;
-      const budgetProject = PROJECTS.automateMonthlyBudgetReview;
-      const refinanceProject = PROJECTS.mortgageRefinance;
-      const camperPct = Math.round(state.camperProgress * 100);
-      const camperStage = state.camperProgress >= 1 ? 'Decoration' : state.camperProgress >= 0.4 ? 'Polish' : 'Color Emergence';
-      return (
-        <div className="card">
-          <div className="map-grid">
-            <div className="cat" style={{ borderColor: categories.finances.color }}>
-              <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
-              {camper && (
-                <div className="project">
-                  <div className="title">{camper.title}</div>
-                  <div className="meta">{`${camperPct}% · Stage: ${camperStage}`}</div>
-                  <div className="progress"><div className="bar" style={{ width: `${camperPct}%`, background: categories.finances.color }}></div></div>
-                </div>
-              )}
-              {budgetProject && (
-                <div className="project">
-                  <div className="title">{budgetProject.title}</div>
-                  <div className="meta">{`${budgetProject.meta} · ${budgetProject.stage}`}</div>
-                </div>
-              )}
-              {refinanceProject && (
-                <div className="project">
-                  <div className="title">{refinanceProject.title}</div>
-                  <div className="meta">{`${refinanceProject.meta} · ${refinanceProject.stage}`}</div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const SortingReturn = ({ state }) => {
-      const consulting = PROJECTS.launchConsulting;
-      return (
-        <div className="card">
-          <div className="map-grid">
-            <div className="project" style={{ borderColor: 'var(--gold)', boxShadow: '0 12px 26px rgba(216,166,80,0.2)' }}>
-              <div className="title">{state.table.gold.title}</div>
-              <div className="meta">Complete · Decoration stage</div>
-            </div>
-            {consulting && (
-              <div className="project">
-                <div className="title">{consulting.title}</div>
-                <div className="meta">{`${consulting.meta} · ${consulting.stage}`}</div>
-                <div className="actions" style={{ marginTop: '0.5rem' }}>
-                  <button className="btn" onClick={state.reactivateConsulting}>Reactivate Consulting</button>
-                </div>
-              </div>
-            )}
+    const FinanceZoom = ({ state }) => (
+      <div className="card">
+        <div className="map-grid">
+          <div className="cat" style={{ borderColor: categories.finances.color }}>
+            <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
             <div className="project">
-              <div className="title">Gold Queue</div>
-              {state.goldQueue.map((item, idx) => (
-                <div key={item.id || item.title} className="meta">{idx + 1}. {item.title}</div>
-              ))}
+              <div className="title">Sell Camper Van</div>
+              <div className="meta">{Math.round(state.camperProgress * 100)}% · Stage: {state.camperProgress >= 1 ? 'Decoration' : state.camperProgress >= 0.4 ? 'Polish' : 'Color Emergence'}</div>
+              <div className="progress"><div className="bar" style={{ width: `${Math.round(state.camperProgress * 100)}%`, background: categories.finances.color }}></div></div>
+            </div>
+            <div className="project">
+              <div className="title">Automate Monthly Budget Review</div>
+              <div className="meta">Silver candidate</div>
+            </div>
+            <div className="project">
+              <div className="title">Mortgage Refinance</div>
+              <div className="meta">Queued</div>
             </div>
           </div>
         </div>
-      );
-    };
+      </div>
+    );
+
+    const SortingReturn = ({ state }) => (
+      <div className="card">
+        <div className="map-grid">
+          <div className="project" style={{ borderColor: 'var(--gold)', boxShadow: '0 12px 26px rgba(216,166,80,0.2)' }}>
+            <div className="title">{state.table.gold.title === 'Sell Camper Van' ? 'Sell Camper Van' : 'Sell Camper Van'}</div>
+            <div className="meta">Complete · Decoration stage</div>
+          </div>
+          <div className="project">
+            <div className="title">Launch Consulting</div>
+            <div className="meta">Gold Candidate · Paused at 60%</div>
+            <div className="actions" style={{ marginTop: '0.5rem' }}>
+              <button className="btn" onClick={state.reactivateConsulting}>Reactivate Consulting</button>
+            </div>
+          </div>
+          <div className="project">
+            <div className="title">Gold Queue</div>
+            {state.goldQueue.map((item, idx) => (
+              <div key={item.title} className="meta">{idx + 1}. {item.title}</div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
 
     // ===== ROSTER ROOM MOCK DATA =====
     const MOCK_AGENTS = [
@@ -2299,12 +1365,7 @@
       const [tasks, setTasks] = React.useState(initialTasks);
       const [camperProgress, setCamperProgress] = React.useState(0);
 
-      const rosterProjects = React.useMemo(
-        () => buildRosterProjects({ table, goldQueue, silverQueue, bronzeQueue }),
-        [table, goldQueue, silverQueue, bronzeQueue]
-      );
-
-      const camperActive = table.gold.id === PROJECTS.sellCamperVan?.id;
+      const camperActive = table.gold.title === 'Sell Camper Van';
       const camperPct = Math.round(camperProgress * 100);
 
       const toggleQueue = (lane) => setOpenQueue((prev) => (prev === lane ? null : lane));
@@ -2336,36 +1397,33 @@
         });
       };
 
-      const activateLane = (lane, projectId) => {
-        if (!projectId) return;
+      const activateLane = (lane, title) => {
         const setter = lane === 'gold' ? setGoldQueue : setSilverQueue;
         setter((prev) => {
-          const idx = prev.findIndex((card) => card.id === projectId);
+          const idx = prev.findIndex((card) => card.title === title);
           if (idx === -1) return prev;
           const candidate = prev[idx];
           const currentActive = table[lane];
-          const filtered = prev.filter(
-            (card, cIdx) => cIdx !== idx && (!currentActive?.id || card.id !== currentActive.id)
-          );
+          const filtered = prev.filter((card, cIdx) => cIdx !== idx && card.title !== currentActive.title);
           setTable((prevTable) => ({ ...prevTable, [lane]: candidate }));
           setStatus(`${candidate.title} moved to ${lane === 'gold' ? 'Gold' : 'Silver'} Table.`);
-          return currentActive?.id && currentActive.id !== candidate.id ? [currentActive, ...filtered] : filtered;
+          return currentActive.title ? [currentActive, ...filtered] : filtered;
         });
       };
 
-      const activateGold = (projectId) => activateLane('gold', projectId);
-      const activateSilver = (projectId) => activateLane('silver', projectId);
+      const activateGold = (title) => activateLane('gold', title);
+      const activateSilver = (title) => activateLane('silver', title);
 
       const swapGold = () => {
         if (camperActive) return;
-        activateGold(PROJECTS.sellCamperVan?.id);
+        activateGold('Sell Camper Van');
         setStatus('Camper active. Consulting preserved in Gold queue.');
       };
 
       const fastForward = () => {
         setTasks({ todo: [], doing: [], review: [], done: ['All tasks'] });
         setCamperProgress(1);
-        if (table.gold.id === PROJECTS.sellCamperVan?.id) {
+        if (table.gold.title === 'Sell Camper Van') {
           setTable((prev) => ({ ...prev, gold: { ...prev.gold, progress: 1, meta: 'Finances · Gold · Complete' } }));
         }
       };
@@ -2402,10 +1460,8 @@
       const reactivateConsulting = () => {
         const currentActive = table.gold;
         setGoldQueue((prev) => {
-          const filtered = prev.filter(
-            (card) => card.id !== goldTableSeed.id && (!currentActive?.id || card.id !== currentActive.id)
-          );
-          if (!currentActive?.id || currentActive.id === goldTableSeed.id) return filtered;
+          const filtered = prev.filter((card) => card.title !== goldTableSeed.title && card.title !== currentActive.title);
+          if (currentActive.title === goldTableSeed.title) return filtered;
           return [currentActive, ...filtered];
         });
         setTable((prevTable) => ({ ...prevTable, gold: { ...goldTableSeed } }));
@@ -2496,24 +1552,12 @@
             { label: 'Back to Finances', onClick: () => setChapter(5), variant: 'secondary' },
           ],
         },
-        {
-          label: 'Chapter 8',
-          title: 'Roster Room · Delegation check',
-          lines: [
-            { text: 'Jess reviews every ongoing system—services, AI automations, and human helpers—in one grid.' },
-            { text: 'Each category shows who is covering the work before he locks the week.' },
-          ],
-          prompts: [
-            { label: 'Back to Life Map', onClick: () => setChapter(0) },
-            { label: 'Return to Sorting Room', onClick: () => setChapter(2), variant: 'secondary' },
-          ],
-        },
       ];
 
       const currentStory = chapterStories[chapter] || chapterStories[0];
 
       const screen = () => {
-        if (chapter === 0) return <LifeMap table={table} bronzeQueue={bronzeQueue} />;
+        if (chapter === 0) return <LifeMap table={table} />;
         if (chapter === 1) return <DraftingRoom />;
         if (chapter === 2) {
           return (
@@ -2540,20 +1584,8 @@
         if (chapter === 3) return <ActivationMap state={{ table, goldQueue }} />;
         if (chapter === 4) return <ProjectBoard state={{ tasks, setTasks, camperProgress, setCamperProgress }} />;
         if (chapter === 5) return <FinanceZoom state={{ camperProgress }} />;
-        if (chapter === 6) return <SortingReturn state={{ reactivateConsulting, goldQueue, table }} />;
-        if (chapter === 7) {
-          return (
-            <RosterRoom
-              state={{
-                assignments: rosterAssignments,
-                projects: rosterProjects,
-                agents: rosterAgents,
-                matches: rosterMatchesSeedSafe,
-              }}
-            />
-          );
-        }
-        return <LifeMap table={table} bronzeQueue={bronzeQueue} />;
+        if (chapter === 7) return <RosterRoom />;
+        return <SortingReturn state={{ reactivateConsulting, goldQueue, table }} />;
       };
 
       return (
@@ -2600,7 +1632,6 @@
       );
     };
 
-    ReactDOM.render(<App />, document.getElementById('root'));
-  </script>
-</body>
-</html>
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<App />);

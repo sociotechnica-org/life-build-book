@@ -18,7 +18,8 @@
     "check": "tsc --noEmit && npx prettier . --check",
     "format": "npx prettier . --write",
     "test": "tsx --test",
-    "profile": "0x -D prof ./quartz/bootstrap-cli.mjs build --concurrency=1"
+    "profile": "0x -D prof ./quartz/bootstrap-cli.mjs build --concurrency=1",
+    "build:immersive-demo": "esbuild quartz/static/apps/lifebuild-immersive-tour.jsx --target=es2017 --format=iife --outfile=quartz/static/apps/lifebuild-immersive-tour.js --tsconfig=lifebuild-immersive-tour.tsconfig.json"
   },
   "engines": {
     "npm": ">=10.9.2",
