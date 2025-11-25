@@ -1060,11 +1060,12 @@ const ReactDOM = window.ReactDOM;
       const filteredProjects = React.useMemo(() => {
         if (!searchTerm) return sortedUnstaffedProjects;
         const term = searchTerm.toLowerCase();
-        return sortedUnstaffedProjects.filter(p =>
-          p.title.toLowerCase().includes(term) ||
-          p.description.toLowerCase().includes(term) ||
-          p.category.toLowerCase().includes(term)
-        );
+        return sortedUnstaffedProjects.filter(p => {
+          const title = (p.title || '').toLowerCase();
+          const description = (p.description || '').toLowerCase();
+          const category = (p.category || '').toLowerCase();
+          return title.includes(term) || description.includes(term) || category.includes(term);
+        });
       }, [sortedUnstaffedProjects, searchTerm]);
 
       // Filter agents by availability
@@ -1085,20 +1086,26 @@ const ReactDOM = window.ReactDOM;
 
         if (criteria === 'priority') {
           sorted.sort((a, b) => {
-            if (PRIORITY_ORDER[a.priority] !== PRIORITY_ORDER[b.priority]) {
-              return PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
+            const priorityA = PRIORITY_ORDER[a.priority] || 99;
+            const priorityB = PRIORITY_ORDER[b.priority] || 99;
+            if (priorityA !== priorityB) {
+              return priorityA - priorityB;
             }
-            return STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
+            const statusA = STATUS_ORDER[a.status] || 99;
+            const statusB = STATUS_ORDER[b.status] || 99;
+            return statusA - statusB;
           });
         } else if (criteria === 'category') {
           sorted.sort((a, b) => {
-            if (a.category === b.category) {
-              return a.title.localeCompare(b.title);
+            const categoryA = (a.category || '').toLowerCase();
+            const categoryB = (b.category || '').toLowerCase();
+            if (categoryA === categoryB) {
+              return (a.title || '').localeCompare(b.title || '');
             }
-            return a.category.localeCompare(b.category);
+            return categoryA.localeCompare(categoryB);
           });
         } else if (criteria === 'alphabetical') {
-          sorted.sort((a, b) => a.title.localeCompare(b.title));
+          sorted.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
         } else if (criteria === 'agent' && allowAgentSort) {
           sorted.sort((a, b) => {
             const agentA = (a.staffing?.agentName || '').toLowerCase();
@@ -1479,7 +1486,9 @@ const ReactDOM = window.ReactDOM;
       };
 
       const renderStaffedProjectCard = (project, { variant = 'sidebar' } = {}) => {
-        const agent = agents.find(a => a.id === project.staffing.agentId);
+        const staffing = project.staffing || {};
+        const agent = agents.find(a => a.id === staffing.agentId);
+        const agentName = staffing.agentName || agent?.name || 'Unassigned';
         const isReview = variant === 'review';
         const showAgentDetails = isReview && expandedStaffedProjectId === project.id && agent;
         const assignedProjects = agent ? projects.filter(p => agent.currentProjects.includes(p.id)) : [];
@@ -1490,6 +1499,8 @@ const ReactDOM = window.ReactDOM;
         ]
           .filter(Boolean)
           .join(' ');
+        const categoryValue = project.category || 'project';
+        const categoryLabel = categoryValue.charAt(0).toUpperCase() + categoryValue.slice(1);
 
         return (
           <div key={project.id} className={cardClasses} data-priority={project.priority}>
@@ -1510,9 +1521,9 @@ const ReactDOM = window.ReactDOM;
                 <div className="project-description">{project.description}</div>
               )}
               <div className="project-assignment">
-                <span className="agent-avatar">{agent?.avatar}</span>
+                <span className="agent-avatar">{agent?.avatar || '👥'}</span>
                 <div className="agent-name-block">
-                  <span className="agent-name">{project.staffing.agentName}</span>
+                  <span className="agent-name">{agentName}</span>
                   {agent?.specialization && (
                     <span className="agent-specialization">{agent.specialization}</span>
                   )}
@@ -1552,9 +1563,9 @@ const ReactDOM = window.ReactDOM;
                   </div>
                 </div>
               )}
-              {project.staffing.helpDescription && (
+              {staffing.helpDescription && (
                 <div className="help-description">
-                  <strong>Help needed:</strong> {project.staffing.helpDescription}
+                  <strong>Help needed:</strong> {staffing.helpDescription}
                 </div>
               )}
             </div>
@@ -1562,7 +1573,7 @@ const ReactDOM = window.ReactDOM;
               <button
                 className="unstaff-btn"
                 onClick={() => {
-                  if (confirm(`Remove ${project.staffing.agentName} from ${project.title}?`)) {
+                  if (confirm(`Remove ${agentName} from ${project.title}?`)) {
                     handleUnstaffProject(project);
                   }
                 }}
