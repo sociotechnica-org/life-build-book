@@ -1,4 +1,4 @@
-(() => {
+(function () {
   const projects = {
     sellCamperVan: {
       id: 'sellCamperVan',
@@ -141,10 +141,13 @@
     { id: 'bronzeOrganizeGloveBox', title: 'Organize glove box', category: 'home', meta: 'Home · Bronze · 15 min', stage: 'Queue', energy: 'Car errand' },
   ];
 
-  const plantedProjects = {
+  const rosterAssignments = {
     home: [
       {
         title: 'Lawn Care Service',
+        origin: 'Find and contract weekly lawn maintenance',
+        running: 'Crew arrives every Tuesday morning',
+        maintenance: 'Fully automated, just gets done',
         status: 'Delegated to Service - Active',
         automation: 'service',
         statusDetail: 'Next scheduled: Tue · 7:30am',
@@ -152,6 +155,9 @@
       },
       {
         title: 'HVAC Maintenance Contract',
+        origin: 'Set up preventative maintenance plan',
+        running: 'Technician visits quarterly for filters and system checks',
+        maintenance: 'Automated reminders, service handles scheduling',
         status: 'Delegated to Service - Scheduled',
         automation: 'service',
         statusDetail: 'Next scheduled: Jul 15',
@@ -159,6 +165,9 @@
       },
       {
         title: 'House Cleaning Service',
+        origin: 'Research and hire bi-weekly cleaners',
+        running: 'Cleaners come every other Friday',
+        maintenance: 'Fully delegated',
         status: 'Delegated to Service - Active',
         automation: 'service',
         statusDetail: 'Next scheduled: May 10',
@@ -166,6 +175,9 @@
       },
       {
         title: 'Grocery Delivery Subscription',
+        origin: 'Set up recurring grocery delivery',
+        running: 'Weekly delivery of staples and meal kit ingredients',
+        maintenance: 'Adjust order occasionally',
         status: 'Ongoing Service - Running',
         automation: 'service',
         statusDetail: 'Next delivery: May 3 · 8-10am',
@@ -175,6 +187,9 @@
     finances: [
       {
         title: 'Automated Bill Payment System',
+        origin: 'Configure auto-pay for all recurring bills',
+        running: '12 bills paid automatically each month',
+        maintenance: 'Review charges quarterly',
         status: 'Ongoing System - Running',
         automation: 'system',
         statusDetail: 'Last review: Apr 1',
@@ -182,6 +197,9 @@
       },
       {
         title: 'Retirement Contributions',
+        origin: 'Set up automatic investment transfers',
+        running: '$500 to IRA monthly, $200 to kids\' 529 plans',
+        maintenance: 'Annual contribution increase',
         status: 'Ongoing System - Running',
         automation: 'system',
         statusDetail: 'Next increase review: Jan 5',
@@ -189,6 +207,9 @@
       },
       {
         title: 'Credit Card Rewards Optimization',
+        origin: 'Create system to maximize rewards across 3 cards',
+        running: 'AI tracks spending categories and flags optimal card usage',
+        maintenance: 'Director follows the recommendations',
         status: 'Delegated to AI - Active',
         automation: 'ai',
         statusDetail: 'Last sync: 1 hour ago',
@@ -196,6 +217,9 @@
       },
       {
         title: 'Tax Document Organization',
+        origin: 'Build digital filing system for receipts and tax docs',
+        running: 'Documents auto-categorize and file throughout the year',
+        maintenance: 'Quarterly review for accuracy',
         status: 'Ongoing System - Running',
         automation: 'system',
         statusDetail: 'Last sweep: 2 days ago',
@@ -203,6 +227,9 @@
       },
       {
         title: 'Insurance Policy Review Calendar',
+        origin: 'Set up annual review schedule for policies',
+        running: 'Reminders trigger 60 days before renewals',
+        maintenance: 'Director shops alternatives on schedule',
         status: 'Ongoing System - Scheduled',
         automation: 'system',
         statusDetail: 'Next scheduled: Aug 1',
@@ -212,6 +239,9 @@
     health: [
       {
         title: 'Prescription Delivery Concierge',
+        origin: 'Lock pharmacy auto-refill plus courier window',
+        running: 'Pharmacy and courier coordinate shipments automatically',
+        maintenance: 'Semi-annual review to confirm dosages',
         status: 'Delegated to Service - Active',
         automation: 'service',
         statusDetail: 'Next delivery: Apr 28',
@@ -219,6 +249,9 @@
       },
       {
         title: 'Biometric Trends Dashboard',
+        origin: 'Connect wearables into single health insight hub',
+        running: 'AI ingests Oura, Whoop, and Apple Health data nightly',
+        maintenance: 'Weekly look-back adjusts recovery goals',
         status: 'Delegated to AI - Active',
         automation: 'ai',
         statusDetail: 'Last sync: overnight',
@@ -226,6 +259,9 @@
       },
       {
         title: 'Trainer Accountability Sessions',
+        origin: 'Book remote strength coach for twice-weekly sessions',
+        running: 'Trainer runs Tue/Thu morning check-ins over video',
+        maintenance: 'Director confirms block quarterly',
         status: 'Delegated to Service - Active',
         automation: 'service',
         statusDetail: 'Next session: Thu · 6am',
@@ -283,8 +319,7 @@
     queues,
     seeds,
     bronzeQueue,
-    plantedProjects,
-    rosterAssignments: plantedProjects,
+    rosterAssignments,
     rosterAgents,
     rosterMatches,
   };
