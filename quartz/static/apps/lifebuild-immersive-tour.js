@@ -605,7 +605,8 @@
     const [projects, setProjects] = React.useState(() => loadFromStorage("rosterRoom_projects", MOCK_PROJECTS));
     const [agents, setAgents] = React.useState(() => loadFromStorage("rosterRoom_agents", MOCK_AGENTS));
     const [searchTerm, setSearchTerm] = React.useState("");
-    const [sortBy, setSortBy] = React.useState("priority");
+    const [projectSortBy, setProjectSortBy] = React.useState("priority");
+    const [reviewSortBy, setReviewSortBy] = React.useState("priority");
     const [agentFilter, setAgentFilter] = React.useState("all");
     const [isCreatingAgent, setIsCreatingAgent] = React.useState(false);
     const blankAgentForm = () => ({
@@ -618,6 +619,16 @@
     const [agentFormErrors, setAgentFormErrors] = React.useState({});
     const [successMessage, setSuccessMessage] = React.useState("");
     const [expandedAgentId, setExpandedAgentId] = React.useState(null);
+    const [expandedStaffedProjectId, setExpandedStaffedProjectId] = React.useState(null);
+    const [recentAssignmentId, setRecentAssignmentId] = React.useState(null);
+    const PRIORITY_ORDER = { gold: 1, silver: 2, bronze: 3 };
+    const STATUS_ORDER = { active: 1, ongoing: 2 };
+    const CATEGORY_ICONS = {
+      finances: "\u{1F4B0}",
+      health: "\u2764\uFE0F",
+      home: "\u{1F3E0}",
+      career: "\u{1F4BC}"
+    };
     React.useEffect(() => {
       try {
         localStorage.setItem("rosterRoom_projects", JSON.stringify(projects));
@@ -632,38 +643,41 @@
         console.warn("Failed to save agents to localStorage:", error);
       }
     }, [agents]);
+    React.useEffect(() => {
+      if (!recentAssignmentId) return;
+      const timer = setTimeout(() => setRecentAssignmentId(null), 3500);
+      return () => clearTimeout(timer);
+    }, [recentAssignmentId]);
     const unstaffedProjects = React.useMemo(() => {
       return projects.filter((p) => !p.staffing.assigned);
     }, [projects]);
     const staffedProjects = React.useMemo(() => {
       return projects.filter((p) => p.staffing.assigned);
     }, [projects]);
-    const sortedProjects = React.useMemo(() => {
-      const projectsToSort = currentStep === 1 ? unstaffedProjects : staffedProjects;
-      let sorted = [...projectsToSort];
-      if (sortBy === "priority") {
-        const priorityOrder = { gold: 1, silver: 2, bronze: 3 };
-        const statusOrder = { active: 1, ongoing: 2 };
+    const sortedUnstaffedProjects = React.useMemo(() => {
+      return sortProjectsList(unstaffedProjects, projectSortBy);
+    }, [unstaffedProjects, projectSortBy]);
+    const sortedStaffedProjects = React.useMemo(() => {
+      const sorted = sortProjectsList(staffedProjects, reviewSortBy, { allowAgentSort: true });
+      if (recentAssignmentId) {
         sorted.sort((a, b) => {
-          if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
-            return priorityOrder[a.priority] - priorityOrder[b.priority];
-          }
-          return statusOrder[a.status] - statusOrder[b.status];
+          if (a.id === recentAssignmentId) return -1;
+          if (b.id === recentAssignmentId) return 1;
+          return 0;
         });
-      } else if (sortBy === "category") {
-        sorted.sort((a, b) => a.category.localeCompare(b.category));
-      } else if (sortBy === "alphabetical") {
-        sorted.sort((a, b) => a.title.localeCompare(b.title));
       }
       return sorted;
-    }, [unstaffedProjects, staffedProjects, sortBy, currentStep]);
+    }, [staffedProjects, reviewSortBy, recentAssignmentId]);
+    const sidebarStaffedProjects = React.useMemo(() => {
+      return sortProjectsList(staffedProjects, "priority", { allowAgentSort: true });
+    }, [staffedProjects]);
     const filteredProjects = React.useMemo(() => {
-      if (!searchTerm) return sortedProjects;
+      if (!searchTerm) return sortedUnstaffedProjects;
       const term = searchTerm.toLowerCase();
-      return sortedProjects.filter(
+      return sortedUnstaffedProjects.filter(
         (p) => p.title.toLowerCase().includes(term) || p.description.toLowerCase().includes(term) || p.category.toLowerCase().includes(term)
       );
-    }, [sortedProjects, searchTerm]);
+    }, [sortedUnstaffedProjects, searchTerm]);
     const filteredAgents = React.useMemo(() => {
       let filtered = [...agents];
       if (agentFilter === "available") {
@@ -673,6 +687,37 @@
       }
       return filtered;
     }, [agents, agentFilter]);
+    const sortProjectsList = (list, criteria, { allowAgentSort = false } = {}) => {
+      const sorted = [...list];
+      if (criteria === "priority") {
+        sorted.sort((a, b) => {
+          if (PRIORITY_ORDER[a.priority] !== PRIORITY_ORDER[b.priority]) {
+            return PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
+          }
+          return STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
+        });
+      } else if (criteria === "category") {
+        sorted.sort((a, b) => {
+          if (a.category === b.category) {
+            return a.title.localeCompare(b.title);
+          }
+          return a.category.localeCompare(b.category);
+        });
+      } else if (criteria === "alphabetical") {
+        sorted.sort((a, b) => a.title.localeCompare(b.title));
+      } else if (criteria === "agent" && allowAgentSort) {
+        sorted.sort((a, b) => {
+          var _a, _b;
+          const agentA = (((_a = a.staffing) == null ? void 0 : _a.agentName) || "").toLowerCase();
+          const agentB = (((_b = b.staffing) == null ? void 0 : _b.agentName) || "").toLowerCase();
+          if (!agentA && !agentB) return 0;
+          if (!agentA) return 1;
+          if (!agentB) return -1;
+          return agentA.localeCompare(agentB);
+        });
+      }
+      return sorted;
+    };
     const resetAgentFormState = () => {
       setAgentForm(blankAgentForm());
       setAgentFormErrors({});
@@ -746,13 +791,15 @@
       setCurrentStep(2);
     };
     const handleBack = () => {
+      if (currentStep === 3) {
+        handleStaffAnother();
+        return;
+      }
       closeAgentForm();
       if (currentStep === 2) {
         setSelectedProject(null);
         setHelpDescription("");
         setSelectedAgent(null);
-        setCurrentStep(1);
-      } else if (currentStep === 3) {
         setCurrentStep(1);
       }
     };
@@ -770,7 +817,8 @@
       setHelpDescription("");
       setSelectedAgent(null);
       setSearchTerm("");
-      setSortBy("priority");
+      setProjectSortBy("priority");
+      setReviewSortBy("priority");
       setCurrentStep(1);
     };
     const handleAssignAgent = (agentToAssign) => {
@@ -801,9 +849,10 @@
         )
       );
       setSuccessMessage(`\u2713 ${agent.name} assigned to ${selectedProject.title}`);
+      setRecentAssignmentId(selectedProject.id);
       setTimeout(() => setSuccessMessage(""), 3e3);
       window.dispatchEvent(new CustomEvent("rosterUpdated"));
-      setCurrentStep(1);
+      setCurrentStep(3);
       setSelectedProject(null);
       setHelpDescription("");
       setSelectedAgent(null);
@@ -811,6 +860,7 @@
     };
     const handleUnstaffProject = (project) => {
       const agent = agents.find((a) => a.id === project.staffing.agentId);
+      const categoryLabel2 = project.category.charAt(0).toUpperCase() + project.category.slice(1);
       setProjects(
         (prevProjects) => prevProjects.map(
           (p) => p.id === project.id ? __spreadProps(__spreadValues({}, p), {
@@ -838,15 +888,28 @@
         );
       }
       window.dispatchEvent(new CustomEvent("rosterUpdated"));
+      setSuccessMessage(`Assignment removed from ${project.title}`);
+      setTimeout(() => setSuccessMessage(""), 3e3);
+      if (recentAssignmentId === project.id) {
+        setRecentAssignmentId(null);
+      }
     };
-    const renderStepIndicator = () => /* @__PURE__ */ React.createElement("div", { className: "wizard-step-indicator" }, /* @__PURE__ */ React.createElement("div", { className: `wizard-step ${currentStep >= 1 ? "active" : ""} ${currentStep > 1 ? "completed" : ""}` }, /* @__PURE__ */ React.createElement("div", { className: "step-number" }, "1"), /* @__PURE__ */ React.createElement("div", { className: "step-label" }, "Select Project")), /* @__PURE__ */ React.createElement("div", { className: "step-connector" }), /* @__PURE__ */ React.createElement("div", { className: `wizard-step ${currentStep >= 2 ? "active" : ""}` }, /* @__PURE__ */ React.createElement("div", { className: "step-number" }, "2"), /* @__PURE__ */ React.createElement("div", { className: "step-label" }, "Choose Agent")));
+    const renderStepIndicator = () => {
+      const steps = [
+        { id: 1, label: "Select Project" },
+        { id: 2, label: "Choose Agent" },
+        { id: 3, label: "Review Plan" }
+      ];
+      return /* @__PURE__ */ React.createElement("div", { className: "wizard-step-indicator" }, steps.map((step, index) => /* @__PURE__ */ React.createElement(React.Fragment, { key: step.id }, /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          className: `wizard-step ${currentStep === step.id ? "active" : ""} ${currentStep > step.id ? "completed" : ""}`
+        },
+        /* @__PURE__ */ React.createElement("div", { className: "step-number" }, step.id),
+        /* @__PURE__ */ React.createElement("div", { className: "step-label" }, step.label)
+      ), index < steps.length - 1 && /* @__PURE__ */ React.createElement("div", { className: "step-connector" }))));
+    };
     const renderProjectCard = (project, onClick) => {
-      const categoryIcons = {
-        finances: "\u{1F4B0}",
-        health: "\u2764\uFE0F",
-        home: "\u{1F3E0}",
-        career: "\u{1F4BC}"
-      };
       return /* @__PURE__ */ React.createElement(
         "div",
         {
@@ -855,7 +918,7 @@
           onClick: () => onClick && onClick(project),
           "data-priority": project.priority
         },
-        /* @__PURE__ */ React.createElement("div", { className: "project-header" }, /* @__PURE__ */ React.createElement("div", { className: "project-badges" }, /* @__PURE__ */ React.createElement("span", { className: `priority-badge ${project.priority}` }, project.priority.toUpperCase()), /* @__PURE__ */ React.createElement("span", { className: `status-badge ${project.status}` }, project.status === "active" ? "On Table" : "Ongoing")), /* @__PURE__ */ React.createElement("div", { className: "category-icon", "data-category": project.category }, categoryIcons[project.category] || "\u{1F4C1}")),
+        /* @__PURE__ */ React.createElement("div", { className: "project-header" }, /* @__PURE__ */ React.createElement("div", { className: "project-badges" }, /* @__PURE__ */ React.createElement("span", { className: `priority-badge ${project.priority}` }, project.priority.toUpperCase()), /* @__PURE__ */ React.createElement("span", { className: `status-badge ${project.status}` }, project.status === "active" ? "On Table" : "Ongoing")), /* @__PURE__ */ React.createElement("div", { className: "category-icon", "data-category": project.category }, CATEGORY_ICONS[project.category] || "\u{1F4C1}")),
         /* @__PURE__ */ React.createElement("div", { className: "project-title" }, project.title),
         /* @__PURE__ */ React.createElement("div", { className: "project-description" }, project.description),
         project.staffing.assigned && /* @__PURE__ */ React.createElement("div", { className: "project-staffing" }, /* @__PURE__ */ React.createElement("span", { className: "staffing-label" }, "Assigned:"), /* @__PURE__ */ React.createElement("span", { className: "staffing-agent" }, project.staffing.agentName))
@@ -904,9 +967,24 @@
         )), /* @__PURE__ */ React.createElement("div", { className: "capacity-text" }, agent.capacity.available > 0 ? `${agent.capacity.available} of ${agent.capacity.total} available` : "At capacity")))
       );
     };
-    return /* @__PURE__ */ React.createElement("div", { className: "roster-room-two-panel" }, /* @__PURE__ */ React.createElement("div", { className: "staffed-panel" }, /* @__PURE__ */ React.createElement("div", { className: "panel-header" }, /* @__PURE__ */ React.createElement("h2", null, "Delegation Plan"), /* @__PURE__ */ React.createElement("p", null, staffedProjects.length, " ", staffedProjects.length === 1 ? "project" : "projects", " staffed")), /* @__PURE__ */ React.createElement("div", { className: "staffed-projects-list" }, staffedProjects.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-state" }, /* @__PURE__ */ React.createElement("div", { className: "empty-icon" }, "\u{1F4CB}"), /* @__PURE__ */ React.createElement("div", { className: "empty-message" }, "No projects staffed yet"), /* @__PURE__ */ React.createElement("div", { className: "empty-hint" }, "Select a project from the right to get started")), staffedProjects.map((project) => {
+    const renderStaffedProjectCard = (project, { variant = "sidebar" } = {}) => {
       const agent = agents.find((a) => a.id === project.staffing.agentId);
-      return /* @__PURE__ */ React.createElement("div", { key: project.id, className: "staffed-project-card", "data-priority": project.priority }, /* @__PURE__ */ React.createElement("div", { className: "project-info" }, /* @__PURE__ */ React.createElement("div", { className: "project-header" }, /* @__PURE__ */ React.createElement("span", { className: `priority-badge ${project.priority}` }, project.priority.toUpperCase()), /* @__PURE__ */ React.createElement("span", { className: `status-badge ${project.status}` }, project.status === "active" ? "On Table" : "Ongoing")), /* @__PURE__ */ React.createElement("div", { className: "project-title" }, project.title), /* @__PURE__ */ React.createElement("div", { className: "project-assignment" }, /* @__PURE__ */ React.createElement("span", { className: "agent-avatar" }, agent == null ? void 0 : agent.avatar), /* @__PURE__ */ React.createElement("span", { className: "agent-name" }, project.staffing.agentName)), project.staffing.helpDescription && /* @__PURE__ */ React.createElement("div", { className: "help-description" }, /* @__PURE__ */ React.createElement("strong", null, "Help needed:"), " ", project.staffing.helpDescription)), /* @__PURE__ */ React.createElement("div", { className: "project-actions" }, /* @__PURE__ */ React.createElement(
+      const isReview = variant === "review";
+      const showAgentDetails = isReview && expandedStaffedProjectId === project.id && agent;
+      const assignedProjects = agent ? projects.filter((p) => agent.currentProjects.includes(p.id)) : [];
+      const cardClasses = [
+        "staffed-project-card",
+        isReview ? "review-card" : "",
+        isReview && recentAssignmentId === project.id ? "recently-assigned" : ""
+      ].filter(Boolean).join(" ");
+      return /* @__PURE__ */ React.createElement("div", { key: project.id, className: cardClasses, "data-priority": project.priority }, /* @__PURE__ */ React.createElement("div", { className: "project-info" }, /* @__PURE__ */ React.createElement("div", { className: "project-header" }, /* @__PURE__ */ React.createElement("span", { className: `priority-badge ${project.priority}` }, project.priority.toUpperCase()), /* @__PURE__ */ React.createElement("span", { className: `status-badge ${project.status}` }, project.status === "active" ? "On Table" : "Ongoing"), isReview && /* @__PURE__ */ React.createElement("span", { className: "category-chip" }, CATEGORY_ICONS[project.category] || "\u{1F4C1}", " ", categoryLabel)), /* @__PURE__ */ React.createElement("div", { className: "project-title" }, project.title), isReview && project.description && /* @__PURE__ */ React.createElement("div", { className: "project-description" }, project.description), /* @__PURE__ */ React.createElement("div", { className: "project-assignment" }, /* @__PURE__ */ React.createElement("span", { className: "agent-avatar" }, agent == null ? void 0 : agent.avatar), /* @__PURE__ */ React.createElement("div", { className: "agent-name-block" }, /* @__PURE__ */ React.createElement("span", { className: "agent-name" }, project.staffing.agentName), (agent == null ? void 0 : agent.specialization) && /* @__PURE__ */ React.createElement("span", { className: "agent-specialization" }, agent.specialization)), isReview && agent && /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          className: "info-btn",
+          onClick: () => setExpandedStaffedProjectId(showAgentDetails ? null : project.id)
+        },
+        showAgentDetails ? "Hide details" : "Agent details"
+      )), showAgentDetails && agent && /* @__PURE__ */ React.createElement("div", { className: "agent-details-inline" }, agent.description && /* @__PURE__ */ React.createElement("div", { className: "agent-description" }, agent.description), /* @__PURE__ */ React.createElement("div", { className: "agent-capacity-line" }, "Capacity:", " ", /* @__PURE__ */ React.createElement("strong", null, agent.capacity.used, " of ", agent.capacity.total), " ", "slots used"), /* @__PURE__ */ React.createElement("div", { className: "agent-current-projects" }, /* @__PURE__ */ React.createElement("strong", null, "Current Projects"), assignedProjects.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "no-projects" }, "No other projects assigned"), assignedProjects.map((p) => /* @__PURE__ */ React.createElement("div", { key: p.id, className: "assigned-project" }, /* @__PURE__ */ React.createElement("span", { className: `priority-badge ${p.priority}` }, p.priority.toUpperCase()), /* @__PURE__ */ React.createElement("span", null, p.title))))), project.staffing.helpDescription && /* @__PURE__ */ React.createElement("div", { className: "help-description" }, /* @__PURE__ */ React.createElement("strong", null, "Help needed:"), " ", project.staffing.helpDescription)), /* @__PURE__ */ React.createElement("div", { className: "project-actions" }, /* @__PURE__ */ React.createElement(
         "button",
         {
           className: "unstaff-btn",
@@ -918,7 +996,8 @@
         },
         "Unstaff"
       )));
-    }))), /* @__PURE__ */ React.createElement("div", { className: "wizard-panel" }, /* @__PURE__ */ React.createElement("div", { className: "panel-header" }, /* @__PURE__ */ React.createElement("h2", null, "Delegation Wizard"), /* @__PURE__ */ React.createElement("p", null, "Staff your projects in two easy steps")), renderStepIndicator(), /* @__PURE__ */ React.createElement("div", { className: "wizard-content" }, currentStep === 1 && /* @__PURE__ */ React.createElement("div", { className: "wizard-step-1" }, /* @__PURE__ */ React.createElement("div", { className: "step-header" }, /* @__PURE__ */ React.createElement("h2", null, "Select a Project to Staff"), /* @__PURE__ */ React.createElement("p", null, "Choose which project needs help")), /* @__PURE__ */ React.createElement("div", { className: "wizard-controls" }, /* @__PURE__ */ React.createElement("div", { className: "search-box" }, /* @__PURE__ */ React.createElement(
+    };
+    return /* @__PURE__ */ React.createElement("div", { className: "roster-room-two-panel" }, /* @__PURE__ */ React.createElement("div", { className: "staffed-panel" }, /* @__PURE__ */ React.createElement("div", { className: "panel-header" }, /* @__PURE__ */ React.createElement("h2", null, "Delegation Plan"), /* @__PURE__ */ React.createElement("p", null, staffedProjects.length, " ", staffedProjects.length === 1 ? "project" : "projects", " staffed")), /* @__PURE__ */ React.createElement("div", { className: "staffed-projects-list" }, staffedProjects.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-state" }, /* @__PURE__ */ React.createElement("div", { className: "empty-icon" }, "\u{1F4CB}"), /* @__PURE__ */ React.createElement("div", { className: "empty-message" }, "No projects staffed yet"), /* @__PURE__ */ React.createElement("div", { className: "empty-hint" }, "Select a project from the right to get started")), sidebarStaffedProjects.map((project) => renderStaffedProjectCard(project)))), /* @__PURE__ */ React.createElement("div", { className: "wizard-panel" }, /* @__PURE__ */ React.createElement("div", { className: "panel-header" }, /* @__PURE__ */ React.createElement("h2", null, "Delegation Wizard"), /* @__PURE__ */ React.createElement("p", null, "Staff your projects in three calm steps")), renderStepIndicator(), /* @__PURE__ */ React.createElement("div", { className: "wizard-content" }, currentStep === 1 && /* @__PURE__ */ React.createElement("div", { className: "wizard-step-1" }, /* @__PURE__ */ React.createElement("div", { className: "step-header" }, /* @__PURE__ */ React.createElement("h2", null, "Select a Project to Staff"), /* @__PURE__ */ React.createElement("p", null, "Choose which project needs help")), /* @__PURE__ */ React.createElement("div", { className: "wizard-controls" }, /* @__PURE__ */ React.createElement("div", { className: "search-box" }, /* @__PURE__ */ React.createElement(
       "input",
       {
         type: "text",
@@ -927,7 +1006,7 @@
         onChange: (e) => setSearchTerm(e.target.value),
         className: "search-input"
       }
-    ), searchTerm && /* @__PURE__ */ React.createElement("button", { className: "search-clear", onClick: () => setSearchTerm("") }, "\xD7")), /* @__PURE__ */ React.createElement("div", { className: "sort-controls" }, /* @__PURE__ */ React.createElement("button", { className: `sort-btn ${sortBy === "priority" ? "active" : ""}`, onClick: () => setSortBy("priority") }, "Priority"), /* @__PURE__ */ React.createElement("button", { className: `sort-btn ${sortBy === "category" ? "active" : ""}`, onClick: () => setSortBy("category") }, "Category"), /* @__PURE__ */ React.createElement("button", { className: `sort-btn ${sortBy === "alphabetical" ? "active" : ""}`, onClick: () => setSortBy("alphabetical") }, "A-Z"))), /* @__PURE__ */ React.createElement("div", { className: "project-list" }, filteredProjects.length === 0 && unstaffedProjects.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-state" }, /* @__PURE__ */ React.createElement("div", { className: "empty-icon" }, "\u{1F389}"), /* @__PURE__ */ React.createElement("div", { className: "empty-message" }, "All projects are staffed!"), /* @__PURE__ */ React.createElement("div", { className: "empty-hint" }, "You can unstaff projects to make changes")), filteredProjects.length === 0 && unstaffedProjects.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-state" }, /* @__PURE__ */ React.createElement("div", { className: "empty-icon" }, "\u{1F50D}"), /* @__PURE__ */ React.createElement("div", { className: "empty-message" }, 'No projects match "', searchTerm, '"'), /* @__PURE__ */ React.createElement("div", { className: "empty-hint" }, "Try different keywords or clear search")), filteredProjects.map((project) => renderProjectCard(project, handleSelectProject)))), currentStep === 2 && selectedProject && /* @__PURE__ */ React.createElement("div", { className: "wizard-step-2" }, /* @__PURE__ */ React.createElement("div", { className: "selected-project-header" }, /* @__PURE__ */ React.createElement("div", { className: "header-label" }, "Staffing:"), /* @__PURE__ */ React.createElement("div", { className: "header-project" }, /* @__PURE__ */ React.createElement("span", { className: `priority-badge ${selectedProject.priority}` }, selectedProject.priority.toUpperCase()), /* @__PURE__ */ React.createElement("span", { className: "project-title" }, selectedProject.title)), /* @__PURE__ */ React.createElement("button", { className: "back-btn", onClick: handleBack }, "\u2190 Change Project")), /* @__PURE__ */ React.createElement("div", { className: "help-description-section" }, /* @__PURE__ */ React.createElement("label", { className: "help-label" }, "What help do you need with this project? (optional)"), /* @__PURE__ */ React.createElement(
+    ), searchTerm && /* @__PURE__ */ React.createElement("button", { className: "search-clear", onClick: () => setSearchTerm("") }, "\xD7")), /* @__PURE__ */ React.createElement("div", { className: "sort-controls" }, /* @__PURE__ */ React.createElement("button", { className: `sort-btn ${projectSortBy === "priority" ? "active" : ""}`, onClick: () => setProjectSortBy("priority") }, "Priority"), /* @__PURE__ */ React.createElement("button", { className: `sort-btn ${projectSortBy === "category" ? "active" : ""}`, onClick: () => setProjectSortBy("category") }, "Category"), /* @__PURE__ */ React.createElement("button", { className: `sort-btn ${projectSortBy === "alphabetical" ? "active" : ""}`, onClick: () => setProjectSortBy("alphabetical") }, "A-Z"))), /* @__PURE__ */ React.createElement("div", { className: "project-list" }, filteredProjects.length === 0 && unstaffedProjects.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-state" }, /* @__PURE__ */ React.createElement("div", { className: "empty-icon" }, "\u{1F389}"), /* @__PURE__ */ React.createElement("div", { className: "empty-message" }, "All projects are staffed!"), /* @__PURE__ */ React.createElement("div", { className: "empty-hint" }, "You can unstaff projects to make changes")), filteredProjects.length === 0 && unstaffedProjects.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-state" }, /* @__PURE__ */ React.createElement("div", { className: "empty-icon" }, "\u{1F50D}"), /* @__PURE__ */ React.createElement("div", { className: "empty-message" }, 'No projects match "', searchTerm, '"'), /* @__PURE__ */ React.createElement("div", { className: "empty-hint" }, "Try different keywords or clear search")), filteredProjects.map((project) => renderProjectCard(project, handleSelectProject)))), currentStep === 2 && selectedProject && /* @__PURE__ */ React.createElement("div", { className: "wizard-step-2" }, /* @__PURE__ */ React.createElement("div", { className: "selected-project-header" }, /* @__PURE__ */ React.createElement("div", { className: "header-label" }, "Staffing:"), /* @__PURE__ */ React.createElement("div", { className: "header-project" }, /* @__PURE__ */ React.createElement("span", { className: `priority-badge ${selectedProject.priority}` }, selectedProject.priority.toUpperCase()), /* @__PURE__ */ React.createElement("span", { className: "project-title" }, selectedProject.title)), /* @__PURE__ */ React.createElement("button", { className: "back-btn", onClick: handleBack }, "\u2190 Change Project")), /* @__PURE__ */ React.createElement("div", { className: "help-description-section" }, /* @__PURE__ */ React.createElement("label", { className: "help-label" }, "What help do you need with this project? (optional)"), /* @__PURE__ */ React.createElement(
       "textarea",
       {
         className: "help-input",
@@ -1019,7 +1098,30 @@
         }
       },
       "Cancel"
-    )))), filteredAgents.map((agent) => renderAgentCard(agent))))), successMessage && /* @__PURE__ */ React.createElement("div", { className: "success-banner" }, /* @__PURE__ */ React.createElement("span", null, successMessage))), /* @__PURE__ */ React.createElement("div", { className: "wizard-navigation" }, currentStep > 1 && /* @__PURE__ */ React.createElement("button", { className: "nav-btn back-btn", onClick: handleBack }, "\u2190 Back"), /* @__PURE__ */ React.createElement("button", { className: "nav-btn cancel-btn", onClick: handleCancel }, "Cancel"))));
+    )))), filteredAgents.map((agent) => renderAgentCard(agent))))), currentStep === 3 && /* @__PURE__ */ React.createElement("div", { className: "wizard-step-3" }, successMessage && /* @__PURE__ */ React.createElement("div", { className: "success-banner" }, /* @__PURE__ */ React.createElement("span", null, successMessage)), /* @__PURE__ */ React.createElement("div", { className: "step-header" }, /* @__PURE__ */ React.createElement("h2", null, "Review your delegation plan"), /* @__PURE__ */ React.createElement("p", null, "See everything currently staffed and make adjustments.")), /* @__PURE__ */ React.createElement("div", { className: "wizard-actions" }, /* @__PURE__ */ React.createElement("button", { className: "staff-another-btn", onClick: handleStaffAnother }, "+ Staff Another Project")), /* @__PURE__ */ React.createElement("div", { className: "review-controls" }, /* @__PURE__ */ React.createElement("div", { className: "review-sort" }, /* @__PURE__ */ React.createElement("span", { className: "review-label" }, "Sort by"), /* @__PURE__ */ React.createElement("div", { className: "review-sort-buttons" }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        className: `sort-btn ${reviewSortBy === "priority" ? "active" : ""}`,
+        onClick: () => setReviewSortBy("priority")
+      },
+      "Priority"
+    ), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        className: `sort-btn ${reviewSortBy === "category" ? "active" : ""}`,
+        onClick: () => setReviewSortBy("category")
+      },
+      "Category"
+    ), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        className: `sort-btn ${reviewSortBy === "agent" ? "active" : ""}`,
+        onClick: () => setReviewSortBy("agent")
+      },
+      "Agent"
+    ))), /* @__PURE__ */ React.createElement("div", { className: "review-count" }, sortedStaffedProjects.length, " ", sortedStaffedProjects.length === 1 ? "assignment" : "assignments")), /* @__PURE__ */ React.createElement("div", { className: "staffed-projects-list review-list" }, sortedStaffedProjects.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-state" }, /* @__PURE__ */ React.createElement("div", { className: "empty-icon" }, "\u{1F5C2}\uFE0F"), /* @__PURE__ */ React.createElement("div", { className: "empty-message" }, "No projects staffed yet"), /* @__PURE__ */ React.createElement("div", { className: "empty-hint" }, "Let\u2019s assign someone to keep things moving."), /* @__PURE__ */ React.createElement("button", { className: "primary-btn", onClick: handleStaffAnother }, "Staff a Project")), sortedStaffedProjects.map(
+      (project) => renderStaffedProjectCard(project, { variant: "review" })
+    )), sortedStaffedProjects.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "wizard-actions secondary" }, /* @__PURE__ */ React.createElement("button", { className: "staff-another-btn ghost", onClick: handleStaffAnother }, "Staff Another Project"))), successMessage && currentStep !== 3 && /* @__PURE__ */ React.createElement("div", { className: "success-banner" }, /* @__PURE__ */ React.createElement("span", null, successMessage))), /* @__PURE__ */ React.createElement("div", { className: "wizard-navigation" }, currentStep > 1 && /* @__PURE__ */ React.createElement("button", { className: "nav-btn back-btn", onClick: handleBack }, "\u2190 Back"), /* @__PURE__ */ React.createElement("button", { className: "nav-btn cancel-btn", onClick: handleCancel }, "Cancel"))));
   };
   const App = () => {
     var _a;

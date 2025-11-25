@@ -1553,6 +1553,37 @@
       max-width: 800px;
       margin: 0 auto;
     }
+    .review-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+    }
+    .review-sort {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .review-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .review-sort-buttons {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+    .review-count {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
     .success-banner {
       background: rgba(139,157,111,0.15);
       border: 1px solid rgba(139,157,111,0.3);
@@ -1570,6 +1601,9 @@
     .wizard-actions {
       margin-bottom: 1.5rem;
     }
+    .wizard-actions.secondary {
+      justify-content: center;
+    }
     .staff-another-btn {
       padding: 0.85rem 1.5rem;
       background: var(--purpose);
@@ -1586,10 +1620,22 @@
       box-shadow: 0 4px 12px rgba(123,158,168,0.3);
       background: #6a8a96;
     }
+    .staff-another-btn.ghost {
+      background: #fff;
+      color: var(--purpose);
+      border: 1px solid var(--purpose);
+    }
+    .staff-another-btn.ghost:hover {
+      background: rgba(123,158,168,0.12);
+    }
 
     /* Staffed Projects */
     .staffed-projects-list {
       display: grid;
+      gap: 1rem;
+    }
+    .staffed-projects-list.review-list .staffed-project-card {
+      flex-direction: column;
       gap: 1rem;
     }
     .staffed-project-card {
@@ -1611,8 +1657,27 @@
     .staffed-project-card[data-priority="bronze"] {
       border-left: 4px solid var(--bronze);
     }
+    .staffed-project-card.review-card {
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+    .staffed-project-card.recently-assigned {
+      animation: highlightPulse 1.2s ease-in-out 2;
+      border-color: rgba(139,157,111,0.5);
+    }
+    @keyframes highlightPulse {
+      0% { box-shadow: 0 0 0 rgba(139,157,111,0.35); }
+      50% { box-shadow: 0 0 18px rgba(139,157,111,0.55); }
+      100% { box-shadow: 0 0 0 rgba(139,157,111,0.35); }
+    }
     .project-info {
       flex: 1;
+    }
+    .category-chip {
+      padding: 0.25rem 0.65rem;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.04);
+      font-size: 0.8rem;
+      color: var(--muted);
     }
     .project-assignment {
       display: flex;
@@ -1622,12 +1687,29 @@
       padding-top: 0.75rem;
       border-top: 1px solid var(--border);
     }
+    .agent-name-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
     .agent-avatar {
       font-size: 1.5rem;
     }
     .agent-name {
       font-weight: 500;
       color: var(--purpose);
+    }
+    .agent-details-inline {
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.02);
+    }
+    .agent-capacity-line {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
     }
     .help-description {
       margin-top: 0.75rem;

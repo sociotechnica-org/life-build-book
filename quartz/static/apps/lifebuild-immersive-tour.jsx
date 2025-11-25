@@ -977,7 +977,8 @@ const ReactDOM = window.ReactDOM;
 
       // UI state
       const [searchTerm, setSearchTerm] = React.useState('');
-      const [sortBy, setSortBy] = React.useState('priority');
+      const [projectSortBy, setProjectSortBy] = React.useState('priority');
+      const [reviewSortBy, setReviewSortBy] = React.useState('priority');
       const [agentFilter, setAgentFilter] = React.useState('all');
       const [isCreatingAgent, setIsCreatingAgent] = React.useState(false);
       const blankAgentForm = () => ({
@@ -990,6 +991,16 @@ const ReactDOM = window.ReactDOM;
       const [agentFormErrors, setAgentFormErrors] = React.useState({});
       const [successMessage, setSuccessMessage] = React.useState('');
       const [expandedAgentId, setExpandedAgentId] = React.useState(null);
+      const [expandedStaffedProjectId, setExpandedStaffedProjectId] = React.useState(null);
+      const [recentAssignmentId, setRecentAssignmentId] = React.useState(null);
+      const PRIORITY_ORDER = { gold: 1, silver: 2, bronze: 3 };
+      const STATUS_ORDER = { active: 1, ongoing: 2 };
+      const CATEGORY_ICONS = {
+        finances: '💰',
+        health: '❤️',
+        home: '🏠',
+        career: '💼'
+      };
 
 
       // Save to localStorage whenever projects or agents change
@@ -1009,6 +1020,12 @@ const ReactDOM = window.ReactDOM;
         }
       }, [agents]);
 
+      React.useEffect(() => {
+        if (!recentAssignmentId) return;
+        const timer = setTimeout(() => setRecentAssignmentId(null), 3500);
+        return () => clearTimeout(timer);
+      }, [recentAssignmentId]);
+
       // Get unstaffed projects (for Step 1)
       const unstaffedProjects = React.useMemo(() => {
         return projects.filter(p => !p.staffing.assigned);
@@ -1019,39 +1036,36 @@ const ReactDOM = window.ReactDOM;
         return projects.filter(p => p.staffing.assigned);
       }, [projects]);
 
-      // Sort projects
-      const sortedProjects = React.useMemo(() => {
-        const projectsToSort = currentStep === 1 ? unstaffedProjects : staffedProjects;
-        let sorted = [...projectsToSort];
+      const sortedUnstaffedProjects = React.useMemo(() => {
+        return sortProjectsList(unstaffedProjects, projectSortBy);
+      }, [unstaffedProjects, projectSortBy]);
 
-        if (sortBy === 'priority') {
-          const priorityOrder = { gold: 1, silver: 2, bronze: 3 };
-          const statusOrder = { active: 1, ongoing: 2 };
+      const sortedStaffedProjects = React.useMemo(() => {
+        const sorted = sortProjectsList(staffedProjects, reviewSortBy, { allowAgentSort: true });
+        if (recentAssignmentId) {
           sorted.sort((a, b) => {
-            if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
-              return priorityOrder[a.priority] - priorityOrder[b.priority];
-            }
-            return statusOrder[a.status] - statusOrder[b.status];
+            if (a.id === recentAssignmentId) return -1;
+            if (b.id === recentAssignmentId) return 1;
+            return 0;
           });
-        } else if (sortBy === 'category') {
-          sorted.sort((a, b) => a.category.localeCompare(b.category));
-        } else if (sortBy === 'alphabetical') {
-          sorted.sort((a, b) => a.title.localeCompare(b.title));
         }
-
         return sorted;
-      }, [unstaffedProjects, staffedProjects, sortBy, currentStep]);
+      }, [staffedProjects, reviewSortBy, recentAssignmentId]);
+
+      const sidebarStaffedProjects = React.useMemo(() => {
+        return sortProjectsList(staffedProjects, 'priority', { allowAgentSort: true });
+      }, [staffedProjects]);
 
       // Filter projects by search
       const filteredProjects = React.useMemo(() => {
-        if (!searchTerm) return sortedProjects;
+        if (!searchTerm) return sortedUnstaffedProjects;
         const term = searchTerm.toLowerCase();
-        return sortedProjects.filter(p =>
+        return sortedUnstaffedProjects.filter(p =>
           p.title.toLowerCase().includes(term) ||
           p.description.toLowerCase().includes(term) ||
           p.category.toLowerCase().includes(term)
         );
-      }, [sortedProjects, searchTerm]);
+      }, [sortedUnstaffedProjects, searchTerm]);
 
       // Filter agents by availability
       const filteredAgents = React.useMemo(() => {
@@ -1065,6 +1079,39 @@ const ReactDOM = window.ReactDOM;
 
         return filtered;
       }, [agents, agentFilter]);
+
+      const sortProjectsList = (list, criteria, { allowAgentSort = false } = {}) => {
+        const sorted = [...list];
+
+        if (criteria === 'priority') {
+          sorted.sort((a, b) => {
+            if (PRIORITY_ORDER[a.priority] !== PRIORITY_ORDER[b.priority]) {
+              return PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority];
+            }
+            return STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
+          });
+        } else if (criteria === 'category') {
+          sorted.sort((a, b) => {
+            if (a.category === b.category) {
+              return a.title.localeCompare(b.title);
+            }
+            return a.category.localeCompare(b.category);
+          });
+        } else if (criteria === 'alphabetical') {
+          sorted.sort((a, b) => a.title.localeCompare(b.title));
+        } else if (criteria === 'agent' && allowAgentSort) {
+          sorted.sort((a, b) => {
+            const agentA = (a.staffing?.agentName || '').toLowerCase();
+            const agentB = (b.staffing?.agentName || '').toLowerCase();
+            if (!agentA && !agentB) return 0;
+            if (!agentA) return 1;
+            if (!agentB) return -1;
+            return agentA.localeCompare(agentB);
+          });
+        }
+
+        return sorted;
+      };
 
       const resetAgentFormState = () => {
         setAgentForm(blankAgentForm());
@@ -1152,13 +1199,15 @@ const ReactDOM = window.ReactDOM;
       };
 
       const handleBack = () => {
+        if (currentStep === 3) {
+          handleStaffAnother();
+          return;
+        }
         closeAgentForm();
         if (currentStep === 2) {
           setSelectedProject(null);
           setHelpDescription('');
           setSelectedAgent(null);
-          setCurrentStep(1);
-        } else if (currentStep === 3) {
           setCurrentStep(1);
         }
       };
@@ -1178,7 +1227,8 @@ const ReactDOM = window.ReactDOM;
         setHelpDescription('');
         setSelectedAgent(null);
         setSearchTerm('');
-        setSortBy('priority');
+        setProjectSortBy('priority');
+        setReviewSortBy('priority');
         setCurrentStep(1);
       };
 
@@ -1224,13 +1274,14 @@ const ReactDOM = window.ReactDOM;
 
         // Show success message
         setSuccessMessage(`✓ ${agent.name} assigned to ${selectedProject.title}`);
+        setRecentAssignmentId(selectedProject.id);
         setTimeout(() => setSuccessMessage(''), 3000);
 
         // Dispatch custom event to notify other components
         window.dispatchEvent(new CustomEvent('rosterUpdated'));
 
-        // Reset wizard to Step 1 for next assignment
-        setCurrentStep(1);
+        // Reset wizard to review step before next assignment
+        setCurrentStep(3);
         setSelectedProject(null);
         setHelpDescription('');
         setSelectedAgent(null);
@@ -1240,6 +1291,7 @@ const ReactDOM = window.ReactDOM;
       // Unstaff Project Action
       const handleUnstaffProject = (project) => {
         const agent = agents.find(a => a.id === project.staffing.agentId);
+        const categoryLabel = project.category.charAt(0).toUpperCase() + project.category.slice(1);
 
         // Update project
         setProjects(prevProjects =>
@@ -1280,32 +1332,41 @@ const ReactDOM = window.ReactDOM;
 
         // Dispatch custom event
         window.dispatchEvent(new CustomEvent('rosterUpdated'));
+        setSuccessMessage(`Assignment removed from ${project.title}`);
+        setTimeout(() => setSuccessMessage(''), 3000);
+        if (recentAssignmentId === project.id) {
+          setRecentAssignmentId(null);
+        }
       };
 
-      // Render step indicator (2 steps only - staffed projects always visible on left)
-      const renderStepIndicator = () => (
-        <div className="wizard-step-indicator">
-          <div className={`wizard-step ${currentStep >= 1 ? 'active' : ''} ${currentStep > 1 ? 'completed' : ''}`}>
-            <div className="step-number">1</div>
-            <div className="step-label">Select Project</div>
+      // Render step indicator
+      const renderStepIndicator = () => {
+        const steps = [
+          { id: 1, label: 'Select Project' },
+          { id: 2, label: 'Choose Agent' },
+          { id: 3, label: 'Review Plan' },
+        ];
+        return (
+          <div className="wizard-step-indicator">
+            {steps.map((step, index) => (
+              <React.Fragment key={step.id}>
+                <div
+                  className={`wizard-step ${currentStep === step.id ? 'active' : ''} ${
+                    currentStep > step.id ? 'completed' : ''
+                  }`}
+                >
+                  <div className="step-number">{step.id}</div>
+                  <div className="step-label">{step.label}</div>
+                </div>
+                {index < steps.length - 1 && <div className="step-connector"></div>}
+              </React.Fragment>
+            ))}
           </div>
-          <div className="step-connector"></div>
-          <div className={`wizard-step ${currentStep >= 2 ? 'active' : ''}`}>
-            <div className="step-number">2</div>
-            <div className="step-label">Choose Agent</div>
-          </div>
-        </div>
-      );
+        );
+      };
 
       // Render project card
       const renderProjectCard = (project, onClick) => {
-        const categoryIcons = {
-          finances: '💰',
-          health: '❤️',
-          home: '🏠',
-          career: '💼'
-        };
-
         return (
           <div
             key={project.id}
@@ -1321,7 +1382,7 @@ const ReactDOM = window.ReactDOM;
                 </span>
               </div>
               <div className="category-icon" data-category={project.category}>
-                {categoryIcons[project.category] || '📁'}
+                {CATEGORY_ICONS[project.category] || '📁'}
               </div>
             </div>
             <div className="project-title">{project.title}</div>
@@ -1417,6 +1478,102 @@ const ReactDOM = window.ReactDOM;
         );
       };
 
+      const renderStaffedProjectCard = (project, { variant = 'sidebar' } = {}) => {
+        const agent = agents.find(a => a.id === project.staffing.agentId);
+        const isReview = variant === 'review';
+        const showAgentDetails = isReview && expandedStaffedProjectId === project.id && agent;
+        const assignedProjects = agent ? projects.filter(p => agent.currentProjects.includes(p.id)) : [];
+        const cardClasses = [
+          'staffed-project-card',
+          isReview ? 'review-card' : '',
+          isReview && recentAssignmentId === project.id ? 'recently-assigned' : ''
+        ]
+          .filter(Boolean)
+          .join(' ');
+
+        return (
+          <div key={project.id} className={cardClasses} data-priority={project.priority}>
+            <div className="project-info">
+              <div className="project-header">
+                <span className={`priority-badge ${project.priority}`}>{project.priority.toUpperCase()}</span>
+                <span className={`status-badge ${project.status}`}>
+                  {project.status === 'active' ? 'On Table' : 'Ongoing'}
+                </span>
+                {isReview && (
+                  <span className="category-chip">
+                    {CATEGORY_ICONS[project.category] || '📁'} {categoryLabel}
+                  </span>
+                )}
+              </div>
+              <div className="project-title">{project.title}</div>
+              {isReview && project.description && (
+                <div className="project-description">{project.description}</div>
+              )}
+              <div className="project-assignment">
+                <span className="agent-avatar">{agent?.avatar}</span>
+                <div className="agent-name-block">
+                  <span className="agent-name">{project.staffing.agentName}</span>
+                  {agent?.specialization && (
+                    <span className="agent-specialization">{agent.specialization}</span>
+                  )}
+                </div>
+                {isReview && agent && (
+                  <button
+                    className="info-btn"
+                    onClick={() =>
+                      setExpandedStaffedProjectId(showAgentDetails ? null : project.id)
+                    }
+                  >
+                    {showAgentDetails ? 'Hide details' : 'Agent details'}
+                  </button>
+                )}
+              </div>
+              {showAgentDetails && agent && (
+                <div className="agent-details-inline">
+                  {agent.description && <div className="agent-description">{agent.description}</div>}
+                  <div className="agent-capacity-line">
+                    Capacity:{' '}
+                    <strong>
+                      {agent.capacity.used} of {agent.capacity.total}
+                    </strong>{' '}
+                    slots used
+                  </div>
+                  <div className="agent-current-projects">
+                    <strong>Current Projects</strong>
+                    {assignedProjects.length === 0 && (
+                      <div className="no-projects">No other projects assigned</div>
+                    )}
+                    {assignedProjects.map(p => (
+                      <div key={p.id} className="assigned-project">
+                        <span className={`priority-badge ${p.priority}`}>{p.priority.toUpperCase()}</span>
+                        <span>{p.title}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {project.staffing.helpDescription && (
+                <div className="help-description">
+                  <strong>Help needed:</strong> {project.staffing.helpDescription}
+                </div>
+              )}
+            </div>
+            <div className="project-actions">
+              <button
+                className="unstaff-btn"
+                onClick={() => {
+                  if (confirm(`Remove ${project.staffing.agentName} from ${project.title}?`)) {
+                    handleUnstaffProject(project);
+                  }
+                }}
+              >
+                Unstaff
+              </button>
+            </div>
+          </div>
+        );
+      };
+
       return (
         <div className="roster-room-two-panel">
           {/* Left Panel: Staffed Projects (Always Visible) */}
@@ -1434,43 +1591,7 @@ const ReactDOM = window.ReactDOM;
                   <div className="empty-hint">Select a project from the right to get started</div>
                 </div>
               )}
-              {staffedProjects.map(project => {
-                const agent = agents.find(a => a.id === project.staffing.agentId);
-                return (
-                  <div key={project.id} className="staffed-project-card" data-priority={project.priority}>
-                    <div className="project-info">
-                      <div className="project-header">
-                        <span className={`priority-badge ${project.priority}`}>{project.priority.toUpperCase()}</span>
-                        <span className={`status-badge ${project.status}`}>
-                          {project.status === 'active' ? 'On Table' : 'Ongoing'}
-                        </span>
-                      </div>
-                      <div className="project-title">{project.title}</div>
-                      <div className="project-assignment">
-                        <span className="agent-avatar">{agent?.avatar}</span>
-                        <span className="agent-name">{project.staffing.agentName}</span>
-                      </div>
-                      {project.staffing.helpDescription && (
-                        <div className="help-description">
-                          <strong>Help needed:</strong> {project.staffing.helpDescription}
-                        </div>
-                      )}
-                    </div>
-                    <div className="project-actions">
-                      <button
-                        className="unstaff-btn"
-                        onClick={() => {
-                          if (confirm(`Remove ${project.staffing.agentName} from ${project.title}?`)) {
-                            handleUnstaffProject(project);
-                          }
-                        }}
-                      >
-                        Unstaff
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+              {sidebarStaffedProjects.map(project => renderStaffedProjectCard(project))}
             </div>
           </div>
 
@@ -1478,7 +1599,7 @@ const ReactDOM = window.ReactDOM;
           <div className="wizard-panel">
             <div className="panel-header">
               <h2>Delegation Wizard</h2>
-              <p>Staff your projects in two easy steps</p>
+              <p>Staff your projects in three calm steps</p>
             </div>
 
             {renderStepIndicator()}
@@ -1507,9 +1628,9 @@ const ReactDOM = window.ReactDOM;
                     )}
                   </div>
                   <div className="sort-controls">
-                    <button className={`sort-btn ${sortBy === 'priority' ? 'active' : ''}`} onClick={() => setSortBy('priority')}>Priority</button>
-                    <button className={`sort-btn ${sortBy === 'category' ? 'active' : ''}`} onClick={() => setSortBy('category')}>Category</button>
-                    <button className={`sort-btn ${sortBy === 'alphabetical' ? 'active' : ''}`} onClick={() => setSortBy('alphabetical')}>A-Z</button>
+                    <button className={`sort-btn ${projectSortBy === 'priority' ? 'active' : ''}`} onClick={() => setProjectSortBy('priority')}>Priority</button>
+                    <button className={`sort-btn ${projectSortBy === 'category' ? 'active' : ''}`} onClick={() => setProjectSortBy('category')}>Category</button>
+                    <button className={`sort-btn ${projectSortBy === 'alphabetical' ? 'active' : ''}`} onClick={() => setProjectSortBy('alphabetical')}>A-Z</button>
                   </div>
                 </div>
 
@@ -1693,8 +1814,79 @@ const ReactDOM = window.ReactDOM;
               </div>
             )}
 
-            {/* Success Message (shown after assignment) */}
-            {successMessage && (
+            {/* Step 3: Review Assignments */}
+            {currentStep === 3 && (
+              <div className="wizard-step-3">
+                {successMessage && (
+                  <div className="success-banner">
+                    <span>{successMessage}</span>
+                  </div>
+                )}
+                <div className="step-header">
+                  <h2>Review your delegation plan</h2>
+                  <p>See everything currently staffed and make adjustments.</p>
+                </div>
+                <div className="wizard-actions">
+                  <button className="staff-another-btn" onClick={handleStaffAnother}>
+                    + Staff Another Project
+                  </button>
+                </div>
+                <div className="review-controls">
+                  <div className="review-sort">
+                    <span className="review-label">Sort by</span>
+                    <div className="review-sort-buttons">
+                      <button
+                        className={`sort-btn ${reviewSortBy === 'priority' ? 'active' : ''}`}
+                        onClick={() => setReviewSortBy('priority')}
+                      >
+                        Priority
+                      </button>
+                      <button
+                        className={`sort-btn ${reviewSortBy === 'category' ? 'active' : ''}`}
+                        onClick={() => setReviewSortBy('category')}
+                      >
+                        Category
+                      </button>
+                      <button
+                        className={`sort-btn ${reviewSortBy === 'agent' ? 'active' : ''}`}
+                        onClick={() => setReviewSortBy('agent')}
+                      >
+                        Agent
+                      </button>
+                    </div>
+                  </div>
+                  <div className="review-count">
+                    {sortedStaffedProjects.length}{' '}
+                    {sortedStaffedProjects.length === 1 ? 'assignment' : 'assignments'}
+                  </div>
+                </div>
+                <div className="staffed-projects-list review-list">
+                  {sortedStaffedProjects.length === 0 && (
+                    <div className="empty-state">
+                      <div className="empty-icon">🗂️</div>
+                      <div className="empty-message">No projects staffed yet</div>
+                      <div className="empty-hint">Let’s assign someone to keep things moving.</div>
+                      <button className="primary-btn" onClick={handleStaffAnother}>
+                        Staff a Project
+                      </button>
+                    </div>
+                  )}
+                  {sortedStaffedProjects.map(project =>
+                    renderStaffedProjectCard(project, { variant: 'review' })
+                  )}
+                </div>
+                {sortedStaffedProjects.length > 0 && (
+                  <div className="wizard-actions secondary">
+                    <button className="staff-another-btn ghost" onClick={handleStaffAnother}>
+                      Staff Another Project
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Success Message (Steps 1-2) */}
+            {successMessage && currentStep !== 3 && (
               <div className="success-banner">
                 <span>{successMessage}</span>
               </div>
