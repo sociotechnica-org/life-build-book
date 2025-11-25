@@ -669,6 +669,509 @@
       font-weight: 600;
       margin-top: 0.4rem;
     }
+
+    /* ===== ROSTER ROOM STYLES ===== */
+    .roster-room-container {
+      width: 100%;
+    }
+    .roster-room-panels {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    .roster-panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      box-shadow: 0 16px 32px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      min-height: 600px;
+      max-height: 75vh;
+    }
+    .panel-header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+    .panel-title {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin: 0;
+    }
+    .panel-subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+    .roster-cards-container {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding-right: 0.5rem;
+    }
+    .roster-cards-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    .roster-cards-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .roster-cards-container::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+    .roster-cards-container::-webkit-scrollbar-thumb:hover {
+      background: var(--muted);
+    }
+
+    /* Agent Cards */
+    .agent-card {
+      border: 2px solid var(--border);
+      border-radius: 0.95rem;
+      padding: 1rem;
+      background: #fff;
+      cursor: pointer;
+      transition: all 200ms ease;
+      display: flex;
+      gap: 0.85rem;
+      align-items: start;
+    }
+    .agent-card:hover:not(.disabled):not(.create-agent-card) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+      border-color: var(--ink);
+    }
+    .agent-card.selected {
+      border-color: var(--purpose);
+      border-width: 3px;
+      box-shadow: 0 12px 28px rgba(123,158,168,0.25);
+      background: rgba(123,158,168,0.04);
+    }
+    .agent-card.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: rgba(0,0,0,0.02);
+    }
+    .create-agent-card {
+      border-style: dashed;
+      border-color: var(--muted);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 1.5rem 1rem;
+      background: rgba(123,158,168,0.03);
+    }
+    .create-agent-card:hover {
+      border-color: var(--purpose);
+      background: rgba(123,158,168,0.08);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(123,158,168,0.15);
+    }
+    .create-agent-icon {
+      font-size: 2rem;
+      color: var(--purpose);
+      font-weight: 300;
+    }
+    .create-agent-label {
+      font-weight: 600;
+      color: var(--ink);
+      margin-top: 0.5rem;
+    }
+    .create-agent-hint {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+    .agent-avatar {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+    .agent-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .agent-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--ink);
+    }
+    .agent-specialization {
+      font-size: 0.85rem;
+      color: var(--purpose);
+      font-weight: 600;
+    }
+    .agent-description {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .agent-capacity {
+      margin-top: 0.25rem;
+    }
+    .capacity-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 0.35rem;
+    }
+    .capacity-fill {
+      height: 100%;
+      transition: width 300ms ease;
+      border-radius: 999px;
+    }
+    .capacity-text {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    /* Staff Project Button */
+    .staff-button-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      padding-top: 2rem;
+    }
+    .staff-project-btn {
+      background: #2f2b27;
+      color: #faf9f7;
+      border: none;
+      border-radius: 999px;
+      padding: 1rem 2rem;
+      font-weight: 600;
+      font-size: 1.05rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+      transition: all 250ms ease;
+      white-space: nowrap;
+    }
+    .staff-project-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.2);
+      background: #1a1714;
+    }
+    .staff-project-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+    }
+    .btn-icon {
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+    .staff-hint {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    .success-message {
+      font-size: 0.9rem;
+      color: #8B9D6F;
+      font-weight: 600;
+      text-align: center;
+      padding: 0.5rem 1rem;
+      background: rgba(139,157,111,0.1);
+      border-radius: 0.75rem;
+      animation: fadeIn 300ms ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Project Cards */
+    .queue-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .search-box {
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      padding: 0.65rem 2.5rem 0.65rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      font-size: 0.9rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      transition: all 200ms ease;
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--purpose);
+      box-shadow: 0 0 0 3px rgba(123,158,168,0.1);
+    }
+    .search-clear {
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--muted);
+      cursor: pointer;
+      width: 2rem;
+      height: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.5rem;
+      transition: all 150ms ease;
+    }
+    .search-clear:hover {
+      background: rgba(0,0,0,0.05);
+      color: var(--ink);
+    }
+    .sort-controls {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .sort-btn {
+      padding: 0.4rem 0.85rem;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 180ms ease;
+    }
+    .sort-btn:hover {
+      border-color: var(--purpose);
+      color: var(--ink);
+      background: rgba(123,158,168,0.04);
+    }
+    .sort-btn.active {
+      background: var(--purpose);
+      color: #fff;
+      border-color: var(--purpose);
+    }
+    .project-card {
+      border: 2px solid var(--border);
+      border-radius: 0.95rem;
+      padding: 1rem;
+      background: #fff;
+      cursor: pointer;
+      transition: all 200ms ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .project-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+      border-color: var(--ink);
+    }
+    .project-card.selected {
+      border-width: 3px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+    }
+    .project-card.selected[data-priority="gold"] {
+      border-color: var(--gold);
+      background: rgba(216,166,80,0.04);
+      box-shadow: 0 12px 28px rgba(216,166,80,0.25);
+    }
+    .project-card.selected[data-priority="silver"] {
+      border-color: var(--silver);
+      background: rgba(197,206,216,0.04);
+      box-shadow: 0 12px 28px rgba(197,206,216,0.25);
+    }
+    .project-card.selected[data-priority="bronze"] {
+      border-color: var(--bronze);
+      background: rgba(196,139,90,0.04);
+      box-shadow: 0 12px 28px rgba(196,139,90,0.25);
+    }
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 0.5rem;
+    }
+    .project-badges {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .priority-badge, .status-badge {
+      font-size: 0.7rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 999px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .priority-badge.gold {
+      background: var(--gold);
+      color: #fff;
+    }
+    .priority-badge.silver {
+      background: var(--silver);
+      color: var(--ink);
+    }
+    .priority-badge.bronze {
+      background: var(--bronze);
+      color: #fff;
+    }
+    .status-badge {
+      background: rgba(47,43,39,0.08);
+      color: var(--ink);
+    }
+    .status-badge.active {
+      background: var(--purpose);
+      color: #fff;
+    }
+    .category-icon {
+      font-size: 1.5rem;
+    }
+    .project-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--ink);
+      line-height: 1.3;
+    }
+    .project-description {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .project-staffing {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .staffing-label {
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .staffing-agent {
+      color: var(--purpose);
+      font-weight: 700;
+    }
+    .project-staffing.unstaffed {
+      border-top-color: rgba(216,166,80,0.3);
+    }
+    .unstaffed-label {
+      color: #C48B5A;
+      font-weight: 700;
+    }
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1rem;
+      text-align: center;
+      min-height: 300px;
+    }
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+    .empty-message {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+    .empty-hint {
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    /* Connection Lines */
+    .roster-room-container {
+      position: relative;
+    }
+    .connection-lines {
+      opacity: 0;
+      animation: fadeInLines 400ms ease forwards;
+    }
+    @keyframes fadeInLines {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    .connection-line {
+      stroke-dashoffset: 1000;
+      animation: drawLine 600ms ease forwards;
+    }
+    @keyframes drawLine {
+      from {
+        stroke-dashoffset: 1000;
+      }
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+    .project-line {
+      animation-delay: 0ms;
+    }
+    .agent-line {
+      animation-delay: 100ms;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 1024px) {
+      .roster-room-panels {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .staff-button-container {
+        order: 3;
+        padding-top: 0;
+      }
+      .agent-panel {
+        order: 1;
+      }
+      .project-panel {
+        order: 2;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .roster-panel {
+        min-height: 500px;
+        max-height: 70vh;
+      }
+      .project-badges {
+        font-size: 0.65rem;
+      }
+      .agent-card {
+        flex-direction: column;
+        text-align: center;
+      }
+      .agent-avatar {
+        font-size: 3rem;
+      }
+      .sort-controls {
+        justify-content: center;
+      }
+    }
   </style>
 </head>
 <body>
@@ -946,40 +1449,108 @@
       ],
     };
 
-    const TableBar = ({ table }) => (
-      <div className="table-bar">
-        <div className="table-grid">
-          <div className="slot" style={{ borderColor: 'rgba(216,166,80,0.6)', background: 'linear-gradient(145deg, rgba(216,166,80,0.12), #fff)' }}>
-            <h4>Gold</h4>
-            <div className="body">{table.gold.title || 'Empty'}</div>
-            <div className="meta">{table.gold.meta}</div>
-            {table.gold.progress !== undefined && (
-              <div className="progress" style={{ marginTop: '0.4rem' }}>
-                <div className="bar" style={{ width: `${Math.round((table.gold.progress || 0) * 100)}%`, background: 'var(--gold)' }}></div>
+    const TableBar = ({ table }) => {
+      // Load Roster Room projects to show agent assignments
+      const [rosterProjects, setRosterProjects] = React.useState([]);
+
+      const loadRosterProjects = React.useCallback(() => {
+        try {
+          const stored = localStorage.getItem('rosterRoom_projects');
+          if (stored) {
+            const projects = JSON.parse(stored);
+            setRosterProjects(projects.filter(p => p.staffing.assigned && p.status === 'active'));
+          }
+        } catch (error) {
+          console.warn('Failed to load roster projects:', error);
+        }
+      }, []);
+
+      React.useEffect(() => {
+        loadRosterProjects();
+
+        // Listen for custom roster update events
+        const handleRosterUpdate = () => loadRosterProjects();
+        window.addEventListener('rosterUpdated', handleRosterUpdate);
+
+        return () => {
+          window.removeEventListener('rosterUpdated', handleRosterUpdate);
+        };
+      }, [loadRosterProjects]);
+
+      // Find staffed agent for table projects
+      const goldStaffing = rosterProjects.find(p => p.title === table.gold.title);
+      const silverStaffing = rosterProjects.find(p => p.title === table.silver.title);
+
+      return (
+        <div className="table-bar">
+          <div className="table-grid">
+            <div className="slot" style={{ borderColor: 'rgba(216,166,80,0.6)', background: 'linear-gradient(145deg, rgba(216,166,80,0.12), #fff)' }}>
+              <h4>Gold</h4>
+              <div className="body">{table.gold.title || 'Empty'}</div>
+              <div className="meta">
+                {table.gold.meta}
+                {goldStaffing && ` · 👤 ${goldStaffing.staffing.agentName}`}
               </div>
-            )}
-          </div>
-          <div className="slot" style={{ borderColor: 'rgba(197,206,216,0.7)', background: 'linear-gradient(145deg, rgba(197,206,216,0.14), #fff)' }}>
-            <h4>Silver</h4>
-            <div className="body">{table.silver.title || 'Empty'}</div>
-            <div className="meta">{table.silver.meta}</div>
-            {table.silver.progress !== undefined && (
-              <div className="progress" style={{ marginTop: '0.4rem' }}>
-                <div className="bar" style={{ width: `${Math.round((table.silver.progress || 0) * 100)}%`, background: 'var(--silver)' }}></div>
+              {table.gold.progress !== undefined && (
+                <div className="progress" style={{ marginTop: '0.4rem' }}>
+                  <div className="bar" style={{ width: `${Math.round((table.gold.progress || 0) * 100)}%`, background: 'var(--gold)' }}></div>
+                </div>
+              )}
+            </div>
+            <div className="slot" style={{ borderColor: 'rgba(197,206,216,0.7)', background: 'linear-gradient(145deg, rgba(197,206,216,0.14), #fff)' }}>
+              <h4>Silver</h4>
+              <div className="body">{table.silver.title || 'Empty'}</div>
+              <div className="meta">
+                {table.silver.meta}
+                {silverStaffing && ` · 👤 ${silverStaffing.staffing.agentName}`}
               </div>
-            )}
-          </div>
-          <div className="slot" style={{ borderColor: 'rgba(196,139,90,0.7)', background: 'linear-gradient(145deg, rgba(196,139,90,0.12), #fff)' }}>
-            <h4>Bronze</h4>
-            <div className="body">{table.bronze.title}</div>
-            <div className="meta">{table.bronze.meta}</div>
+              {table.silver.progress !== undefined && (
+                <div className="progress" style={{ marginTop: '0.4rem' }}>
+                  <div className="bar" style={{ width: `${Math.round((table.silver.progress || 0) * 100)}%`, background: 'var(--silver)' }}></div>
+                </div>
+              )}
+            </div>
+            <div className="slot" style={{ borderColor: 'rgba(196,139,90,0.7)', background: 'linear-gradient(145deg, rgba(196,139,90,0.12), #fff)' }}>
+              <h4>Bronze</h4>
+              <div className="body">{table.bronze.title}</div>
+              <div className="meta">{table.bronze.meta}</div>
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    };
 
     const LifeMap = ({ table }) => {
       const catList = ['home', 'finances', 'health'];
+
+      // Load Roster Room projects to show agent assignments
+      const [rosterProjects, setRosterProjects] = React.useState([]);
+
+      const loadRosterProjects = React.useCallback(() => {
+        try {
+          const stored = localStorage.getItem('rosterRoom_projects');
+          if (stored) {
+            const projects = JSON.parse(stored);
+            // Filter for all staffed projects (both active on table and ongoing)
+            setRosterProjects(projects.filter(p => p.staffing.assigned));
+          }
+        } catch (error) {
+          console.warn('Failed to load roster projects:', error);
+        }
+      }, []);
+
+      React.useEffect(() => {
+        loadRosterProjects();
+
+        // Listen for custom roster update events
+        const handleRosterUpdate = () => loadRosterProjects();
+        window.addEventListener('rosterUpdated', handleRosterUpdate);
+
+        return () => {
+          window.removeEventListener('rosterUpdated', handleRosterUpdate);
+        };
+      }, [loadRosterProjects]);
+
       return (
         <div className="card">
           <div className="map-grid">
@@ -991,26 +1562,44 @@
                   <h3><span style={{ color: cat.color }}>●</span> {cat.name}</h3>
                   <div className="count">Active</div>
                   <div className="active-wrap">
-                    {table.gold && table.gold.category === id && (
-                      <div className="project">
-                        <div className="title">{table.gold.title}</div>
-                        <div className="meta">{table.gold.meta}</div>
-                        {table.gold.progress >= 0 && (
-                          <div className="progress">
-                            <div className="bar" style={{ width: `${Math.round((table.gold.progress || 0) * 100)}%`, background: cat.color }}></div>
+                    {table.gold && table.gold.category === id && (() => {
+                      // Check if this project is staffed with an agent
+                      const staffedProject = rosterProjects.find(p =>
+                        p.title === table.gold.title && p.status === 'active'
+                      );
+                      return (
+                        <div className="project">
+                          <div className="title">{table.gold.title}</div>
+                          <div className="meta">
+                            {table.gold.meta}
+                            {staffedProject && ` · 👤 ${staffedProject.staffing.agentName}`}
                           </div>
-                        )}
-                      </div>
-                    )}
-                    {table.silver && table.silver.category === id && (
-                      <div className="project">
-                        <div className="title">{table.silver.title}</div>
-                        <div className="meta">{table.silver.meta}</div>
-                        <div className="progress">
-                          <div className="bar" style={{ width: `${Math.round(table.silver.progress * 100)}%`, background: cat.color }}></div>
+                          {table.gold.progress >= 0 && (
+                            <div className="progress">
+                              <div className="bar" style={{ width: `${Math.round((table.gold.progress || 0) * 100)}%`, background: cat.color }}></div>
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    )}
+                      );
+                    })()}
+                    {table.silver && table.silver.category === id && (() => {
+                      // Check if this project is staffed with an agent
+                      const staffedProject = rosterProjects.find(p =>
+                        p.title === table.silver.title && p.status === 'active'
+                      );
+                      return (
+                        <div className="project">
+                          <div className="title">{table.silver.title}</div>
+                          <div className="meta">
+                            {table.silver.meta}
+                            {staffedProject && ` · 👤 ${staffedProject.staffing.agentName}`}
+                          </div>
+                          <div className="progress">
+                            <div className="bar" style={{ width: `${Math.round(table.silver.progress * 100)}%`, background: cat.color }}></div>
+                          </div>
+                        </div>
+                      );
+                    })()}
                     {bronzeStacks[id] && (
                       <div className="project">
                         <div className="title">{bronzeStacks[id].top}</div>
@@ -1018,11 +1607,32 @@
                       </div>
                     )}
                   </div>
-                  {plantedProjects[id]?.length ? (
+                  {(plantedProjects[id]?.length || rosterProjects.filter(p => p.category === id && p.status === 'ongoing').length) ? (
                     <>
                       <div className="planted-label">Ongoing</div>
                       <div className="planted-grid">
-                        {plantedProjects[id].map((project) => {
+                        {/* Roster Room staffed projects (ongoing only) */}
+                        {rosterProjects.filter(p => p.category === id && p.status === 'ongoing').map((project) => {
+                          return (
+                            <div
+                              key={project.id}
+                              className="planted-card"
+                              data-automation="ai"
+                              data-attention="idle"
+                            >
+                              <div className="planted-top">
+                                <span className="planted-badge">
+                                  <span>👤</span>
+                                  <span>Agent Staffed</span>
+                                </span>
+                              </div>
+                              <div className="planted-title">{project.title}</div>
+                              <div className="planted-line schedule">Staffed: {project.staffing.agentName}</div>
+                            </div>
+                          );
+                        })}
+                        {/* Original planted projects */}
+                        {plantedProjects[id]?.map((project) => {
                           const badge = automationBadges[project.automation] || automationBadges.system;
                           return (
                             <div
@@ -1333,6 +1943,558 @@
       </div>
     );
 
+    // ===== ROSTER ROOM MOCK DATA =====
+    const MOCK_AGENTS = [
+      {
+        id: 'agent-1',
+        name: 'Code Specialist',
+        specialization: 'Software Development',
+        description: 'Expert in full-stack development, debugging, and code optimization',
+        capacity: { total: 3, used: 2, available: 1 },
+        currentProjects: ['project-2', 'project-5'],
+        avatar: '💻'
+      },
+      {
+        id: 'agent-2',
+        name: 'Research Agent',
+        specialization: 'Information Gathering',
+        description: 'Specialized in market research, data analysis, and competitive intelligence',
+        capacity: { total: 4, used: 1, available: 3 },
+        currentProjects: ['project-8'],
+        avatar: '🔍'
+      },
+      {
+        id: 'agent-3',
+        name: 'Project Coordinator',
+        specialization: 'Project Management',
+        description: 'Handles scheduling, stakeholder communication, and project tracking',
+        capacity: { total: 3, used: 3, available: 0 },
+        currentProjects: ['project-1', 'project-3', 'project-7'],
+        avatar: '📋'
+      },
+      {
+        id: 'agent-4',
+        name: 'Content Creator',
+        specialization: 'Writing & Documentation',
+        description: 'Creates documentation, blog posts, and marketing materials',
+        capacity: { total: 3, used: 0, available: 3 },
+        currentProjects: [],
+        avatar: '✍️'
+      },
+      {
+        id: 'agent-5',
+        name: 'Operations Agent',
+        specialization: 'Process & Automation',
+        description: 'Optimizes workflows, sets up automations, and maintains systems',
+        capacity: { total: 2, used: 1, available: 1 },
+        currentProjects: ['project-6'],
+        avatar: '⚙️'
+      },
+      {
+        id: 'agent-6',
+        name: 'Financial Analyst',
+        specialization: 'Finance & Budgeting',
+        description: 'Manages budgets, forecasting, and financial planning',
+        capacity: { total: 3, used: 0, available: 3 },
+        currentProjects: [],
+        avatar: '💰'
+      }
+    ];
+
+    const MOCK_PROJECTS = [
+      {
+        id: 'project-1',
+        title: 'Sell Camper Van',
+        description: 'List vehicle, handle inquiries, complete sale process',
+        priority: 'gold',
+        status: 'active',
+        category: 'finances',
+        staffing: { assigned: false, agentId: null, agentName: null }
+      },
+      {
+        id: 'project-2',
+        title: 'Launch Consulting Practice',
+        description: 'Set up LLC, create service packages, initial marketing',
+        priority: 'gold',
+        status: 'ongoing',
+        category: 'career',
+        staffing: { assigned: true, agentId: 'agent-1', agentName: 'Code Specialist' }
+      },
+      {
+        id: 'project-3',
+        title: 'Credit Card Rewards Optimization',
+        description: 'Research best cards, track spending, maximize points',
+        priority: 'gold',
+        status: 'ongoing',
+        category: 'finances',
+        staffing: { assigned: true, agentId: 'agent-3', agentName: 'Project Coordinator' }
+      },
+      {
+        id: 'project-4',
+        title: 'Home Gym Setup',
+        description: 'Equipment research, space planning, installation',
+        priority: 'silver',
+        status: 'active',
+        category: 'health',
+        staffing: { assigned: false, agentId: null, agentName: null }
+      },
+      {
+        id: 'project-5',
+        title: 'Estate Planning',
+        description: 'Will preparation, beneficiary updates, legal consultation',
+        priority: 'silver',
+        status: 'ongoing',
+        category: 'finances',
+        staffing: { assigned: true, agentId: 'agent-1', agentName: 'Code Specialist' }
+      },
+      {
+        id: 'project-6',
+        title: 'Kitchen Renovation Planning',
+        description: 'Budget development, contractor quotes, design decisions',
+        priority: 'silver',
+        status: 'ongoing',
+        category: 'home',
+        staffing: { assigned: true, agentId: 'agent-5', agentName: 'Operations Agent' }
+      },
+      {
+        id: 'project-7',
+        title: 'Lawn Care Service Setup',
+        description: 'Find providers, schedule seasonal maintenance',
+        priority: 'bronze',
+        status: 'active',
+        category: 'home',
+        staffing: { assigned: true, agentId: 'agent-3', agentName: 'Project Coordinator' }
+      },
+      {
+        id: 'project-8',
+        title: 'Retirement Contributions Review',
+        description: 'Annual 401k review, IRA optimization',
+        priority: 'bronze',
+        status: 'ongoing',
+        category: 'finances',
+        staffing: { assigned: true, agentId: 'agent-2', agentName: 'Research Agent' }
+      },
+      {
+        id: 'project-9',
+        title: 'Meal Planning System',
+        description: 'Weekly menu templates, grocery automation',
+        priority: 'bronze',
+        status: 'ongoing',
+        category: 'health',
+        staffing: { assigned: false, agentId: null, agentName: null }
+      },
+      {
+        id: 'project-10',
+        title: 'Car Maintenance Schedule',
+        description: 'Track service intervals, schedule appointments',
+        priority: 'bronze',
+        status: 'ongoing',
+        category: 'home',
+        staffing: { assigned: false, agentId: null, agentName: null }
+      }
+    ];
+
+    // ===== ROSTER ROOM COMPONENTS =====
+    const RosterRoom = () => {
+      // Load initial state from localStorage or use defaults
+      const loadFromStorage = (key, defaultValue) => {
+        try {
+          const item = localStorage.getItem(key);
+          return item ? JSON.parse(item) : defaultValue;
+        } catch (error) {
+          console.warn('Failed to load from localStorage:', error);
+          return defaultValue;
+        }
+      };
+
+      const [selectedProject, setSelectedProject] = React.useState(null);
+      const [selectedAgent, setSelectedAgent] = React.useState(null);
+      const [projects, setProjects] = React.useState(() => loadFromStorage('rosterRoom_projects', MOCK_PROJECTS));
+      const [agents, setAgents] = React.useState(() => loadFromStorage('rosterRoom_agents', MOCK_AGENTS));
+      const [searchTerm, setSearchTerm] = React.useState('');
+      const [sortBy, setSortBy] = React.useState('priority');
+
+      // Refs for connection lines
+      const containerRef = React.useRef(null);
+      const projectCardRefs = React.useRef({});
+      const agentCardRefs = React.useRef({});
+      const buttonRef = React.useRef(null);
+      const [linePositions, setLinePositions] = React.useState(null);
+
+      // Save to localStorage whenever projects or agents change
+      React.useEffect(() => {
+        try {
+          localStorage.setItem('rosterRoom_projects', JSON.stringify(projects));
+        } catch (error) {
+          console.warn('Failed to save projects to localStorage:', error);
+        }
+      }, [projects]);
+
+      React.useEffect(() => {
+        try {
+          localStorage.setItem('rosterRoom_agents', JSON.stringify(agents));
+        } catch (error) {
+          console.warn('Failed to save agents to localStorage:', error);
+        }
+      }, [agents]);
+
+      // Sort projects
+      const sortedProjects = React.useMemo(() => {
+        let sorted = [...projects];
+
+        if (sortBy === 'priority') {
+          // Priority sort: Gold (Active, then Ongoing), Silver (Active, then Ongoing), Bronze
+          const priorityOrder = { gold: 1, silver: 2, bronze: 3 };
+          const statusOrder = { active: 1, ongoing: 2 };
+          sorted.sort((a, b) => {
+            if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+              return priorityOrder[a.priority] - priorityOrder[b.priority];
+            }
+            return statusOrder[a.status] - statusOrder[b.status];
+          });
+        } else if (sortBy === 'status') {
+          sorted.sort((a, b) => a.status === 'active' ? -1 : 1);
+        } else if (sortBy === 'category') {
+          sorted.sort((a, b) => a.category.localeCompare(b.category));
+        } else if (sortBy === 'alphabetical') {
+          sorted.sort((a, b) => a.title.localeCompare(b.title));
+        }
+
+        return sorted;
+      }, [projects, sortBy]);
+
+      // Filter projects by search
+      const filteredProjects = React.useMemo(() => {
+        if (!searchTerm) return sortedProjects;
+        const term = searchTerm.toLowerCase();
+        return sortedProjects.filter(p =>
+          p.title.toLowerCase().includes(term) ||
+          p.description.toLowerCase().includes(term) ||
+          p.category.toLowerCase().includes(term)
+        );
+      }, [sortedProjects, searchTerm]);
+
+      // Success message state
+      const [successMessage, setSuccessMessage] = React.useState('');
+
+      // Staff Project Action
+      const handleStaffProject = () => {
+        if (!selectedProject || !selectedAgent) return;
+
+        // Update project with agent assignment
+        setProjects(prevProjects =>
+          prevProjects.map(p =>
+            p.id === selectedProject.id
+              ? {
+                  ...p,
+                  staffing: {
+                    assigned: true,
+                    agentId: selectedAgent.id,
+                    agentName: selectedAgent.name
+                  }
+                }
+              : p
+          )
+        );
+
+        // Update agent capacity
+        setAgents(prevAgents =>
+          prevAgents.map(a =>
+            a.id === selectedAgent.id
+              ? {
+                  ...a,
+                  capacity: {
+                    ...a.capacity,
+                    used: a.capacity.used + 1,
+                    available: a.capacity.available - 1
+                  },
+                  currentProjects: [...a.currentProjects, selectedProject.id]
+                }
+              : a
+          )
+        );
+
+        // Show success message
+        setSuccessMessage(`${selectedAgent.name} assigned to ${selectedProject.title}`);
+        setTimeout(() => setSuccessMessage(''), 3000);
+
+        // Dispatch custom event to notify other components
+        window.dispatchEvent(new CustomEvent('rosterUpdated'));
+
+        // Clear selections and lines
+        setSelectedProject(null);
+        setSelectedAgent(null);
+        setLinePositions(null);
+      };
+
+      // Calculate connection line positions
+      const updateLinePositions = React.useCallback(() => {
+        if (!selectedProject || !selectedAgent || !buttonRef.current || !containerRef.current) {
+          setLinePositions(null);
+          return;
+        }
+
+        const projectCard = projectCardRefs.current[selectedProject.id];
+        const agentCard = agentCardRefs.current[selectedAgent.id];
+
+        if (!projectCard || !agentCard) {
+          setLinePositions(null);
+          return;
+        }
+
+        const container = containerRef.current.getBoundingClientRect();
+        const button = buttonRef.current.getBoundingClientRect();
+        const project = projectCard.getBoundingClientRect();
+        const agent = agentCard.getBoundingClientRect();
+
+        // Calculate positions relative to container
+        const buttonCenter = {
+          x: button.left - container.left + button.width / 2,
+          y: button.top - container.top + button.height / 2
+        };
+
+        const projectPoint = {
+          x: project.left - container.left + project.width / 2,
+          y: project.top - container.top + project.height / 2
+        };
+
+        const agentPoint = {
+          x: agent.left - container.left + agent.width / 2,
+          y: agent.top - container.top + agent.height / 2
+        };
+
+        setLinePositions({
+          projectLine: { start: projectPoint, end: buttonCenter },
+          agentLine: { start: agentPoint, end: buttonCenter }
+        });
+      }, [selectedProject, selectedAgent]);
+
+      // Update line positions when selections change
+      React.useEffect(() => {
+        updateLinePositions();
+      }, [updateLinePositions]);
+
+      // Update line positions on window resize
+      React.useEffect(() => {
+        const handleResize = () => {
+          if (selectedProject && selectedAgent) {
+            updateLinePositions();
+          }
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, [selectedProject, selectedAgent, updateLinePositions]);
+
+      // Recalculate on scroll within panels
+      React.useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const handleScroll = () => {
+          if (selectedProject && selectedAgent) {
+            updateLinePositions();
+          }
+        };
+
+        const panels = container.querySelectorAll('.roster-cards-container');
+        panels.forEach(panel => {
+          panel.addEventListener('scroll', handleScroll);
+        });
+
+        return () => {
+          panels.forEach(panel => {
+            panel.removeEventListener('scroll', handleScroll);
+          });
+        };
+      }, [selectedProject, selectedAgent, updateLinePositions]);
+
+      return (
+        <div className="roster-room-container" ref={containerRef}>
+          <div className="roster-room-panels">
+            {/* Agent Roster Panel */}
+            <div className="roster-panel agent-panel">
+              <div className="panel-header">
+                <h2 className="panel-title">Agent Roster</h2>
+                <div className="panel-subtitle">{agents.length} agents available</div>
+              </div>
+              <div className="roster-cards-container">
+                {/* Create Custom Agent Card */}
+                <div className="agent-card create-agent-card">
+                  <div className="create-agent-icon">+</div>
+                  <div className="create-agent-label">Create Custom Agent</div>
+                  <div className="create-agent-hint">Tailored to your needs</div>
+                </div>
+
+                {/* Agent Cards */}
+                {agents.map(agent => (
+                  <div
+                    key={agent.id}
+                    ref={el => agentCardRefs.current[agent.id] = el}
+                    className={`agent-card ${selectedAgent?.id === agent.id ? 'selected' : ''} ${agent.capacity.available === 0 ? 'disabled' : ''}`}
+                    onClick={() => agent.capacity.available > 0 && setSelectedAgent(agent)}
+                  >
+                    <div className="agent-avatar">{agent.avatar}</div>
+                    <div className="agent-info">
+                      <div className="agent-name">{agent.name}</div>
+                      <div className="agent-specialization">{agent.specialization}</div>
+                      <div className="agent-description">{agent.description}</div>
+                      <div className="agent-capacity">
+                        <div className="capacity-bar">
+                          <div
+                            className="capacity-fill"
+                            style={{
+                              width: `${(agent.capacity.used / agent.capacity.total) * 100}%`,
+                              background: agent.capacity.available === 0 ? '#C48B5A' : agent.capacity.available === agent.capacity.total ? '#8B9D6F' : '#D8A650'
+                            }}
+                          ></div>
+                        </div>
+                        <div className="capacity-text">
+                          {agent.capacity.available > 0 ? `${agent.capacity.available} of ${agent.capacity.total} available` : 'At capacity'}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Staff Project Button */}
+            <div className="staff-button-container">
+              <button
+                ref={buttonRef}
+                className="staff-project-btn"
+                disabled={!selectedProject || !selectedAgent}
+                onClick={handleStaffProject}
+              >
+                <span className="btn-icon">→</span>
+                <span>Staff Project</span>
+              </button>
+              {(!selectedProject || !selectedAgent) && !successMessage && (
+                <div className="staff-hint">
+                  Select a project and an agent
+                </div>
+              )}
+              {successMessage && (
+                <div className="success-message">
+                  ✓ {successMessage}
+                </div>
+              )}
+            </div>
+
+            {/* Project Queue Panel */}
+            <div className="roster-panel project-panel">
+              <div className="panel-header">
+                <h2 className="panel-title">Project Queue</h2>
+                <div className="panel-subtitle">{filteredProjects.length} projects</div>
+              </div>
+
+              {/* Search and Sort Controls */}
+              <div className="queue-controls">
+                <div className="search-box">
+                  <input
+                    type="text"
+                    placeholder="Search projects..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="search-input"
+                  />
+                  {searchTerm && (
+                    <button className="search-clear" onClick={() => setSearchTerm('')}>×</button>
+                  )}
+                </div>
+                <div className="sort-controls">
+                  <button className={`sort-btn ${sortBy === 'priority' ? 'active' : ''}`} onClick={() => setSortBy('priority')}>Priority</button>
+                  <button className={`sort-btn ${sortBy === 'status' ? 'active' : ''}`} onClick={() => setSortBy('status')}>Status</button>
+                  <button className={`sort-btn ${sortBy === 'category' ? 'active' : ''}`} onClick={() => setSortBy('category')}>Category</button>
+                  <button className={`sort-btn ${sortBy === 'alphabetical' ? 'active' : ''}`} onClick={() => setSortBy('alphabetical')}>A-Z</button>
+                </div>
+              </div>
+
+              {/* Project Cards */}
+              <div className="roster-cards-container">
+                {filteredProjects.length === 0 && (
+                  <div className="empty-state">
+                    <div className="empty-icon">🔍</div>
+                    <div className="empty-message">No projects match "{searchTerm}"</div>
+                    <div className="empty-hint">Try different keywords or clear search</div>
+                  </div>
+                )}
+                {filteredProjects.map(project => (
+                  <div
+                    key={project.id}
+                    ref={el => projectCardRefs.current[project.id] = el}
+                    className={`project-card ${selectedProject?.id === project.id ? 'selected' : ''}`}
+                    onClick={() => setSelectedProject(project)}
+                    data-priority={project.priority}
+                  >
+                    <div className="project-header">
+                      <div className="project-badges">
+                        <span className={`priority-badge ${project.priority}`}>{project.priority.toUpperCase()}</span>
+                        <span className={`status-badge ${project.status}`}>{project.status === 'active' ? 'On Table' : 'Ongoing'}</span>
+                      </div>
+                      <div className="category-icon" data-category={project.category}>
+                        {project.category === 'finances' ? '💰' : project.category === 'health' ? '❤️' : project.category === 'home' ? '🏠' : '💼'}
+                      </div>
+                    </div>
+                    <div className="project-title">{project.title}</div>
+                    <div className="project-description">{project.description}</div>
+                    {project.staffing.assigned && (
+                      <div className="project-staffing">
+                        <span className="staffing-label">Staffed:</span>
+                        <span className="staffing-agent">{project.staffing.agentName}</span>
+                      </div>
+                    )}
+                    {!project.staffing.assigned && (
+                      <div className="project-staffing unstaffed">
+                        <span className="unstaffed-label">⚠️ Unstaffed</span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Connection Lines SVG */}
+          {linePositions && (
+            <svg className="connection-lines" style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              pointerEvents: 'none',
+              zIndex: 5
+            }}>
+              {/* Line from Project to Button */}
+              <line
+                x1={linePositions.projectLine.start.x}
+                y1={linePositions.projectLine.start.y}
+                x2={linePositions.projectLine.end.x}
+                y2={linePositions.projectLine.end.y}
+                stroke="var(--purpose)"
+                strokeWidth="2"
+                strokeDasharray="6 4"
+                className="connection-line project-line"
+              />
+              {/* Line from Agent to Button */}
+              <line
+                x1={linePositions.agentLine.start.x}
+                y1={linePositions.agentLine.start.y}
+                x2={linePositions.agentLine.end.x}
+                y2={linePositions.agentLine.end.y}
+                stroke="var(--purpose)"
+                strokeWidth="2"
+                strokeDasharray="6 4"
+                className="connection-line agent-line"
+              />
+            </svg>
+          )}
+        </div>
+      );
+    };
+
     const App = () => {
       const [chapter, setChapter] = React.useState(0);
       const [goldQueue, setGoldQueue] = React.useState(initialGoldQueue);
@@ -1567,6 +2729,7 @@
         if (chapter === 3) return <ActivationMap state={{ table, goldQueue }} />;
         if (chapter === 4) return <ProjectBoard state={{ tasks, setTasks, camperProgress, setCamperProgress }} />;
         if (chapter === 5) return <FinanceZoom state={{ camperProgress }} />;
+        if (chapter === 7) return <RosterRoom />;
         return <SortingReturn state={{ reactivateConsulting, goldQueue, table }} />;
       };
 
@@ -1601,7 +2764,7 @@
             <div className="nav-links">
               <a className={chapter===1 ? 'active' : ''} onClick={() => setChapter(1)}>Drafting Room</a>
               <a className={chapter===2 || chapter===6 ? 'active' : ''} onClick={() => setChapter(2)}>Sorting Room</a>
-              <a>Roster Room</a>
+              <a className={chapter===7 ? 'active' : ''} onClick={() => setChapter(7)}>Roster Room</a>
               <a className={chapter===0 || chapter===3 ? 'active' : ''} onClick={() => setChapter(0)}>Life Map</a>
             </div>
             <div className="pill">Jess · Director</div>
