@@ -433,6 +433,242 @@
       background: var(--silver);
       box-shadow: 0 0 0 6px rgba(197,206,216,0.25);
     }
+    .sorting-room {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .sorting-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+    .sorting-banner {
+      flex: 1;
+      padding: 0.85rem 1rem;
+      border-radius: 0.95rem;
+      border: 1px solid var(--border);
+      background: linear-gradient(125deg, rgba(216,166,80,0.18), rgba(197,206,216,0.2));
+      color: var(--ink);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .sorting-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 10% 50%, rgba(255,255,255,0.5), transparent 45%);
+      pointer-events: none;
+    }
+    .sorting-banner .pulse-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 0 0 rgba(216,166,80,0.5);
+      animation: flashPing 2.2s ease-in-out infinite;
+    }
+    @keyframes flashPing {
+      0% { box-shadow: 0 0 0 0 rgba(216,166,80,0.6); opacity: 1; }
+      70% { box-shadow: 0 0 0 10px rgba(216,166,80,0); opacity: 0.65; }
+      100% { box-shadow: 0 0 0 0 rgba(216,166,80,0); opacity: 1; }
+    }
+    .queue-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+      align-items: start;
+    }
+    .queue-column {
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1rem;
+      background: #fff;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      position: relative;
+    }
+    .lane-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.6rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .lane-info {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .lane-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 8px rgba(0,0,0,0.04);
+    }
+    .lane-label {
+      font-weight: 700;
+      color: var(--ink);
+      font-size: 0.98rem;
+    }
+    .lane-desc {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .pill-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 0.4rem 0.85rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      background: #2f2b27;
+      color: #faf9f7;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+      transition: transform 140ms ease, box-shadow 140ms ease;
+    }
+    .pill-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .pill-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 24px rgba(0,0,0,0.16);
+    }
+    .pill-btn.ghost {
+      background: rgba(0,0,0,0.04);
+      color: var(--ink);
+      box-shadow: none;
+      border: 1px solid var(--border);
+    }
+    .lane-table-card {
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      padding: 0.75rem;
+      background: linear-gradient(140deg, rgba(216,166,80,0.08), #fff);
+    }
+    .lane-table-card[data-lane="silver"] {
+      background: linear-gradient(140deg, rgba(197,206,216,0.12), #fff);
+    }
+    .lane-table-card[data-lane="bronze"] {
+      background: linear-gradient(140deg, rgba(196,139,90,0.12), #fff);
+    }
+    .lane-table-card .card-label {
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .lane-title-main {
+      font-weight: 700;
+      margin-top: 0.2rem;
+      color: var(--ink);
+    }
+    .lane-meta {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 0.15rem;
+    }
+    .mini-progress {
+      margin-top: 0.5rem;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+    .mini-progress .mini-bar {
+      height: 100%;
+      border-radius: inherit;
+    }
+    .queue-body {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .priority-card {
+      border: 1px solid var(--border);
+      border-radius: 0.85rem;
+      padding: 0.7rem;
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+      background: #fffdf9;
+    }
+    .priority-card.tabled {
+      background: #fff7ed;
+    }
+    .priority-card.idle {
+      background: #f7f5f2;
+    }
+    .priority-rank {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--muted);
+      width: 32px;
+    }
+    .priority-title {
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.1rem;
+    }
+    .priority-meta {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .priority-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin-top: 0.35rem;
+    }
+    .chip {
+      font-size: 0.72rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.08);
+      color: var(--ink);
+      font-weight: 600;
+      background: rgba(255,255,255,0.9);
+    }
+    .chip.muted {
+      background: rgba(47,43,39,0.08);
+      color: var(--muted);
+    }
+    .chip.outline {
+      border-style: dashed;
+    }
+    .priority-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      min-width: 120px;
+    }
+    .empty-note {
+      padding: 0.8rem;
+      border-radius: 0.75rem;
+      background: rgba(0,0,0,0.03);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .queue-section-title {
+      text-transform: uppercase;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 600;
+      margin-top: 0.4rem;
+    }
   </style>
 </head>
 <body>
@@ -454,6 +690,125 @@
       doing: [],
       review: [],
       done: [],
+    };
+
+    const BRONZE_TABLE_LIMIT = 10;
+
+    const initialGoldQueue = [
+      {
+        title: 'Sell Camper Van',
+        meta: 'Finances · Gold · Crisis',
+        category: 'finances',
+        progress: 0.18,
+        stage: 'Stage 4 · Plans final',
+        status: 'Crisis trigger',
+        focus: '2-week sprint',
+      },
+      {
+        title: 'Build Backyard Deck',
+        meta: 'Home · Gold · 50%',
+        category: 'home',
+        progress: 0.5,
+        stage: 'Stage 3 · Materials ready',
+        status: 'Weather window in June',
+      },
+      {
+        title: 'Atlanta Studio Launch',
+        meta: 'Finances · Gold · 22%',
+        category: 'finances',
+        progress: 0.22,
+        stage: 'Stage 2 · Drafting',
+        status: 'Sponsor pitch next week',
+      },
+      {
+        title: 'Osaka Retreat Refresh',
+        meta: 'Home · Gold · 12%',
+        category: 'home',
+        progress: 0.12,
+        stage: 'Stage 2 · Drafting',
+        status: 'Design board ready',
+      },
+    ];
+
+    const initialSilverQueue = [
+      {
+        title: 'Mortgage Refinance',
+        meta: 'Finances · Silver · 18%',
+        category: 'finances',
+        progress: 0.18,
+        stage: 'Stage 2 · Drafting',
+        status: 'Rate watch',
+        focus: 'Docs prep',
+      },
+      {
+        title: 'Automate Monthly Budget Review',
+        meta: 'Finances · Silver · 42%',
+        category: 'finances',
+        progress: 0.42,
+        stage: 'Stage 3 · Ready',
+        status: 'Needs 30-min block',
+      },
+      {
+        title: 'Family Travel Insurance Hub',
+        meta: 'Health · Silver · 10%',
+        category: 'health',
+        progress: 0.1,
+        stage: 'Stage 1 · Intake',
+        status: 'Collect policies',
+      },
+      {
+        title: 'House Maintenance Calendar',
+        meta: 'Home · Silver · 28%',
+        category: 'home',
+        progress: 0.28,
+        stage: 'Stage 2 · Drafting',
+        status: 'Waiting on vendor list',
+      },
+    ];
+
+    const initialBronzeQueue = [
+      { title: 'Fix leaky kitchen faucet', meta: 'Home · Bronze · 45 min', stage: 'Care task', energy: 'Quick win' },
+      { title: 'Touch up paint in hallway', meta: 'Home · Bronze · 1 hr', stage: 'Care task', energy: 'Low focus' },
+      { title: 'Swap HVAC filter', meta: 'Home · Bronze · 10 min', stage: 'Care task', energy: 'Maintenance' },
+      { title: 'Clean out camper gear bin', meta: 'Home · Bronze · 30 min', stage: 'Care task', energy: 'Low focus' },
+      { title: 'Donate old clothes', meta: 'Home · Bronze · 1 trip', stage: 'Care task', energy: 'Weekend errand' },
+      { title: 'Back up family photos', meta: 'Home · Bronze · 40 min', stage: 'Care task', energy: 'Laptop task' },
+      { title: 'Order pantry staples', meta: 'Home · Bronze · 15 min', stage: 'Care task', energy: 'Laptop task' },
+      { title: 'Schedule gutter cleaning', meta: 'Home · Bronze · 5 min', stage: 'Care task', energy: 'Call / text' },
+      { title: 'Replace broken porch bulb', meta: 'Home · Bronze · 5 min', stage: 'Care task', energy: 'Quick win' },
+      { title: 'Update camper insurance card', meta: 'Finances · Bronze · 20 min', stage: 'Care task', energy: 'Laptop task' },
+      { title: 'Sharpen kitchen knives', meta: 'Home · Bronze · 30 min', stage: 'Queue', energy: 'Weekend errand' },
+      { title: 'Reset Wi-Fi passwords', meta: 'Home · Bronze · 30 min', stage: 'Queue', energy: 'Laptop task' },
+      { title: 'Mail birthday cards', meta: 'Home · Bronze · 20 min', stage: 'Queue', energy: 'Low focus' },
+      { title: 'Organize glove box', meta: 'Home · Bronze · 15 min', stage: 'Queue', energy: 'Car errand' },
+    ];
+
+    const getBronzeTableSummary = (list) => {
+      if (!list.length) return { title: 'No Bronze cards', meta: 'Queue open' };
+      const tabledCount = Math.min(BRONZE_TABLE_LIMIT, list.length);
+      const remaining = Math.max(tabledCount - 1, 0);
+      return {
+        title: list[0].title,
+        meta: remaining ? `+${remaining} tabled` : 'Queue open',
+      };
+    };
+
+    const goldTableSeed = {
+      title: 'Launch Consulting',
+      meta: 'Finances · Gold · 60%',
+      category: 'finances',
+      progress: 0.6,
+      stage: 'Stage 4 · Build',
+      status: 'On Table',
+    };
+
+    const silverTableSeed = {
+      title: 'Set Up Automated Prescription Delivery',
+      meta: 'Health · Silver · 71%',
+      category: 'health',
+      progress: 0.71,
+      stage: 'Stage 4 · Running',
+      status: 'System live',
     };
 
     const automationBadges = {
@@ -716,33 +1071,154 @@
       </div>
     );
 
-    const SortingRoom = ({ state }) => (
-      <div className="card">
-        <div className="map-grid">
-          <div className="project" style={{ borderColor: state.table.gold.title === 'Launch Consulting' ? 'var(--gold)' : 'var(--border)', background: '#fffaf3' }}>
-            <div className="title">{state.table.gold.title}</div>
-            <div className="meta">Gold · {Math.round((state.table.gold.progress || 0) * 100)}% · Currently on Table</div>
-          </div>
-          <div className={`project ${state.table.gold.title !== 'Launch Consulting' ? 'pulse' : ''}`} style={{ borderColor: 'var(--gold)' }}>
-            <div className="title">Sell Camper Van</div>
-            <div className="meta">Gold candidate · Ready to activate</div>
-            <div className="actions" style={{ marginTop: '0.5rem' }}>
-              <button className="btn" onClick={state.swapGold}>Activate Camper as Gold</button>
+    const SortingRoom = ({ state }) => {
+      const laneConfig = [
+        {
+          id: 'gold',
+          label: 'Gold * Expansion',
+          color: 'var(--gold)',
+          queue: state.goldQueue,
+          table: state.table.gold,
+          activate: state.activateGold,
+        },
+        {
+          id: 'silver',
+          label: 'Silver * Capacity',
+          color: 'var(--silver)',
+          queue: state.silverQueue,
+          table: state.table.silver,
+          activate: state.activateSilver,
+        },
+      ];
+      const bronzeTabled = state.bronzeQueue.slice(0, state.bronzeLimit);
+      const bronzeWaiting = state.bronzeQueue.slice(state.bronzeLimit);
+      return (
+        <div className="card sorting-room">
+          <div className="sorting-header">
+            <div className="sorting-banner">
+              <span className="pulse-dot"></span>
+              <span>{state.status}</span>
             </div>
           </div>
-          <div className="project">
-            <div className="title">Gold Queue</div>
-            {state.goldQueue.map((item, idx) => (
-              <div key={item.title} className="meta">{idx + 1}. {item.title} · {item.meta}</div>
+          <div className="queue-grid">
+            {laneConfig.map((lane) => (
+              <div key={lane.id} className="queue-column" data-lane={lane.id}>
+                <div className="lane-head">
+                  <div className="lane-info">
+                    <span className="lane-dot" style={{ background: lane.color }}></span>
+                    <div>
+                      <div className="lane-label">{lane.label}</div>
+                      <div className="lane-desc">{lane.queue.length} waiting in queue</div>
+                    </div>
+                  </div>
+                  <button className="pill-btn ghost" onClick={() => state.toggleQueue(lane.id)}>
+                    {state.openQueue === lane.id ? 'Hide queue' : 'Expand queue'}
+                  </button>
+                </div>
+                <div className="lane-table-card" data-lane={lane.id}>
+                  <div className="card-label">On Table</div>
+                  <div className="lane-title-main">{lane.table.title}</div>
+                  <div className="lane-meta">{lane.table.meta}</div>
+                  {lane.table.progress !== undefined && (
+                    <div className="mini-progress">
+                      <div className="mini-bar" style={{ width: `${Math.round((lane.table.progress || 0) * 100)}%`, background: lane.color }}></div>
+                    </div>
+                  )}
+                </div>
+                {state.openQueue === lane.id && (
+                  <div className="queue-body">
+                    {lane.queue.map((card, idx) => (
+                      <div key={card.title} className="priority-card">
+                        <div className="priority-rank">#{idx + 1}</div>
+                        <div className="priority-copy">
+                          <div className="priority-title">{card.title}</div>
+                          <div className="priority-meta">{card.meta}</div>
+                          <div className="priority-tags">
+                            {card.stage && <span className="chip">{card.stage}</span>}
+                            {card.status && <span className="chip muted">{card.status}</span>}
+                            {card.focus && <span className="chip outline">{card.focus}</span>}
+                          </div>
+                        </div>
+                        <div className="priority-actions">
+                          <button className="pill-btn ghost" onClick={() => state.nudgeQueue(lane.id, idx, -1)} disabled={idx === 0}>Move up</button>
+                          <button className="pill-btn ghost" onClick={() => state.nudgeQueue(lane.id, idx, 1)} disabled={idx === lane.queue.length - 1}>Move down</button>
+                          <button className="pill-btn" onClick={() => lane.activate(card.title)}>Activate to Table</button>
+                        </div>
+                      </div>
+                    ))}
+                    {!lane.queue.length && (
+                      <div className="empty-note">Queue clear. Head to Drafting Room to add new cards.</div>
+                    )}
+                  </div>
+                )}
+              </div>
             ))}
+            <div className="queue-column" data-lane="bronze">
+              <div className="lane-head">
+                <div className="lane-info">
+                  <span className="lane-dot" style={{ background: 'var(--bronze)' }}></span>
+                  <div>
+                    <div className="lane-label">Bronze * Execution</div>
+                    <div className="lane-desc">{bronzeTabled.length} tabled · {bronzeWaiting.length} queued</div>
+                  </div>
+                </div>
+                <button className="pill-btn ghost" onClick={() => state.toggleQueue('bronze')}>
+                  {state.openQueue === 'bronze' ? 'Hide queue' : 'Expand queue'}
+                </button>
+              </div>
+              <div className="lane-table-card" data-lane="bronze">
+                <div className="card-label">On Table</div>
+                <div className="lane-title-main">{state.table.bronze.title}</div>
+                <div className="lane-meta">{state.table.bronze.meta}</div>
+              </div>
+              {state.openQueue === 'bronze' && (
+                <div className="queue-body">
+                  <div className="queue-section-title">Tabled ({bronzeTabled.length}/{state.bronzeLimit})</div>
+                  {bronzeTabled.map((card, idx) => (
+                    <div key={card.title} className="priority-card tabled">
+                      <div className="priority-rank">#{idx + 1}</div>
+                      <div className="priority-copy">
+                        <div className="priority-title">{card.title}</div>
+                        <div className="priority-meta">{card.meta}</div>
+                        <div className="priority-tags">
+                          {card.stage && <span className="chip">{card.stage}</span>}
+                          {card.energy && <span className="chip muted">{card.energy}</span>}
+                        </div>
+                      </div>
+                      <div className="priority-actions">
+                        <button className="pill-btn ghost" onClick={() => state.nudgeBronze(idx, -1)} disabled={idx === 0}>Move up</button>
+                        <button className="pill-btn ghost" onClick={() => state.nudgeBronze(idx, 1)} disabled={idx === bronzeTabled.length - 1 && !bronzeWaiting.length}>Move down</button>
+                        <button className="pill-btn" onClick={() => state.releaseBronze(idx)}>Release to Queue</button>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="queue-section-title">Queue ({bronzeWaiting.length})</div>
+                  {bronzeWaiting.map((card, idx) => (
+                    <div key={card.title} className="priority-card idle">
+                      <div className="priority-rank">#{state.bronzeLimit + idx + 1}</div>
+                      <div className="priority-copy">
+                        <div className="priority-title">{card.title}</div>
+                        <div className="priority-meta">{card.meta}</div>
+                        <div className="priority-tags">
+                          {card.stage && <span className="chip">{card.stage}</span>}
+                          {card.energy && <span className="chip muted">{card.energy}</span>}
+                        </div>
+                      </div>
+                      <div className="priority-actions">
+                        <button className="pill-btn ghost" onClick={() => state.nudgeBronze(state.bronzeLimit + idx, -1)} disabled={state.bronzeLimit + idx === state.bronzeLimit}>Move up</button>
+                        <button className="pill-btn ghost" onClick={() => state.nudgeBronze(state.bronzeLimit + idx, 1)} disabled={state.bronzeLimit + idx === state.bronzeQueue.length - 1}>Move down</button>
+                        <button className="pill-btn" onClick={() => state.tableBronze(state.bronzeLimit + idx)}>Table this card</button>
+                      </div>
+                    </div>
+                  ))}
+                  {!bronzeWaiting.length && <div className="empty-note">Queue clear. Load more from Drafting Room.</div>}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        <div className="status">
-          <div className="dot"></div>
-          <div>{state.status}</div>
-        </div>
-      </div>
-    );
+      );
+    };
 
     const ActivationMap = ({ state }) => (
       <div className="card">
@@ -859,15 +1335,15 @@
 
     const App = () => {
       const [chapter, setChapter] = React.useState(0);
+      const [goldQueue, setGoldQueue] = React.useState(initialGoldQueue);
+      const [silverQueue, setSilverQueue] = React.useState(initialSilverQueue);
+      const [bronzeQueue, setBronzeQueue] = React.useState(initialBronzeQueue);
       const [table, setTable] = React.useState({
-        gold: { title: 'Launch Consulting', meta: 'Finances · Gold · 60%', category: 'finances', progress: 0.6 },
-        silver: { title: 'Set Up Automated Prescription Delivery', meta: 'Health · Silver · 71%', category: 'health', progress: 0.71 },
-        bronze: { title: 'Fix leaky kitchen faucet', meta: 'Home · Bronze · +11 more' },
+        gold: { ...goldTableSeed },
+        silver: { ...silverTableSeed },
+        bronze: getBronzeTableSummary(initialBronzeQueue),
       });
-      const [goldQueue, setGoldQueue] = React.useState([
-        { title: 'Sell Camper Van', meta: 'Finances · Gold · Crisis', category: 'finances', progress: 0 },
-        { title: 'Build Backyard Deck', meta: 'Home · Gold · 50%', category: 'home', progress: 0.5 },
-      ]);
+      const [openQueue, setOpenQueue] = React.useState('gold');
       const [status, setStatus] = React.useState('Consulting active. Camper ready to activate.');
       const [tasks, setTasks] = React.useState(initialTasks);
       const [camperProgress, setCamperProgress] = React.useState(0);
@@ -875,18 +1351,55 @@
       const camperActive = table.gold.title === 'Sell Camper Van';
       const camperPct = Math.round(camperProgress * 100);
 
+      const toggleQueue = (lane) => setOpenQueue((prev) => (prev === lane ? null : lane));
+
+      const reorderList = (list, from, to) => {
+        if (from === to) return list;
+        const next = [...list];
+        const [item] = next.splice(from, 1);
+        next.splice(Math.min(Math.max(to, 0), next.length), 0, item);
+        return next;
+      };
+
+      const nudgeQueue = (lane, index, direction) => {
+        const setter = lane === 'gold' ? setGoldQueue : setSilverQueue;
+        setter((prev) => {
+          const target = index + direction;
+          if (target < 0 || target >= prev.length) return prev;
+          setStatus(`${lane === 'gold' ? 'Gold' : 'Silver'} queue reprioritized.`);
+          return reorderList(prev, index, target);
+        });
+      };
+
+      const nudgeBronze = (index, direction) => {
+        setBronzeQueue((prev) => {
+          const target = index + direction;
+          if (target < 0 || target >= prev.length) return prev;
+          setStatus('Bronze queue reprioritized.');
+          return reorderList(prev, index, target);
+        });
+      };
+
+      const activateLane = (lane, title) => {
+        const setter = lane === 'gold' ? setGoldQueue : setSilverQueue;
+        setter((prev) => {
+          const idx = prev.findIndex((card) => card.title === title);
+          if (idx === -1) return prev;
+          const candidate = prev[idx];
+          const currentActive = table[lane];
+          const filtered = prev.filter((card, cIdx) => cIdx !== idx && card.title !== currentActive.title);
+          setTable((prevTable) => ({ ...prevTable, [lane]: candidate }));
+          setStatus(`${candidate.title} moved to ${lane === 'gold' ? 'Gold' : 'Silver'} Table.`);
+          return currentActive.title ? [currentActive, ...filtered] : filtered;
+        });
+      };
+
+      const activateGold = (title) => activateLane('gold', title);
+      const activateSilver = (title) => activateLane('silver', title);
+
       const swapGold = () => {
         if (camperActive) return;
-        const camper = goldQueue.find(g => g.title === 'Sell Camper Van') || goldQueue[0];
-        if (!camper) return;
-        const remaining = goldQueue.filter(g => g.title !== camper.title);
-        const previous = table.gold;
-        setTable({
-          gold: camper,
-          silver: table.silver,
-          bronze: table.bronze,
-        });
-        setGoldQueue([previous, ...remaining]);
+        activateGold('Sell Camper Van');
         setStatus('Camper active. Consulting preserved in Gold queue.');
       };
 
@@ -898,14 +1411,44 @@
         }
       };
 
-      const reactivateConsulting = () => {
-        setTable({
-          gold: { title: 'Launch Consulting', meta: 'Finances · Gold · 60%', category: 'finances', progress: 0.6 },
-          silver: { title: 'Set Up Automated Prescription Delivery', meta: 'Health · Silver · 71%', category: 'health', progress: 0.71 },
-          bronze: table.bronze,
+      const releaseBronze = (index) => {
+        setBronzeQueue((prev) => {
+          const tableCount = Math.min(BRONZE_TABLE_LIMIT, prev.length);
+          if (index < 0 || index >= tableCount) return prev;
+          const next = [...prev];
+          const [card] = next.splice(index, 1);
+          next.push(card);
+          setStatus(`${card.title} moved back into Bronze queue.`);
+          return next;
         });
-        setGoldQueue((prev) => prev.filter(p => p.title !== 'Launch Consulting' && p.title !== 'Sell Camper Van'));
-        setStatus('Consulting back on Table. Camper archived as done.');
+      };
+
+      const tableBronze = (index) => {
+        setBronzeQueue((prev) => {
+          const tableCount = Math.min(BRONZE_TABLE_LIMIT, prev.length);
+          if (index < tableCount || index >= prev.length) return prev;
+          const next = [...prev];
+          const [card] = next.splice(index, 1);
+          const insertIndex = tableCount >= BRONZE_TABLE_LIMIT ? BRONZE_TABLE_LIMIT - 1 : tableCount;
+          next.splice(Math.max(insertIndex, 0), 0, card);
+          setStatus(`${card.title} tabled for Bronze rotation.`);
+          return next;
+        });
+      };
+
+      React.useEffect(() => {
+        setTable((prevTable) => ({ ...prevTable, bronze: getBronzeTableSummary(bronzeQueue) }));
+      }, [bronzeQueue]);
+
+      const reactivateConsulting = () => {
+        const currentActive = table.gold;
+        setGoldQueue((prev) => {
+          const filtered = prev.filter((card) => card.title !== goldTableSeed.title && card.title !== currentActive.title);
+          if (currentActive.title === goldTableSeed.title) return filtered;
+          return [currentActive, ...filtered];
+        });
+        setTable((prevTable) => ({ ...prevTable, gold: { ...goldTableSeed } }));
+        setStatus('Consulting back on Table. Camper preserved in Gold queue.');
       };
 
       const chapterStories = [
@@ -937,12 +1480,12 @@
           label: 'Chapter 3',
           title: 'Sorting Room · Hard choice',
           lines: [
-            { text: 'Pick the Gold that matters now.' },
+            { text: 'Three lanes mirror the Table below—Gold and Silver show their live slot, Bronze tracks ten tabled cards.' },
             { text: 'Jess must pause consulting and activate the camper sale. Progress will be preserved.' },
           ],
           prompts: [
             { label: camperActive ? 'Camper activated' : 'Activate Camper as Gold', onClick: camperActive ? null : () => swapGold(), disabled: camperActive },
-            { label: 'Show updated Life Map', onClick: () => setChapter(3), disabled: !camperActive },
+            { label: 'Show updated Life Map', onClick: () => setChapter(0), disabled: !camperActive },
             { label: 'Back to Drafting Room', onClick: () => setChapter(1), variant: 'secondary' },
           ],
         },
@@ -999,7 +1542,28 @@
       const screen = () => {
         if (chapter === 0) return <LifeMap table={table} />;
         if (chapter === 1) return <DraftingRoom />;
-        if (chapter === 2) return <SortingRoom state={{ swapGold, table, status, goldQueue }} />;
+        if (chapter === 2) {
+          return (
+            <SortingRoom
+              state={{
+                table,
+                status,
+                goldQueue,
+                silverQueue,
+                bronzeQueue,
+                openQueue,
+                toggleQueue,
+                activateGold,
+                activateSilver,
+                nudgeQueue,
+                nudgeBronze,
+                releaseBronze,
+                tableBronze,
+                bronzeLimit: BRONZE_TABLE_LIMIT,
+              }}
+            />
+          );
+        }
         if (chapter === 3) return <ActivationMap state={{ table, goldQueue }} />;
         if (chapter === 4) return <ProjectBoard state={{ tasks, setTasks, camperProgress, setCamperProgress }} />;
         if (chapter === 5) return <FinanceZoom state={{ camperProgress }} />;
