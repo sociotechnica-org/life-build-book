@@ -845,18 +845,60 @@
       font-weight: 600;
     }
     .form-row input,
-    .form-row textarea {
+    .form-row textarea,
+    .form-row select {
       border: 1px solid var(--border);
       border-radius: 0.7rem;
       padding: 0.5rem 0.7rem;
       font-size: 0.9rem;
       font-family: inherit;
+      transition: border 200ms ease;
+    }
+    .form-row input:focus,
+    .form-row textarea:focus,
+    .form-row select:focus {
+      outline: none;
+      border-color: var(--purpose);
     }
     .form-actions {
       display: flex;
       gap: 0.5rem;
       flex-wrap: wrap;
-      margin-top: 0.5rem;
+      margin-top: 1rem;
+    }
+    .btn-primary {
+      padding: 0.75rem 1.25rem;
+      background: var(--gold);
+      color: #fff;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .btn-primary:hover {
+      background: #c49847;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(216,166,80,0.3);
+    }
+    .btn-secondary {
+      padding: 0.75rem 1.25rem;
+      background: #fff;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .btn-secondary:hover {
+      border-color: var(--purpose);
+      color: var(--purpose);
+    }
+    .create-agent-card.expanded {
+      grid-column: 1 / -1;
     }
     .roster-empty {
       padding: 0.8rem;
@@ -864,6 +906,824 @@
       background: rgba(0,0,0,0.03);
       color: var(--muted);
       font-size: 0.9rem;
+    }
+
+    /* ===== TWO-PANEL ROSTER ROOM LAYOUT ===== */
+    .roster-room-two-panel {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 2rem;
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      min-height: 70vh;
+    }
+
+    /* Left Panel: Staffed Projects */
+    .staffed-panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      overflow-y: auto;
+      max-height: calc(100vh - 200px);
+      position: sticky;
+      top: 100px;
+    }
+    .staffed-panel .panel-header {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .staffed-panel .panel-header h2 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+      color: var(--ink);
+    }
+    .staffed-panel .panel-header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    /* Right Panel: Wizard */
+    .wizard-panel {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    /* Make wizard narrower in right panel */
+    .wizard-panel .wizard-step-indicator {
+      margin-bottom: 2rem;
+    }
+    .wizard-panel .wizard-content {
+      min-height: auto;
+    }
+
+    /* Step Indicator */
+    .wizard-step-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+      padding: 1.5rem;
+      background: #fff;
+      border-radius: 1rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .wizard-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.4;
+      transition: opacity 200ms ease;
+    }
+    .wizard-step.active {
+      opacity: 1;
+    }
+    .wizard-step.completed .step-number {
+      background: var(--purpose);
+      color: #fff;
+    }
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--border);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 200ms ease;
+    }
+    .wizard-step.active .step-number {
+      background: var(--gold);
+      color: #fff;
+      transform: scale(1.1);
+    }
+    .step-label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .wizard-step.active .step-label {
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .step-connector {
+      width: 80px;
+      height: 2px;
+      background: var(--border);
+      margin: 0 1rem;
+    }
+
+    /* Wizard Content */
+    .wizard-content {
+      min-height: 400px;
+    }
+
+    /* Step Headers */
+    .step-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .step-header h2 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      color: var(--ink);
+    }
+    .step-header p {
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    /* Wizard Controls (Search & Sort) */
+    .wizard-controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .search-box {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border 200ms ease;
+    }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--purpose);
+    }
+    .search-clear {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0.25rem;
+      line-height: 1;
+    }
+    .sort-controls {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .sort-btn {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      background: #fff;
+      color: var(--ink);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .sort-btn:hover {
+      border-color: var(--purpose);
+      background: rgba(123,158,168,0.1);
+    }
+    .sort-btn.active {
+      background: var(--purpose);
+      color: #fff;
+      border-color: var(--purpose);
+    }
+
+    /* Project List */
+    .project-list {
+      display: grid;
+      gap: 1rem;
+    }
+    .project-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: all 200ms ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .project-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      border-color: var(--purpose);
+    }
+    .project-card.selected {
+      border-color: var(--gold);
+      box-shadow: 0 8px 24px rgba(216,166,80,0.25);
+      background: #fffef8;
+    }
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+    }
+    .project-badges {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .priority-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .priority-badge.gold {
+      background: rgba(216,166,80,0.2);
+      color: #a67c00;
+    }
+    .priority-badge.silver {
+      background: rgba(197,206,216,0.3);
+      color: #5a6b7d;
+    }
+    .priority-badge.bronze {
+      background: rgba(196,139,90,0.2);
+      color: #8b5e3c;
+    }
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      background: rgba(123,158,168,0.15);
+      color: var(--purpose);
+    }
+    .category-icon {
+      font-size: 1.5rem;
+    }
+    .project-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--ink);
+    }
+    .project-description {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .project-staffing {
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .staffing-label {
+      color: var(--muted);
+      margin-right: 0.5rem;
+    }
+    .staffing-agent {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    /* Step 2: Agent Selection */
+    .wizard-step-2 {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .selected-project-header {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .header-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+    .header-project {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex: 1;
+    }
+    .header-project .project-title {
+      margin: 0;
+    }
+    .back-btn {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      background: #fff;
+      color: var(--muted);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .back-btn:hover {
+      border-color: var(--purpose);
+      color: var(--purpose);
+    }
+
+    /* Help Description */
+    .help-description-section {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .help-label {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--ink);
+    }
+    .help-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      font-size: 0.95rem;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 80px;
+      transition: border 200ms ease;
+    }
+    .help-input:focus {
+      outline: none;
+      border-color: var(--purpose);
+    }
+    .char-count {
+      text-align: right;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
+
+    /* Agent Selection */
+    .agent-selection-section h3 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: var(--ink);
+    }
+    .agent-filters {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .filter-btn {
+      padding: 0.6rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      background: #fff;
+      color: var(--ink);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .filter-btn:hover {
+      border-color: var(--purpose);
+    }
+    .filter-btn.active {
+      background: var(--purpose);
+      color: #fff;
+      border-color: var(--purpose);
+    }
+
+    /* Agent List */
+    .agent-list {
+      display: grid;
+      gap: 1rem;
+    }
+    .agent-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1rem;
+      transition: all 200ms ease;
+      display: flex;
+      gap: 1rem;
+    }
+    .agent-card:hover:not(.disabled) {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border-color: var(--purpose);
+    }
+    .agent-card.disabled {
+      opacity: 0.5;
+    }
+    .agent-avatar {
+      font-size: 2.5rem;
+      flex-shrink: 0;
+    }
+    .agent-info {
+      flex: 1;
+    }
+    .agent-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+      gap: 1rem;
+    }
+    .agent-actions {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-start;
+    }
+    .info-btn {
+      padding: 0.35rem 0.65rem;
+      background: rgba(123,158,168,0.1);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      color: var(--purpose);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 200ms ease;
+      white-space: nowrap;
+    }
+    .info-btn:hover {
+      background: var(--purpose);
+      color: #fff;
+      border-color: var(--purpose);
+    }
+    .assign-btn-inline {
+      padding: 0.5rem 1rem;
+      background: var(--gold);
+      border: none;
+      border-radius: 0.5rem;
+      color: #fff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 200ms ease;
+      white-space: nowrap;
+    }
+    .assign-btn-inline:hover {
+      background: #c49847;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(216,166,80,0.3);
+    }
+    .agent-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: var(--ink);
+    }
+    .agent-details-expanded {
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+    .agent-current-projects {
+      margin-top: 0.75rem;
+    }
+    .agent-current-projects strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--ink);
+    }
+    .assigned-project {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem;
+      background: rgba(0,0,0,0.02);
+      border-radius: 0.5rem;
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+    }
+    .no-projects {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+    .wizard-panel .panel-header {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .wizard-panel .panel-header h2 {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+      color: var(--ink);
+    }
+    .wizard-panel .panel-header p {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .agent-specialization {
+      font-size: 0.9rem;
+      color: var(--purpose);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    .agent-description {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+    }
+    .agent-capacity {
+      margin-top: 0.5rem;
+    }
+    .capacity-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+    .capacity-fill {
+      height: 100%;
+      transition: width 300ms ease;
+    }
+    .capacity-text {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .create-agent-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--gold);
+    }
+    .create-agent-label {
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+    }
+    .create-agent-hint {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    /* Assign Button */
+    .assign-button-container {
+      position: sticky;
+      bottom: 2rem;
+      margin-top: 2rem;
+    }
+    .assign-btn {
+      width: 100%;
+      padding: 1rem 1.5rem;
+      background: var(--gold);
+      color: #fff;
+      border: none;
+      border-radius: 0.85rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 200ms ease;
+      box-shadow: 0 4px 12px rgba(216,166,80,0.3);
+    }
+    .assign-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(216,166,80,0.4);
+      background: #c49847;
+    }
+
+    /* Step 3: Review */
+    .wizard-step-3 {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .success-banner {
+      background: rgba(139,157,111,0.15);
+      border: 1px solid rgba(139,157,111,0.3);
+      border-radius: 0.85rem;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: #5a6b42;
+    }
+    .success-icon {
+      font-size: 1.5rem;
+    }
+    .wizard-actions {
+      margin-bottom: 1.5rem;
+    }
+    .staff-another-btn {
+      padding: 0.85rem 1.5rem;
+      background: var(--purpose);
+      color: #fff;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .staff-another-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(123,158,168,0.3);
+      background: #6a8a96;
+    }
+
+    /* Staffed Projects */
+    .staffed-projects-list {
+      display: grid;
+      gap: 1rem;
+    }
+    .staffed-project-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1.5rem;
+    }
+    .staffed-project-card[data-priority="gold"] {
+      border-left: 4px solid var(--gold);
+    }
+    .staffed-project-card[data-priority="silver"] {
+      border-left: 4px solid var(--silver);
+    }
+    .staffed-project-card[data-priority="bronze"] {
+      border-left: 4px solid var(--bronze);
+    }
+    .project-info {
+      flex: 1;
+    }
+    .project-assignment {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+    .agent-avatar {
+      font-size: 1.5rem;
+    }
+    .agent-name {
+      font-weight: 500;
+      color: var(--purpose);
+    }
+    .help-description {
+      margin-top: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .project-actions {
+      flex-shrink: 0;
+    }
+    .unstaff-btn {
+      padding: 0.5rem 1rem;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .unstaff-btn:hover {
+      border-color: #C48B5A;
+      color: #C48B5A;
+      background: rgba(196,139,90,0.05);
+    }
+
+    /* Wizard Navigation */
+    .wizard-navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .nav-btn {
+      padding: 0.75rem 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      background: #fff;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .nav-btn:hover {
+      border-color: var(--purpose);
+      color: var(--purpose);
+    }
+    .cancel-btn {
+      margin-left: auto;
+    }
+
+    /* Empty States */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: rgba(0,0,0,0.02);
+      border-radius: 1rem;
+      border: 1px dashed var(--border);
+    }
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    .empty-message {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+    .empty-hint {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .primary-btn {
+      padding: 0.85rem 1.5rem;
+      background: var(--purpose);
+      color: #fff;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 200ms ease;
+    }
+    .primary-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(123,158,168,0.3);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 1024px) {
+      .roster-room-two-panel {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      .staffed-panel {
+        position: relative;
+        top: auto;
+        max-height: 400px;
+        order: 2;
+      }
+      .wizard-panel {
+        order: 1;
+      }
+    }
+    @media (max-width: 768px) {
+      .roster-room-two-panel {
+        padding: 0 1rem;
+      }
+      .wizard-step-indicator {
+        padding: 1rem;
+      }
+      .step-connector {
+        width: 40px;
+        margin: 0 0.5rem;
+      }
+      .step-label {
+        font-size: 0.75rem;
+      }
+      .wizard-controls {
+        flex-direction: column;
+      }
+      .sort-controls {
+        flex-wrap: wrap;
+      }
+      .selected-project-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .staffed-project-card {
+        flex-direction: column;
+      }
     }
   </style>
 </head>

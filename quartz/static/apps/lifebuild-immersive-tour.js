@@ -513,7 +513,7 @@
       priority: "gold",
       status: "ongoing",
       category: "career",
-      staffing: { assigned: true, agentId: "agent-1", agentName: "Code Specialist" }
+      staffing: { assigned: true, agentId: "agent-1", agentName: "Code Specialist", helpDescription: null, assignedAt: Date.now() - 864e5 }
     },
     {
       id: "project-3",
@@ -522,7 +522,7 @@
       priority: "gold",
       status: "ongoing",
       category: "finances",
-      staffing: { assigned: true, agentId: "agent-3", agentName: "Project Coordinator" }
+      staffing: { assigned: true, agentId: "agent-3", agentName: "Project Coordinator", helpDescription: null, assignedAt: Date.now() - 1728e5 }
     },
     {
       id: "project-4",
@@ -540,7 +540,7 @@
       priority: "silver",
       status: "ongoing",
       category: "finances",
-      staffing: { assigned: true, agentId: "agent-1", agentName: "Code Specialist" }
+      staffing: { assigned: true, agentId: "agent-1", agentName: "Code Specialist", helpDescription: null, assignedAt: Date.now() - 2592e5 }
     },
     {
       id: "project-6",
@@ -549,7 +549,7 @@
       priority: "silver",
       status: "ongoing",
       category: "home",
-      staffing: { assigned: true, agentId: "agent-5", agentName: "Operations Agent" }
+      staffing: { assigned: true, agentId: "agent-5", agentName: "Operations Agent", helpDescription: null, assignedAt: Date.now() - 3456e5 }
     },
     {
       id: "project-7",
@@ -558,7 +558,7 @@
       priority: "bronze",
       status: "active",
       category: "home",
-      staffing: { assigned: true, agentId: "agent-3", agentName: "Project Coordinator" }
+      staffing: { assigned: true, agentId: "agent-3", agentName: "Project Coordinator", helpDescription: null, assignedAt: Date.now() - 432e6 }
     },
     {
       id: "project-8",
@@ -567,7 +567,7 @@
       priority: "bronze",
       status: "ongoing",
       category: "finances",
-      staffing: { assigned: true, agentId: "agent-2", agentName: "Research Agent" }
+      staffing: { assigned: true, agentId: "agent-2", agentName: "Research Agent", helpDescription: null, assignedAt: Date.now() - 5184e5 }
     },
     {
       id: "project-9",
@@ -598,17 +598,18 @@
         return defaultValue;
       }
     };
+    const [currentStep, setCurrentStep] = React.useState(1);
     const [selectedProject, setSelectedProject] = React.useState(null);
+    const [helpDescription, setHelpDescription] = React.useState("");
     const [selectedAgent, setSelectedAgent] = React.useState(null);
     const [projects, setProjects] = React.useState(() => loadFromStorage("rosterRoom_projects", MOCK_PROJECTS));
     const [agents, setAgents] = React.useState(() => loadFromStorage("rosterRoom_agents", MOCK_AGENTS));
     const [searchTerm, setSearchTerm] = React.useState("");
     const [sortBy, setSortBy] = React.useState("priority");
-    const containerRef = React.useRef(null);
-    const projectCardRefs = React.useRef({});
-    const agentCardRefs = React.useRef({});
-    const buttonRef = React.useRef(null);
-    const [linePositions, setLinePositions] = React.useState(null);
+    const [agentFilter, setAgentFilter] = React.useState("all");
+    const [isCreatingAgent, setIsCreatingAgent] = React.useState(false);
+    const [successMessage, setSuccessMessage] = React.useState("");
+    const [expandedAgentId, setExpandedAgentId] = React.useState(null);
     React.useEffect(() => {
       try {
         localStorage.setItem("rosterRoom_projects", JSON.stringify(projects));
@@ -623,8 +624,15 @@
         console.warn("Failed to save agents to localStorage:", error);
       }
     }, [agents]);
+    const unstaffedProjects = React.useMemo(() => {
+      return projects.filter((p) => !p.staffing.assigned);
+    }, [projects]);
+    const staffedProjects = React.useMemo(() => {
+      return projects.filter((p) => p.staffing.assigned);
+    }, [projects]);
     const sortedProjects = React.useMemo(() => {
-      let sorted = [...projects];
+      const projectsToSort = currentStep === 1 ? unstaffedProjects : staffedProjects;
+      let sorted = [...projectsToSort];
       if (sortBy === "priority") {
         const priorityOrder = { gold: 1, silver: 2, bronze: 3 };
         const statusOrder = { active: 1, ongoing: 2 };
@@ -634,15 +642,13 @@
           }
           return statusOrder[a.status] - statusOrder[b.status];
         });
-      } else if (sortBy === "status") {
-        sorted.sort((a, b) => a.status === "active" ? -1 : 1);
       } else if (sortBy === "category") {
         sorted.sort((a, b) => a.category.localeCompare(b.category));
       } else if (sortBy === "alphabetical") {
         sorted.sort((a, b) => a.title.localeCompare(b.title));
       }
       return sorted;
-    }, [projects, sortBy]);
+    }, [unstaffedProjects, staffedProjects, sortBy, currentStep]);
     const filteredProjects = React.useMemo(() => {
       if (!searchTerm) return sortedProjects;
       const term = searchTerm.toLowerCase();
@@ -650,23 +656,63 @@
         (p) => p.title.toLowerCase().includes(term) || p.description.toLowerCase().includes(term) || p.category.toLowerCase().includes(term)
       );
     }, [sortedProjects, searchTerm]);
-    const [successMessage, setSuccessMessage] = React.useState("");
-    const handleStaffProject = () => {
-      if (!selectedProject || !selectedAgent) return;
+    const filteredAgents = React.useMemo(() => {
+      let filtered = [...agents];
+      if (agentFilter === "available") {
+        filtered = filtered.filter((a) => a.capacity.available > 0);
+      } else if (agentFilter === "partial") {
+        filtered = filtered.filter((a) => a.capacity.available > 0 && a.capacity.used > 0);
+      }
+      return filtered;
+    }, [agents, agentFilter]);
+    const handleSelectProject = (project) => {
+      setSelectedProject(project);
+      setCurrentStep(2);
+    };
+    const handleBack = () => {
+      if (currentStep === 2) {
+        setSelectedProject(null);
+        setHelpDescription("");
+        setSelectedAgent(null);
+        setCurrentStep(1);
+      } else if (currentStep === 3) {
+        setCurrentStep(1);
+      }
+    };
+    const handleCancel = () => {
+      setCurrentStep(1);
+      setSelectedProject(null);
+      setHelpDescription("");
+      setSelectedAgent(null);
+      setSearchTerm("");
+    };
+    const handleStaffAnother = () => {
+      setSelectedProject(null);
+      setHelpDescription("");
+      setSelectedAgent(null);
+      setSearchTerm("");
+      setSortBy("priority");
+      setCurrentStep(1);
+    };
+    const handleAssignAgent = (agentToAssign) => {
+      const agent = agentToAssign || selectedAgent;
+      if (!selectedProject || !agent) return;
       setProjects(
         (prevProjects) => prevProjects.map(
           (p) => p.id === selectedProject.id ? __spreadProps(__spreadValues({}, p), {
             staffing: {
               assigned: true,
-              agentId: selectedAgent.id,
-              agentName: selectedAgent.name
+              agentId: agent.id,
+              agentName: agent.name,
+              helpDescription,
+              assignedAt: Date.now()
             }
           }) : p
         )
       );
       setAgents(
         (prevAgents) => prevAgents.map(
-          (a) => a.id === selectedAgent.id ? __spreadProps(__spreadValues({}, a), {
+          (a) => a.id === agent.id ? __spreadProps(__spreadValues({}, a), {
             capacity: __spreadProps(__spreadValues({}, a.capacity), {
               used: a.capacity.used + 1,
               available: a.capacity.available - 1
@@ -675,105 +721,124 @@
           }) : a
         )
       );
-      setSuccessMessage(`${selectedAgent.name} assigned to ${selectedProject.title}`);
+      setSuccessMessage(`\u2713 ${agent.name} assigned to ${selectedProject.title}`);
       setTimeout(() => setSuccessMessage(""), 3e3);
       window.dispatchEvent(new CustomEvent("rosterUpdated"));
+      setCurrentStep(1);
       setSelectedProject(null);
+      setHelpDescription("");
       setSelectedAgent(null);
-      setLinePositions(null);
     };
-    const updateLinePositions = React.useCallback(() => {
-      if (!selectedProject || !selectedAgent || !buttonRef.current || !containerRef.current) {
-        setLinePositions(null);
-        return;
+    const handleUnstaffProject = (project) => {
+      const agent = agents.find((a) => a.id === project.staffing.agentId);
+      setProjects(
+        (prevProjects) => prevProjects.map(
+          (p) => p.id === project.id ? __spreadProps(__spreadValues({}, p), {
+            staffing: {
+              assigned: false,
+              agentId: null,
+              agentName: null,
+              helpDescription: null,
+              assignedAt: null
+            }
+          }) : p
+        )
+      );
+      if (agent) {
+        setAgents(
+          (prevAgents) => prevAgents.map(
+            (a) => a.id === agent.id ? __spreadProps(__spreadValues({}, a), {
+              capacity: __spreadProps(__spreadValues({}, a.capacity), {
+                used: a.capacity.used - 1,
+                available: a.capacity.available + 1
+              }),
+              currentProjects: a.currentProjects.filter((pid) => pid !== project.id)
+            }) : a
+          )
+        );
       }
-      const projectCard = projectCardRefs.current[selectedProject.id];
-      const agentCard = agentCardRefs.current[selectedAgent.id];
-      if (!projectCard || !agentCard) {
-        setLinePositions(null);
-        return;
-      }
-      const container2 = containerRef.current.getBoundingClientRect();
-      const button = buttonRef.current.getBoundingClientRect();
-      const project = projectCard.getBoundingClientRect();
-      const agent = agentCard.getBoundingClientRect();
-      const buttonCenter = {
-        x: button.left - container2.left + button.width / 2,
-        y: button.top - container2.top + button.height / 2
+      window.dispatchEvent(new CustomEvent("rosterUpdated"));
+    };
+    const renderStepIndicator = () => /* @__PURE__ */ React.createElement("div", { className: "wizard-step-indicator" }, /* @__PURE__ */ React.createElement("div", { className: `wizard-step ${currentStep >= 1 ? "active" : ""} ${currentStep > 1 ? "completed" : ""}` }, /* @__PURE__ */ React.createElement("div", { className: "step-number" }, "1"), /* @__PURE__ */ React.createElement("div", { className: "step-label" }, "Select Project")), /* @__PURE__ */ React.createElement("div", { className: "step-connector" }), /* @__PURE__ */ React.createElement("div", { className: `wizard-step ${currentStep >= 2 ? "active" : ""}` }, /* @__PURE__ */ React.createElement("div", { className: "step-number" }, "2"), /* @__PURE__ */ React.createElement("div", { className: "step-label" }, "Choose Agent")));
+    const renderProjectCard = (project, onClick) => {
+      const categoryIcons = {
+        finances: "\u{1F4B0}",
+        health: "\u2764\uFE0F",
+        home: "\u{1F3E0}",
+        career: "\u{1F4BC}"
       };
-      const projectPoint = {
-        x: project.left - container2.left + project.width / 2,
-        y: project.top - container2.top + project.height / 2
-      };
-      const agentPoint = {
-        x: agent.left - container2.left + agent.width / 2,
-        y: agent.top - container2.top + agent.height / 2
-      };
-      setLinePositions({
-        projectLine: { start: projectPoint, end: buttonCenter },
-        agentLine: { start: agentPoint, end: buttonCenter }
-      });
-    }, [selectedProject, selectedAgent]);
-    React.useEffect(() => {
-      updateLinePositions();
-    }, [updateLinePositions]);
-    React.useEffect(() => {
-      const handleResize = () => {
-        if (selectedProject && selectedAgent) {
-          updateLinePositions();
-        }
-      };
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }, [selectedProject, selectedAgent, updateLinePositions]);
-    React.useEffect(() => {
-      const container2 = containerRef.current;
-      if (!container2) return;
-      const handleScroll = () => {
-        if (selectedProject && selectedAgent) {
-          updateLinePositions();
-        }
-      };
-      const panels = container2.querySelectorAll(".roster-cards-container");
-      panels.forEach((panel) => {
-        panel.addEventListener("scroll", handleScroll);
-      });
-      return () => {
-        panels.forEach((panel) => {
-          panel.removeEventListener("scroll", handleScroll);
-        });
-      };
-    }, [selectedProject, selectedAgent, updateLinePositions]);
-    return /* @__PURE__ */ React.createElement("div", { className: "roster-room-container", ref: containerRef }, /* @__PURE__ */ React.createElement("div", { className: "roster-room-panels" }, /* @__PURE__ */ React.createElement("div", { className: "roster-panel agent-panel" }, /* @__PURE__ */ React.createElement("div", { className: "panel-header" }, /* @__PURE__ */ React.createElement("h2", { className: "panel-title" }, "Agent Roster"), /* @__PURE__ */ React.createElement("div", { className: "panel-subtitle" }, agents.length, " agents available")), /* @__PURE__ */ React.createElement("div", { className: "roster-cards-container" }, /* @__PURE__ */ React.createElement("div", { className: "agent-card create-agent-card" }, /* @__PURE__ */ React.createElement("div", { className: "create-agent-icon" }, "+"), /* @__PURE__ */ React.createElement("div", { className: "create-agent-label" }, "Create Custom Agent"), /* @__PURE__ */ React.createElement("div", { className: "create-agent-hint" }, "Tailored to your needs")), agents.map((agent) => /* @__PURE__ */ React.createElement(
-      "div",
-      {
-        key: agent.id,
-        ref: (el) => agentCardRefs.current[agent.id] = el,
-        className: `agent-card ${(selectedAgent == null ? void 0 : selectedAgent.id) === agent.id ? "selected" : ""} ${agent.capacity.available === 0 ? "disabled" : ""}`,
-        onClick: () => agent.capacity.available > 0 && setSelectedAgent(agent)
-      },
-      /* @__PURE__ */ React.createElement("div", { className: "agent-avatar" }, agent.avatar),
-      /* @__PURE__ */ React.createElement("div", { className: "agent-info" }, /* @__PURE__ */ React.createElement("div", { className: "agent-name" }, agent.name), /* @__PURE__ */ React.createElement("div", { className: "agent-specialization" }, agent.specialization), /* @__PURE__ */ React.createElement("div", { className: "agent-description" }, agent.description), /* @__PURE__ */ React.createElement("div", { className: "agent-capacity" }, /* @__PURE__ */ React.createElement("div", { className: "capacity-bar" }, /* @__PURE__ */ React.createElement(
+      return /* @__PURE__ */ React.createElement(
         "div",
         {
-          className: "capacity-fill",
-          style: {
-            width: `${agent.capacity.used / agent.capacity.total * 100}%`,
-            background: agent.capacity.available === 0 ? "#C48B5A" : agent.capacity.available === agent.capacity.total ? "#8B9D6F" : "#D8A650"
+          key: project.id,
+          className: `project-card ${(selectedProject == null ? void 0 : selectedProject.id) === project.id ? "selected" : ""}`,
+          onClick: () => onClick && onClick(project),
+          "data-priority": project.priority
+        },
+        /* @__PURE__ */ React.createElement("div", { className: "project-header" }, /* @__PURE__ */ React.createElement("div", { className: "project-badges" }, /* @__PURE__ */ React.createElement("span", { className: `priority-badge ${project.priority}` }, project.priority.toUpperCase()), /* @__PURE__ */ React.createElement("span", { className: `status-badge ${project.status}` }, project.status === "active" ? "On Table" : "Ongoing")), /* @__PURE__ */ React.createElement("div", { className: "category-icon", "data-category": project.category }, categoryIcons[project.category] || "\u{1F4C1}")),
+        /* @__PURE__ */ React.createElement("div", { className: "project-title" }, project.title),
+        /* @__PURE__ */ React.createElement("div", { className: "project-description" }, project.description),
+        project.staffing.assigned && /* @__PURE__ */ React.createElement("div", { className: "project-staffing" }, /* @__PURE__ */ React.createElement("span", { className: "staffing-label" }, "Assigned:"), /* @__PURE__ */ React.createElement("span", { className: "staffing-agent" }, project.staffing.agentName))
+      );
+    };
+    const renderAgentCard = (agent) => {
+      const isExpanded = expandedAgentId === agent.id;
+      const assignedProjects = projects.filter((p) => agent.currentProjects.includes(p.id));
+      return /* @__PURE__ */ React.createElement(
+        "div",
+        {
+          key: agent.id,
+          className: `agent-card ${agent.capacity.available === 0 ? "disabled" : ""}`
+        },
+        /* @__PURE__ */ React.createElement("div", { className: "agent-avatar" }, agent.avatar),
+        /* @__PURE__ */ React.createElement("div", { className: "agent-info" }, /* @__PURE__ */ React.createElement("div", { className: "agent-header" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "agent-name" }, agent.name), /* @__PURE__ */ React.createElement("div", { className: "agent-specialization" }, agent.specialization)), /* @__PURE__ */ React.createElement("div", { className: "agent-actions" }, /* @__PURE__ */ React.createElement(
+          "button",
+          {
+            className: "info-btn",
+            onClick: (e) => {
+              e.stopPropagation();
+              setExpandedAgentId(isExpanded ? null : agent.id);
+            },
+            title: "View details"
+          },
+          "\u24D8"
+        ), currentStep === 2 && selectedProject && agent.capacity.available > 0 && /* @__PURE__ */ React.createElement(
+          "button",
+          {
+            className: "assign-btn-inline",
+            onClick: (e) => {
+              e.stopPropagation();
+              handleAssignAgent(agent);
+            }
+          },
+          "Assign to Project"
+        ))), !isExpanded && /* @__PURE__ */ React.createElement("div", { className: "agent-description" }, agent.description), isExpanded && /* @__PURE__ */ React.createElement("div", { className: "agent-details-expanded" }, /* @__PURE__ */ React.createElement("div", { className: "agent-description" }, agent.description), /* @__PURE__ */ React.createElement("div", { className: "agent-current-projects" }, /* @__PURE__ */ React.createElement("strong", null, "Current Projects (", agent.currentProjects.length, "):"), assignedProjects.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "no-projects" }, "No projects assigned"), assignedProjects.map((p) => /* @__PURE__ */ React.createElement("div", { key: p.id, className: "assigned-project" }, /* @__PURE__ */ React.createElement("span", { className: `priority-badge ${p.priority}` }, p.priority.toUpperCase()), /* @__PURE__ */ React.createElement("span", null, p.title))))), /* @__PURE__ */ React.createElement("div", { className: "agent-capacity" }, /* @__PURE__ */ React.createElement("div", { className: "capacity-bar" }, /* @__PURE__ */ React.createElement(
+          "div",
+          {
+            className: "capacity-fill",
+            style: {
+              width: `${agent.capacity.used / agent.capacity.total * 100}%`,
+              background: agent.capacity.available === 0 ? "#C48B5A" : agent.capacity.available === agent.capacity.total ? "#8B9D6F" : "#D8A650"
+            }
           }
-        }
-      )), /* @__PURE__ */ React.createElement("div", { className: "capacity-text" }, agent.capacity.available > 0 ? `${agent.capacity.available} of ${agent.capacity.total} available` : "At capacity")))
-    )))), /* @__PURE__ */ React.createElement("div", { className: "staff-button-container" }, /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        ref: buttonRef,
-        className: "staff-project-btn",
-        disabled: !selectedProject || !selectedAgent,
-        onClick: handleStaffProject
-      },
-      /* @__PURE__ */ React.createElement("span", { className: "btn-icon" }, "\u2192"),
-      /* @__PURE__ */ React.createElement("span", null, "Staff Project")
-    ), (!selectedProject || !selectedAgent) && !successMessage && /* @__PURE__ */ React.createElement("div", { className: "staff-hint" }, "Select a project and an agent"), successMessage && /* @__PURE__ */ React.createElement("div", { className: "success-message" }, "\u2713 ", successMessage)), /* @__PURE__ */ React.createElement("div", { className: "roster-panel project-panel" }, /* @__PURE__ */ React.createElement("div", { className: "panel-header" }, /* @__PURE__ */ React.createElement("h2", { className: "panel-title" }, "Project Queue"), /* @__PURE__ */ React.createElement("div", { className: "panel-subtitle" }, filteredProjects.length, " projects")), /* @__PURE__ */ React.createElement("div", { className: "queue-controls" }, /* @__PURE__ */ React.createElement("div", { className: "search-box" }, /* @__PURE__ */ React.createElement(
+        )), /* @__PURE__ */ React.createElement("div", { className: "capacity-text" }, agent.capacity.available > 0 ? `${agent.capacity.available} of ${agent.capacity.total} available` : "At capacity")))
+      );
+    };
+    return /* @__PURE__ */ React.createElement("div", { className: "roster-room-two-panel" }, /* @__PURE__ */ React.createElement("div", { className: "staffed-panel" }, /* @__PURE__ */ React.createElement("div", { className: "panel-header" }, /* @__PURE__ */ React.createElement("h2", null, "Delegation Plan"), /* @__PURE__ */ React.createElement("p", null, staffedProjects.length, " ", staffedProjects.length === 1 ? "project" : "projects", " staffed")), /* @__PURE__ */ React.createElement("div", { className: "staffed-projects-list" }, staffedProjects.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-state" }, /* @__PURE__ */ React.createElement("div", { className: "empty-icon" }, "\u{1F4CB}"), /* @__PURE__ */ React.createElement("div", { className: "empty-message" }, "No projects staffed yet"), /* @__PURE__ */ React.createElement("div", { className: "empty-hint" }, "Select a project from the right to get started")), staffedProjects.map((project) => {
+      const agent = agents.find((a) => a.id === project.staffing.agentId);
+      return /* @__PURE__ */ React.createElement("div", { key: project.id, className: "staffed-project-card", "data-priority": project.priority }, /* @__PURE__ */ React.createElement("div", { className: "project-info" }, /* @__PURE__ */ React.createElement("div", { className: "project-header" }, /* @__PURE__ */ React.createElement("span", { className: `priority-badge ${project.priority}` }, project.priority.toUpperCase()), /* @__PURE__ */ React.createElement("span", { className: `status-badge ${project.status}` }, project.status === "active" ? "On Table" : "Ongoing")), /* @__PURE__ */ React.createElement("div", { className: "project-title" }, project.title), /* @__PURE__ */ React.createElement("div", { className: "project-assignment" }, /* @__PURE__ */ React.createElement("span", { className: "agent-avatar" }, agent == null ? void 0 : agent.avatar), /* @__PURE__ */ React.createElement("span", { className: "agent-name" }, project.staffing.agentName)), project.staffing.helpDescription && /* @__PURE__ */ React.createElement("div", { className: "help-description" }, /* @__PURE__ */ React.createElement("strong", null, "Help needed:"), " ", project.staffing.helpDescription)), /* @__PURE__ */ React.createElement("div", { className: "project-actions" }, /* @__PURE__ */ React.createElement(
+        "button",
+        {
+          className: "unstaff-btn",
+          onClick: () => {
+            if (confirm(`Remove ${project.staffing.agentName} from ${project.title}?`)) {
+              handleUnstaffProject(project);
+            }
+          }
+        },
+        "Unstaff"
+      )));
+    }))), /* @__PURE__ */ React.createElement("div", { className: "wizard-panel" }, /* @__PURE__ */ React.createElement("div", { className: "panel-header" }, /* @__PURE__ */ React.createElement("h2", null, "Delegation Wizard"), /* @__PURE__ */ React.createElement("p", null, "Staff your projects in two easy steps")), renderStepIndicator(), /* @__PURE__ */ React.createElement("div", { className: "wizard-content" }, currentStep === 1 && /* @__PURE__ */ React.createElement("div", { className: "wizard-step-1" }, /* @__PURE__ */ React.createElement("div", { className: "step-header" }, /* @__PURE__ */ React.createElement("h2", null, "Select a Project to Staff"), /* @__PURE__ */ React.createElement("p", null, "Choose which project needs help")), /* @__PURE__ */ React.createElement("div", { className: "wizard-controls" }, /* @__PURE__ */ React.createElement("div", { className: "search-box" }, /* @__PURE__ */ React.createElement(
       "input",
       {
         type: "text",
@@ -782,53 +847,89 @@
         onChange: (e) => setSearchTerm(e.target.value),
         className: "search-input"
       }
-    ), searchTerm && /* @__PURE__ */ React.createElement("button", { className: "search-clear", onClick: () => setSearchTerm("") }, "\xD7")), /* @__PURE__ */ React.createElement("div", { className: "sort-controls" }, /* @__PURE__ */ React.createElement("button", { className: `sort-btn ${sortBy === "priority" ? "active" : ""}`, onClick: () => setSortBy("priority") }, "Priority"), /* @__PURE__ */ React.createElement("button", { className: `sort-btn ${sortBy === "status" ? "active" : ""}`, onClick: () => setSortBy("status") }, "Status"), /* @__PURE__ */ React.createElement("button", { className: `sort-btn ${sortBy === "category" ? "active" : ""}`, onClick: () => setSortBy("category") }, "Category"), /* @__PURE__ */ React.createElement("button", { className: `sort-btn ${sortBy === "alphabetical" ? "active" : ""}`, onClick: () => setSortBy("alphabetical") }, "A-Z"))), /* @__PURE__ */ React.createElement("div", { className: "roster-cards-container" }, filteredProjects.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-state" }, /* @__PURE__ */ React.createElement("div", { className: "empty-icon" }, "\u{1F50D}"), /* @__PURE__ */ React.createElement("div", { className: "empty-message" }, 'No projects match "', searchTerm, '"'), /* @__PURE__ */ React.createElement("div", { className: "empty-hint" }, "Try different keywords or clear search")), filteredProjects.map((project) => /* @__PURE__ */ React.createElement(
-      "div",
+    ), searchTerm && /* @__PURE__ */ React.createElement("button", { className: "search-clear", onClick: () => setSearchTerm("") }, "\xD7")), /* @__PURE__ */ React.createElement("div", { className: "sort-controls" }, /* @__PURE__ */ React.createElement("button", { className: `sort-btn ${sortBy === "priority" ? "active" : ""}`, onClick: () => setSortBy("priority") }, "Priority"), /* @__PURE__ */ React.createElement("button", { className: `sort-btn ${sortBy === "category" ? "active" : ""}`, onClick: () => setSortBy("category") }, "Category"), /* @__PURE__ */ React.createElement("button", { className: `sort-btn ${sortBy === "alphabetical" ? "active" : ""}`, onClick: () => setSortBy("alphabetical") }, "A-Z"))), /* @__PURE__ */ React.createElement("div", { className: "project-list" }, filteredProjects.length === 0 && unstaffedProjects.length === 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-state" }, /* @__PURE__ */ React.createElement("div", { className: "empty-icon" }, "\u{1F389}"), /* @__PURE__ */ React.createElement("div", { className: "empty-message" }, "All projects are staffed!"), /* @__PURE__ */ React.createElement("div", { className: "empty-hint" }, "You can unstaff projects to make changes")), filteredProjects.length === 0 && unstaffedProjects.length > 0 && /* @__PURE__ */ React.createElement("div", { className: "empty-state" }, /* @__PURE__ */ React.createElement("div", { className: "empty-icon" }, "\u{1F50D}"), /* @__PURE__ */ React.createElement("div", { className: "empty-message" }, 'No projects match "', searchTerm, '"'), /* @__PURE__ */ React.createElement("div", { className: "empty-hint" }, "Try different keywords or clear search")), filteredProjects.map((project) => renderProjectCard(project, handleSelectProject)))), currentStep === 2 && selectedProject && /* @__PURE__ */ React.createElement("div", { className: "wizard-step-2" }, /* @__PURE__ */ React.createElement("div", { className: "selected-project-header" }, /* @__PURE__ */ React.createElement("div", { className: "header-label" }, "Staffing:"), /* @__PURE__ */ React.createElement("div", { className: "header-project" }, /* @__PURE__ */ React.createElement("span", { className: `priority-badge ${selectedProject.priority}` }, selectedProject.priority.toUpperCase()), /* @__PURE__ */ React.createElement("span", { className: "project-title" }, selectedProject.title)), /* @__PURE__ */ React.createElement("button", { className: "back-btn", onClick: handleBack }, "\u2190 Change Project")), /* @__PURE__ */ React.createElement("div", { className: "help-description-section" }, /* @__PURE__ */ React.createElement("label", { className: "help-label" }, "What help do you need with this project? (optional)"), /* @__PURE__ */ React.createElement(
+      "textarea",
       {
-        key: project.id,
-        ref: (el) => projectCardRefs.current[project.id] = el,
-        className: `project-card ${(selectedProject == null ? void 0 : selectedProject.id) === project.id ? "selected" : ""}`,
-        onClick: () => setSelectedProject(project),
-        "data-priority": project.priority
+        className: "help-input",
+        placeholder: "e.g., Research pricing options, Draft listing copy, Schedule vendor calls...",
+        value: helpDescription,
+        onChange: (e) => setHelpDescription(e.target.value),
+        rows: 3,
+        maxLength: 500
+      }
+    ), /* @__PURE__ */ React.createElement("div", { className: "char-count" }, helpDescription.length, "/500")), /* @__PURE__ */ React.createElement("div", { className: "agent-selection-section" }, /* @__PURE__ */ React.createElement("h3", null, "Choose an Agent"), /* @__PURE__ */ React.createElement("div", { className: "agent-filters" }, /* @__PURE__ */ React.createElement("button", { className: `filter-btn ${agentFilter === "all" ? "active" : ""}`, onClick: () => setAgentFilter("all") }, "All Agents"), /* @__PURE__ */ React.createElement("button", { className: `filter-btn ${agentFilter === "available" ? "active" : ""}`, onClick: () => setAgentFilter("available") }, "Available Only")), /* @__PURE__ */ React.createElement("div", { className: "agent-list" }, /* @__PURE__ */ React.createElement("div", { className: `agent-card create-agent-card ${isCreatingAgent ? "expanded" : ""}` }, !isCreatingAgent ? /* @__PURE__ */ React.createElement("div", { onClick: () => setIsCreatingAgent(true), style: { cursor: "pointer", textAlign: "center", width: "100%" } }, /* @__PURE__ */ React.createElement("div", { className: "create-agent-icon" }, "+"), /* @__PURE__ */ React.createElement("div", { className: "create-agent-label" }, "Create Custom Agent"), /* @__PURE__ */ React.createElement("div", { className: "create-agent-hint" }, "Tailored to your needs")) : /* @__PURE__ */ React.createElement("div", { className: "agent-form" }, /* @__PURE__ */ React.createElement("div", { className: "devin-callout" }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "1.5rem" } }, "\u{1F468}\u200D\u{1F4BC}"), /* @__PURE__ */ React.createElement("strong", null, "Devin here!")), /* @__PURE__ */ React.createElement("p", null, "I'll help you create an agent tailored to your specific needs. Just fill in the details below.")), /* @__PURE__ */ React.createElement("div", { className: "form-row" }, /* @__PURE__ */ React.createElement("label", null, "Agent Name *"), /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        type: "text",
+        placeholder: "e.g., Marketing Specialist",
+        maxLength: 50,
+        id: "new-agent-name"
+      }
+    )), /* @__PURE__ */ React.createElement("div", { className: "form-row" }, /* @__PURE__ */ React.createElement("label", null, "Specialization *"), /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        type: "text",
+        placeholder: "e.g., Social Media & Content Marketing",
+        maxLength: 50,
+        id: "new-agent-specialization"
+      }
+    )), /* @__PURE__ */ React.createElement("div", { className: "form-row" }, /* @__PURE__ */ React.createElement("label", null, "Description (optional)"), /* @__PURE__ */ React.createElement(
+      "textarea",
+      {
+        placeholder: "What does this agent help with?",
+        maxLength: 200,
+        rows: 3,
+        id: "new-agent-description"
+      }
+    )), /* @__PURE__ */ React.createElement("div", { className: "form-row" }, /* @__PURE__ */ React.createElement("label", null, "Capacity (max projects)"), /* @__PURE__ */ React.createElement("select", { id: "new-agent-capacity" }, /* @__PURE__ */ React.createElement("option", { value: "1" }, "1 project"), /* @__PURE__ */ React.createElement("option", { value: "2" }, "2 projects"), /* @__PURE__ */ React.createElement("option", { value: "3", selected: true }, "3 projects"), /* @__PURE__ */ React.createElement("option", { value: "4" }, "4 projects"), /* @__PURE__ */ React.createElement("option", { value: "5" }, "5 projects"))), /* @__PURE__ */ React.createElement("div", { className: "form-actions" }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        className: "btn-primary",
+        onClick: () => {
+          const name = document.getElementById("new-agent-name").value.trim();
+          const specialization = document.getElementById("new-agent-specialization").value.trim();
+          const description = document.getElementById("new-agent-description").value.trim();
+          const capacity = parseInt(document.getElementById("new-agent-capacity").value);
+          if (!name || !specialization) {
+            alert("Please fill in Agent Name and Specialization");
+            return;
+          }
+          const newAgent = {
+            id: `agent-custom-${Date.now()}`,
+            name,
+            specialization,
+            description: description || `Specialized in ${specialization}`,
+            capacity: { total: capacity, used: 0, available: capacity },
+            currentProjects: [],
+            avatar: "\u{1F464}",
+            createdAt: Date.now()
+          };
+          setAgents((prev) => [...prev, newAgent]);
+          if (currentStep === 2 && selectedProject) {
+            handleAssignAgent(newAgent);
+          }
+          setIsCreatingAgent(false);
+          document.getElementById("new-agent-name").value = "";
+          document.getElementById("new-agent-specialization").value = "";
+          document.getElementById("new-agent-description").value = "";
+          document.getElementById("new-agent-capacity").value = "3";
+        }
       },
-      /* @__PURE__ */ React.createElement("div", { className: "project-header" }, /* @__PURE__ */ React.createElement("div", { className: "project-badges" }, /* @__PURE__ */ React.createElement("span", { className: `priority-badge ${project.priority}` }, project.priority.toUpperCase()), /* @__PURE__ */ React.createElement("span", { className: `status-badge ${project.status}` }, project.status === "active" ? "On Table" : "Ongoing")), /* @__PURE__ */ React.createElement("div", { className: "category-icon", "data-category": project.category }, project.category === "finances" ? "\u{1F4B0}" : project.category === "health" ? "\u2764\uFE0F" : project.category === "home" ? "\u{1F3E0}" : "\u{1F4BC}")),
-      /* @__PURE__ */ React.createElement("div", { className: "project-title" }, project.title),
-      /* @__PURE__ */ React.createElement("div", { className: "project-description" }, project.description),
-      project.staffing.assigned && /* @__PURE__ */ React.createElement("div", { className: "project-staffing" }, /* @__PURE__ */ React.createElement("span", { className: "staffing-label" }, "Staffed:"), /* @__PURE__ */ React.createElement("span", { className: "staffing-agent" }, project.staffing.agentName)),
-      !project.staffing.assigned && /* @__PURE__ */ React.createElement("div", { className: "project-staffing unstaffed" }, /* @__PURE__ */ React.createElement("span", { className: "unstaffed-label" }, "\u26A0\uFE0F Unstaffed"))
-    ))))), linePositions && /* @__PURE__ */ React.createElement("svg", { className: "connection-lines", style: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      pointerEvents: "none",
-      zIndex: 5
-    } }, /* @__PURE__ */ React.createElement(
-      "line",
-      {
-        x1: linePositions.projectLine.start.x,
-        y1: linePositions.projectLine.start.y,
-        x2: linePositions.projectLine.end.x,
-        y2: linePositions.projectLine.end.y,
-        stroke: "var(--purpose)",
-        strokeWidth: "2",
-        strokeDasharray: "6 4",
-        className: "connection-line project-line"
-      }
+      currentStep === 2 ? "Create & Assign to Project" : "Create Agent"
     ), /* @__PURE__ */ React.createElement(
-      "line",
+      "button",
       {
-        x1: linePositions.agentLine.start.x,
-        y1: linePositions.agentLine.start.y,
-        x2: linePositions.agentLine.end.x,
-        y2: linePositions.agentLine.end.y,
-        stroke: "var(--purpose)",
-        strokeWidth: "2",
-        strokeDasharray: "6 4",
-        className: "connection-line agent-line"
-      }
-    )));
+        className: "btn-secondary",
+        onClick: () => {
+          setIsCreatingAgent(false);
+          document.getElementById("new-agent-name").value = "";
+          document.getElementById("new-agent-specialization").value = "";
+          document.getElementById("new-agent-description").value = "";
+          document.getElementById("new-agent-capacity").value = "3";
+        }
+      },
+      "Cancel"
+    )))), filteredAgents.map((agent) => renderAgentCard(agent))))), successMessage && /* @__PURE__ */ React.createElement("div", { className: "success-banner" }, /* @__PURE__ */ React.createElement("span", null, successMessage))), /* @__PURE__ */ React.createElement("div", { className: "wizard-navigation" }, currentStep > 1 && /* @__PURE__ */ React.createElement("button", { className: "nav-btn back-btn", onClick: handleBack }, "\u2190 Back"), /* @__PURE__ */ React.createElement("button", { className: "nav-btn cancel-btn", onClick: handleCancel }, "Cancel"))));
   };
   const App = () => {
     var _a;

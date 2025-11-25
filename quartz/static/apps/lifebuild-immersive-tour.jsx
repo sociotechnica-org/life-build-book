@@ -876,7 +876,7 @@ const ReactDOM = window.ReactDOM;
         priority: 'gold',
         status: 'ongoing',
         category: 'career',
-        staffing: { assigned: true, agentId: 'agent-1', agentName: 'Code Specialist' }
+        staffing: { assigned: true, agentId: 'agent-1', agentName: 'Code Specialist', helpDescription: null, assignedAt: Date.now() - 86400000 }
       },
       {
         id: 'project-3',
@@ -885,7 +885,7 @@ const ReactDOM = window.ReactDOM;
         priority: 'gold',
         status: 'ongoing',
         category: 'finances',
-        staffing: { assigned: true, agentId: 'agent-3', agentName: 'Project Coordinator' }
+        staffing: { assigned: true, agentId: 'agent-3', agentName: 'Project Coordinator', helpDescription: null, assignedAt: Date.now() - 172800000 }
       },
       {
         id: 'project-4',
@@ -903,7 +903,7 @@ const ReactDOM = window.ReactDOM;
         priority: 'silver',
         status: 'ongoing',
         category: 'finances',
-        staffing: { assigned: true, agentId: 'agent-1', agentName: 'Code Specialist' }
+        staffing: { assigned: true, agentId: 'agent-1', agentName: 'Code Specialist', helpDescription: null, assignedAt: Date.now() - 259200000 }
       },
       {
         id: 'project-6',
@@ -912,7 +912,7 @@ const ReactDOM = window.ReactDOM;
         priority: 'silver',
         status: 'ongoing',
         category: 'home',
-        staffing: { assigned: true, agentId: 'agent-5', agentName: 'Operations Agent' }
+        staffing: { assigned: true, agentId: 'agent-5', agentName: 'Operations Agent', helpDescription: null, assignedAt: Date.now() - 345600000 }
       },
       {
         id: 'project-7',
@@ -921,7 +921,7 @@ const ReactDOM = window.ReactDOM;
         priority: 'bronze',
         status: 'active',
         category: 'home',
-        staffing: { assigned: true, agentId: 'agent-3', agentName: 'Project Coordinator' }
+        staffing: { assigned: true, agentId: 'agent-3', agentName: 'Project Coordinator', helpDescription: null, assignedAt: Date.now() - 432000000 }
       },
       {
         id: 'project-8',
@@ -930,7 +930,7 @@ const ReactDOM = window.ReactDOM;
         priority: 'bronze',
         status: 'ongoing',
         category: 'finances',
-        staffing: { assigned: true, agentId: 'agent-2', agentName: 'Research Agent' }
+        staffing: { assigned: true, agentId: 'agent-2', agentName: 'Research Agent', helpDescription: null, assignedAt: Date.now() - 518400000 }
       },
       {
         id: 'project-9',
@@ -965,19 +965,24 @@ const ReactDOM = window.ReactDOM;
         }
       };
 
+      // Wizard state
+      const [currentStep, setCurrentStep] = React.useState(1); // 1, 2, or 3
       const [selectedProject, setSelectedProject] = React.useState(null);
+      const [helpDescription, setHelpDescription] = React.useState('');
       const [selectedAgent, setSelectedAgent] = React.useState(null);
+
+      // Data state
       const [projects, setProjects] = React.useState(() => loadFromStorage('rosterRoom_projects', MOCK_PROJECTS));
       const [agents, setAgents] = React.useState(() => loadFromStorage('rosterRoom_agents', MOCK_AGENTS));
+
+      // UI state
       const [searchTerm, setSearchTerm] = React.useState('');
       const [sortBy, setSortBy] = React.useState('priority');
+      const [agentFilter, setAgentFilter] = React.useState('all');
+      const [isCreatingAgent, setIsCreatingAgent] = React.useState(false);
+      const [successMessage, setSuccessMessage] = React.useState('');
+      const [expandedAgentId, setExpandedAgentId] = React.useState(null);
 
-      // Refs for connection lines
-      const containerRef = React.useRef(null);
-      const projectCardRefs = React.useRef({});
-      const agentCardRefs = React.useRef({});
-      const buttonRef = React.useRef(null);
-      const [linePositions, setLinePositions] = React.useState(null);
 
       // Save to localStorage whenever projects or agents change
       React.useEffect(() => {
@@ -996,12 +1001,22 @@ const ReactDOM = window.ReactDOM;
         }
       }, [agents]);
 
+      // Get unstaffed projects (for Step 1)
+      const unstaffedProjects = React.useMemo(() => {
+        return projects.filter(p => !p.staffing.assigned);
+      }, [projects]);
+
+      // Get staffed projects (for Step 3)
+      const staffedProjects = React.useMemo(() => {
+        return projects.filter(p => p.staffing.assigned);
+      }, [projects]);
+
       // Sort projects
       const sortedProjects = React.useMemo(() => {
-        let sorted = [...projects];
+        const projectsToSort = currentStep === 1 ? unstaffedProjects : staffedProjects;
+        let sorted = [...projectsToSort];
 
         if (sortBy === 'priority') {
-          // Priority sort: Gold (Active, then Ongoing), Silver (Active, then Ongoing), Bronze
           const priorityOrder = { gold: 1, silver: 2, bronze: 3 };
           const statusOrder = { active: 1, ongoing: 2 };
           sorted.sort((a, b) => {
@@ -1010,8 +1025,6 @@ const ReactDOM = window.ReactDOM;
             }
             return statusOrder[a.status] - statusOrder[b.status];
           });
-        } else if (sortBy === 'status') {
-          sorted.sort((a, b) => a.status === 'active' ? -1 : 1);
         } else if (sortBy === 'category') {
           sorted.sort((a, b) => a.category.localeCompare(b.category));
         } else if (sortBy === 'alphabetical') {
@@ -1019,7 +1032,7 @@ const ReactDOM = window.ReactDOM;
         }
 
         return sorted;
-      }, [projects, sortBy]);
+      }, [unstaffedProjects, staffedProjects, sortBy, currentStep]);
 
       // Filter projects by search
       const filteredProjects = React.useMemo(() => {
@@ -1032,12 +1045,57 @@ const ReactDOM = window.ReactDOM;
         );
       }, [sortedProjects, searchTerm]);
 
-      // Success message state
-      const [successMessage, setSuccessMessage] = React.useState('');
+      // Filter agents by availability
+      const filteredAgents = React.useMemo(() => {
+        let filtered = [...agents];
+
+        if (agentFilter === 'available') {
+          filtered = filtered.filter(a => a.capacity.available > 0);
+        } else if (agentFilter === 'partial') {
+          filtered = filtered.filter(a => a.capacity.available > 0 && a.capacity.used > 0);
+        }
+
+        return filtered;
+      }, [agents, agentFilter]);
+
+      // Wizard navigation handlers
+      const handleSelectProject = (project) => {
+        setSelectedProject(project);
+        setCurrentStep(2);
+      };
+
+      const handleBack = () => {
+        if (currentStep === 2) {
+          setSelectedProject(null);
+          setHelpDescription('');
+          setSelectedAgent(null);
+          setCurrentStep(1);
+        } else if (currentStep === 3) {
+          setCurrentStep(1);
+        }
+      };
+
+      const handleCancel = () => {
+        setCurrentStep(1);
+        setSelectedProject(null);
+        setHelpDescription('');
+        setSelectedAgent(null);
+        setSearchTerm('');
+      };
+
+      const handleStaffAnother = () => {
+        setSelectedProject(null);
+        setHelpDescription('');
+        setSelectedAgent(null);
+        setSearchTerm('');
+        setSortBy('priority');
+        setCurrentStep(1);
+      };
 
       // Staff Project Action
-      const handleStaffProject = () => {
-        if (!selectedProject || !selectedAgent) return;
+      const handleAssignAgent = (agentToAssign) => {
+        const agent = agentToAssign || selectedAgent;
+        if (!selectedProject || !agent) return;
 
         // Update project with agent assignment
         setProjects(prevProjects =>
@@ -1047,8 +1105,10 @@ const ReactDOM = window.ReactDOM;
                   ...p,
                   staffing: {
                     assigned: true,
-                    agentId: selectedAgent.id,
-                    agentName: selectedAgent.name
+                    agentId: agent.id,
+                    agentName: agent.name,
+                    helpDescription: helpDescription,
+                    assignedAt: Date.now()
                   }
                 }
               : p
@@ -1058,7 +1118,7 @@ const ReactDOM = window.ReactDOM;
         // Update agent capacity
         setAgents(prevAgents =>
           prevAgents.map(a =>
-            a.id === selectedAgent.id
+            a.id === agent.id
               ? {
                   ...a,
                   capacity: {
@@ -1073,283 +1133,506 @@ const ReactDOM = window.ReactDOM;
         );
 
         // Show success message
-        setSuccessMessage(`${selectedAgent.name} assigned to ${selectedProject.title}`);
+        setSuccessMessage(`✓ ${agent.name} assigned to ${selectedProject.title}`);
         setTimeout(() => setSuccessMessage(''), 3000);
 
         // Dispatch custom event to notify other components
         window.dispatchEvent(new CustomEvent('rosterUpdated'));
 
-        // Clear selections and lines
+        // Reset wizard to Step 1 for next assignment
+        setCurrentStep(1);
         setSelectedProject(null);
+        setHelpDescription('');
         setSelectedAgent(null);
-        setLinePositions(null);
       };
 
-      // Calculate connection line positions
-      const updateLinePositions = React.useCallback(() => {
-        if (!selectedProject || !selectedAgent || !buttonRef.current || !containerRef.current) {
-          setLinePositions(null);
-          return;
+      // Unstaff Project Action
+      const handleUnstaffProject = (project) => {
+        const agent = agents.find(a => a.id === project.staffing.agentId);
+
+        // Update project
+        setProjects(prevProjects =>
+          prevProjects.map(p =>
+            p.id === project.id
+              ? {
+                  ...p,
+                  staffing: {
+                    assigned: false,
+                    agentId: null,
+                    agentName: null,
+                    helpDescription: null,
+                    assignedAt: null
+                  }
+                }
+              : p
+          )
+        );
+
+        // Update agent capacity
+        if (agent) {
+          setAgents(prevAgents =>
+            prevAgents.map(a =>
+              a.id === agent.id
+                ? {
+                    ...a,
+                    capacity: {
+                      ...a.capacity,
+                      used: a.capacity.used - 1,
+                      available: a.capacity.available + 1
+                    },
+                    currentProjects: a.currentProjects.filter(pid => pid !== project.id)
+                  }
+                : a
+            )
+          );
         }
 
-        const projectCard = projectCardRefs.current[selectedProject.id];
-        const agentCard = agentCardRefs.current[selectedAgent.id];
+        // Dispatch custom event
+        window.dispatchEvent(new CustomEvent('rosterUpdated'));
+      };
 
-        if (!projectCard || !agentCard) {
-          setLinePositions(null);
-          return;
-        }
+      // Render step indicator (2 steps only - staffed projects always visible on left)
+      const renderStepIndicator = () => (
+        <div className="wizard-step-indicator">
+          <div className={`wizard-step ${currentStep >= 1 ? 'active' : ''} ${currentStep > 1 ? 'completed' : ''}`}>
+            <div className="step-number">1</div>
+            <div className="step-label">Select Project</div>
+          </div>
+          <div className="step-connector"></div>
+          <div className={`wizard-step ${currentStep >= 2 ? 'active' : ''}`}>
+            <div className="step-number">2</div>
+            <div className="step-label">Choose Agent</div>
+          </div>
+        </div>
+      );
 
-        const container = containerRef.current.getBoundingClientRect();
-        const button = buttonRef.current.getBoundingClientRect();
-        const project = projectCard.getBoundingClientRect();
-        const agent = agentCard.getBoundingClientRect();
-
-        // Calculate positions relative to container
-        const buttonCenter = {
-          x: button.left - container.left + button.width / 2,
-          y: button.top - container.top + button.height / 2
+      // Render project card
+      const renderProjectCard = (project, onClick) => {
+        const categoryIcons = {
+          finances: '💰',
+          health: '❤️',
+          home: '🏠',
+          career: '💼'
         };
 
-        const projectPoint = {
-          x: project.left - container.left + project.width / 2,
-          y: project.top - container.top + project.height / 2
-        };
-
-        const agentPoint = {
-          x: agent.left - container.left + agent.width / 2,
-          y: agent.top - container.top + agent.height / 2
-        };
-
-        setLinePositions({
-          projectLine: { start: projectPoint, end: buttonCenter },
-          agentLine: { start: agentPoint, end: buttonCenter }
-        });
-      }, [selectedProject, selectedAgent]);
-
-      // Update line positions when selections change
-      React.useEffect(() => {
-        updateLinePositions();
-      }, [updateLinePositions]);
-
-      // Update line positions on window resize
-      React.useEffect(() => {
-        const handleResize = () => {
-          if (selectedProject && selectedAgent) {
-            updateLinePositions();
-          }
-        };
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-      }, [selectedProject, selectedAgent, updateLinePositions]);
-
-      // Recalculate on scroll within panels
-      React.useEffect(() => {
-        const container = containerRef.current;
-        if (!container) return;
-
-        const handleScroll = () => {
-          if (selectedProject && selectedAgent) {
-            updateLinePositions();
-          }
-        };
-
-        const panels = container.querySelectorAll('.roster-cards-container');
-        panels.forEach(panel => {
-          panel.addEventListener('scroll', handleScroll);
-        });
-
-        return () => {
-          panels.forEach(panel => {
-            panel.removeEventListener('scroll', handleScroll);
-          });
-        };
-      }, [selectedProject, selectedAgent, updateLinePositions]);
-
-      return (
-        <div className="roster-room-container" ref={containerRef}>
-          <div className="roster-room-panels">
-            {/* Agent Roster Panel */}
-            <div className="roster-panel agent-panel">
-              <div className="panel-header">
-                <h2 className="panel-title">Agent Roster</h2>
-                <div className="panel-subtitle">{agents.length} agents available</div>
+        return (
+          <div
+            key={project.id}
+            className={`project-card ${selectedProject?.id === project.id ? 'selected' : ''}`}
+            onClick={() => onClick && onClick(project)}
+            data-priority={project.priority}
+          >
+            <div className="project-header">
+              <div className="project-badges">
+                <span className={`priority-badge ${project.priority}`}>{project.priority.toUpperCase()}</span>
+                <span className={`status-badge ${project.status}`}>
+                  {project.status === 'active' ? 'On Table' : 'Ongoing'}
+                </span>
               </div>
-              <div className="roster-cards-container">
-                {/* Create Custom Agent Card */}
-                <div className="agent-card create-agent-card">
-                  <div className="create-agent-icon">+</div>
-                  <div className="create-agent-label">Create Custom Agent</div>
-                  <div className="create-agent-hint">Tailored to your needs</div>
-                </div>
+              <div className="category-icon" data-category={project.category}>
+                {categoryIcons[project.category] || '📁'}
+              </div>
+            </div>
+            <div className="project-title">{project.title}</div>
+            <div className="project-description">{project.description}</div>
+            {project.staffing.assigned && (
+              <div className="project-staffing">
+                <span className="staffing-label">Assigned:</span>
+                <span className="staffing-agent">{project.staffing.agentName}</span>
+              </div>
+            )}
+          </div>
+        );
+      };
 
-                {/* Agent Cards */}
-                {agents.map(agent => (
-                  <div
-                    key={agent.id}
-                    ref={el => agentCardRefs.current[agent.id] = el}
-                    className={`agent-card ${selectedAgent?.id === agent.id ? 'selected' : ''} ${agent.capacity.available === 0 ? 'disabled' : ''}`}
-                    onClick={() => agent.capacity.available > 0 && setSelectedAgent(agent)}
+      // Render agent card with inline actions
+      const renderAgentCard = (agent) => {
+        const isExpanded = expandedAgentId === agent.id;
+        const assignedProjects = projects.filter(p => agent.currentProjects.includes(p.id));
+
+        return (
+          <div
+            key={agent.id}
+            className={`agent-card ${agent.capacity.available === 0 ? 'disabled' : ''}`}
+          >
+            <div className="agent-avatar">{agent.avatar}</div>
+            <div className="agent-info">
+              <div className="agent-header">
+                <div>
+                  <div className="agent-name">{agent.name}</div>
+                  <div className="agent-specialization">{agent.specialization}</div>
+                </div>
+                <div className="agent-actions">
+                  <button
+                    className="info-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setExpandedAgentId(isExpanded ? null : agent.id);
+                    }}
+                    title="View details"
                   >
-                    <div className="agent-avatar">{agent.avatar}</div>
-                    <div className="agent-info">
-                      <div className="agent-name">{agent.name}</div>
-                      <div className="agent-specialization">{agent.specialization}</div>
-                      <div className="agent-description">{agent.description}</div>
-                      <div className="agent-capacity">
-                        <div className="capacity-bar">
-                          <div
-                            className="capacity-fill"
-                            style={{
-                              width: `${(agent.capacity.used / agent.capacity.total) * 100}%`,
-                              background: agent.capacity.available === 0 ? '#C48B5A' : agent.capacity.available === agent.capacity.total ? '#8B9D6F' : '#D8A650'
-                            }}
-                          ></div>
-                        </div>
-                        <div className="capacity-text">
-                          {agent.capacity.available > 0 ? `${agent.capacity.available} of ${agent.capacity.total} available` : 'At capacity'}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Staff Project Button */}
-            <div className="staff-button-container">
-              <button
-                ref={buttonRef}
-                className="staff-project-btn"
-                disabled={!selectedProject || !selectedAgent}
-                onClick={handleStaffProject}
-              >
-                <span className="btn-icon">→</span>
-                <span>Staff Project</span>
-              </button>
-              {(!selectedProject || !selectedAgent) && !successMessage && (
-                <div className="staff-hint">
-                  Select a project and an agent
-                </div>
-              )}
-              {successMessage && (
-                <div className="success-message">
-                  ✓ {successMessage}
-                </div>
-              )}
-            </div>
-
-            {/* Project Queue Panel */}
-            <div className="roster-panel project-panel">
-              <div className="panel-header">
-                <h2 className="panel-title">Project Queue</h2>
-                <div className="panel-subtitle">{filteredProjects.length} projects</div>
-              </div>
-
-              {/* Search and Sort Controls */}
-              <div className="queue-controls">
-                <div className="search-box">
-                  <input
-                    type="text"
-                    placeholder="Search projects..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="search-input"
-                  />
-                  {searchTerm && (
-                    <button className="search-clear" onClick={() => setSearchTerm('')}>×</button>
+                    ⓘ
+                  </button>
+                  {currentStep === 2 && selectedProject && agent.capacity.available > 0 && (
+                    <button
+                      className="assign-btn-inline"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAssignAgent(agent);
+                      }}
+                    >
+                      Assign to Project
+                    </button>
                   )}
                 </div>
-                <div className="sort-controls">
-                  <button className={`sort-btn ${sortBy === 'priority' ? 'active' : ''}`} onClick={() => setSortBy('priority')}>Priority</button>
-                  <button className={`sort-btn ${sortBy === 'status' ? 'active' : ''}`} onClick={() => setSortBy('status')}>Status</button>
-                  <button className={`sort-btn ${sortBy === 'category' ? 'active' : ''}`} onClick={() => setSortBy('category')}>Category</button>
-                  <button className={`sort-btn ${sortBy === 'alphabetical' ? 'active' : ''}`} onClick={() => setSortBy('alphabetical')}>A-Z</button>
-                </div>
               </div>
 
-              {/* Project Cards */}
-              <div className="roster-cards-container">
-                {filteredProjects.length === 0 && (
-                  <div className="empty-state">
-                    <div className="empty-icon">🔍</div>
-                    <div className="empty-message">No projects match "{searchTerm}"</div>
-                    <div className="empty-hint">Try different keywords or clear search</div>
+              {!isExpanded && (
+                <div className="agent-description">{agent.description}</div>
+              )}
+
+              {isExpanded && (
+                <div className="agent-details-expanded">
+                  <div className="agent-description">{agent.description}</div>
+                  <div className="agent-current-projects">
+                    <strong>Current Projects ({agent.currentProjects.length}):</strong>
+                    {assignedProjects.length === 0 && <div className="no-projects">No projects assigned</div>}
+                    {assignedProjects.map(p => (
+                      <div key={p.id} className="assigned-project">
+                        <span className={`priority-badge ${p.priority}`}>{p.priority.toUpperCase()}</span>
+                        <span>{p.title}</span>
+                      </div>
+                    ))}
                   </div>
-                )}
-                {filteredProjects.map(project => (
+                </div>
+              )}
+
+              <div className="agent-capacity">
+                <div className="capacity-bar">
                   <div
-                    key={project.id}
-                    ref={el => projectCardRefs.current[project.id] = el}
-                    className={`project-card ${selectedProject?.id === project.id ? 'selected' : ''}`}
-                    onClick={() => setSelectedProject(project)}
-                    data-priority={project.priority}
-                  >
-                    <div className="project-header">
-                      <div className="project-badges">
-                        <span className={`priority-badge ${project.priority}`}>{project.priority.toUpperCase()}</span>
-                        <span className={`status-badge ${project.status}`}>{project.status === 'active' ? 'On Table' : 'Ongoing'}</span>
-                      </div>
-                      <div className="category-icon" data-category={project.category}>
-                        {project.category === 'finances' ? '💰' : project.category === 'health' ? '❤️' : project.category === 'home' ? '🏠' : '💼'}
-                      </div>
-                    </div>
-                    <div className="project-title">{project.title}</div>
-                    <div className="project-description">{project.description}</div>
-                    {project.staffing.assigned && (
-                      <div className="project-staffing">
-                        <span className="staffing-label">Staffed:</span>
-                        <span className="staffing-agent">{project.staffing.agentName}</span>
-                      </div>
-                    )}
-                    {!project.staffing.assigned && (
-                      <div className="project-staffing unstaffed">
-                        <span className="unstaffed-label">⚠️ Unstaffed</span>
-                      </div>
-                    )}
-                  </div>
-                ))}
+                    className="capacity-fill"
+                    style={{
+                      width: `${(agent.capacity.used / agent.capacity.total) * 100}%`,
+                      background: agent.capacity.available === 0 ? '#C48B5A' : agent.capacity.available === agent.capacity.total ? '#8B9D6F' : '#D8A650'
+                    }}
+                  ></div>
+                </div>
+                <div className="capacity-text">
+                  {agent.capacity.available > 0 ? `${agent.capacity.available} of ${agent.capacity.total} available` : 'At capacity'}
+                </div>
               </div>
             </div>
           </div>
+        );
+      };
 
-          {/* Connection Lines SVG */}
-          {linePositions && (
-            <svg className="connection-lines" style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              pointerEvents: 'none',
-              zIndex: 5
-            }}>
-              {/* Line from Project to Button */}
-              <line
-                x1={linePositions.projectLine.start.x}
-                y1={linePositions.projectLine.start.y}
-                x2={linePositions.projectLine.end.x}
-                y2={linePositions.projectLine.end.y}
-                stroke="var(--purpose)"
-                strokeWidth="2"
-                strokeDasharray="6 4"
-                className="connection-line project-line"
-              />
-              {/* Line from Agent to Button */}
-              <line
-                x1={linePositions.agentLine.start.x}
-                y1={linePositions.agentLine.start.y}
-                x2={linePositions.agentLine.end.x}
-                y2={linePositions.agentLine.end.y}
-                stroke="var(--purpose)"
-                strokeWidth="2"
-                strokeDasharray="6 4"
-                className="connection-line agent-line"
-              />
-            </svg>
-          )}
+      return (
+        <div className="roster-room-two-panel">
+          {/* Left Panel: Staffed Projects (Always Visible) */}
+          <div className="staffed-panel">
+            <div className="panel-header">
+              <h2>Delegation Plan</h2>
+              <p>{staffedProjects.length} {staffedProjects.length === 1 ? 'project' : 'projects'} staffed</p>
+            </div>
+
+            <div className="staffed-projects-list">
+              {staffedProjects.length === 0 && (
+                <div className="empty-state">
+                  <div className="empty-icon">📋</div>
+                  <div className="empty-message">No projects staffed yet</div>
+                  <div className="empty-hint">Select a project from the right to get started</div>
+                </div>
+              )}
+              {staffedProjects.map(project => {
+                const agent = agents.find(a => a.id === project.staffing.agentId);
+                return (
+                  <div key={project.id} className="staffed-project-card" data-priority={project.priority}>
+                    <div className="project-info">
+                      <div className="project-header">
+                        <span className={`priority-badge ${project.priority}`}>{project.priority.toUpperCase()}</span>
+                        <span className={`status-badge ${project.status}`}>
+                          {project.status === 'active' ? 'On Table' : 'Ongoing'}
+                        </span>
+                      </div>
+                      <div className="project-title">{project.title}</div>
+                      <div className="project-assignment">
+                        <span className="agent-avatar">{agent?.avatar}</span>
+                        <span className="agent-name">{project.staffing.agentName}</span>
+                      </div>
+                      {project.staffing.helpDescription && (
+                        <div className="help-description">
+                          <strong>Help needed:</strong> {project.staffing.helpDescription}
+                        </div>
+                      )}
+                    </div>
+                    <div className="project-actions">
+                      <button
+                        className="unstaff-btn"
+                        onClick={() => {
+                          if (confirm(`Remove ${project.staffing.agentName} from ${project.title}?`)) {
+                            handleUnstaffProject(project);
+                          }
+                        }}
+                      >
+                        Unstaff
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Right Panel: Staffing Wizard */}
+          <div className="wizard-panel">
+            <div className="panel-header">
+              <h2>Delegation Wizard</h2>
+              <p>Staff your projects in two easy steps</p>
+            </div>
+
+            {renderStepIndicator()}
+
+            <div className="wizard-content">
+            {/* Step 1: Select Project */}
+            {currentStep === 1 && (
+              <div className="wizard-step-1">
+                <div className="step-header">
+                  <h2>Select a Project to Staff</h2>
+                  <p>Choose which project needs help</p>
+                </div>
+
+                {/* Search and Sort Controls */}
+                <div className="wizard-controls">
+                  <div className="search-box">
+                    <input
+                      type="text"
+                      placeholder="Search projects..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="search-input"
+                    />
+                    {searchTerm && (
+                      <button className="search-clear" onClick={() => setSearchTerm('')}>×</button>
+                    )}
+                  </div>
+                  <div className="sort-controls">
+                    <button className={`sort-btn ${sortBy === 'priority' ? 'active' : ''}`} onClick={() => setSortBy('priority')}>Priority</button>
+                    <button className={`sort-btn ${sortBy === 'category' ? 'active' : ''}`} onClick={() => setSortBy('category')}>Category</button>
+                    <button className={`sort-btn ${sortBy === 'alphabetical' ? 'active' : ''}`} onClick={() => setSortBy('alphabetical')}>A-Z</button>
+                  </div>
+                </div>
+
+                {/* Project List */}
+                <div className="project-list">
+                  {filteredProjects.length === 0 && unstaffedProjects.length === 0 && (
+                    <div className="empty-state">
+                      <div className="empty-icon">🎉</div>
+                      <div className="empty-message">All projects are staffed!</div>
+                      <div className="empty-hint">You can unstaff projects to make changes</div>
+                    </div>
+                  )}
+                  {filteredProjects.length === 0 && unstaffedProjects.length > 0 && (
+                    <div className="empty-state">
+                      <div className="empty-icon">🔍</div>
+                      <div className="empty-message">No projects match "{searchTerm}"</div>
+                      <div className="empty-hint">Try different keywords or clear search</div>
+                    </div>
+                  )}
+                  {filteredProjects.map(project => renderProjectCard(project, handleSelectProject))}
+                </div>
+              </div>
+            )}
+
+            {/* Step 2: Define Help & Select Agent */}
+            {currentStep === 2 && selectedProject && (
+              <div className="wizard-step-2">
+                {/* Selected Project Header */}
+                <div className="selected-project-header">
+                  <div className="header-label">Staffing:</div>
+                  <div className="header-project">
+                    <span className={`priority-badge ${selectedProject.priority}`}>{selectedProject.priority.toUpperCase()}</span>
+                    <span className="project-title">{selectedProject.title}</span>
+                  </div>
+                  <button className="back-btn" onClick={handleBack}>← Change Project</button>
+                </div>
+
+                {/* Help Description Input */}
+                <div className="help-description-section">
+                  <label className="help-label">What help do you need with this project? (optional)</label>
+                  <textarea
+                    className="help-input"
+                    placeholder="e.g., Research pricing options, Draft listing copy, Schedule vendor calls..."
+                    value={helpDescription}
+                    onChange={(e) => setHelpDescription(e.target.value)}
+                    rows={3}
+                    maxLength={500}
+                  />
+                  <div className="char-count">{helpDescription.length}/500</div>
+                </div>
+
+                {/* Agent Selection */}
+                <div className="agent-selection-section">
+                  <h3>Choose an Agent</h3>
+
+                  {/* Agent Filter Controls */}
+                  <div className="agent-filters">
+                    <button className={`filter-btn ${agentFilter === 'all' ? 'active' : ''}`} onClick={() => setAgentFilter('all')}>All Agents</button>
+                    <button className={`filter-btn ${agentFilter === 'available' ? 'active' : ''}`} onClick={() => setAgentFilter('available')}>Available Only</button>
+                  </div>
+
+                  {/* Agent List */}
+                  <div className="agent-list">
+                    {/* Create Custom Agent Card */}
+                    <div className={`agent-card create-agent-card ${isCreatingAgent ? 'expanded' : ''}`}>
+                      {!isCreatingAgent ? (
+                        <div onClick={() => setIsCreatingAgent(true)} style={{cursor: 'pointer', textAlign: 'center', width: '100%'}}>
+                          <div className="create-agent-icon">+</div>
+                          <div className="create-agent-label">Create Custom Agent</div>
+                          <div className="create-agent-hint">Tailored to your needs</div>
+                        </div>
+                      ) : (
+                        <div className="agent-form">
+                          {/* Devin Introduction */}
+                          <div className="devin-callout">
+                            <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem'}}>
+                              <span style={{fontSize: '1.5rem'}}>👨‍💼</span>
+                              <strong>Devin here!</strong>
+                            </div>
+                            <p>I'll help you create an agent tailored to your specific needs. Just fill in the details below.</p>
+                          </div>
+
+                          {/* Form Fields */}
+                          <div className="form-row">
+                            <label>Agent Name *</label>
+                            <input
+                              type="text"
+                              placeholder="e.g., Marketing Specialist"
+                              maxLength={50}
+                              id="new-agent-name"
+                            />
+                          </div>
+
+                          <div className="form-row">
+                            <label>Specialization *</label>
+                            <input
+                              type="text"
+                              placeholder="e.g., Social Media & Content Marketing"
+                              maxLength={50}
+                              id="new-agent-specialization"
+                            />
+                          </div>
+
+                          <div className="form-row">
+                            <label>Description (optional)</label>
+                            <textarea
+                              placeholder="What does this agent help with?"
+                              maxLength={200}
+                              rows={3}
+                              id="new-agent-description"
+                            />
+                          </div>
+
+                          <div className="form-row">
+                            <label>Capacity (max projects)</label>
+                            <select id="new-agent-capacity">
+                              <option value="1">1 project</option>
+                              <option value="2">2 projects</option>
+                              <option value="3" selected>3 projects</option>
+                              <option value="4">4 projects</option>
+                              <option value="5">5 projects</option>
+                            </select>
+                          </div>
+
+                          {/* Form Actions */}
+                          <div className="form-actions">
+                            <button
+                              className="btn-primary"
+                              onClick={() => {
+                                const name = document.getElementById('new-agent-name').value.trim();
+                                const specialization = document.getElementById('new-agent-specialization').value.trim();
+                                const description = document.getElementById('new-agent-description').value.trim();
+                                const capacity = parseInt(document.getElementById('new-agent-capacity').value);
+
+                                if (!name || !specialization) {
+                                  alert('Please fill in Agent Name and Specialization');
+                                  return;
+                                }
+
+                                // Create new agent
+                                const newAgent = {
+                                  id: `agent-custom-${Date.now()}`,
+                                  name: name,
+                                  specialization: specialization,
+                                  description: description || `Specialized in ${specialization}`,
+                                  capacity: { total: capacity, used: 0, available: capacity },
+                                  currentProjects: [],
+                                  avatar: '👤',
+                                  createdAt: Date.now()
+                                };
+
+                                // Add to agents list
+                                setAgents(prev => [...prev, newAgent]);
+
+                                // If in Step 2, auto-assign to current project
+                                if (currentStep === 2 && selectedProject) {
+                                  handleAssignAgent(newAgent);
+                                }
+
+                                // Reset form
+                                setIsCreatingAgent(false);
+                                document.getElementById('new-agent-name').value = '';
+                                document.getElementById('new-agent-specialization').value = '';
+                                document.getElementById('new-agent-description').value = '';
+                                document.getElementById('new-agent-capacity').value = '3';
+                              }}
+                            >
+                              {currentStep === 2 ? 'Create & Assign to Project' : 'Create Agent'}
+                            </button>
+                            <button
+                              className="btn-secondary"
+                              onClick={() => {
+                                setIsCreatingAgent(false);
+                                document.getElementById('new-agent-name').value = '';
+                                document.getElementById('new-agent-specialization').value = '';
+                                document.getElementById('new-agent-description').value = '';
+                                document.getElementById('new-agent-capacity').value = '3';
+                              }}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Agent Cards */}
+                    {filteredAgents.map(agent => renderAgentCard(agent))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Success Message (shown after assignment) */}
+            {successMessage && (
+              <div className="success-banner">
+                <span>{successMessage}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Wizard Navigation */}
+          <div className="wizard-navigation">
+            {currentStep > 1 && (
+              <button className="nav-btn back-btn" onClick={handleBack}>
+                ← Back
+              </button>
+            )}
+            <button className="nav-btn cancel-btn" onClick={handleCancel}>
+              Cancel
+            </button>
+          </div>
         </div>
+      </div>
       );
     };
 
