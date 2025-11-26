@@ -126,8 +126,32 @@
     .bronze .slot-label { color: var(--bronze); }
 
     .slot-content {
-      text-align: center;
-      opacity: 0.9;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      opacity: 0.95;
+    }
+
+    .slot-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      border: 2px solid currentColor;
+      flex-shrink: 0;
+      box-shadow: 0 0 12px rgba(0,0,0,0.35);
+    }
+
+    .table-slot.gold .slot-avatar { border-color: var(--gold); }
+    .table-slot.silver .slot-avatar { border-color: var(--silver); }
+    .table-slot.bronze .slot-avatar { border-color: var(--bronze); }
+
+    .slot-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
     .slot-project-name {
@@ -729,25 +753,34 @@
 
   <!-- The Table (Always Visible) -->
   <div class="the-table">
-    <div class="table-slot gold">
+    <div class="table-slot gold" data-project-id="ho1">
       <span class="slot-label">Gold</span>
       <div class="slot-content">
-        <div class="slot-project-name">Kitchen Renovation</div>
-        <div class="slot-meta">Home • 42% complete</div>
+        <div class="slot-avatar" aria-hidden="true"></div>
+        <div class="slot-text">
+          <div class="slot-project-name">Kitchen Renovation</div>
+          <div class="slot-meta">Home • 42% complete</div>
+        </div>
       </div>
     </div>
-    <div class="table-slot silver">
+    <div class="table-slot silver" data-project-id="h1">
       <span class="slot-label">Silver</span>
       <div class="slot-content">
-        <div class="slot-project-name">Morning Routine System</div>
-        <div class="slot-meta">Health • Building habit</div>
+        <div class="slot-avatar" aria-hidden="true"></div>
+        <div class="slot-text">
+          <div class="slot-project-name">Morning Routine System</div>
+          <div class="slot-meta">Health • Building habit</div>
+        </div>
       </div>
     </div>
-    <div class="table-slot bronze">
+    <div class="table-slot bronze" data-fallback-image="https://images.unsplash.com/photo-1506784365847-bbad939e9335?w=200&h=200&fit=crop">
       <span class="slot-label">Bronze</span>
       <div class="slot-content">
-        <div class="slot-project-name">8 tasks</div>
-        <div class="slot-meta">34 candidates queued</div>
+        <div class="slot-avatar" aria-hidden="true"></div>
+        <div class="slot-text">
+          <div class="slot-project-name">8 tasks</div>
+          <div class="slot-meta">34 candidates queued</div>
+        </div>
       </div>
     </div>
   </div>
@@ -938,6 +971,37 @@
       }
     ];
 
+    function getProjectById(projectId) {
+      for (const category of categories) {
+        const project = category.projects.find(p => p.id === projectId);
+        if (project) {
+          return project;
+        }
+      }
+      return null;
+    }
+
+    function applyTableImages() {
+      document.querySelectorAll('.table-slot').forEach(slot => {
+        const avatar = slot.querySelector('.slot-avatar');
+        if (!avatar) return;
+        let imageUrl = null;
+        const { projectId, fallbackImage } = slot.dataset;
+        if (projectId) {
+          const project = getProjectById(projectId);
+          if (project && project.image) {
+            imageUrl = project.image;
+          }
+        }
+        if (!imageUrl && fallbackImage) {
+          imageUrl = fallbackImage;
+        }
+        if (imageUrl) {
+          avatar.style.backgroundImage = `url('${imageUrl}')`;
+        }
+      });
+    }
+
     // ===== STATE =====
     let currentAltitude = 'overview';
     let selectedCategory = null;
@@ -1081,6 +1145,7 @@
     document.getElementById('backButton').addEventListener('click', handleBack);
     renderCategories();
     updateAltitudeIndicator();
+    applyTableImages();
   </script>
 </body>
 </html>
