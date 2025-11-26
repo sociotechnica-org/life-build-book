@@ -531,9 +531,19 @@ const ReactDOM = window.ReactDOM;
         return stored ? JSON.parse(stored) : (window.LifeBuildData?.planningQueue || []);
       });
 
+      // Filter state with persistence
+      const [filters, setFilters] = React.useState(() => {
+        const stored = localStorage.getItem('lifebuild_drafting_filters');
+        return stored ? JSON.parse(stored) : { category: 'all', tier: 'all' };
+      });
+
       React.useEffect(() => {
         localStorage.setItem('lifebuild_planning_queue', JSON.stringify(planningProjects));
       }, [planningProjects]);
+
+      React.useEffect(() => {
+        localStorage.setItem('lifebuild_drafting_filters', JSON.stringify(filters));
+      }, [filters]);
 
       // Helper functions
       const formatRelativeTime = (timestamp) => {
@@ -602,8 +612,9 @@ const ReactDOM = window.ReactDOM;
         setPlanningProjects(prev => prev.filter(p => p.id !== projectId));
       };
 
-      const saveCurrentProject = () => {
-        const updatedProject = { ...currentProject, lastModified: Date.now() };
+      const saveCurrentProject = (projectData = null) => {
+        const dataToSave = projectData || currentProject;
+        const updatedProject = { ...dataToSave, lastModified: Date.now() };
         setPlanningProjects(prev => {
           const existing = prev.findIndex(p => p.id === updatedProject.id);
           if (existing >= 0) {
@@ -618,22 +629,44 @@ const ReactDOM = window.ReactDOM;
       };
 
       const completeStage = (stageData) => {
-        setCurrentProject(prev => ({
-          ...prev,
+        const updatedProject = {
+          ...currentProject,
           ...stageData,
           draftingStage: currentStage + 1,
           lastModified: Date.now()
-        }));
+        };
 
         if (currentStage < 4) {
+          // Advance to next stage
+          setCurrentProject(updatedProject);
           setCurrentStage(currentStage + 1);
         } else {
-          // Stage 4 complete - move to Priority Queue
-          saveCurrentProject();
+          // Stage 4 complete - remove from Planning Queue
+          // In a full implementation, this would add to Priority Queue
+          setPlanningProjects(prev => prev.filter(p => p.id !== updatedProject.id));
+          setCurrentProject(null);
+          setView('queue');
         }
       };
 
-      const sortedProjects = [...planningProjects].sort((a, b) => b.lastModified - a.lastModified);
+      // Filter logic
+      const filteredProjects = React.useMemo(() => {
+        return planningProjects.filter(project => {
+          // Category filter
+          if (filters.category !== 'all' && project.category !== filters.category) {
+            return false;
+          }
+
+          // Tier filter
+          if (filters.tier !== 'all' && project.tier !== filters.tier) {
+            return false;
+          }
+
+          return true;
+        });
+      }, [planningProjects, filters]);
+
+      const sortedProjects = [...filteredProjects].sort((a, b) => b.lastModified - a.lastModified);
       const staleCount = sortedProjects.filter(p => isStale(p.lastModified)).length;
 
       // Render different views
@@ -648,18 +681,41 @@ const ReactDOM = window.ReactDOM;
               onCancel={() => {
                 saveCurrentProject();
               }}
+              onStageChange={setCurrentStage}
             />
           </div>
         );
       }
 
-      // Group projects by stage
+      // Group filtered projects by stage
       const projectsByStage = {
-        1: planningProjects.filter(p => p.draftingStage === 1),
-        2: planningProjects.filter(p => p.draftingStage === 2),
-        3: planningProjects.filter(p => p.draftingStage === 3),
-        4: planningProjects.filter(p => p.draftingStage === 4)
+        1: filteredProjects.filter(p => p.draftingStage === 1),
+        2: filteredProjects.filter(p => p.draftingStage === 2),
+        3: filteredProjects.filter(p => p.draftingStage === 3),
+        4: filteredProjects.filter(p => p.draftingStage === 4)
       };
+
+      // Category and tier options
+      const categories = [
+        { id: 'all', label: 'All' },
+        { id: 'health', label: 'Health' },
+        { id: 'purpose', label: 'Purpose' },
+        { id: 'finances', label: 'Finances' },
+        { id: 'relationships', label: 'Relationships' },
+        { id: 'home', label: 'Home' },
+        { id: 'community', label: 'Community' },
+        { id: 'leisure', label: 'Leisure' },
+        { id: 'growth', label: 'Growth' }
+      ];
+
+      const tiers = [
+        { id: 'all', label: 'All Tiers' },
+        { id: 'gold', label: 'Gold' },
+        { id: 'silver', label: 'Silver' },
+        { id: 'bronze', label: 'Bronze' }
+      ];
+
+      const hasActiveFilters = filters.category !== 'all' || filters.tier !== 'all';
 
       // Default: Kanban Board view
       return (
@@ -669,9 +725,98 @@ const ReactDOM = window.ReactDOM;
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
               <h2 style={{ fontSize: '1.4rem', fontWeight: 600 }}>Planning Queue</h2>
               <span style={{ fontSize: '0.95rem', color: 'var(--muted)' }}>
-                {planningProjects.length} project{planningProjects.length !== 1 ? 's' : ''}
+                {filteredProjects.length === planningProjects.length
+                  ? `${planningProjects.length} project${planningProjects.length !== 1 ? 's' : ''}`
+                  : `Showing ${filteredProjects.length} of ${planningProjects.length} projects`
+                }
               </span>
             </div>
+
+            {/* Filters */}
+            <div style={{ marginBottom: '1rem' }}>
+              {/* Category Pills */}
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '0.5rem',
+                marginBottom: '0.75rem',
+                alignItems: 'center'
+              }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--muted)', marginRight: '0.25rem' }}>
+                  Category:
+                </span>
+                {categories.map(cat => (
+                  <button
+                    key={cat.id}
+                    onClick={() => setFilters(prev => ({ ...prev, category: cat.id }))}
+                    style={{
+                      padding: '0.4rem 0.75rem',
+                      fontSize: '0.8rem',
+                      border: `1px solid ${filters.category === cat.id ? getCategoryTextColor(cat.id) : 'var(--border)'}`,
+                      background: filters.category === cat.id
+                        ? (cat.id === 'all' ? 'var(--ink)' : getCategoryColor(cat.id))
+                        : 'transparent',
+                      color: filters.category === cat.id
+                        ? (cat.id === 'all' ? '#fff' : getCategoryTextColor(cat.id))
+                        : 'var(--ink)',
+                      borderRadius: '1rem',
+                      cursor: 'pointer',
+                      fontWeight: filters.category === cat.id ? 600 : 400,
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {cat.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Tier Dropdown + Clear */}
+              <div style={{
+                display: 'flex',
+                gap: '0.5rem',
+                alignItems: 'center'
+              }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--muted)', marginRight: '0.25rem' }}>
+                  Tier:
+                </span>
+                <select
+                  value={filters.tier}
+                  onChange={(e) => setFilters(prev => ({ ...prev, tier: e.target.value }))}
+                  style={{
+                    padding: '0.4rem 0.75rem',
+                    fontSize: '0.8rem',
+                    border: '1px solid var(--border)',
+                    borderRadius: '0.5rem',
+                    background: '#fff',
+                    cursor: 'pointer'
+                  }}
+                >
+                  {tiers.map(tier => (
+                    <option key={tier.id} value={tier.id}>
+                      {tier.label}
+                    </option>
+                  ))}
+                </select>
+
+                {hasActiveFilters && (
+                  <button
+                    onClick={() => setFilters({ category: 'all', tier: 'all' })}
+                    style={{
+                      padding: '0.4rem 0.75rem',
+                      fontSize: '0.8rem',
+                      border: '1px solid var(--border)',
+                      background: 'transparent',
+                      color: 'var(--muted)',
+                      borderRadius: '0.5rem',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Clear Filters
+                  </button>
+                )}
+              </div>
+            </div>
+
             {staleCount > 0 && (
               <div style={{
                 background: 'rgba(255,154,86,0.1)',
@@ -996,8 +1141,13 @@ const ReactDOM = window.ReactDOM;
     );
 
     // Project Creation Flow Component
-    const ProjectCreationFlow = ({ project, stage, onComplete, onSave, onCancel }) => {
+    const ProjectCreationFlow = ({ project, stage, onComplete, onSave, onCancel, onStageChange }) => {
       const [formData, setFormData] = React.useState(project);
+
+      // Sync formData when project changes (important for resume)
+      React.useEffect(() => {
+        setFormData(project);
+      }, [project.id]);
 
       const updateField = (field, value) => {
         setFormData(prev => ({ ...prev, [field]: value }));
@@ -1007,6 +1157,18 @@ const ReactDOM = window.ReactDOM;
         onComplete(formData);
       };
 
+      const handleBack = () => {
+        if (stage > 1) {
+          onStageChange(stage - 1);
+        }
+      };
+
+      const handleSaveAndExit = (additionalData = {}) => {
+        // Save with current stage data plus any additional updates, don't increment stage
+        const dataToSave = { ...formData, ...additionalData, draftingStage: stage };
+        onSave(dataToSave);
+      };
+
       // Stage 1: Identified
       if (stage === 1) {
         return (
@@ -1014,7 +1176,7 @@ const ReactDOM = window.ReactDOM;
             data={formData}
             updateField={updateField}
             onNext={handleNext}
-            onCancel={onCancel}
+            onCancel={handleSaveAndExit}
           />
         );
       }
@@ -1026,7 +1188,8 @@ const ReactDOM = window.ReactDOM;
             data={formData}
             updateField={updateField}
             onNext={handleNext}
-            onBack={() => onComplete({ ...formData, draftingStage: 1 })}
+            onBack={handleBack}
+            onSave={handleSaveAndExit}
           />
         );
       }
@@ -1038,7 +1201,8 @@ const ReactDOM = window.ReactDOM;
             data={formData}
             updateField={updateField}
             onNext={handleNext}
-            onBack={() => onComplete({ ...formData, draftingStage: 2 })}
+            onBack={handleBack}
+            onSave={handleSaveAndExit}
           />
         );
       }
@@ -1051,9 +1215,9 @@ const ReactDOM = window.ReactDOM;
             updateField={updateField}
             onComplete={() => {
               onComplete(formData);
-              onSave();
             }}
-            onBack={() => onComplete({ ...formData, draftingStage: 3 })}
+            onBack={handleBack}
+            onSave={handleSaveAndExit}
           />
         );
       }
@@ -1130,7 +1294,7 @@ const ReactDOM = window.ReactDOM;
             className="pill-btn"
             style={{ flex: 1 }}
             onClick={onNext}
-            disabled={!data.title || !data.category}
+            disabled={!data.title || !data.category || !data.description}
           >
             Continue to Stage 2
           </button>
@@ -1139,7 +1303,7 @@ const ReactDOM = window.ReactDOM;
     );
 
     // Stage 2: Scoped (Define Success)
-    const Stage2Scoped = ({ data, updateField, onNext, onBack }) => {
+    const Stage2Scoped = ({ data, updateField, onNext, onBack, onSave }) => {
       const [objectives, setObjectives] = React.useState(data.objectives || ['']);
       const [archetype, setArchetype] = React.useState(data.archetype || '');
       const [tier, setTier] = React.useState(data.tier || '');
@@ -1276,10 +1440,24 @@ const ReactDOM = window.ReactDOM;
           <div style={{ display: 'flex', gap: '0.75rem' }}>
             <button className="pill-btn ghost" onClick={onBack}>Back</button>
             <button
+              className="pill-btn ghost"
+              onClick={() => {
+                // Pass local state directly to save handler
+                onSave({
+                  objectives: objectives.filter(o => o.trim()),
+                  archetype: archetype,
+                  tier: tier
+                });
+              }}
+            >
+              Save & Exit
+            </button>
+            <button
               className="pill-btn"
               style={{ flex: 1 }}
               onClick={() => {
                 updateField('objectives', objectives.filter(o => o.trim()));
+                updateField('archetype', archetype);
                 updateField('tier', tier);
                 onNext();
               }}
@@ -1293,7 +1471,7 @@ const ReactDOM = window.ReactDOM;
     };
 
     // Stage 3: Drafted (Task Generation)
-    const Stage3Drafted = ({ data, updateField, onNext, onBack }) => {
+    const Stage3Drafted = ({ data, updateField, onNext, onBack, onSave }) => {
       const [tasks, setTasks] = React.useState(data.tasks || []);
       const [newTask, setNewTask] = React.useState('');
 
@@ -1381,6 +1559,15 @@ const ReactDOM = window.ReactDOM;
           <div style={{ display: 'flex', gap: '0.75rem' }}>
             <button className="pill-btn ghost" onClick={onBack}>Back</button>
             <button
+              className="pill-btn ghost"
+              onClick={() => {
+                // Pass tasks directly to save handler
+                onSave({ tasks: tasks });
+              }}
+            >
+              Save & Exit
+            </button>
+            <button
               className="pill-btn"
               style={{ flex: 1 }}
               onClick={() => {
@@ -1397,7 +1584,7 @@ const ReactDOM = window.ReactDOM;
     };
 
     // Stage 4: Prioritized (Queue Placement)
-    const Stage4Prioritized = ({ data, onComplete, onBack }) => (
+    const Stage4Prioritized = ({ data, onComplete, onBack, onSave }) => (
       <div>
         <div style={{ marginBottom: '2rem' }}>
           <h2 style={{ fontSize: '1.6rem', fontWeight: 600, marginBottom: '0.5rem' }}>Stage 4: Prioritized</h2>
@@ -1426,6 +1613,7 @@ const ReactDOM = window.ReactDOM;
 
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button className="pill-btn ghost" onClick={onBack}>Back</button>
+          <button className="pill-btn ghost" onClick={onSave}>Save & Exit</button>
           <button className="pill-btn" style={{ flex: 1 }} onClick={onComplete}>
             Complete & Add to Priority Queue
           </button>
