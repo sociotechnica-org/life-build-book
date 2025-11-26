@@ -395,7 +395,593 @@
       }))) : null);
     })));
   };
-  const DraftingRoom = () => /* @__PURE__ */ React.createElement("div", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "project", style: { borderColor: "var(--gold)", boxShadow: "0 12px 26px rgba(216,166,80,0.2)" } }, /* @__PURE__ */ React.createElement("div", { className: "title" }, "Sell Camper Van"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, "Gold Candidate \xB7 Plans done \xB7 Crisis trigger"), /* @__PURE__ */ React.createElement("ul", { style: { marginTop: "0.4rem", paddingLeft: "1rem", color: "var(--muted)", fontSize: "0.95rem" } }, /* @__PURE__ */ React.createElement("li", null, "Clean + photo professionally"), /* @__PURE__ */ React.createElement("li", null, "List on 3 platforms"), /* @__PURE__ */ React.createElement("li", null, "Sell & transfer title in 3 weeks"))), /* @__PURE__ */ React.createElement("div", { className: "project", style: { marginTop: "0.7rem" } }, /* @__PURE__ */ React.createElement("div", { className: "title" }, "Launch Consulting"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, "Current Gold \xB7 60% \xB7 Will pause if swapped")));
+  const DraftingRoom = () => {
+    const [view, setView] = React.useState("queue");
+    const [currentProject, setCurrentProject] = React.useState(null);
+    const [currentStage, setCurrentStage] = React.useState(1);
+    const [planningProjects, setPlanningProjects] = React.useState(() => {
+      var _a;
+      const stored = localStorage.getItem("lifebuild_planning_queue");
+      return stored ? JSON.parse(stored) : ((_a = window.LifeBuildData) == null ? void 0 : _a.planningQueue) || [];
+    });
+    React.useEffect(() => {
+      localStorage.setItem("lifebuild_planning_queue", JSON.stringify(planningProjects));
+    }, [planningProjects]);
+    const formatRelativeTime = (timestamp) => {
+      const now = Date.now();
+      const diffMs = now - timestamp;
+      const diffMins = Math.floor(diffMs / (1e3 * 60));
+      const diffHours = Math.floor(diffMs / (1e3 * 60 * 60));
+      const diffDays = Math.floor(diffMs / (1e3 * 60 * 60 * 24));
+      if (diffMins < 60) return `${diffMins} min ago`;
+      if (diffHours < 24) return `${diffHours}h ago`;
+      if (diffDays < 7) return `${diffDays}d ago`;
+      if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+      return new Date(timestamp).toLocaleDateString();
+    };
+    const isStale = (timestamp) => {
+      return (Date.now() - timestamp) / (1e3 * 60 * 60 * 24) >= 14;
+    };
+    const getCategoryColor = (category) => {
+      const colors = {
+        health: "#E3F2FD",
+        purpose: "#F3E5F5",
+        finances: "#FFF3E0",
+        relationships: "#FCE4EC",
+        home: "#E8F5E9",
+        community: "#FFF9C4",
+        leisure: "#E0F2F1",
+        growth: "#EDE7F6"
+      };
+      return colors[category] || "#F5F5F5";
+    };
+    const getCategoryTextColor = (category) => {
+      const colors = {
+        health: "#1976D2",
+        purpose: "#7B1FA2",
+        finances: "#E65100",
+        relationships: "#C2185B",
+        home: "#388E3C",
+        community: "#F57F17",
+        leisure: "#00796B",
+        growth: "#512DA8"
+      };
+      return colors[category] || "#666";
+    };
+    const getStageLabel = (stage) => {
+      const labels = { 1: "Identified", 2: "Scoped", 3: "Drafted", 4: "Prioritized" };
+      return labels[stage] || "Unknown";
+    };
+    const startNewProject = () => {
+      setCurrentProject({
+        id: `proj-${Date.now()}`,
+        title: "",
+        category: "",
+        draftingStage: 1,
+        lastModified: Date.now(),
+        description: "",
+        status: "planning"
+      });
+      setCurrentStage(1);
+      setView("create");
+    };
+    const resumeProject = (project) => {
+      setCurrentProject(project);
+      setCurrentStage(project.draftingStage);
+      setView("resume");
+    };
+    const abandonProject = (projectId) => {
+      setPlanningProjects((prev) => prev.filter((p) => p.id !== projectId));
+    };
+    const saveCurrentProject = () => {
+      const updatedProject = __spreadProps(__spreadValues({}, currentProject), { lastModified: Date.now() });
+      setPlanningProjects((prev) => {
+        const existing = prev.findIndex((p) => p.id === updatedProject.id);
+        if (existing >= 0) {
+          const newProjects = [...prev];
+          newProjects[existing] = updatedProject;
+          return newProjects;
+        }
+        return [...prev, updatedProject];
+      });
+      setCurrentProject(null);
+      setView("queue");
+    };
+    const completeStage = (stageData) => {
+      setCurrentProject((prev) => __spreadProps(__spreadValues(__spreadValues({}, prev), stageData), {
+        draftingStage: currentStage + 1,
+        lastModified: Date.now()
+      }));
+      if (currentStage < 4) {
+        setCurrentStage(currentStage + 1);
+      } else {
+        saveCurrentProject();
+      }
+    };
+    const sortedProjects = [...planningProjects].sort((a, b) => b.lastModified - a.lastModified);
+    const staleCount = sortedProjects.filter((p) => isStale(p.lastModified)).length;
+    if (view === "create" || view === "resume") {
+      return /* @__PURE__ */ React.createElement("div", { className: "card" }, /* @__PURE__ */ React.createElement(
+        ProjectCreationFlow,
+        {
+          project: currentProject,
+          stage: currentStage,
+          onComplete: completeStage,
+          onSave: saveCurrentProject,
+          onCancel: () => {
+            saveCurrentProject();
+          }
+        }
+      ));
+    }
+    const projectsByStage = {
+      1: planningProjects.filter((p) => p.draftingStage === 1),
+      2: planningProjects.filter((p) => p.draftingStage === 2),
+      3: planningProjects.filter((p) => p.draftingStage === 3),
+      4: planningProjects.filter((p) => p.draftingStage === 4)
+    };
+    return /* @__PURE__ */ React.createElement("div", { className: "card", style: { padding: "1.5rem" } }, /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "1.5rem" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" } }, /* @__PURE__ */ React.createElement("h2", { style: { fontSize: "1.4rem", fontWeight: 600 } }, "Planning Queue"), /* @__PURE__ */ React.createElement("span", { style: { fontSize: "0.95rem", color: "var(--muted)" } }, planningProjects.length, " project", planningProjects.length !== 1 ? "s" : "")), staleCount > 0 && /* @__PURE__ */ React.createElement("div", { style: {
+      background: "rgba(255,154,86,0.1)",
+      border: "1px solid rgba(255,154,86,0.3)",
+      borderRadius: "0.5rem",
+      padding: "0.75rem 1rem",
+      fontSize: "0.9rem",
+      color: "#D84315",
+      marginBottom: "0.75rem"
+    } }, "\u26A0\uFE0F ", staleCount, " project", staleCount > 1 ? "s" : "", " haven't been touched in 2+ weeks")), /* @__PURE__ */ React.createElement("div", { style: {
+      display: "grid",
+      gridTemplateColumns: "repeat(4, 1fr)",
+      gap: "1rem",
+      marginBottom: "1.5rem",
+      minHeight: "400px"
+    } }, /* @__PURE__ */ React.createElement(
+      KanbanColumn,
+      {
+        title: "Identified",
+        stage: 1,
+        projects: projectsByStage[1],
+        emptyMessage: "Click 'Start New Project' to begin",
+        onResume: resumeProject,
+        onAbandon: abandonProject,
+        getCategoryColor,
+        getCategoryTextColor,
+        formatRelativeTime,
+        isStale
+      }
+    ), /* @__PURE__ */ React.createElement(
+      KanbanColumn,
+      {
+        title: "Scoped",
+        stage: 2,
+        projects: projectsByStage[2],
+        emptyMessage: "Complete Stage 1 projects to move them here",
+        onResume: resumeProject,
+        onAbandon: abandonProject,
+        getCategoryColor,
+        getCategoryTextColor,
+        formatRelativeTime,
+        isStale
+      }
+    ), /* @__PURE__ */ React.createElement(
+      KanbanColumn,
+      {
+        title: "Drafted",
+        stage: 3,
+        projects: projectsByStage[3],
+        emptyMessage: "Define objectives to advance projects",
+        onResume: resumeProject,
+        onAbandon: abandonProject,
+        getCategoryColor,
+        getCategoryTextColor,
+        formatRelativeTime,
+        isStale
+      }
+    ), /* @__PURE__ */ React.createElement(
+      KanbanColumn,
+      {
+        title: "Prioritized",
+        stage: 4,
+        projects: projectsByStage[4],
+        emptyMessage: "Create task lists to reach this stage",
+        onResume: resumeProject,
+        onAbandon: abandonProject,
+        getCategoryColor,
+        getCategoryTextColor,
+        formatRelativeTime,
+        isStale
+      }
+    )), /* @__PURE__ */ React.createElement("div", { style: {
+      paddingTop: "1.5rem",
+      borderTop: "1px solid var(--border)",
+      display: "flex",
+      gap: "0.75rem"
+    } }, /* @__PURE__ */ React.createElement("button", { className: "pill-btn", style: { flex: 1 }, onClick: startNewProject }, "+ Start New Project"), /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost" }, "Clean Up Queue")));
+  };
+  const KanbanColumn = ({ title, stage, projects, emptyMessage, onResume, onAbandon, getCategoryColor, getCategoryTextColor, formatRelativeTime, isStale }) => /* @__PURE__ */ React.createElement("div", { style: {
+    display: "flex",
+    flexDirection: "column",
+    background: "#FAFAF8",
+    borderRadius: "0.75rem",
+    padding: "1rem",
+    border: "1px solid var(--border)"
+  } }, /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "1rem", paddingBottom: "0.75rem", borderBottom: "2px solid var(--border)" } }, /* @__PURE__ */ React.createElement("div", { style: { fontSize: "0.9rem", fontWeight: 600, color: "var(--ink)", marginBottom: "0.25rem" } }, title), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "0.8rem", color: "var(--muted)" } }, "Stage ", stage, " \xB7 ", projects.length, " project", projects.length !== 1 ? "s" : "")), /* @__PURE__ */ React.createElement("div", { style: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.75rem",
+    overflowY: "auto",
+    maxHeight: "500px"
+  } }, projects.length === 0 ? /* @__PURE__ */ React.createElement("div", { style: {
+    textAlign: "center",
+    padding: "2rem 0.5rem",
+    color: "var(--muted)",
+    fontSize: "0.85rem",
+    lineHeight: 1.5
+  } }, emptyMessage) : projects.map((project) => /* @__PURE__ */ React.createElement(
+    CompactProjectCard,
+    {
+      key: project.id,
+      project,
+      onResume: () => onResume(project),
+      onAbandon: () => onAbandon(project.id),
+      getCategoryColor,
+      getCategoryTextColor,
+      formatRelativeTime,
+      isStale
+    }
+  ))));
+  const CompactProjectCard = ({ project, onResume, onAbandon, getCategoryColor, getCategoryTextColor, formatRelativeTime, isStale }) => /* @__PURE__ */ React.createElement(
+    "div",
+    {
+      style: {
+        background: "#fff",
+        border: `1px solid ${isStale(project.lastModified) ? "#FF9A56" : "var(--border)"}`,
+        borderLeft: `3px solid ${getCategoryTextColor(project.category)}`,
+        borderRadius: "0.5rem",
+        padding: "0.75rem",
+        transition: "all 0.2s ease",
+        cursor: "pointer"
+      },
+      onMouseEnter: (e) => e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.1)",
+      onMouseLeave: (e) => e.currentTarget.style.boxShadow = "none"
+    },
+    /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" } }, /* @__PURE__ */ React.createElement("span", { style: {
+      display: "inline-block",
+      background: getCategoryColor(project.category),
+      color: getCategoryTextColor(project.category),
+      padding: "0.2rem 0.5rem",
+      borderRadius: "0.25rem",
+      fontSize: "0.7rem",
+      fontWeight: 600,
+      textTransform: "uppercase"
+    } }, project.category), /* @__PURE__ */ React.createElement("span", { style: { fontSize: "0.75rem", color: "var(--muted)" } }, "\u{1F552} ", formatRelativeTime(project.lastModified))),
+    /* @__PURE__ */ React.createElement("h4", { style: {
+      fontSize: "0.95rem",
+      fontWeight: 600,
+      marginBottom: "0.5rem",
+      lineHeight: 1.3,
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      display: "-webkit-box",
+      WebkitLineClamp: 2,
+      WebkitBoxOrient: "vertical"
+    } }, project.title),
+    /* @__PURE__ */ React.createElement("div", { style: { fontSize: "0.75rem", color: "var(--muted)", marginBottom: "0.75rem" } }, project.tier && /* @__PURE__ */ React.createElement("span", { style: { marginRight: "0.5rem", textTransform: "capitalize" } }, project.tier), project.objectives && project.objectives.length > 0 && /* @__PURE__ */ React.createElement("span", null, project.objectives.length, " obj"), project.tasks && project.tasks.length > 0 && /* @__PURE__ */ React.createElement("span", null, " \xB7 ", project.tasks.length, " tasks"), isStale(project.lastModified) && /* @__PURE__ */ React.createElement("span", { style: { color: "#FF9A56", fontWeight: 600, marginLeft: "0.5rem" } }, "\u26A0\uFE0F")),
+    /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "0.5rem" } }, /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        className: "pill-btn",
+        style: { flex: 1, fontSize: "0.8rem", padding: "0.4rem 0.75rem" },
+        onClick: (e) => {
+          e.stopPropagation();
+          onResume();
+        }
+      },
+      "Resume"
+    ), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        className: "pill-btn ghost",
+        style: { fontSize: "0.8rem", padding: "0.4rem 0.75rem" },
+        onClick: (e) => {
+          e.stopPropagation();
+          if (confirm(`Abandon "${project.title}"?`)) onAbandon();
+        }
+      },
+      "Abandon"
+    ))
+  );
+  const ProjectCreationFlow = ({ project, stage, onComplete, onSave, onCancel }) => {
+    const [formData, setFormData] = React.useState(project);
+    const updateField = (field, value) => {
+      setFormData((prev) => __spreadProps(__spreadValues({}, prev), { [field]: value }));
+    };
+    const handleNext = () => {
+      onComplete(formData);
+    };
+    if (stage === 1) {
+      return /* @__PURE__ */ React.createElement(
+        Stage1Identified,
+        {
+          data: formData,
+          updateField,
+          onNext: handleNext,
+          onCancel
+        }
+      );
+    }
+    if (stage === 2) {
+      return /* @__PURE__ */ React.createElement(
+        Stage2Scoped,
+        {
+          data: formData,
+          updateField,
+          onNext: handleNext,
+          onBack: () => onComplete(__spreadProps(__spreadValues({}, formData), { draftingStage: 1 }))
+        }
+      );
+    }
+    if (stage === 3) {
+      return /* @__PURE__ */ React.createElement(
+        Stage3Drafted,
+        {
+          data: formData,
+          updateField,
+          onNext: handleNext,
+          onBack: () => onComplete(__spreadProps(__spreadValues({}, formData), { draftingStage: 2 }))
+        }
+      );
+    }
+    if (stage === 4) {
+      return /* @__PURE__ */ React.createElement(
+        Stage4Prioritized,
+        {
+          data: formData,
+          updateField,
+          onComplete: () => {
+            onComplete(formData);
+            onSave();
+          },
+          onBack: () => onComplete(__spreadProps(__spreadValues({}, formData), { draftingStage: 3 }))
+        }
+      );
+    }
+    return null;
+  };
+  const Stage1Identified = ({ data, updateField, onNext, onCancel }) => /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("h2", { style: { fontSize: "1.6rem", fontWeight: 600, marginBottom: "0.5rem" } }, "Stage 1: Identified"), /* @__PURE__ */ React.createElement("p", { style: { color: "var(--muted)", fontSize: "0.95rem" } }, "Quick capture - 2 minutes")), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "1.5rem" } }, /* @__PURE__ */ React.createElement("label", { style: { display: "block", fontWeight: 600, marginBottom: "0.5rem" } }, "Project Title"), /* @__PURE__ */ React.createElement(
+    "input",
+    {
+      type: "text",
+      value: data.title,
+      onChange: (e) => updateField("title", e.target.value),
+      placeholder: "What's this project called?",
+      style: {
+        width: "100%",
+        padding: "0.75rem",
+        border: "1px solid var(--border)",
+        borderRadius: "0.5rem",
+        fontSize: "1rem"
+      }
+    }
+  )), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "1.5rem" } }, /* @__PURE__ */ React.createElement("label", { style: { display: "block", fontWeight: 600, marginBottom: "0.5rem" } }, "Brief Description"), /* @__PURE__ */ React.createElement(
+    "textarea",
+    {
+      value: data.description,
+      onChange: (e) => updateField("description", e.target.value),
+      placeholder: "1-2 sentences about what you're trying to do",
+      rows: 3,
+      style: {
+        width: "100%",
+        padding: "0.75rem",
+        border: "1px solid var(--border)",
+        borderRadius: "0.5rem",
+        fontSize: "1rem",
+        fontFamily: "inherit"
+      }
+    }
+  )), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("label", { style: { display: "block", fontWeight: 600, marginBottom: "0.75rem" } }, "Category"), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "0.75rem" } }, ["health", "purpose", "finances", "relationships", "home", "community", "leisure", "growth"].map((cat) => /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      key: cat,
+      onClick: () => updateField("category", cat),
+      className: "pill-btn ghost",
+      style: {
+        background: data.category === cat ? "var(--gold)" : "transparent",
+        color: data.category === cat ? "#fff" : "var(--ink)",
+        textTransform: "capitalize"
+      }
+    },
+    cat
+  )))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "0.75rem" } }, /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: onCancel }, "Save & Exit"), /* @__PURE__ */ React.createElement(
+    "button",
+    {
+      className: "pill-btn",
+      style: { flex: 1 },
+      onClick: onNext,
+      disabled: !data.title || !data.category
+    },
+    "Continue to Stage 2"
+  )));
+  const Stage2Scoped = ({ data, updateField, onNext, onBack }) => {
+    const [objectives, setObjectives] = React.useState(data.objectives || [""]);
+    const [archetype, setArchetype] = React.useState(data.archetype || "");
+    const [tier, setTier] = React.useState(data.tier || "");
+    const addObjective = () => setObjectives([...objectives, ""]);
+    const updateObjective = (idx, value) => {
+      const newObjs = [...objectives];
+      newObjs[idx] = value;
+      setObjectives(newObjs);
+      updateField("objectives", newObjs.filter((o) => o.trim()));
+    };
+    const archetypes = [
+      { name: "Quick Task", desc: "One-shot, minimal planning" },
+      { name: "Discovery Mission", desc: "Research, reduce uncertainty" },
+      { name: "Critical Response", desc: "Urgent, time-sensitive" },
+      { name: "Maintenance Loop", desc: "Recurring, perpetual" },
+      { name: "System Build", desc: "Infrastructure, automation" },
+      { name: "Initiative", desc: "Move life forward, transformative" }
+    ];
+    const tiers = [
+      { name: "gold", label: "Gold", desc: "Major life-changing initiatives" },
+      { name: "silver", label: "Silver", desc: "System builds and capacity work" },
+      { name: "bronze", label: "Bronze", desc: "Quick tasks and maintenance" }
+    ];
+    return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("h2", { style: { fontSize: "1.6rem", fontWeight: 600, marginBottom: "0.5rem" } }, "Stage 2: Scoped"), /* @__PURE__ */ React.createElement("p", { style: { color: "var(--muted)", fontSize: "0.95rem" } }, "Define what success looks like - 10 minutes")), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "1.5rem" } }, /* @__PURE__ */ React.createElement("label", { style: { display: "block", fontWeight: 600, marginBottom: "0.75rem" } }, "Objectives (1-3)"), /* @__PURE__ */ React.createElement("p", { style: { fontSize: "0.9rem", color: "var(--muted)", marginBottom: "0.75rem" } }, "What specific outcomes would mean this project succeeded?"), objectives.map((obj, idx) => /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        key: idx,
+        type: "text",
+        value: obj,
+        onChange: (e) => updateObjective(idx, e.target.value),
+        placeholder: `Objective ${idx + 1}`,
+        style: {
+          width: "100%",
+          padding: "0.75rem",
+          border: "1px solid var(--border)",
+          borderRadius: "0.5rem",
+          fontSize: "1rem",
+          marginBottom: "0.5rem"
+        }
+      }
+    )), objectives.length < 3 && /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: addObjective }, "+ Add Objective")), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "1.5rem" } }, /* @__PURE__ */ React.createElement("label", { style: { display: "block", fontWeight: 600, marginBottom: "0.5rem" } }, "Deadline (Optional)"), /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        type: "text",
+        value: data.deadline || "",
+        onChange: (e) => updateField("deadline", e.target.value),
+        placeholder: "e.g., 'before holidays' or 'by June'",
+        style: {
+          width: "100%",
+          padding: "0.75rem",
+          border: "1px solid var(--border)",
+          borderRadius: "0.5rem",
+          fontSize: "1rem"
+        }
+      }
+    )), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("label", { style: { display: "block", fontWeight: 600, marginBottom: "0.75rem" } }, "Project Archetype"), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gap: "0.75rem" } }, archetypes.map((a) => /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        key: a.name,
+        onClick: () => {
+          setArchetype(a.name);
+          updateField("archetype", a.name);
+        },
+        style: {
+          padding: "1rem",
+          border: `2px solid ${archetype === a.name ? "var(--gold)" : "var(--border)"}`,
+          borderRadius: "0.5rem",
+          background: archetype === a.name ? "rgba(216,166,80,0.1)" : "#fff",
+          cursor: "pointer",
+          textAlign: "left"
+        }
+      },
+      /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 600, marginBottom: "0.25rem" } }, a.name),
+      /* @__PURE__ */ React.createElement("div", { style: { fontSize: "0.9rem", color: "var(--muted)" } }, a.desc)
+    )))), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("label", { style: { display: "block", fontWeight: 600, marginBottom: "0.75rem" } }, "Project Tier"), /* @__PURE__ */ React.createElement("p", { style: { fontSize: "0.9rem", color: "var(--muted)", marginBottom: "0.75rem" } }, "Select the priority tier for this project"), /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.75rem" } }, tiers.map((t) => /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        key: t.name,
+        onClick: () => {
+          setTier(t.name);
+          updateField("tier", t.name);
+        },
+        style: {
+          padding: "1rem",
+          border: `2px solid ${tier === t.name ? "var(--gold)" : "var(--border)"}`,
+          borderRadius: "0.5rem",
+          background: tier === t.name ? "rgba(216,166,80,0.1)" : "#fff",
+          cursor: "pointer",
+          textAlign: "center"
+        }
+      },
+      /* @__PURE__ */ React.createElement("div", { style: { fontWeight: 600, marginBottom: "0.25rem", textTransform: "capitalize" } }, t.label),
+      /* @__PURE__ */ React.createElement("div", { style: { fontSize: "0.85rem", color: "var(--muted)" } }, t.desc)
+    )))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "0.75rem" } }, /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: onBack }, "Back"), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        className: "pill-btn",
+        style: { flex: 1 },
+        onClick: () => {
+          updateField("objectives", objectives.filter((o) => o.trim()));
+          updateField("tier", tier);
+          onNext();
+        },
+        disabled: !objectives.some((o) => o.trim()) || !archetype || !tier
+      },
+      "Continue to Stage 3"
+    )));
+  };
+  const Stage3Drafted = ({ data, updateField, onNext, onBack }) => {
+    const [tasks, setTasks] = React.useState(data.tasks || []);
+    const [newTask, setNewTask] = React.useState("");
+    React.useEffect(() => {
+      if (tasks.length === 0 && data.objectives) {
+        const generatedTasks = [
+          { id: `t1-${Date.now()}`, title: "Review project scope and objectives", order: 1, codadType: "discover" },
+          { id: `t2-${Date.now()}`, title: "Break down first objective into subtasks", order: 2, codadType: "design" },
+          { id: `t3-${Date.now()}`, title: "Identify required resources", order: 3, codadType: "discover" },
+          { id: `t4-${Date.now()}`, title: "Set up project workspace", order: 4, codadType: "operate" },
+          { id: `t5-${Date.now()}`, title: "Begin first task", order: 5, codadType: "operate" }
+        ];
+        setTasks(generatedTasks);
+      }
+    }, []);
+    const addTask = () => {
+      if (newTask.trim()) {
+        const task = {
+          id: `t-${Date.now()}`,
+          title: newTask,
+          order: tasks.length + 1,
+          codadType: "operate"
+        };
+        setTasks([...tasks, task]);
+        setNewTask("");
+      }
+    };
+    const removeTask = (id) => {
+      setTasks(tasks.filter((t) => t.id !== id));
+    };
+    return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("h2", { style: { fontSize: "1.6rem", fontWeight: 600, marginBottom: "0.5rem" } }, "Stage 3: Drafted"), /* @__PURE__ */ React.createElement("p", { style: { color: "var(--muted)", fontSize: "0.95rem" } }, "Create actionable task list - 30 minutes")), /* @__PURE__ */ React.createElement("div", { style: { background: "rgba(216,166,80,0.1)", border: "1px solid rgba(216,166,80,0.3)", borderRadius: "0.5rem", padding: "1rem", marginBottom: "1.5rem" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" } }, /* @__PURE__ */ React.createElement("span", null, "\u{1F916}"), /* @__PURE__ */ React.createElement("strong", null, "Marvin generated ", tasks.length, " initial tasks")), /* @__PURE__ */ React.createElement("p", { style: { fontSize: "0.9rem", color: "var(--muted)" } }, "Review, edit, add, or remove tasks as needed.")), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "1.5rem" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "grid", gap: "0.75rem", marginBottom: "1rem" } }, tasks.map((task, idx) => /* @__PURE__ */ React.createElement("div", { key: task.id, style: { display: "flex", gap: "0.75rem", alignItems: "start", padding: "0.75rem", background: "#FAFAF8", borderRadius: "0.5rem", border: "1px solid var(--border)" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "0.9rem", color: "var(--muted)", fontWeight: 600 } }, idx + 1, "."), /* @__PURE__ */ React.createElement("div", { style: { flex: 1 } }, task.title), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        onClick: () => removeTask(task.id),
+        style: { padding: "0.25rem 0.5rem", fontSize: "0.8rem", border: "1px solid var(--border)", borderRadius: "0.25rem", background: "transparent", cursor: "pointer" }
+      },
+      "Remove"
+    )))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "0.5rem" } }, /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        type: "text",
+        value: newTask,
+        onChange: (e) => setNewTask(e.target.value),
+        onKeyPress: (e) => e.key === "Enter" && addTask(),
+        placeholder: "Add a new task...",
+        style: {
+          flex: 1,
+          padding: "0.75rem",
+          border: "1px solid var(--border)",
+          borderRadius: "0.5rem",
+          fontSize: "1rem"
+        }
+      }
+    ), /* @__PURE__ */ React.createElement("button", { className: "pill-btn", onClick: addTask }, "Add"))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "0.75rem" } }, /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: onBack }, "Back"), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        className: "pill-btn",
+        style: { flex: 1 },
+        onClick: () => {
+          updateField("tasks", tasks);
+          onNext();
+        },
+        disabled: tasks.length === 0
+      },
+      "Continue to Stage 4"
+    )));
+  };
+  const Stage4Prioritized = ({ data, onComplete, onBack }) => {
+    var _a, _b, _c;
+    return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("h2", { style: { fontSize: "1.6rem", fontWeight: 600, marginBottom: "0.5rem" } }, "Stage 4: Prioritized"), /* @__PURE__ */ React.createElement("p", { style: { color: "var(--muted)", fontSize: "0.95rem" } }, "Ready to enter Priority Queue - 5 minutes")), /* @__PURE__ */ React.createElement("div", { style: { background: "rgba(139,157,111,0.1)", border: "1px solid rgba(139,157,111,0.3)", borderRadius: "0.75rem", padding: "1.5rem", marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "2rem" } }, "\u2705"), /* @__PURE__ */ React.createElement("h3", { style: { fontSize: "1.2rem", fontWeight: 600 } }, "Project Complete!")), /* @__PURE__ */ React.createElement("p", { style: { fontSize: "0.95rem", marginBottom: "1rem" } }, /* @__PURE__ */ React.createElement("strong", null, data.title), " is now fully planned with ", ((_a = data.tasks) == null ? void 0 : _a.length) || 0, " tasks."), /* @__PURE__ */ React.createElement("p", { style: { fontSize: "0.9rem", color: "var(--muted)" } }, "This project will move to the Priority Queue and be available in the Sorting Room.")), /* @__PURE__ */ React.createElement("div", { style: { padding: "1rem", background: "#FAFAF8", borderRadius: "0.5rem", marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("h4", { style: { fontWeight: 600, marginBottom: "0.75rem" } }, "Project Summary"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "0.9rem", color: "var(--muted)", lineHeight: 1.8 } }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Category:"), " ", data.category), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Archetype:"), " ", data.archetype), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Objectives:"), " ", ((_b = data.objectives) == null ? void 0 : _b.length) || 0), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Tasks:"), " ", ((_c = data.tasks) == null ? void 0 : _c.length) || 0), data.deadline && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Deadline:"), " ", data.deadline))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "0.75rem" } }, /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: onBack }, "Back"), /* @__PURE__ */ React.createElement("button", { className: "pill-btn", style: { flex: 1 }, onClick: onComplete }, "Complete & Add to Priority Queue")));
+  };
   const SortingRoom = ({ state }) => {
     const laneConfig = [
       {
