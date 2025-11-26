@@ -404,9 +404,16 @@
       const stored = localStorage.getItem("lifebuild_planning_queue");
       return stored ? JSON.parse(stored) : ((_a = window.LifeBuildData) == null ? void 0 : _a.planningQueue) || [];
     });
+    const [filters, setFilters] = React.useState(() => {
+      const stored = localStorage.getItem("lifebuild_drafting_filters");
+      return stored ? JSON.parse(stored) : { category: "all", tier: "all" };
+    });
     React.useEffect(() => {
       localStorage.setItem("lifebuild_planning_queue", JSON.stringify(planningProjects));
     }, [planningProjects]);
+    React.useEffect(() => {
+      localStorage.setItem("lifebuild_drafting_filters", JSON.stringify(filters));
+    }, [filters]);
     const formatRelativeTime = (timestamp) => {
       const now = Date.now();
       const diffMs = now - timestamp;
@@ -473,8 +480,9 @@
     const abandonProject = (projectId) => {
       setPlanningProjects((prev) => prev.filter((p) => p.id !== projectId));
     };
-    const saveCurrentProject = () => {
-      const updatedProject = __spreadProps(__spreadValues({}, currentProject), { lastModified: Date.now() });
+    const saveCurrentProject = (projectData = null) => {
+      const dataToSave = projectData || currentProject;
+      const updatedProject = __spreadProps(__spreadValues({}, dataToSave), { lastModified: Date.now() });
       setPlanningProjects((prev) => {
         const existing = prev.findIndex((p) => p.id === updatedProject.id);
         if (existing >= 0) {
@@ -488,17 +496,31 @@
       setView("queue");
     };
     const completeStage = (stageData) => {
-      setCurrentProject((prev) => __spreadProps(__spreadValues(__spreadValues({}, prev), stageData), {
+      const updatedProject = __spreadProps(__spreadValues(__spreadValues({}, currentProject), stageData), {
         draftingStage: currentStage + 1,
         lastModified: Date.now()
-      }));
+      });
       if (currentStage < 4) {
+        setCurrentProject(updatedProject);
         setCurrentStage(currentStage + 1);
       } else {
-        saveCurrentProject();
+        setPlanningProjects((prev) => prev.filter((p) => p.id !== updatedProject.id));
+        setCurrentProject(null);
+        setView("queue");
       }
     };
-    const sortedProjects = [...planningProjects].sort((a, b) => b.lastModified - a.lastModified);
+    const filteredProjects = React.useMemo(() => {
+      return planningProjects.filter((project) => {
+        if (filters.category !== "all" && project.category !== filters.category) {
+          return false;
+        }
+        if (filters.tier !== "all" && project.tier !== filters.tier) {
+          return false;
+        }
+        return true;
+      });
+    }, [planningProjects, filters]);
+    const sortedProjects = [...filteredProjects].sort((a, b) => b.lastModified - a.lastModified);
     const staleCount = sortedProjects.filter((p) => isStale(p.lastModified)).length;
     if (view === "create" || view === "resume") {
       return /* @__PURE__ */ React.createElement("div", { className: "card" }, /* @__PURE__ */ React.createElement(
@@ -510,17 +532,94 @@
           onSave: saveCurrentProject,
           onCancel: () => {
             saveCurrentProject();
-          }
+          },
+          onStageChange: setCurrentStage
         }
       ));
     }
     const projectsByStage = {
-      1: planningProjects.filter((p) => p.draftingStage === 1),
-      2: planningProjects.filter((p) => p.draftingStage === 2),
-      3: planningProjects.filter((p) => p.draftingStage === 3),
-      4: planningProjects.filter((p) => p.draftingStage === 4)
+      1: filteredProjects.filter((p) => p.draftingStage === 1),
+      2: filteredProjects.filter((p) => p.draftingStage === 2),
+      3: filteredProjects.filter((p) => p.draftingStage === 3),
+      4: filteredProjects.filter((p) => p.draftingStage === 4)
     };
-    return /* @__PURE__ */ React.createElement("div", { className: "card", style: { padding: "1.5rem" } }, /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "1.5rem" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" } }, /* @__PURE__ */ React.createElement("h2", { style: { fontSize: "1.4rem", fontWeight: 600 } }, "Planning Queue"), /* @__PURE__ */ React.createElement("span", { style: { fontSize: "0.95rem", color: "var(--muted)" } }, planningProjects.length, " project", planningProjects.length !== 1 ? "s" : "")), staleCount > 0 && /* @__PURE__ */ React.createElement("div", { style: {
+    const categories2 = [
+      { id: "all", label: "All" },
+      { id: "health", label: "Health" },
+      { id: "purpose", label: "Purpose" },
+      { id: "finances", label: "Finances" },
+      { id: "relationships", label: "Relationships" },
+      { id: "home", label: "Home" },
+      { id: "community", label: "Community" },
+      { id: "leisure", label: "Leisure" },
+      { id: "growth", label: "Growth" }
+    ];
+    const tiers = [
+      { id: "all", label: "All Tiers" },
+      { id: "gold", label: "Gold" },
+      { id: "silver", label: "Silver" },
+      { id: "bronze", label: "Bronze" }
+    ];
+    const hasActiveFilters = filters.category !== "all" || filters.tier !== "all";
+    return /* @__PURE__ */ React.createElement("div", { className: "card", style: { padding: "1.5rem" } }, /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "1.5rem" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" } }, /* @__PURE__ */ React.createElement("h2", { style: { fontSize: "1.4rem", fontWeight: 600 } }, "Planning Queue"), /* @__PURE__ */ React.createElement("span", { style: { fontSize: "0.95rem", color: "var(--muted)" } }, filteredProjects.length === planningProjects.length ? `${planningProjects.length} project${planningProjects.length !== 1 ? "s" : ""}` : `Showing ${filteredProjects.length} of ${planningProjects.length} projects`)), /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "1rem" } }, /* @__PURE__ */ React.createElement("div", { style: {
+      display: "flex",
+      flexWrap: "wrap",
+      gap: "0.5rem",
+      marginBottom: "0.75rem",
+      alignItems: "center"
+    } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "0.85rem", color: "var(--muted)", marginRight: "0.25rem" } }, "Category:"), categories2.map((cat) => /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        key: cat.id,
+        onClick: () => setFilters((prev) => __spreadProps(__spreadValues({}, prev), { category: cat.id })),
+        style: {
+          padding: "0.4rem 0.75rem",
+          fontSize: "0.8rem",
+          border: `1px solid ${filters.category === cat.id ? getCategoryTextColor(cat.id) : "var(--border)"}`,
+          background: filters.category === cat.id ? cat.id === "all" ? "var(--ink)" : getCategoryColor(cat.id) : "transparent",
+          color: filters.category === cat.id ? cat.id === "all" ? "#fff" : getCategoryTextColor(cat.id) : "var(--ink)",
+          borderRadius: "1rem",
+          cursor: "pointer",
+          fontWeight: filters.category === cat.id ? 600 : 400,
+          transition: "all 0.2s ease"
+        }
+      },
+      cat.label
+    ))), /* @__PURE__ */ React.createElement("div", { style: {
+      display: "flex",
+      gap: "0.5rem",
+      alignItems: "center"
+    } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "0.85rem", color: "var(--muted)", marginRight: "0.25rem" } }, "Tier:"), /* @__PURE__ */ React.createElement(
+      "select",
+      {
+        value: filters.tier,
+        onChange: (e) => setFilters((prev) => __spreadProps(__spreadValues({}, prev), { tier: e.target.value })),
+        style: {
+          padding: "0.4rem 0.75rem",
+          fontSize: "0.8rem",
+          border: "1px solid var(--border)",
+          borderRadius: "0.5rem",
+          background: "#fff",
+          cursor: "pointer"
+        }
+      },
+      tiers.map((tier) => /* @__PURE__ */ React.createElement("option", { key: tier.id, value: tier.id }, tier.label))
+    ), hasActiveFilters && /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        onClick: () => setFilters({ category: "all", tier: "all" }),
+        style: {
+          padding: "0.4rem 0.75rem",
+          fontSize: "0.8rem",
+          border: "1px solid var(--border)",
+          background: "transparent",
+          color: "var(--muted)",
+          borderRadius: "0.5rem",
+          cursor: "pointer"
+        }
+      },
+      "Clear Filters"
+    ))), staleCount > 0 && /* @__PURE__ */ React.createElement("div", { style: {
       background: "rgba(255,154,86,0.1)",
       border: "1px solid rgba(255,154,86,0.3)",
       borderRadius: "0.5rem",
@@ -691,13 +790,25 @@
       "Abandon"
     ))
   );
-  const ProjectCreationFlow = ({ project, stage, onComplete, onSave, onCancel }) => {
+  const ProjectCreationFlow = ({ project, stage, onComplete, onSave, onCancel, onStageChange }) => {
     const [formData, setFormData] = React.useState(project);
+    React.useEffect(() => {
+      setFormData(project);
+    }, [project.id]);
     const updateField = (field, value) => {
       setFormData((prev) => __spreadProps(__spreadValues({}, prev), { [field]: value }));
     };
     const handleNext = () => {
       onComplete(formData);
+    };
+    const handleBack = () => {
+      if (stage > 1) {
+        onStageChange(stage - 1);
+      }
+    };
+    const handleSaveAndExit = (additionalData = {}) => {
+      const dataToSave = __spreadProps(__spreadValues(__spreadValues({}, formData), additionalData), { draftingStage: stage });
+      onSave(dataToSave);
     };
     if (stage === 1) {
       return /* @__PURE__ */ React.createElement(
@@ -706,7 +817,7 @@
           data: formData,
           updateField,
           onNext: handleNext,
-          onCancel
+          onCancel: handleSaveAndExit
         }
       );
     }
@@ -717,7 +828,8 @@
           data: formData,
           updateField,
           onNext: handleNext,
-          onBack: () => onComplete(__spreadProps(__spreadValues({}, formData), { draftingStage: 1 }))
+          onBack: handleBack,
+          onSave: handleSaveAndExit
         }
       );
     }
@@ -728,7 +840,8 @@
           data: formData,
           updateField,
           onNext: handleNext,
-          onBack: () => onComplete(__spreadProps(__spreadValues({}, formData), { draftingStage: 2 }))
+          onBack: handleBack,
+          onSave: handleSaveAndExit
         }
       );
     }
@@ -740,9 +853,9 @@
           updateField,
           onComplete: () => {
             onComplete(formData);
-            onSave();
           },
-          onBack: () => onComplete(__spreadProps(__spreadValues({}, formData), { draftingStage: 3 }))
+          onBack: handleBack,
+          onSave: handleSaveAndExit
         }
       );
     }
@@ -798,11 +911,11 @@
       className: "pill-btn",
       style: { flex: 1 },
       onClick: onNext,
-      disabled: !data.title || !data.category
+      disabled: !data.title || !data.category || !data.description
     },
     "Continue to Stage 2"
   )));
-  const Stage2Scoped = ({ data, updateField, onNext, onBack }) => {
+  const Stage2Scoped = ({ data, updateField, onNext, onBack, onSave }) => {
     const [objectives, setObjectives] = React.useState(data.objectives || [""]);
     const [archetype, setArchetype] = React.useState(data.archetype || "");
     const [tier, setTier] = React.useState(data.tier || "");
@@ -899,10 +1012,24 @@
     )))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "0.75rem" } }, /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: onBack }, "Back"), /* @__PURE__ */ React.createElement(
       "button",
       {
+        className: "pill-btn ghost",
+        onClick: () => {
+          onSave({
+            objectives: objectives.filter((o) => o.trim()),
+            archetype,
+            tier
+          });
+        }
+      },
+      "Save & Exit"
+    ), /* @__PURE__ */ React.createElement(
+      "button",
+      {
         className: "pill-btn",
         style: { flex: 1 },
         onClick: () => {
           updateField("objectives", objectives.filter((o) => o.trim()));
+          updateField("archetype", archetype);
           updateField("tier", tier);
           onNext();
         },
@@ -911,7 +1038,7 @@
       "Continue to Stage 3"
     )));
   };
-  const Stage3Drafted = ({ data, updateField, onNext, onBack }) => {
+  const Stage3Drafted = ({ data, updateField, onNext, onBack, onSave }) => {
     const [tasks, setTasks] = React.useState(data.tasks || []);
     const [newTask, setNewTask] = React.useState("");
     React.useEffect(() => {
@@ -967,6 +1094,15 @@
     ), /* @__PURE__ */ React.createElement("button", { className: "pill-btn", onClick: addTask }, "Add"))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "0.75rem" } }, /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: onBack }, "Back"), /* @__PURE__ */ React.createElement(
       "button",
       {
+        className: "pill-btn ghost",
+        onClick: () => {
+          onSave({ tasks });
+        }
+      },
+      "Save & Exit"
+    ), /* @__PURE__ */ React.createElement(
+      "button",
+      {
         className: "pill-btn",
         style: { flex: 1 },
         onClick: () => {
@@ -978,9 +1114,9 @@
       "Continue to Stage 4"
     )));
   };
-  const Stage4Prioritized = ({ data, onComplete, onBack }) => {
+  const Stage4Prioritized = ({ data, onComplete, onBack, onSave }) => {
     var _a, _b, _c;
-    return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("h2", { style: { fontSize: "1.6rem", fontWeight: 600, marginBottom: "0.5rem" } }, "Stage 4: Prioritized"), /* @__PURE__ */ React.createElement("p", { style: { color: "var(--muted)", fontSize: "0.95rem" } }, "Ready to enter Priority Queue - 5 minutes")), /* @__PURE__ */ React.createElement("div", { style: { background: "rgba(139,157,111,0.1)", border: "1px solid rgba(139,157,111,0.3)", borderRadius: "0.75rem", padding: "1.5rem", marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "2rem" } }, "\u2705"), /* @__PURE__ */ React.createElement("h3", { style: { fontSize: "1.2rem", fontWeight: 600 } }, "Project Complete!")), /* @__PURE__ */ React.createElement("p", { style: { fontSize: "0.95rem", marginBottom: "1rem" } }, /* @__PURE__ */ React.createElement("strong", null, data.title), " is now fully planned with ", ((_a = data.tasks) == null ? void 0 : _a.length) || 0, " tasks."), /* @__PURE__ */ React.createElement("p", { style: { fontSize: "0.9rem", color: "var(--muted)" } }, "This project will move to the Priority Queue and be available in the Sorting Room.")), /* @__PURE__ */ React.createElement("div", { style: { padding: "1rem", background: "#FAFAF8", borderRadius: "0.5rem", marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("h4", { style: { fontWeight: 600, marginBottom: "0.75rem" } }, "Project Summary"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "0.9rem", color: "var(--muted)", lineHeight: 1.8 } }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Category:"), " ", data.category), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Archetype:"), " ", data.archetype), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Objectives:"), " ", ((_b = data.objectives) == null ? void 0 : _b.length) || 0), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Tasks:"), " ", ((_c = data.tasks) == null ? void 0 : _c.length) || 0), data.deadline && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Deadline:"), " ", data.deadline))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "0.75rem" } }, /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: onBack }, "Back"), /* @__PURE__ */ React.createElement("button", { className: "pill-btn", style: { flex: 1 }, onClick: onComplete }, "Complete & Add to Priority Queue")));
+    return /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { style: { marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("h2", { style: { fontSize: "1.6rem", fontWeight: 600, marginBottom: "0.5rem" } }, "Stage 4: Prioritized"), /* @__PURE__ */ React.createElement("p", { style: { color: "var(--muted)", fontSize: "0.95rem" } }, "Ready to enter Priority Queue - 5 minutes")), /* @__PURE__ */ React.createElement("div", { style: { background: "rgba(139,157,111,0.1)", border: "1px solid rgba(139,157,111,0.3)", borderRadius: "0.75rem", padding: "1.5rem", marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem" } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "2rem" } }, "\u2705"), /* @__PURE__ */ React.createElement("h3", { style: { fontSize: "1.2rem", fontWeight: 600 } }, "Project Complete!")), /* @__PURE__ */ React.createElement("p", { style: { fontSize: "0.95rem", marginBottom: "1rem" } }, /* @__PURE__ */ React.createElement("strong", null, data.title), " is now fully planned with ", ((_a = data.tasks) == null ? void 0 : _a.length) || 0, " tasks."), /* @__PURE__ */ React.createElement("p", { style: { fontSize: "0.9rem", color: "var(--muted)" } }, "This project will move to the Priority Queue and be available in the Sorting Room.")), /* @__PURE__ */ React.createElement("div", { style: { padding: "1rem", background: "#FAFAF8", borderRadius: "0.5rem", marginBottom: "2rem" } }, /* @__PURE__ */ React.createElement("h4", { style: { fontWeight: 600, marginBottom: "0.75rem" } }, "Project Summary"), /* @__PURE__ */ React.createElement("div", { style: { fontSize: "0.9rem", color: "var(--muted)", lineHeight: 1.8 } }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Category:"), " ", data.category), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Archetype:"), " ", data.archetype), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Objectives:"), " ", ((_b = data.objectives) == null ? void 0 : _b.length) || 0), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Tasks:"), " ", ((_c = data.tasks) == null ? void 0 : _c.length) || 0), data.deadline && /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("strong", null, "Deadline:"), " ", data.deadline))), /* @__PURE__ */ React.createElement("div", { style: { display: "flex", gap: "0.75rem" } }, /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: onBack }, "Back"), /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: onSave }, "Save & Exit"), /* @__PURE__ */ React.createElement("button", { className: "pill-btn", style: { flex: 1 }, onClick: onComplete }, "Complete & Add to Priority Queue")));
   };
   const SortingRoom = ({ state }) => {
     const laneConfig = [
