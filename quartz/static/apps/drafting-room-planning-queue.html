@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeBuild - Drafting Room: Planning Queue</title>
+  <style>
+    /* ========================================
+       RESET & BASE STYLES
+       ======================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      background-color: #F5F1E8;
+      color: #2C2C2C;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ========================================
+       HEADER
+       ======================================== */
+    .header {
+      background: white;
+      border-bottom: 2px solid #E0DDD5;
+      padding: 20px 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #2C2C2C;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      font-size: 16px;
+      color: #666;
+    }
+
+    /* ========================================
+       MAIN LAYOUT
+       ======================================== */
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px;
+    }
+
+    /* ========================================
+       PLANNING QUEUE
+       ======================================== */
+    .planning-queue-section {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      margin-bottom: 40px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #E0DDD5;
+    }
+
+    .section-header h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #2C2C2C;
+    }
+
+    .queue-count-badge {
+      background: #D4A574;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    /* ========================================
+       PROJECT CARDS
+       ======================================== */
+    .project-cards-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .project-card {
+      background: #FAFAF8;
+      border: 2px solid #E0DDD5;
+      border-radius: 8px;
+      padding: 20px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .project-card:hover {
+      border-color: #D4A574;
+      box-shadow: 0 4px 12px rgba(212, 165, 116, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .project-card.stale {
+      border-left: 4px solid #FF9A56;
+    }
+
+    .project-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+
+    .project-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2C2C2C;
+      margin-bottom: 4px;
+    }
+
+    .project-category {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .category-health { background: #E3F2FD; color: #1976D2; }
+    .category-purpose { background: #F3E5F5; color: #7B1FA2; }
+    .category-finances { background: #FFF3E0; color: #E65100; }
+    .category-relationships { background: #FCE4EC; color: #C2185B; }
+    .category-home { background: #E8F5E9; color: #388E3C; }
+    .category-community { background: #FFF9C4; color: #F57F17; }
+    .category-leisure { background: #E0F2F1; color: #00796B; }
+    .category-growth { background: #EDE7F6; color: #512DA8; }
+
+    .stage-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .stage-badge {
+      background: #D4A574;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .project-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 12px;
+    }
+
+    .last-modified {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stale-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: #FF9A56;
+      font-weight: 600;
+      font-size: 13px;
+      margin-left: 8px;
+    }
+
+    .project-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #E0DDD5;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: #D4A574;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #C49564;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #666;
+      border: 1px solid #E0DDD5;
+    }
+
+    .btn-secondary:hover {
+      background: #F5F5F5;
+      border-color: #999;
+    }
+
+    .btn-danger {
+      background: transparent;
+      color: #D32F2F;
+      border: 1px solid #FFCDD2;
+    }
+
+    .btn-danger:hover {
+      background: #FFEBEE;
+      border-color: #D32F2F;
+    }
+
+    /* ========================================
+       EMPTY STATE
+       ======================================== */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+    }
+
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .empty-state h3 {
+      font-size: 20px;
+      color: #666;
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      font-size: 16px;
+      color: #888;
+      margin-bottom: 24px;
+    }
+
+    /* ========================================
+       MARVIN DIALOGUE
+       ======================================== */
+    .marvin-dialogue {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-top: 2px solid #E0DDD5;
+      padding: 24px 40px;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .marvin-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .marvin-avatar {
+      width: 40px;
+      height: 40px;
+      background: #D4A574;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 18px;
+    }
+
+    .marvin-name {
+      font-weight: 600;
+      color: #2C2C2C;
+    }
+
+    .marvin-message {
+      font-size: 16px;
+      color: #444;
+      line-height: 1.6;
+      margin-left: 52px;
+    }
+
+    .marvin-options {
+      display: flex;
+      gap: 12px;
+      margin-left: 52px;
+      margin-top: 16px;
+    }
+
+    /* ========================================
+       MODAL
+       ======================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+
+    .modal h3 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      color: #2C2C2C;
+    }
+
+    .modal p {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* ========================================
+       UNDO BANNER
+       ======================================== */
+    .undo-banner {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #2C2C2C;
+      color: white;
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 999;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(400px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .undo-banner button {
+      background: #D4A574;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .undo-banner button:hover {
+      background: #C49564;
+    }
+
+    /* ========================================
+       RESPONSIVE
+       ======================================== */
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 20px;
+      }
+
+      .header {
+        padding: 16px 20px;
+      }
+
+      .planning-queue-section {
+        padding: 20px;
+      }
+
+      .marvin-dialogue {
+        padding: 16px 20px;
+      }
+
+      .marvin-options {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Drafting Room</h1>
+    <p>Planning Queue - Projects in Development</p>
+  </div>
+
+  <div class="main-container">
+    <div class="planning-queue-section">
+      <div class="section-header">
+        <h2>Planning Queue</h2>
+        <span class="queue-count-badge" id="queue-count">0</span>
+      </div>
+      <div id="project-cards-container"></div>
+    </div>
+  </div>
+
+  <div class="marvin-dialogue">
+    <div class="marvin-header">
+      <div class="marvin-avatar">M</div>
+      <div class="marvin-name">Marvin</div>
+    </div>
+    <div class="marvin-message" id="marvin-message">
+      Welcome to the Drafting Room! You have projects in progress. What would you like to do?
+    </div>
+    <div class="marvin-options" id="marvin-options">
+      <button class="btn btn-primary" onclick="startNewProject()">Start New Project</button>
+      <button class="btn btn-secondary" onclick="showCleanupHelp()">Clean Up Queue</button>
+    </div>
+  </div>
+
+  <!-- Modal for confirmations -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h3 id="modal-title">Confirm Action</h3>
+      <p id="modal-message">Are you sure?</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-danger" id="modal-confirm-btn" onclick="confirmModalAction()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Undo banner -->
+  <div id="undo-banner" class="undo-banner hidden">
+    <span id="undo-message"></span>
+    <button onclick="undoLastAction()">Undo</button>
+  </div>
+
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+
+    // Category display names and colors
+    const CATEGORIES = {
+      health: 'Health',
+      purpose: 'Purpose',
+      finances: 'Finances',
+      relationships: 'Relationships',
+      home: 'Home',
+      community: 'Community',
+      leisure: 'Leisure',
+      growth: 'Personal Growth'
+    };
+
+    // Stage descriptions
+    const STAGES = {
+      1: 'Identified',
+      2: 'Scoped',
+      3: 'Drafted',
+      4: 'Prioritized'
+    };
+
+    // Mock data for planning queue projects
+    const MOCK_PROJECTS = [
+      {
+        id: 'proj-1',
+        title: 'Launch Podcast Series',
+        category: 'purpose',
+        stage: 2,
+        lastModified: new Date(Date.now() - 1000 * 60 * 60 * 3), // 3 hours ago
+        description: 'Start a podcast about sustainable living',
+        objectives: ['Record pilot episode', 'Set up RSS feed'],
+        status: 'planning'
+      },
+      {
+        id: 'proj-2',
+        title: 'Organize Garage Workshop',
+        category: 'home',
+        stage: 1,
+        lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 18), // 18 days ago (stale)
+        description: 'Create organized workspace in garage',
+        status: 'planning'
+      },
+      {
+        id: 'proj-3',
+        title: 'Annual Health Checkup Plan',
+        category: 'health',
+        stage: 3,
+        lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
+        description: 'Schedule all annual health screenings',
+        objectives: ['Book dental cleaning', 'Schedule eye exam', 'Find new PCP'],
+        tasks: [
+          'Research PCPs accepting new patients',
+          'Call to schedule dental appointment',
+          'Book eye exam at vision center',
+          'Review insurance coverage',
+          'Create health tracking spreadsheet'
+        ],
+        status: 'planning'
+      },
+      {
+        id: 'proj-4',
+        title: 'Community Garden Initiative',
+        category: 'community',
+        stage: 2,
+        lastModified: new Date(Date.now() - 1000 * 60 * 60 * 24 * 25), // 25 days ago (stale)
+        description: 'Start community garden in neighborhood',
+        objectives: ['Get 10 neighbors interested', 'Find suitable plot'],
+        status: 'planning'
+      }
+    ];
+
+    // Helper: Format relative time
+    function formatRelativeTime(date) {
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / (1000 * 60));
+      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffMins < 60) return `${diffMins} minutes ago`;
+      if (diffHours < 24) return `${diffHours} hours ago`;
+      if (diffDays < 7) return `${diffDays} days ago`;
+      if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+      return date.toLocaleDateString();
+    }
+
+    // Helper: Check if project is stale (not modified in 14+ days)
+    function isStale(lastModified) {
+      const now = new Date();
+      const diffDays = (now - lastModified) / (1000 * 60 * 60 * 24);
+      return diffDays >= 14;
+    }
+
+    // Main App Component
+    function DraftingRoomApp() {
+      const [projects, setProjects] = useState([]);
+      const [abandonedProject, setAbandonedProject] = useState(null);
+      const [modalConfig, setModalConfig] = useState(null);
+
+      // Load projects from localStorage or use mock data
+      useEffect(() => {
+        const stored = localStorage.getItem('lifebuild_planning_queue');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          // Convert date strings back to Date objects
+          const withDates = parsed.map(p => ({
+            ...p,
+            lastModified: new Date(p.lastModified)
+          }));
+          setProjects(withDates);
+        } else {
+          setProjects(MOCK_PROJECTS);
+          saveProjects(MOCK_PROJECTS);
+        }
+      }, []);
+
+      // Save projects to localStorage
+      const saveProjects = (projectsToSave) => {
+        localStorage.setItem('lifebuild_planning_queue', JSON.stringify(projectsToSave));
+      };
+
+      // Update Marvin's message based on queue state
+      useEffect(() => {
+        updateMarvinMessage();
+      }, [projects]);
+
+      const updateMarvinMessage = () => {
+        const marvinMessage = document.getElementById('marvin-message');
+        const staleProjects = projects.filter(p => isStale(p.lastModified));
+
+        if (projects.length === 0) {
+          marvinMessage.textContent = "Your Planning Queue is empty! Ready to start a new project?";
+        } else if (staleProjects.length > 0) {
+          marvinMessage.textContent = `I notice you have ${staleProjects.length} project${staleProjects.length > 1 ? 's' : ''} that haven't been touched in over 2 weeks. Would you like to review them?`;
+        } else {
+          marvinMessage.textContent = `You have ${projects.length} project${projects.length > 1 ? 's' : ''} in progress. What would you like to work on?`;
+        }
+      };
+
+      // Resume project
+      const handleResumeProject = (project) => {
+        alert(`Resuming "${project.title}" at Stage ${project.stage} - ${STAGES[project.stage]}.\n\nIn the full implementation, this would open the creation flow at the current stage.`);
+      };
+
+      // Abandon project with confirmation
+      const handleAbandonProject = (project) => {
+        setModalConfig({
+          title: 'Abandon Project?',
+          message: `Are you sure you want to abandon "${project.title}"? This project will be removed from your Planning Queue. You can undo this action.`,
+          confirmAction: () => confirmAbandon(project)
+        });
+        document.getElementById('modal-overlay').classList.remove('hidden');
+      };
+
+      const confirmAbandon = (project) => {
+        const updatedProjects = projects.filter(p => p.id !== project.id);
+        setProjects(updatedProjects);
+        saveProjects(updatedProjects);
+        setAbandonedProject(project);
+        closeModal();
+        showUndoBanner(`Abandoned "${project.title}"`);
+      };
+
+      // Undo abandon
+      const undoAbandon = () => {
+        if (abandonedProject) {
+          const updatedProjects = [...projects, abandonedProject];
+          setProjects(updatedProjects);
+          saveProjects(updatedProjects);
+          setAbandonedProject(null);
+          hideUndoBanner();
+        }
+      };
+
+      // Sorted projects (most recent first)
+      const sortedProjects = useMemo(() => {
+        return [...projects].sort((a, b) => b.lastModified - a.lastModified);
+      }, [projects]);
+
+      return (
+        <div>
+          {sortedProjects.length === 0 ? (
+            <div className="empty-state">
+              <div className="empty-state-icon">📋</div>
+              <h3>No Projects in Progress</h3>
+              <p>Your Planning Queue is empty. Start a new project to begin!</p>
+              <button className="btn btn-primary" onClick={() => startNewProject()}>
+                Start New Project
+              </button>
+            </div>
+          ) : (
+            <div className="project-cards-grid">
+              {sortedProjects.map(project => (
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  onResume={handleResumeProject}
+                  onAbandon={handleAbandonProject}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Project Card Component
+    function ProjectCard({ project, onResume, onAbandon }) {
+      const stale = isStale(project.lastModified);
+
+      return (
+        <div className={`project-card ${stale ? 'stale' : ''}`}>
+          <div className="project-card-header">
+            <div>
+              <div className={`project-category category-${project.category}`}>
+                {CATEGORIES[project.category]}
+              </div>
+              <h3 className="project-title">{project.title}</h3>
+            </div>
+          </div>
+
+          <div className="stage-indicator">
+            <span className="stage-badge">Stage {project.stage} of 4</span>
+            <span>{STAGES[project.stage]}</span>
+          </div>
+
+          <div className="project-meta">
+            <div className="last-modified">
+              <span>🕒</span>
+              <span>{formatRelativeTime(project.lastModified)}</span>
+              {stale && (
+                <span className="stale-indicator">⚠️ Needs attention</span>
+              )}
+            </div>
+          </div>
+
+          {project.description && (
+            <p style={{ fontSize: '14px', color: '#666', marginBottom: '8px' }}>
+              {project.description}
+            </p>
+          )}
+
+          {project.objectives && project.objectives.length > 0 && (
+            <div style={{ fontSize: '13px', color: '#888', marginTop: '8px' }}>
+              <strong>Objectives:</strong> {project.objectives.length} defined
+            </div>
+          )}
+
+          {project.tasks && project.tasks.length > 0 && (
+            <div style={{ fontSize: '13px', color: '#888', marginTop: '4px' }}>
+              <strong>Tasks:</strong> {project.tasks.length} created
+            </div>
+          )}
+
+          <div className="project-actions">
+            <button className="btn btn-primary" onClick={() => onResume(project)}>
+              Resume
+            </button>
+            <button className="btn btn-danger" onClick={() => onAbandon(project)}>
+              Abandon
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // Modal functions (vanilla JS for simplicity)
+    function closeModal() {
+      document.getElementById('modal-overlay').classList.add('hidden');
+    }
+
+    function confirmModalAction() {
+      // This gets overridden by the modal config
+    }
+
+    window.confirmModalAction = function() {
+      const event = new CustomEvent('modal-confirm');
+      window.dispatchEvent(event);
+    };
+
+    window.addEventListener('modal-confirm', () => {
+      closeModal();
+    });
+
+    // Undo banner functions
+    function showUndoBanner(message) {
+      const banner = document.getElementById('undo-banner');
+      document.getElementById('undo-message').textContent = message;
+      banner.classList.remove('hidden');
+      setTimeout(() => {
+        banner.classList.add('hidden');
+      }, 5000);
+    }
+
+    function hideUndoBanner() {
+      document.getElementById('undo-banner').classList.add('hidden');
+    }
+
+    window.undoLastAction = function() {
+      const event = new CustomEvent('undo-action');
+      window.dispatchEvent(event);
+    };
+
+    // Global action functions
+    window.startNewProject = function() {
+      alert('Starting new project!\n\nIn the full implementation, this would begin Stage 1 (Identified) of the project creation flow.');
+    };
+
+    window.showCleanupHelp = function() {
+      alert('Queue cleanup mode!\n\nMarvin will help you review stale projects and decide which to resume, abandon, or keep for later.');
+    };
+
+    window.closeModal = closeModal;
+
+    // Render the app
+    const root = ReactDOM.createRoot(document.getElementById('project-cards-container').parentElement);
+
+    function AppWrapper() {
+      const [key, setKey] = useState(0);
+
+      useEffect(() => {
+        // Listen for undo events
+        const handleUndo = () => {
+          setKey(k => k + 1); // Force re-render
+        };
+
+        const handleModalConfirm = () => {
+          setKey(k => k + 1);
+        };
+
+        window.addEventListener('undo-action', handleUndo);
+        window.addEventListener('modal-confirm', handleModalConfirm);
+
+        return () => {
+          window.removeEventListener('undo-action', handleUndo);
+          window.removeEventListener('modal-confirm', handleModalConfirm);
+        };
+      }, []);
+
+      // Update queue count
+      useEffect(() => {
+        const stored = localStorage.getItem('lifebuild_planning_queue');
+        const projects = stored ? JSON.parse(stored) : MOCK_PROJECTS;
+        document.getElementById('queue-count').textContent = projects.length;
+      }, [key]);
+
+      return <DraftingRoomApp key={key} />;
+    }
+
+    root.render(<AppWrapper />);
+  </script>
+</body>
+</html>

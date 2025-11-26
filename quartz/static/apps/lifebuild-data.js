@@ -314,6 +314,94 @@
     { projectId: 'automateMonthlyBudgetReview', agentId: 'agentAtlas', status: 'Monitoring' },
   ];
 
+  // Planning Queue projects (Stages 1-3)
+  const planningQueue = [
+    {
+      id: 'launchPodcast',
+      title: 'Launch Podcast Series',
+      category: 'purpose',
+      tier: 'gold',
+      draftingStage: 2, // Stage 2: Scoped
+      lastModified: Date.now() - (1000 * 60 * 60 * 3), // 3 hours ago
+      description: 'Start a podcast about sustainable living',
+      objectives: ['Record pilot episode', 'Set up RSS feed', 'Build 3-month content calendar'],
+      archetype: 'Initiative',
+      deadline: 'Q1 2026',
+      status: 'planning'
+    },
+    {
+      id: 'organizeGarage',
+      title: 'Organize Garage Workshop',
+      category: 'home',
+      tier: 'bronze',
+      draftingStage: 1, // Stage 1: Identified
+      lastModified: Date.now() - (1000 * 60 * 60 * 24 * 18), // 18 days ago (stale)
+      description: 'Create organized workspace in garage',
+      status: 'planning'
+    },
+    {
+      id: 'healthCheckup',
+      title: 'Annual Health Checkup Plan',
+      category: 'health',
+      tier: 'silver',
+      draftingStage: 3, // Stage 3: Drafted
+      lastModified: Date.now() - (1000 * 60 * 60 * 24 * 2), // 2 days ago
+      description: 'Schedule all annual health screenings',
+      objectives: ['Book dental cleaning', 'Schedule eye exam', 'Find new PCP'],
+      archetype: 'System Build',
+      tasks: [
+        { id: 't1', title: 'Research PCPs accepting new patients', order: 1, codadType: 'discover' },
+        { id: 't2', title: 'Call to schedule dental appointment', order: 2, codadType: 'connect' },
+        { id: 't3', title: 'Book eye exam at vision center', order: 3, codadType: 'operate' },
+        { id: 't4', title: 'Review insurance coverage', order: 4, codadType: 'operate' },
+        { id: 't5', title: 'Create health tracking spreadsheet', order: 5, codadType: 'design' }
+      ],
+      status: 'planning'
+    },
+    {
+      id: 'communityGarden',
+      title: 'Community Garden Initiative',
+      category: 'community',
+      tier: 'gold',
+      draftingStage: 2, // Stage 2: Scoped
+      lastModified: Date.now() - (1000 * 60 * 60 * 24 * 25), // 25 days ago (stale)
+      description: 'Start community garden in neighborhood',
+      objectives: ['Get 10 neighbors interested', 'Find suitable plot', 'Secure water access'],
+      archetype: 'Initiative',
+      status: 'planning'
+    },
+    {
+      id: 'taxPrep',
+      title: 'Annual Tax Preparation',
+      category: 'finances',
+      tier: 'silver',
+      draftingStage: 1, // Stage 1: Identified
+      lastModified: Date.now() - (1000 * 60 * 60 * 6), // 6 hours ago
+      description: 'Gather documents and file taxes',
+      status: 'planning'
+    },
+    {
+      id: 'familyVacation',
+      title: 'Plan Summer Family Vacation',
+      category: 'relationships',
+      tier: 'gold',
+      draftingStage: 4, // Stage 4: Prioritized
+      lastModified: Date.now() - (1000 * 60 * 60 * 24), // 1 day ago
+      description: 'Plan and book family trip to Hawaii',
+      objectives: ['Book flights', 'Reserve accommodations', 'Plan activities'],
+      archetype: 'Initiative',
+      tier: 'gold',
+      tasks: [
+        { id: 't1', title: 'Research flight options', order: 1, codadType: 'discover' },
+        { id: 't2', title: 'Compare hotel vs Airbnb', order: 2, codadType: 'discover' },
+        { id: 't3', title: 'Book round-trip flights', order: 3, codadType: 'operate' },
+        { id: 't4', title: 'Reserve beach house', order: 4, codadType: 'operate' },
+        { id: 't5', title: 'Create daily itinerary', order: 5, codadType: 'design' }
+      ],
+      status: 'planning'
+    }
+  ];
+
   window.LifeBuildData = {
     projects,
     queues,
@@ -322,5 +410,6 @@
     rosterAssignments,
     rosterAgents,
     rosterMatches,
+    planningQueue,
   };
 })();

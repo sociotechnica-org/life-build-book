@@ -521,20 +521,914 @@ const ReactDOM = window.ReactDOM;
       );
     };
 
-    const DraftingRoom = () => (
-      <div className="card">
-        <div className="project" style={{ borderColor: 'var(--gold)', boxShadow: '0 12px 26px rgba(216,166,80,0.2)' }}>
-          <div className="title">Sell Camper Van</div>
-          <div className="meta">Gold Candidate · Plans done · Crisis trigger</div>
-          <ul style={{ marginTop: '0.4rem', paddingLeft: '1rem', color: 'var(--muted)', fontSize: '0.95rem' }}>
-            <li>Clean + photo professionally</li>
-            <li>List on 3 platforms</li>
-            <li>Sell & transfer title in 3 weeks</li>
-          </ul>
+    const DraftingRoom = () => {
+      const [view, setView] = React.useState('queue'); // 'queue' | 'create' | 'resume'
+      const [currentProject, setCurrentProject] = React.useState(null);
+      const [currentStage, setCurrentStage] = React.useState(1);
+
+      const [planningProjects, setPlanningProjects] = React.useState(() => {
+        const stored = localStorage.getItem('lifebuild_planning_queue');
+        return stored ? JSON.parse(stored) : (window.LifeBuildData?.planningQueue || []);
+      });
+
+      React.useEffect(() => {
+        localStorage.setItem('lifebuild_planning_queue', JSON.stringify(planningProjects));
+      }, [planningProjects]);
+
+      // Helper functions
+      const formatRelativeTime = (timestamp) => {
+        const now = Date.now();
+        const diffMs = now - timestamp;
+        const diffMins = Math.floor(diffMs / (1000 * 60));
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+        if (diffMins < 60) return `${diffMins} min ago`;
+        if (diffHours < 24) return `${diffHours}h ago`;
+        if (diffDays < 7) return `${diffDays}d ago`;
+        if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+        return new Date(timestamp).toLocaleDateString();
+      };
+
+      const isStale = (timestamp) => {
+        return (Date.now() - timestamp) / (1000 * 60 * 60 * 24) >= 14;
+      };
+
+      const getCategoryColor = (category) => {
+        const colors = {
+          health: '#E3F2FD', purpose: '#F3E5F5', finances: '#FFF3E0',
+          relationships: '#FCE4EC', home: '#E8F5E9', community: '#FFF9C4',
+          leisure: '#E0F2F1', growth: '#EDE7F6'
+        };
+        return colors[category] || '#F5F5F5';
+      };
+
+      const getCategoryTextColor = (category) => {
+        const colors = {
+          health: '#1976D2', purpose: '#7B1FA2', finances: '#E65100',
+          relationships: '#C2185B', home: '#388E3C', community: '#F57F17',
+          leisure: '#00796B', growth: '#512DA8'
+        };
+        return colors[category] || '#666';
+      };
+
+      const getStageLabel = (stage) => {
+        const labels = { 1: 'Identified', 2: 'Scoped', 3: 'Drafted', 4: 'Prioritized' };
+        return labels[stage] || 'Unknown';
+      };
+
+      // Actions
+      const startNewProject = () => {
+        setCurrentProject({
+          id: `proj-${Date.now()}`,
+          title: '',
+          category: '',
+          draftingStage: 1,
+          lastModified: Date.now(),
+          description: '',
+          status: 'planning'
+        });
+        setCurrentStage(1);
+        setView('create');
+      };
+
+      const resumeProject = (project) => {
+        setCurrentProject(project);
+        setCurrentStage(project.draftingStage);
+        setView('resume');
+      };
+
+      const abandonProject = (projectId) => {
+        setPlanningProjects(prev => prev.filter(p => p.id !== projectId));
+      };
+
+      const saveCurrentProject = () => {
+        const updatedProject = { ...currentProject, lastModified: Date.now() };
+        setPlanningProjects(prev => {
+          const existing = prev.findIndex(p => p.id === updatedProject.id);
+          if (existing >= 0) {
+            const newProjects = [...prev];
+            newProjects[existing] = updatedProject;
+            return newProjects;
+          }
+          return [...prev, updatedProject];
+        });
+        setCurrentProject(null);
+        setView('queue');
+      };
+
+      const completeStage = (stageData) => {
+        setCurrentProject(prev => ({
+          ...prev,
+          ...stageData,
+          draftingStage: currentStage + 1,
+          lastModified: Date.now()
+        }));
+
+        if (currentStage < 4) {
+          setCurrentStage(currentStage + 1);
+        } else {
+          // Stage 4 complete - move to Priority Queue
+          saveCurrentProject();
+        }
+      };
+
+      const sortedProjects = [...planningProjects].sort((a, b) => b.lastModified - a.lastModified);
+      const staleCount = sortedProjects.filter(p => isStale(p.lastModified)).length;
+
+      // Render different views
+      if (view === 'create' || view === 'resume') {
+        return (
+          <div className="card">
+            <ProjectCreationFlow
+              project={currentProject}
+              stage={currentStage}
+              onComplete={completeStage}
+              onSave={saveCurrentProject}
+              onCancel={() => {
+                saveCurrentProject();
+              }}
+            />
+          </div>
+        );
+      }
+
+      // Group projects by stage
+      const projectsByStage = {
+        1: planningProjects.filter(p => p.draftingStage === 1),
+        2: planningProjects.filter(p => p.draftingStage === 2),
+        3: planningProjects.filter(p => p.draftingStage === 3),
+        4: planningProjects.filter(p => p.draftingStage === 4)
+      };
+
+      // Default: Kanban Board view
+      return (
+        <div className="card" style={{ padding: '1.5rem' }}>
+          {/* Header */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+              <h2 style={{ fontSize: '1.4rem', fontWeight: 600 }}>Planning Queue</h2>
+              <span style={{ fontSize: '0.95rem', color: 'var(--muted)' }}>
+                {planningProjects.length} project{planningProjects.length !== 1 ? 's' : ''}
+              </span>
+            </div>
+            {staleCount > 0 && (
+              <div style={{
+                background: 'rgba(255,154,86,0.1)',
+                border: '1px solid rgba(255,154,86,0.3)',
+                borderRadius: '0.5rem',
+                padding: '0.75rem 1rem',
+                fontSize: '0.9rem',
+                color: '#D84315',
+                marginBottom: '0.75rem'
+              }}>
+                ⚠️ {staleCount} project{staleCount > 1 ? 's' : ''} haven't been touched in 2+ weeks
+              </div>
+            )}
+          </div>
+
+          {/* Kanban Board */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: '1rem',
+            marginBottom: '1.5rem',
+            minHeight: '400px'
+          }}>
+            <KanbanColumn
+              title="Identified"
+              stage={1}
+              projects={projectsByStage[1]}
+              emptyMessage="Click 'Start New Project' to begin"
+              onResume={resumeProject}
+              onAbandon={abandonProject}
+              getCategoryColor={getCategoryColor}
+              getCategoryTextColor={getCategoryTextColor}
+              formatRelativeTime={formatRelativeTime}
+              isStale={isStale}
+            />
+            <KanbanColumn
+              title="Scoped"
+              stage={2}
+              projects={projectsByStage[2]}
+              emptyMessage="Complete Stage 1 projects to move them here"
+              onResume={resumeProject}
+              onAbandon={abandonProject}
+              getCategoryColor={getCategoryColor}
+              getCategoryTextColor={getCategoryTextColor}
+              formatRelativeTime={formatRelativeTime}
+              isStale={isStale}
+            />
+            <KanbanColumn
+              title="Drafted"
+              stage={3}
+              projects={projectsByStage[3]}
+              emptyMessage="Define objectives to advance projects"
+              onResume={resumeProject}
+              onAbandon={abandonProject}
+              getCategoryColor={getCategoryColor}
+              getCategoryTextColor={getCategoryTextColor}
+              formatRelativeTime={formatRelativeTime}
+              isStale={isStale}
+            />
+            <KanbanColumn
+              title="Prioritized"
+              stage={4}
+              projects={projectsByStage[4]}
+              emptyMessage="Create task lists to reach this stage"
+              onResume={resumeProject}
+              onAbandon={abandonProject}
+              getCategoryColor={getCategoryColor}
+              getCategoryTextColor={getCategoryTextColor}
+              formatRelativeTime={formatRelativeTime}
+              isStale={isStale}
+            />
+          </div>
+
+          {/* Actions */}
+          <div style={{
+            paddingTop: '1.5rem',
+            borderTop: '1px solid var(--border)',
+            display: 'flex',
+            gap: '0.75rem'
+          }}>
+            <button className="pill-btn" style={{ flex: 1 }} onClick={startNewProject}>
+              + Start New Project
+            </button>
+            <button className="pill-btn ghost">
+              Clean Up Queue
+            </button>
+          </div>
         </div>
-        <div className="project" style={{ marginTop: '0.7rem' }}>
-          <div className="title">Launch Consulting</div>
-          <div className="meta">Current Gold · 60% · Will pause if swapped</div>
+      );
+    };
+
+    // Kanban Column Component
+    const KanbanColumn = ({ title, stage, projects, emptyMessage, onResume, onAbandon, getCategoryColor, getCategoryTextColor, formatRelativeTime, isStale }) => (
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        background: '#FAFAF8',
+        borderRadius: '0.75rem',
+        padding: '1rem',
+        border: '1px solid var(--border)'
+      }}>
+        {/* Column Header */}
+        <div style={{ marginBottom: '1rem', paddingBottom: '0.75rem', borderBottom: '2px solid var(--border)' }}>
+          <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--ink)', marginBottom: '0.25rem' }}>
+            {title}
+          </div>
+          <div style={{ fontSize: '0.8rem', color: 'var(--muted)' }}>
+            Stage {stage} · {projects.length} project{projects.length !== 1 ? 's' : ''}
+          </div>
+        </div>
+
+        {/* Cards Container */}
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.75rem',
+          overflowY: 'auto',
+          maxHeight: '500px'
+        }}>
+          {projects.length === 0 ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '2rem 0.5rem',
+              color: 'var(--muted)',
+              fontSize: '0.85rem',
+              lineHeight: 1.5
+            }}>
+              {emptyMessage}
+            </div>
+          ) : (
+            projects.map(project => (
+              <CompactProjectCard
+                key={project.id}
+                project={project}
+                onResume={() => onResume(project)}
+                onAbandon={() => onAbandon(project.id)}
+                getCategoryColor={getCategoryColor}
+                getCategoryTextColor={getCategoryTextColor}
+                formatRelativeTime={formatRelativeTime}
+                isStale={isStale}
+              />
+            ))
+          )}
+        </div>
+      </div>
+    );
+
+    // Compact Project Card Component
+    const CompactProjectCard = ({ project, onResume, onAbandon, getCategoryColor, getCategoryTextColor, formatRelativeTime, isStale }) => (
+      <div style={{
+        background: '#fff',
+        border: `1px solid ${isStale(project.lastModified) ? '#FF9A56' : 'var(--border)'}`,
+        borderLeft: `3px solid ${getCategoryTextColor(project.category)}`,
+        borderRadius: '0.5rem',
+        padding: '0.75rem',
+        transition: 'all 0.2s ease',
+        cursor: 'pointer'
+      }}
+      onMouseEnter={(e) => e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'}
+      onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'none'}
+      >
+        {/* Header: Category Badge + Timestamp */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+          <span style={{
+            display: 'inline-block',
+            background: getCategoryColor(project.category),
+            color: getCategoryTextColor(project.category),
+            padding: '0.2rem 0.5rem',
+            borderRadius: '0.25rem',
+            fontSize: '0.7rem',
+            fontWeight: 600,
+            textTransform: 'uppercase'
+          }}>
+            {project.category}
+          </span>
+          <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>
+            🕒 {formatRelativeTime(project.lastModified)}
+          </span>
+        </div>
+
+        {/* Title */}
+        <h4 style={{
+          fontSize: '0.95rem',
+          fontWeight: 600,
+          marginBottom: '0.5rem',
+          lineHeight: 1.3,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical'
+        }}>
+          {project.title}
+        </h4>
+
+        {/* Meta Info */}
+        <div style={{ fontSize: '0.75rem', color: 'var(--muted)', marginBottom: '0.75rem' }}>
+          {project.tier && (
+            <span style={{ marginRight: '0.5rem', textTransform: 'capitalize' }}>
+              {project.tier}
+            </span>
+          )}
+          {project.objectives && project.objectives.length > 0 && (
+            <span>{project.objectives.length} obj</span>
+          )}
+          {project.tasks && project.tasks.length > 0 && (
+            <span> · {project.tasks.length} tasks</span>
+          )}
+          {isStale(project.lastModified) && (
+            <span style={{ color: '#FF9A56', fontWeight: 600, marginLeft: '0.5rem' }}>⚠️</span>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <button
+            className="pill-btn"
+            style={{ flex: 1, fontSize: '0.8rem', padding: '0.4rem 0.75rem' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              onResume();
+            }}
+          >
+            Resume
+          </button>
+          <button
+            className="pill-btn ghost"
+            style={{ fontSize: '0.8rem', padding: '0.4rem 0.75rem' }}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (confirm(`Abandon "${project.title}"?`)) onAbandon();
+            }}
+          >
+            Abandon
+          </button>
+        </div>
+      </div>
+    );
+
+    // Project Card Component
+    const ProjectCard = ({ project, onResume, onAbandon, getCategoryColor, getCategoryTextColor, getStageLabel, formatRelativeTime, isStale }) => (
+      <div style={{
+        background: '#FAFAF8',
+        border: `2px solid ${isStale(project.lastModified) ? '#FF9A56' : 'var(--border)'}`,
+        borderLeft: isStale(project.lastModified) ? '4px solid #FF9A56' : '2px solid var(--border)',
+        borderRadius: '0.75rem',
+        padding: '1rem',
+        transition: 'all 0.2s ease'
+      }}>
+        <div style={{ marginBottom: '0.75rem' }}>
+          <span style={{
+            display: 'inline-block',
+            background: getCategoryColor(project.category),
+            color: getCategoryTextColor(project.category),
+            padding: '0.25rem 0.6rem',
+            borderRadius: '0.25rem',
+            fontSize: '0.75rem',
+            fontWeight: 600,
+            textTransform: 'uppercase',
+            marginBottom: '0.5rem'
+          }}>
+            {project.category}
+          </span>
+          <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '0.5rem' }}>
+            {project.title}
+          </h3>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+          <span style={{
+            background: 'var(--gold)',
+            color: '#fff',
+            padding: '0.15rem 0.5rem',
+            borderRadius: '0.25rem',
+            fontSize: '0.75rem',
+            fontWeight: 600
+          }}>
+            Stage {project.draftingStage} of 4
+          </span>
+          <span style={{ fontSize: '0.9rem', color: 'var(--muted)' }}>
+            {getStageLabel(project.draftingStage)}
+          </span>
+        </div>
+
+        <div style={{ fontSize: '0.9rem', color: '#888', marginBottom: '0.75rem' }}>
+          🕒 {formatRelativeTime(project.lastModified)}
+          {isStale(project.lastModified) && (
+            <span style={{ color: '#FF9A56', fontWeight: 600, marginLeft: '0.5rem' }}>
+              ⚠️ Needs attention
+            </span>
+          )}
+        </div>
+
+        {project.description && (
+          <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.75rem' }}>
+            {project.description}
+          </p>
+        )}
+
+        {project.objectives && project.objectives.length > 0 && (
+          <div style={{ fontSize: '0.85rem', color: '#888', marginTop: '0.5rem' }}>
+            <strong>Objectives:</strong> {project.objectives.length} defined
+          </div>
+        )}
+
+        {project.tasks && project.tasks.length > 0 && (
+          <div style={{ fontSize: '0.85rem', color: '#888', marginTop: '0.25rem' }}>
+            <strong>Tasks:</strong> {project.tasks.length} created
+          </div>
+        )}
+
+        <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--border)', display: 'flex', gap: '0.5rem' }}>
+          <button className="pill-btn" style={{ flex: 1 }} onClick={onResume}>
+            Resume
+          </button>
+          <button className="pill-btn ghost" onClick={onAbandon}>
+            Abandon
+          </button>
+        </div>
+      </div>
+    );
+
+    // Project Creation Flow Component
+    const ProjectCreationFlow = ({ project, stage, onComplete, onSave, onCancel }) => {
+      const [formData, setFormData] = React.useState(project);
+
+      const updateField = (field, value) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+      };
+
+      const handleNext = () => {
+        onComplete(formData);
+      };
+
+      // Stage 1: Identified
+      if (stage === 1) {
+        return (
+          <Stage1Identified
+            data={formData}
+            updateField={updateField}
+            onNext={handleNext}
+            onCancel={onCancel}
+          />
+        );
+      }
+
+      // Stage 2: Scoped
+      if (stage === 2) {
+        return (
+          <Stage2Scoped
+            data={formData}
+            updateField={updateField}
+            onNext={handleNext}
+            onBack={() => onComplete({ ...formData, draftingStage: 1 })}
+          />
+        );
+      }
+
+      // Stage 3: Drafted
+      if (stage === 3) {
+        return (
+          <Stage3Drafted
+            data={formData}
+            updateField={updateField}
+            onNext={handleNext}
+            onBack={() => onComplete({ ...formData, draftingStage: 2 })}
+          />
+        );
+      }
+
+      // Stage 4: Prioritized
+      if (stage === 4) {
+        return (
+          <Stage4Prioritized
+            data={formData}
+            updateField={updateField}
+            onComplete={() => {
+              onComplete(formData);
+              onSave();
+            }}
+            onBack={() => onComplete({ ...formData, draftingStage: 3 })}
+          />
+        );
+      }
+
+      return null;
+    };
+
+    // Stage 1: Identified (Quick Capture)
+    const Stage1Identified = ({ data, updateField, onNext, onCancel }) => (
+      <div>
+        <div style={{ marginBottom: '2rem' }}>
+          <h2 style={{ fontSize: '1.6rem', fontWeight: 600, marginBottom: '0.5rem' }}>Stage 1: Identified</h2>
+          <p style={{ color: 'var(--muted)', fontSize: '0.95rem' }}>Quick capture - 2 minutes</p>
+        </div>
+
+        <div style={{ marginBottom: '1.5rem' }}>
+          <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem' }}>Project Title</label>
+          <input
+            type="text"
+            value={data.title}
+            onChange={(e) => updateField('title', e.target.value)}
+            placeholder="What's this project called?"
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              border: '1px solid var(--border)',
+              borderRadius: '0.5rem',
+              fontSize: '1rem'
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: '1.5rem' }}>
+          <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem' }}>Brief Description</label>
+          <textarea
+            value={data.description}
+            onChange={(e) => updateField('description', e.target.value)}
+            placeholder="1-2 sentences about what you're trying to do"
+            rows={3}
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              border: '1px solid var(--border)',
+              borderRadius: '0.5rem',
+              fontSize: '1rem',
+              fontFamily: 'inherit'
+            }}
+          />
+        </div>
+
+        <div style={{ marginBottom: '2rem' }}>
+          <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.75rem' }}>Category</label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.75rem' }}>
+            {['health', 'purpose', 'finances', 'relationships', 'home', 'community', 'leisure', 'growth'].map(cat => (
+              <button
+                key={cat}
+                onClick={() => updateField('category', cat)}
+                className="pill-btn ghost"
+                style={{
+                  background: data.category === cat ? 'var(--gold)' : 'transparent',
+                  color: data.category === cat ? '#fff' : 'var(--ink)',
+                  textTransform: 'capitalize'
+                }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <button className="pill-btn ghost" onClick={onCancel}>Save & Exit</button>
+          <button
+            className="pill-btn"
+            style={{ flex: 1 }}
+            onClick={onNext}
+            disabled={!data.title || !data.category}
+          >
+            Continue to Stage 2
+          </button>
+        </div>
+      </div>
+    );
+
+    // Stage 2: Scoped (Define Success)
+    const Stage2Scoped = ({ data, updateField, onNext, onBack }) => {
+      const [objectives, setObjectives] = React.useState(data.objectives || ['']);
+      const [archetype, setArchetype] = React.useState(data.archetype || '');
+      const [tier, setTier] = React.useState(data.tier || '');
+
+      const addObjective = () => setObjectives([...objectives, '']);
+      const updateObjective = (idx, value) => {
+        const newObjs = [...objectives];
+        newObjs[idx] = value;
+        setObjectives(newObjs);
+        updateField('objectives', newObjs.filter(o => o.trim()));
+      };
+
+      const archetypes = [
+        { name: 'Quick Task', desc: 'One-shot, minimal planning' },
+        { name: 'Discovery Mission', desc: 'Research, reduce uncertainty' },
+        { name: 'Critical Response', desc: 'Urgent, time-sensitive' },
+        { name: 'Maintenance Loop', desc: 'Recurring, perpetual' },
+        { name: 'System Build', desc: 'Infrastructure, automation' },
+        { name: 'Initiative', desc: 'Move life forward, transformative' }
+      ];
+
+      const tiers = [
+        { name: 'gold', label: 'Gold', desc: 'Major life-changing initiatives' },
+        { name: 'silver', label: 'Silver', desc: 'System builds and capacity work' },
+        { name: 'bronze', label: 'Bronze', desc: 'Quick tasks and maintenance' }
+      ];
+
+      return (
+        <div>
+          <div style={{ marginBottom: '2rem' }}>
+            <h2 style={{ fontSize: '1.6rem', fontWeight: 600, marginBottom: '0.5rem' }}>Stage 2: Scoped</h2>
+            <p style={{ color: 'var(--muted)', fontSize: '0.95rem' }}>Define what success looks like - 10 minutes</p>
+          </div>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.75rem' }}>Objectives (1-3)</label>
+            <p style={{ fontSize: '0.9rem', color: 'var(--muted)', marginBottom: '0.75rem' }}>
+              What specific outcomes would mean this project succeeded?
+            </p>
+            {objectives.map((obj, idx) => (
+              <input
+                key={idx}
+                type="text"
+                value={obj}
+                onChange={(e) => updateObjective(idx, e.target.value)}
+                placeholder={`Objective ${idx + 1}`}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid var(--border)',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  marginBottom: '0.5rem'
+                }}
+              />
+            ))}
+            {objectives.length < 3 && (
+              <button className="pill-btn ghost" onClick={addObjective}>+ Add Objective</button>
+            )}
+          </div>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.5rem' }}>Deadline (Optional)</label>
+            <input
+              type="text"
+              value={data.deadline || ''}
+              onChange={(e) => updateField('deadline', e.target.value)}
+              placeholder="e.g., 'before holidays' or 'by June'"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid var(--border)',
+                borderRadius: '0.5rem',
+                fontSize: '1rem'
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: '2rem' }}>
+            <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.75rem' }}>Project Archetype</label>
+            <div style={{ display: 'grid', gap: '0.75rem' }}>
+              {archetypes.map(a => (
+                <button
+                  key={a.name}
+                  onClick={() => {
+                    setArchetype(a.name);
+                    updateField('archetype', a.name);
+                  }}
+                  style={{
+                    padding: '1rem',
+                    border: `2px solid ${archetype === a.name ? 'var(--gold)' : 'var(--border)'}`,
+                    borderRadius: '0.5rem',
+                    background: archetype === a.name ? 'rgba(216,166,80,0.1)' : '#fff',
+                    cursor: 'pointer',
+                    textAlign: 'left'
+                  }}
+                >
+                  <div style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{a.name}</div>
+                  <div style={{ fontSize: '0.9rem', color: 'var(--muted)' }}>{a.desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ marginBottom: '2rem' }}>
+            <label style={{ display: 'block', fontWeight: 600, marginBottom: '0.75rem' }}>Project Tier</label>
+            <p style={{ fontSize: '0.9rem', color: 'var(--muted)', marginBottom: '0.75rem' }}>
+              Select the priority tier for this project
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
+              {tiers.map(t => (
+                <button
+                  key={t.name}
+                  onClick={() => {
+                    setTier(t.name);
+                    updateField('tier', t.name);
+                  }}
+                  style={{
+                    padding: '1rem',
+                    border: `2px solid ${tier === t.name ? 'var(--gold)' : 'var(--border)'}`,
+                    borderRadius: '0.5rem',
+                    background: tier === t.name ? 'rgba(216,166,80,0.1)' : '#fff',
+                    cursor: 'pointer',
+                    textAlign: 'center'
+                  }}
+                >
+                  <div style={{ fontWeight: 600, marginBottom: '0.25rem', textTransform: 'capitalize' }}>{t.label}</div>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>{t.desc}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <button className="pill-btn ghost" onClick={onBack}>Back</button>
+            <button
+              className="pill-btn"
+              style={{ flex: 1 }}
+              onClick={() => {
+                updateField('objectives', objectives.filter(o => o.trim()));
+                updateField('tier', tier);
+                onNext();
+              }}
+              disabled={!objectives.some(o => o.trim()) || !archetype || !tier}
+            >
+              Continue to Stage 3
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    // Stage 3: Drafted (Task Generation)
+    const Stage3Drafted = ({ data, updateField, onNext, onBack }) => {
+      const [tasks, setTasks] = React.useState(data.tasks || []);
+      const [newTask, setNewTask] = React.useState('');
+
+      React.useEffect(() => {
+        if (tasks.length === 0 && data.objectives) {
+          // AI-generated placeholder tasks
+          const generatedTasks = [
+            { id: `t1-${Date.now()}`, title: 'Review project scope and objectives', order: 1, codadType: 'discover' },
+            { id: `t2-${Date.now()}`, title: 'Break down first objective into subtasks', order: 2, codadType: 'design' },
+            { id: `t3-${Date.now()}`, title: 'Identify required resources', order: 3, codadType: 'discover' },
+            { id: `t4-${Date.now()}`, title: 'Set up project workspace', order: 4, codadType: 'operate' },
+            { id: `t5-${Date.now()}`, title: 'Begin first task', order: 5, codadType: 'operate' }
+          ];
+          setTasks(generatedTasks);
+        }
+      }, []);
+
+      const addTask = () => {
+        if (newTask.trim()) {
+          const task = {
+            id: `t-${Date.now()}`,
+            title: newTask,
+            order: tasks.length + 1,
+            codadType: 'operate'
+          };
+          setTasks([...tasks, task]);
+          setNewTask('');
+        }
+      };
+
+      const removeTask = (id) => {
+        setTasks(tasks.filter(t => t.id !== id));
+      };
+
+      return (
+        <div>
+          <div style={{ marginBottom: '2rem' }}>
+            <h2 style={{ fontSize: '1.6rem', fontWeight: 600, marginBottom: '0.5rem' }}>Stage 3: Drafted</h2>
+            <p style={{ color: 'var(--muted)', fontSize: '0.95rem' }}>Create actionable task list - 30 minutes</p>
+          </div>
+
+          <div style={{ background: 'rgba(216,166,80,0.1)', border: '1px solid rgba(216,166,80,0.3)', borderRadius: '0.5rem', padding: '1rem', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+              <span>🤖</span>
+              <strong>Marvin generated {tasks.length} initial tasks</strong>
+            </div>
+            <p style={{ fontSize: '0.9rem', color: 'var(--muted)' }}>Review, edit, add, or remove tasks as needed.</p>
+          </div>
+
+          <div style={{ marginBottom: '1.5rem' }}>
+            <div style={{ display: 'grid', gap: '0.75rem', marginBottom: '1rem' }}>
+              {tasks.map((task, idx) => (
+                <div key={task.id} style={{ display: 'flex', gap: '0.75rem', alignItems: 'start', padding: '0.75rem', background: '#FAFAF8', borderRadius: '0.5rem', border: '1px solid var(--border)' }}>
+                  <span style={{ fontSize: '0.9rem', color: 'var(--muted)', fontWeight: 600 }}>{idx + 1}.</span>
+                  <div style={{ flex: 1 }}>{task.title}</div>
+                  <button
+                    onClick={() => removeTask(task.id)}
+                    style={{ padding: '0.25rem 0.5rem', fontSize: '0.8rem', border: '1px solid var(--border)', borderRadius: '0.25rem', background: 'transparent', cursor: 'pointer' }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <input
+                type="text"
+                value={newTask}
+                onChange={(e) => setNewTask(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && addTask()}
+                placeholder="Add a new task..."
+                style={{
+                  flex: 1,
+                  padding: '0.75rem',
+                  border: '1px solid var(--border)',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem'
+                }}
+              />
+              <button className="pill-btn" onClick={addTask}>Add</button>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <button className="pill-btn ghost" onClick={onBack}>Back</button>
+            <button
+              className="pill-btn"
+              style={{ flex: 1 }}
+              onClick={() => {
+                updateField('tasks', tasks);
+                onNext();
+              }}
+              disabled={tasks.length === 0}
+            >
+              Continue to Stage 4
+            </button>
+          </div>
+        </div>
+      );
+    };
+
+    // Stage 4: Prioritized (Queue Placement)
+    const Stage4Prioritized = ({ data, onComplete, onBack }) => (
+      <div>
+        <div style={{ marginBottom: '2rem' }}>
+          <h2 style={{ fontSize: '1.6rem', fontWeight: 600, marginBottom: '0.5rem' }}>Stage 4: Prioritized</h2>
+          <p style={{ color: 'var(--muted)', fontSize: '0.95rem' }}>Ready to enter Priority Queue - 5 minutes</p>
+        </div>
+
+        <div style={{ background: 'rgba(139,157,111,0.1)', border: '1px solid rgba(139,157,111,0.3)', borderRadius: '0.75rem', padding: '1.5rem', marginBottom: '2rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
+            <span style={{ fontSize: '2rem' }}>✅</span>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 600 }}>Project Complete!</h3>
+          </div>
+          <p style={{ fontSize: '0.95rem', marginBottom: '1rem' }}><strong>{data.title}</strong> is now fully planned with {data.tasks?.length || 0} tasks.</p>
+          <p style={{ fontSize: '0.9rem', color: 'var(--muted)' }}>This project will move to the Priority Queue and be available in the Sorting Room.</p>
+        </div>
+
+        <div style={{ padding: '1rem', background: '#FAFAF8', borderRadius: '0.5rem', marginBottom: '2rem' }}>
+          <h4 style={{ fontWeight: 600, marginBottom: '0.75rem' }}>Project Summary</h4>
+          <div style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: 1.8 }}>
+            <div><strong>Category:</strong> {data.category}</div>
+            <div><strong>Archetype:</strong> {data.archetype}</div>
+            <div><strong>Objectives:</strong> {data.objectives?.length || 0}</div>
+            <div><strong>Tasks:</strong> {data.tasks?.length || 0}</div>
+            {data.deadline && <div><strong>Deadline:</strong> {data.deadline}</div>}
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <button className="pill-btn ghost" onClick={onBack}>Back</button>
+          <button className="pill-btn" style={{ flex: 1 }} onClick={onComplete}>
+            Complete & Add to Priority Queue
+          </button>
         </div>
       </div>
     );
