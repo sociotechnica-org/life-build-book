@@ -966,14 +966,16 @@ const ReactDOM = window.ReactDOM;
       };
 
       const normalizeProject = (project) => {
-        const safePriority = ['gold', 'silver', 'bronze'].includes(project?.priority) ? project.priority : 'bronze';
-        const safeStatus = project?.status === 'active' ? 'active' : 'ongoing';
-        const safeCategory = project?.category || 'project';
-        const staffing = project?.staffing || {};
+        const base = project && typeof project === 'object' ? project : {};
+        const safePriority = ['gold', 'silver', 'bronze'].includes(base.priority) ? base.priority : 'bronze';
+        const safeStatus = base.status === 'active' ? 'active' : 'ongoing';
+        const safeCategory = base.category || 'project';
+        const staffing = base.staffing && typeof base.staffing === 'object' ? base.staffing : {};
         return {
-          ...project,
-          title: project?.title || 'Untitled Project',
-          description: project?.description || '',
+          ...base,
+          id: base.id || `project-${Date.now()}`,
+          title: base.title || 'Untitled Project',
+          description: base.description || '',
           priority: safePriority,
           status: safeStatus,
           category: safeCategory,
@@ -988,15 +990,18 @@ const ReactDOM = window.ReactDOM;
       };
 
       const normalizeAgent = (agent) => {
-        const total = Math.max(1, Number(agent?.capacity?.total) || 3);
-        const used = Math.min(Math.max(0, Number(agent?.capacity?.used) || 0), total);
+        const base = agent && typeof agent === 'object' ? agent : {};
+        const capacity = base.capacity && typeof base.capacity === 'object' ? base.capacity : {};
+        const total = Math.max(1, Number(capacity.total) || 3);
+        const used = Math.min(Math.max(0, Number(capacity.used) || 0), total);
         return {
-          ...agent,
-          name: agent?.name || 'Custom Agent',
-          specialization: agent?.specialization || 'Generalist',
-          description: agent?.description || '',
-          avatar: agent?.avatar || '🤖',
-          currentProjects: Array.isArray(agent?.currentProjects) ? agent.currentProjects : [],
+          ...base,
+          id: base.id || `agent-${Date.now()}`,
+          name: base.name || 'Custom Agent',
+          specialization: base.specialization || 'Generalist',
+          description: base.description || '',
+          avatar: base.avatar || '🤖',
+          currentProjects: Array.isArray(base.currentProjects) ? base.currentProjects : [],
           capacity: {
             total,
             used,
@@ -1006,13 +1011,13 @@ const ReactDOM = window.ReactDOM;
       };
 
       const sanitizeProjects = (data) => {
-        if (!Array.isArray(data)) return MOCK_PROJECTS.map(normalizeProject);
-        return data.map(normalizeProject);
+        if (!Array.isArray(data) || data.length === 0) return MOCK_PROJECTS.map(normalizeProject);
+        return data.filter(Boolean).map(normalizeProject);
       };
 
       const sanitizeAgents = (data) => {
-        if (!Array.isArray(data)) return MOCK_AGENTS.map(normalizeAgent);
-        return data.map(normalizeAgent);
+        if (!Array.isArray(data) || data.length === 0) return MOCK_AGENTS.map(normalizeAgent);
+        return data.filter(Boolean).map(normalizeAgent);
       };
 
       // Wizard state

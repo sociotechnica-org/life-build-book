@@ -599,13 +599,15 @@
       }
     };
     const normalizeProject = (project) => {
-      const safePriority = ["gold", "silver", "bronze"].includes(project == null ? void 0 : project.priority) ? project.priority : "bronze";
-      const safeStatus = (project == null ? void 0 : project.status) === "active" ? "active" : "ongoing";
-      const safeCategory = (project == null ? void 0 : project.category) || "project";
-      const staffing = (project == null ? void 0 : project.staffing) || {};
-      return __spreadProps(__spreadValues({}, project), {
-        title: (project == null ? void 0 : project.title) || "Untitled Project",
-        description: (project == null ? void 0 : project.description) || "",
+      const base = project && typeof project === "object" ? project : {};
+      const safePriority = ["gold", "silver", "bronze"].includes(base.priority) ? base.priority : "bronze";
+      const safeStatus = base.status === "active" ? "active" : "ongoing";
+      const safeCategory = base.category || "project";
+      const staffing = base.staffing && typeof base.staffing === "object" ? base.staffing : {};
+      return __spreadProps(__spreadValues({}, base), {
+        id: base.id || `project-${Date.now()}`,
+        title: base.title || "Untitled Project",
+        description: base.description || "",
         priority: safePriority,
         status: safeStatus,
         category: safeCategory,
@@ -619,15 +621,17 @@
       });
     };
     const normalizeAgent = (agent) => {
-      var _a, _b;
-      const total = Math.max(1, Number((_a = agent == null ? void 0 : agent.capacity) == null ? void 0 : _a.total) || 3);
-      const used = Math.min(Math.max(0, Number((_b = agent == null ? void 0 : agent.capacity) == null ? void 0 : _b.used) || 0), total);
-      return __spreadProps(__spreadValues({}, agent), {
-        name: (agent == null ? void 0 : agent.name) || "Custom Agent",
-        specialization: (agent == null ? void 0 : agent.specialization) || "Generalist",
-        description: (agent == null ? void 0 : agent.description) || "",
-        avatar: (agent == null ? void 0 : agent.avatar) || "\u{1F916}",
-        currentProjects: Array.isArray(agent == null ? void 0 : agent.currentProjects) ? agent.currentProjects : [],
+      const base = agent && typeof agent === "object" ? agent : {};
+      const capacity = base.capacity && typeof base.capacity === "object" ? base.capacity : {};
+      const total = Math.max(1, Number(capacity.total) || 3);
+      const used = Math.min(Math.max(0, Number(capacity.used) || 0), total);
+      return __spreadProps(__spreadValues({}, base), {
+        id: base.id || `agent-${Date.now()}`,
+        name: base.name || "Custom Agent",
+        specialization: base.specialization || "Generalist",
+        description: base.description || "",
+        avatar: base.avatar || "\u{1F916}",
+        currentProjects: Array.isArray(base.currentProjects) ? base.currentProjects : [],
         capacity: {
           total,
           used,
@@ -636,12 +640,12 @@
       });
     };
     const sanitizeProjects = (data) => {
-      if (!Array.isArray(data)) return MOCK_PROJECTS.map(normalizeProject);
-      return data.map(normalizeProject);
+      if (!Array.isArray(data) || data.length === 0) return MOCK_PROJECTS.map(normalizeProject);
+      return data.filter(Boolean).map(normalizeProject);
     };
     const sanitizeAgents = (data) => {
-      if (!Array.isArray(data)) return MOCK_AGENTS.map(normalizeAgent);
-      return data.map(normalizeAgent);
+      if (!Array.isArray(data) || data.length === 0) return MOCK_AGENTS.map(normalizeAgent);
+      return data.filter(Boolean).map(normalizeAgent);
     };
     const [currentStep, setCurrentStep] = React.useState(1);
     const [selectedProject, setSelectedProject] = React.useState(null);
