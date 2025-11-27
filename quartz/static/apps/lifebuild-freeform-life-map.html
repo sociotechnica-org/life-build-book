@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeBuild - Freeform Life Map</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --health: #4CAF50;
+      --purpose: #5C4B8A;
+      --finances: #D4A017;
+      --relationships: #E57373;
+      --home: #A1887F;
+      --community: #FF7043;
+      --leisure: #64B5F6;
+      --growth: #26A69A;
+
+      --gold: #D4A017;
+      --gold-light: #F4D03F;
+      --silver: #C0C0C0;
+      --silver-light: #E8E8E8;
+      --bronze: #CD7F32;
+      --bronze-light: #DDA15E;
+
+      --bg-dark: #1a1a1a;
+      --bg-card: #2a2a2a;
+      --bg-panel: #222;
+      --text-primary: #f5f5f5;
+      --text-secondary: #a0a0a0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes pulse-gold {
+      0%, 100% { box-shadow: 0 0 8px var(--gold), 0 0 16px rgba(212, 160, 23, 0.3); }
+      50% { box-shadow: 0 0 16px var(--gold), 0 0 32px rgba(212, 160, 23, 0.5); }
+    }
+
+    @keyframes pulse-silver {
+      0%, 100% { box-shadow: 0 0 8px var(--silver), 0 0 16px rgba(192, 192, 192, 0.3); }
+      50% { box-shadow: 0 0 16px var(--silver), 0 0 32px rgba(192, 192, 192, 0.5); }
+    }
+
+    /* ===== LEFT PANEL - PROJECT PALETTE ===== */
+    .project-palette {
+      width: 280px;
+      height: 100vh;
+      background: var(--bg-panel);
+      border-right: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .palette-header {
+      padding: 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .palette-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .palette-title::before {
+      content: '📦';
+    }
+
+    .sort-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .sort-btn {
+      padding: 6px 10px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 14px;
+      color: var(--text-secondary);
+      font-size: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .sort-btn:hover {
+      border-color: rgba(255,255,255,0.4);
+      color: var(--text-primary);
+    }
+
+    .sort-btn.active {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--text-primary);
+      color: var(--text-primary);
+    }
+
+    .palette-projects {
+      flex: 1;
+      overflow-y: auto;
+      padding: 12px;
+    }
+
+    .palette-section {
+      margin-bottom: 16px;
+    }
+
+    .palette-section-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      padding-left: 4px;
+    }
+
+    /* Project cards in palette */
+    .palette-project {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: var(--bg-card);
+      border-radius: 10px;
+      margin-bottom: 8px;
+      cursor: grab;
+      transition: all 0.2s ease;
+      border: 2px solid transparent;
+    }
+
+    .palette-project:hover {
+      background: #333;
+      transform: translateX(4px);
+    }
+
+    .palette-project.dragging {
+      opacity: 0.5;
+      cursor: grabbing;
+    }
+
+    .palette-project.on-map {
+      opacity: 0.4;
+      border-style: dashed;
+      border-color: rgba(255,255,255,0.2);
+    }
+
+    .palette-project-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--project-color);
+      flex-shrink: 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .palette-project-dot.size-large { width: 42px; height: 42px; }
+    .palette-project-dot.size-small { width: 30px; height: 30px; }
+
+    .palette-project-dot .project-image,
+    .map-project .project-image,
+    .popup-image .project-image,
+    .palette-project-dot .gradient-fill,
+    .map-project .gradient-fill,
+    .popup-image .gradient-fill {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+    }
+
+    .palette-project-dot .project-image,
+    .map-project .project-image,
+    .popup-image .project-image {
+      background-size: cover;
+      background-position: center;
+      filter: saturate(0.95) brightness(0.85);
+      transition: filter 0.3s ease;
+    }
+
+    .palette-project-dot:hover .project-image,
+    .map-project:hover .project-image {
+      filter: saturate(1.05) brightness(1);
+    }
+
+    .palette-project-dot .gradient-fill,
+    .map-project .gradient-fill,
+    .popup-image .gradient-fill {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .palette-project-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .palette-project-name {
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .palette-project-name.stream-gold { color: var(--gold-light); }
+    .palette-project-name.stream-silver { color: var(--silver-light); }
+    .palette-project-name.stream-bronze { color: var(--bronze-light); }
+
+    .palette-project-meta {
+      font-size: 10px;
+      color: var(--text-secondary);
+    }
+
+    /* ===== MAIN CANVAS ===== */
+    .map-canvas {
+      flex: 1;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(76, 175, 80, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(92, 75, 138, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 0%, transparent 60%),
+        var(--bg-dark);
+    }
+
+    .map-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background: linear-gradient(180deg, var(--bg-dark) 0%, transparent 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 50;
+    }
+
+    .map-title {
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+
+    .map-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .map-action-btn {
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .map-action-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-primary);
+    }
+
+    /* ===== MAP REGIONS ===== */
+    .map-regions {
+      position: absolute;
+      inset: 60px 20px 20px 20px;
+    }
+
+    .map-region {
+      position: absolute;
+      background: rgba(255,255,255,0.03);
+      border: 2px dashed rgba(255,255,255,0.15);
+      transition: background 0.3s ease, border-color 0.3s ease;
+      cursor: default;
+    }
+
+    .map-region.drag-over {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    .map-region:hover {
+      background: rgba(255,255,255,0.05);
+    }
+
+    .region-title-wrapper {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      right: 40px;
+    }
+
+    .region-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      outline: none;
+      width: 100%;
+      padding: 4px 0;
+      border-bottom: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .region-title:hover {
+      color: var(--text-primary);
+    }
+
+    .region-title:focus {
+      color: var(--text-primary);
+      border-bottom-color: rgba(255,255,255,0.3);
+    }
+
+    .region-subtitle {
+      font-size: 10px;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+
+    /* Resize handle */
+    .resize-handle {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      width: 16px;
+      height: 16px;
+      cursor: se-resize;
+      opacity: 0.3;
+      transition: opacity 0.2s ease;
+    }
+
+    .resize-handle::before {
+      content: '';
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid var(--text-secondary);
+      border-bottom: 2px solid var(--text-secondary);
+    }
+
+    .map-region:hover .resize-handle {
+      opacity: 0.7;
+    }
+
+    /* Region color accents */
+    .map-region[data-color="rose"] { 
+      background: rgba(229, 115, 115, 0.06); 
+      border-color: rgba(229, 115, 115, 0.25);
+    }
+    .map-region[data-color="rose"] .region-title { color: #E57373; }
+
+    .map-region[data-color="teal"] { 
+      background: rgba(38, 166, 154, 0.06); 
+      border-color: rgba(38, 166, 154, 0.25);
+    }
+    .map-region[data-color="teal"] .region-title { color: #26A69A; }
+
+    .map-region[data-color="gold"] { 
+      background: rgba(212, 160, 23, 0.06); 
+      border-color: rgba(212, 160, 23, 0.25);
+    }
+    .map-region[data-color="gold"] .region-title { color: #D4A017; }
+
+    .map-region[data-color="purple"] { 
+      background: rgba(92, 75, 138, 0.06); 
+      border-color: rgba(92, 75, 138, 0.25);
+    }
+    .map-region[data-color="purple"] .region-title { color: #5C4B8A; }
+
+    .map-region[data-color="blue"] { 
+      background: rgba(100, 181, 246, 0.06); 
+      border-color: rgba(100, 181, 246, 0.25);
+    }
+    .map-region[data-color="blue"] .region-title { color: #64B5F6; }
+
+    .map-region[data-color="green"] { 
+      background: rgba(76, 175, 80, 0.06); 
+      border-color: rgba(76, 175, 80, 0.25);
+    }
+    .map-region[data-color="green"] .region-title { color: #4CAF50; }
+
+    /* Whimsical shapes using border-radius */
+    .shape-blob1 { border-radius: 60% 40% 50% 70% / 50% 60% 40% 50%; }
+    .shape-blob2 { border-radius: 40% 60% 70% 30% / 60% 40% 60% 40%; }
+    .shape-blob3 { border-radius: 50% 50% 30% 70% / 40% 60% 50% 50%; }
+    .shape-blob4 { border-radius: 70% 30% 50% 50% / 50% 50% 60% 40%; }
+    .shape-blob5 { border-radius: 30% 70% 60% 40% / 60% 30% 70% 40%; }
+    .shape-round { border-radius: 50%; }
+    .shape-pill { border-radius: 100px; }
+
+    /* ===== PLACED PROJECTS ON MAP ===== */
+    .map-project {
+      position: absolute;
+      border-radius: 50%;
+      cursor: move;
+      transition: transform 0.1s ease, box-shadow 0.2s ease;
+      z-index: 20;
+      border: 3px solid var(--project-color);
+      overflow: hidden;
+    }
+
+    .map-project.size-small { width: 44px; height: 44px; }
+    .map-project.size-medium { width: 60px; height: 60px; }
+    .map-project.size-large { width: 76px; height: 76px; }
+
+    .map-project:hover {
+      transform: scale(1.1);
+      z-index: 30;
+    }
+
+    .map-project.dragging {
+      transform: scale(1.15);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      z-index: 100;
+    }
+
+    .map-project.work-at-hand.stream-gold {
+      animation: pulse-gold 2s ease-in-out infinite;
+    }
+
+    .map-project.work-at-hand.stream-silver {
+      animation: pulse-silver 2s ease-in-out infinite;
+    }
+
+    .map-project-label {
+      position: absolute;
+      bottom: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      background: rgba(0,0,0,0.8);
+      padding: 3px 8px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .map-project.stream-gold .map-project-label { color: var(--gold-light); }
+    .map-project.stream-silver .map-project-label { color: var(--silver-light); }
+    .map-project.stream-bronze .map-project-label { color: var(--bronze-light); }
+
+    .map-project:hover .map-project-label {
+      opacity: 1;
+    }
+
+    .gradient-fill {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+    }
+
+    /* ===== COLOR PICKER (for regions) ===== */
+    .color-picker {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .map-region:hover .color-picker {
+      opacity: 1;
+    }
+
+    .color-swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: transform 0.2s ease;
+    }
+
+    .color-swatch:hover {
+      transform: scale(1.2);
+    }
+
+    .color-swatch[data-color="rose"] { background: #E57373; }
+    .color-swatch[data-color="teal"] { background: #26A69A; }
+    .color-swatch[data-color="gold"] { background: #D4A017; }
+    .color-swatch[data-color="purple"] { background: #5C4B8A; }
+    .color-swatch[data-color="blue"] { background: #64B5F6; }
+    .color-swatch[data-color="green"] { background: #4CAF50; }
+    .color-swatch[data-color="none"] { background: #444; }
+
+    /* ===== INSTRUCTIONS TOAST ===== */
+    .instructions-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 12px 20px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .toast-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .toast-key {
+      background: rgba(255,255,255,0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+    }
+
+    /* ===== PROJECT DETAIL POPUP ===== */
+    .project-popup {
+      position: fixed;
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 16px;
+      padding: 20px;
+      width: 300px;
+      z-index: 200;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+      display: none;
+    }
+
+    .project-popup.active {
+      display: block;
+    }
+
+    .popup-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .popup-image {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3px solid var(--project-color);
+      overflow: hidden;
+    }
+
+    .popup-title {
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .popup-meta {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    .popup-progress {
+      margin: 12px 0;
+    }
+
+    .popup-progress-bar {
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .popup-progress-fill {
+      height: 100%;
+      background: var(--project-color);
+    }
+
+    .popup-progress-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .popup-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .popup-btn {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: transparent;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .popup-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-primary);
+    }
+
+    .popup-btn.danger:hover {
+      background: rgba(229, 115, 115, 0.2);
+      border-color: #E57373;
+      color: #E57373;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left Panel: Project Palette -->
+  <div class="project-palette">
+    <div class="palette-header">
+      <div class="palette-title">Project Palette</div>
+      <div class="sort-controls">
+        <button class="sort-btn active" data-sort="stream">Stream</button>
+        <button class="sort-btn" data-sort="category">Category</button>
+        <button class="sort-btn" data-sort="status">Active</button>
+        <button class="sort-btn" data-sort="compound">Active × Stream</button>
+      </div>
+    </div>
+    <div class="palette-projects" id="paletteProjects">
+      <!-- Rendered by JS -->
+    </div>
+  </div>
+
+  <!-- Main Canvas -->
+  <div class="map-canvas" id="mapCanvas">
+    <div class="map-header">
+      <div class="map-title">MY LIFE MAP</div>
+      <div class="map-actions">
+        <button class="map-action-btn" onclick="addRegion()">+ Add Region</button>
+        <button class="map-action-btn" onclick="resetMap()">Reset Layout</button>
+      </div>
+    </div>
+
+    <div class="map-regions" id="mapRegions">
+      <!-- Regions rendered by JS -->
+    </div>
+  </div>
+
+  <!-- Project Detail Popup -->
+  <div class="project-popup" id="projectPopup">
+    <!-- Content rendered by JS -->
+  </div>
+
+  <!-- Instructions -->
+  <div class="instructions-toast">
+    <div class="toast-item">
+      <span class="toast-key">Drag</span>
+      <span>projects onto map</span>
+    </div>
+    <div class="toast-item">
+      <span class="toast-key">Click</span>
+      <span>region title to rename</span>
+    </div>
+    <div class="toast-item">
+      <span class="toast-key">Double-click</span>
+      <span>project for details</span>
+    </div>
+  </div>
+
+  <script>
+    // ===== DATA =====
+    const categoryColors = {
+      health: '#4CAF50',
+      relationships: '#E57373',
+      home: '#A1887F',
+      leisure: '#64B5F6',
+      community: '#FF7043',
+      growth: '#26A69A',
+      finances: '#D4A017',
+      purpose: '#5C4B8A'
+    };
+
+    const categoryNames = {
+      health: 'Health',
+      relationships: 'Relationships',
+      home: 'Home',
+      leisure: 'Leisure',
+      community: 'Community',
+      growth: 'Growth',
+      finances: 'Finances',
+      purpose: 'Purpose'
+    };
+
+    const projects = [
+      { id: 'h1', name: 'Morning Routine System', category: 'health', status: 'live', progress: 35, stream: 'silver', scale: 'medium', workAtHand: true, isActive: true,
+        image: 'https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=200&h=200&fit=crop' },
+      { id: 'h2', name: 'Annual Physical', category: 'health', status: 'plans', progress: 0, stream: 'bronze', scale: 'small', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=200&h=200&fit=crop' },
+      { id: 'h3', name: 'Meditation Practice', category: 'health', status: 'live', progress: 60, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=200&h=200&fit=crop' },
+      { id: 'r1', name: 'Weekly Date Night', category: 'relationships', status: 'live', progress: 80, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=200&h=200&fit=crop' },
+      { id: 'r2', name: 'Family Reunion', category: 'relationships', status: 'plans', progress: 0, stream: 'gold', scale: 'large', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=200&h=200&fit=crop' },
+      { id: 'ho1', name: 'Kitchen Renovation', category: 'home', status: 'live', progress: 42, stream: 'gold', scale: 'large', workAtHand: true, isActive: true,
+        image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=200&fit=crop' },
+      { id: 'ho2', name: 'Garden Redesign', category: 'home', status: 'paused', progress: 20, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=200&h=200&fit=crop' },
+      { id: 'ho3', name: 'Smart Home Setup', category: 'home', status: 'plans', progress: 0, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=200&h=200&fit=crop' },
+      { id: 'l1', name: 'Learn Piano', category: 'leisure', status: 'live', progress: 25, stream: 'gold', scale: 'large', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=200&h=200&fit=crop' },
+      { id: 'l2', name: 'Photography Course', category: 'leisure', status: 'plans', progress: 0, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=200&h=200&fit=crop' },
+      { id: 'c1', name: 'Volunteer Program', category: 'community', status: 'live', progress: 50, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=200&h=200&fit=crop' },
+      { id: 'g1', name: 'Leadership Book Club', category: 'growth', status: 'live', progress: 70, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=200&h=200&fit=crop' },
+      { id: 'g2', name: 'Public Speaking', category: 'growth', status: 'plans', progress: 0, stream: 'gold', scale: 'large', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=200&h=200&fit=crop' },
+      { id: 'g3', name: 'Journaling Habit', category: 'growth', status: 'live', progress: 45, stream: 'bronze', scale: 'small', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1517842645767-c639042777db?w=200&h=200&fit=crop' },
+      { id: 'f1', name: 'Portfolio Review', category: 'finances', status: 'live', progress: 30, stream: 'gold', scale: 'large', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=200&h=200&fit=crop' },
+      { id: 'f2', name: 'Emergency Fund', category: 'finances', status: 'live', progress: 65, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=200&h=200&fit=crop' },
+      { id: 'p1', name: 'Values Clarification', category: 'purpose', status: 'live', progress: 55, stream: 'gold', scale: 'large', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1490730141103-6cac27abb37f?w=200&h=200&fit=crop' },
+      { id: 'p2', name: 'Mentorship Initiative', category: 'purpose', status: 'plans', progress: 0, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop' },
+    ];
+
+    // Initial regions - whimsical puzzle pieces
+    let regions = [
+      { id: 'r1', title: 'The Heart of My Life', subtitle: 'What matters most', x: 50, y: 30, width: 320, height: 280, color: 'rose', shape: 'shape-blob1' },
+      { id: 'r2', title: 'Growth Garden', subtitle: 'Seeds of potential', x: 400, y: 20, width: 280, height: 220, color: 'teal', shape: 'shape-blob2' },
+      { id: 'r3', title: 'Foundation', subtitle: 'Building blocks', x: 700, y: 50, width: 260, height: 260, color: 'gold', shape: 'shape-blob3' },
+      { id: 'r4', title: 'Dream Workshop', subtitle: 'Big ideas brewing', x: 80, y: 340, width: 300, height: 240, color: 'purple', shape: 'shape-blob4' },
+      { id: 'r5', title: 'Daily Rhythms', subtitle: 'The essentials', x: 420, y: 280, width: 260, height: 200, color: 'blue', shape: 'shape-blob5' },
+      { id: 'r6', title: 'On The Horizon', subtitle: 'Future adventures', x: 710, y: 340, width: 240, height: 220, color: 'green', shape: 'shape-blob1' },
+    ];
+
+    // Track placed projects: { projectId: { x, y, regionId } }
+    let placedProjects = {};
+
+    let currentSort = 'stream';
+    let draggedProject = null;
+    let draggedMapProject = null;
+    let resizingRegion = null;
+
+    // ===== GRADIENT GENERATOR =====
+    function generateGradient(seed, color) {
+      const gradients = [
+        `radial-gradient(circle at 30% 30%, ${color}66 0%, transparent 50%), 
+         radial-gradient(circle at 70% 70%, ${color}44 0%, transparent 40%), 
+         linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)`,
+        `radial-gradient(ellipse at 50% 0%, ${color}77 0%, transparent 60%), 
+         linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%)`,
+        `conic-gradient(from 180deg at 50% 50%, ${color}33, transparent, ${color}33), 
+         radial-gradient(circle, #2a2a2a 0%, #1a1a1a 100%)`,
+        `radial-gradient(circle at 20% 80%, ${color}55 0%, transparent 40%), 
+         radial-gradient(circle at 80% 20%, ${color}44 0%, transparent 30%), 
+         linear-gradient(45deg, #1a1a1a 0%, #252525 100%)`,
+      ];
+      return gradients[seed % gradients.length];
+    }
+
+    // ===== SORTING =====
+    function getSortedProjects() {
+      let sorted = [...projects];
+      
+      if (currentSort === 'stream') {
+        const streamOrder = { gold: 0, silver: 1, bronze: 2 };
+        sorted.sort((a, b) => streamOrder[a.stream] - streamOrder[b.stream]);
+      } else if (currentSort === 'category') {
+        sorted.sort((a, b) => a.category.localeCompare(b.category));
+      } else if (currentSort === 'status') {
+        sorted.sort((a, b) => (b.isActive ? 1 : 0) - (a.isActive ? 1 : 0));
+      } else if (currentSort === 'compound') {
+        sorted.sort((a, b) => {
+          if (a.isActive !== b.isActive) return b.isActive ? 1 : -1;
+          const streamOrder = { gold: 0, silver: 1, bronze: 2 };
+          return streamOrder[a.stream] - streamOrder[b.stream];
+        });
+      }
+      
+      return sorted;
+    }
+
+    function groupProjects(sortedProjects) {
+      const groups = {};
+      
+      if (currentSort === 'stream') {
+        groups['Gold'] = sortedProjects.filter(p => p.stream === 'gold');
+        groups['Silver'] = sortedProjects.filter(p => p.stream === 'silver');
+        groups['Bronze'] = sortedProjects.filter(p => p.stream === 'bronze');
+      } else if (currentSort === 'category') {
+        Object.keys(categoryNames).forEach(cat => {
+          const catProjects = sortedProjects.filter(p => p.category === cat);
+          if (catProjects.length) groups[categoryNames[cat]] = catProjects;
+        });
+      } else if (currentSort === 'status') {
+        groups['Active (On Table)'] = sortedProjects.filter(p => p.isActive);
+        groups['Ongoing'] = sortedProjects.filter(p => !p.isActive);
+      } else if (currentSort === 'compound') {
+        groups['Active — Gold'] = sortedProjects.filter(p => p.isActive && p.stream === 'gold');
+        groups['Active — Silver'] = sortedProjects.filter(p => p.isActive && p.stream === 'silver');
+        groups['Active — Bronze'] = sortedProjects.filter(p => p.isActive && p.stream === 'bronze');
+        groups['Ongoing — Gold'] = sortedProjects.filter(p => !p.isActive && p.stream === 'gold');
+        groups['Ongoing — Silver'] = sortedProjects.filter(p => !p.isActive && p.stream === 'silver');
+        groups['Ongoing — Bronze'] = sortedProjects.filter(p => !p.isActive && p.stream === 'bronze');
+      }
+      
+      // Remove empty groups
+      Object.keys(groups).forEach(key => {
+        if (groups[key].length === 0) delete groups[key];
+      });
+      
+      return groups;
+    }
+
+    // ===== RENDER PALETTE =====
+    function renderPalette() {
+      const container = document.getElementById('paletteProjects');
+      const sorted = getSortedProjects();
+      const groups = groupProjects(sorted);
+      
+      let html = '';
+      
+      Object.entries(groups).forEach(([groupName, groupProjects]) => {
+        html += `<div class="palette-section">
+          <div class="palette-section-title">${groupName}</div>`;
+        
+        groupProjects.forEach((proj, idx) => {
+          const color = categoryColors[proj.category];
+          const gradient = generateGradient(projects.indexOf(proj), color);
+          const isOnMap = placedProjects[proj.id] !== undefined;
+          
+          html += `
+            <div class="palette-project ${isOnMap ? 'on-map' : ''}"
+                 draggable="${!isOnMap}"
+                 data-project-id="${proj.id}"
+                 ondragstart="handlePaletteDragStart(event, '${proj.id}')"
+                 ondragend="handleDragEnd(event)">
+              <div class="palette-project-dot size-${proj.scale}" style="--project-color: ${color}">
+                <div class="project-image" style="background-image: url('${proj.image}')"></div>
+                <div class="gradient-fill" style="background: ${gradient}"></div>
+              </div>
+              <div class="palette-project-info">
+                <div class="palette-project-name stream-${proj.stream}">${proj.name}</div>
+                <div class="palette-project-meta">${categoryNames[proj.category]} • ${proj.progress}%</div>
+              </div>
+            </div>
+          `;
+        });
+        
+        html += '</div>';
+      });
+      
+      container.innerHTML = html;
+    }
+
+    // ===== RENDER REGIONS =====
+    function renderRegions() {
+      const container = document.getElementById('mapRegions');
+      
+      let html = regions.map(region => `
+        <div class="map-region ${region.shape}" 
+             data-region-id="${region.id}"
+             data-color="${region.color}"
+             style="left: ${region.x}px; top: ${region.y}px; width: ${region.width}px; height: ${region.height}px;"
+             ondragover="handleRegionDragOver(event)"
+             ondragleave="handleRegionDragLeave(event)"
+             ondrop="handleRegionDrop(event, '${region.id}')">
+          <div class="region-title-wrapper">
+            <input class="region-title" 
+                   value="${region.title}" 
+                   onchange="updateRegionTitle('${region.id}', this.value)"
+                   onclick="event.stopPropagation()">
+            <div class="region-subtitle">${region.subtitle}</div>
+          </div>
+          <div class="color-picker">
+            ${['rose', 'teal', 'gold', 'purple', 'blue', 'green', 'none'].map(c => `
+              <div class="color-swatch" data-color="${c}" onclick="setRegionColor('${region.id}', '${c}')"></div>
+            `).join('')}
+          </div>
+          <div class="resize-handle" onmousedown="startResize(event, '${region.id}')"></div>
+        </div>
+      `).join('');
+      
+      container.innerHTML = html;
+      
+      // Render placed projects
+      renderMapProjects();
+    }
+
+    // ===== RENDER MAP PROJECTS =====
+    function renderMapProjects() {
+      // Remove existing map projects
+      document.querySelectorAll('.map-project').forEach(el => el.remove());
+      
+      const regionsContainer = document.getElementById('mapRegions');
+      
+      Object.entries(placedProjects).forEach(([projectId, pos]) => {
+        const proj = projects.find(p => p.id === projectId);
+        if (!proj) return;
+        
+        const color = categoryColors[proj.category];
+        const gradient = generateGradient(projects.indexOf(proj), color);
+        
+        const div = document.createElement('div');
+        div.className = `map-project size-${proj.scale} stream-${proj.stream} ${proj.workAtHand ? 'work-at-hand' : ''}`;
+        div.style.cssText = `--project-color: ${color}; left: ${pos.x}px; top: ${pos.y}px;`;
+        div.dataset.projectId = projectId;
+        
+        div.innerHTML = `
+          <div class="project-image" style="background-image: url('${proj.image}')"></div>
+          <div class="gradient-fill" style="background: ${gradient}"></div>
+          <div class="map-project-label">${proj.name}</div>
+        `;
+        
+        // Drag events for repositioning
+        div.addEventListener('mousedown', (e) => startMapProjectDrag(e, projectId));
+        div.addEventListener('dblclick', (e) => showProjectPopup(e, projectId));
+        
+        regionsContainer.appendChild(div);
+      });
+    }
+
+    // ===== DRAG FROM PALETTE =====
+    function handlePaletteDragStart(e, projectId) {
+      draggedProject = projectId;
+      e.target.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleDragEnd(e) {
+      e.target.classList.remove('dragging');
+      draggedProject = null;
+    }
+
+    function handleRegionDragOver(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleRegionDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleRegionDrop(e, regionId) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      
+      if (!draggedProject) return;
+      
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      // Convert to position relative to map regions container
+      const region = regions.find(r => r.id === regionId);
+      placedProjects[draggedProject] = {
+        x: region.x + x,
+        y: region.y + y,
+        regionId: regionId
+      };
+      
+      renderPalette();
+      renderMapProjects();
+    }
+
+    // ===== DRAG ON MAP =====
+    let mapDragOffset = { x: 0, y: 0 };
+
+    function startMapProjectDrag(e, projectId) {
+      if (e.detail === 2) return; // Ignore double clicks
+      
+      draggedMapProject = projectId;
+      const el = e.currentTarget;
+      el.classList.add('dragging');
+      
+      const rect = el.getBoundingClientRect();
+      mapDragOffset = {
+        x: e.clientX - rect.left - rect.width / 2,
+        y: e.clientY - rect.top - rect.height / 2
+      };
+      
+      document.addEventListener('mousemove', handleMapProjectMove);
+      document.addEventListener('mouseup', handleMapProjectRelease);
+    }
+
+    function handleMapProjectMove(e) {
+      if (!draggedMapProject) return;
+      
+      const regionsRect = document.getElementById('mapRegions').getBoundingClientRect();
+      const x = e.clientX - regionsRect.left - mapDragOffset.x;
+      const y = e.clientY - regionsRect.top - mapDragOffset.y;
+      
+      placedProjects[draggedMapProject].x = Math.max(20, Math.min(x, regionsRect.width - 20));
+      placedProjects[draggedMapProject].y = Math.max(20, Math.min(y, regionsRect.height - 20));
+      
+      const el = document.querySelector(`[data-project-id="${draggedMapProject}"]`);
+      if (el) {
+        el.style.left = placedProjects[draggedMapProject].x + 'px';
+        el.style.top = placedProjects[draggedMapProject].y + 'px';
+      }
+    }
+
+    function handleMapProjectRelease(e) {
+      if (draggedMapProject) {
+        const el = document.querySelector(`[data-project-id="${draggedMapProject}"]`);
+        if (el) el.classList.remove('dragging');
+      }
+      draggedMapProject = null;
+      document.removeEventListener('mousemove', handleMapProjectMove);
+      document.removeEventListener('mouseup', handleMapProjectRelease);
+    }
+
+    // ===== REGION OPERATIONS =====
+    function updateRegionTitle(regionId, title) {
+      const region = regions.find(r => r.id === regionId);
+      if (region) region.title = title;
+    }
+
+    function setRegionColor(regionId, color) {
+      const region = regions.find(r => r.id === regionId);
+      if (region) {
+        region.color = color;
+        renderRegions();
+      }
+    }
+
+    function startResize(e, regionId) {
+      e.stopPropagation();
+      resizingRegion = regionId;
+      document.addEventListener('mousemove', handleResize);
+      document.addEventListener('mouseup', stopResize);
+    }
+
+    function handleResize(e) {
+      if (!resizingRegion) return;
+      
+      const region = regions.find(r => r.id === resizingRegion);
+      const regionsRect = document.getElementById('mapRegions').getBoundingClientRect();
+      
+      region.width = Math.max(150, e.clientX - regionsRect.left - region.x);
+      region.height = Math.max(120, e.clientY - regionsRect.top - region.y);
+      
+      const el = document.querySelector(`[data-region-id="${resizingRegion}"]`);
+      if (el) {
+        el.style.width = region.width + 'px';
+        el.style.height = region.height + 'px';
+      }
+    }
+
+    function stopResize() {
+      resizingRegion = null;
+      document.removeEventListener('mousemove', handleResize);
+      document.removeEventListener('mouseup', stopResize);
+    }
+
+    function addRegion() {
+      const newRegion = {
+        id: 'r' + Date.now(),
+        title: 'New Region',
+        subtitle: 'Click to rename',
+        x: 100 + Math.random() * 200,
+        y: 100 + Math.random() * 200,
+        width: 220,
+        height: 180,
+        color: 'none',
+        shape: ['shape-blob1', 'shape-blob2', 'shape-blob3', 'shape-blob4', 'shape-blob5'][Math.floor(Math.random() * 5)]
+      };
+      regions.push(newRegion);
+      renderRegions();
+    }
+
+    function resetMap() {
+      if (confirm('Reset all project placements and regions to default?')) {
+        placedProjects = {};
+        regions = [
+          { id: 'r1', title: 'The Heart of My Life', subtitle: 'What matters most', x: 50, y: 30, width: 320, height: 280, color: 'rose', shape: 'shape-blob1' },
+          { id: 'r2', title: 'Growth Garden', subtitle: 'Seeds of potential', x: 400, y: 20, width: 280, height: 220, color: 'teal', shape: 'shape-blob2' },
+          { id: 'r3', title: 'Foundation', subtitle: 'Building blocks', x: 700, y: 50, width: 260, height: 260, color: 'gold', shape: 'shape-blob3' },
+          { id: 'r4', title: 'Dream Workshop', subtitle: 'Big ideas brewing', x: 80, y: 340, width: 300, height: 240, color: 'purple', shape: 'shape-blob4' },
+          { id: 'r5', title: 'Daily Rhythms', subtitle: 'The essentials', x: 420, y: 280, width: 260, height: 200, color: 'blue', shape: 'shape-blob5' },
+          { id: 'r6', title: 'On The Horizon', subtitle: 'Future adventures', x: 710, y: 340, width: 240, height: 220, color: 'green', shape: 'shape-blob1' },
+        ];
+        renderRegions();
+        renderPalette();
+      }
+    }
+
+    // ===== PROJECT POPUP =====
+    function showProjectPopup(e, projectId) {
+      e.stopPropagation();
+      const proj = projects.find(p => p.id === projectId);
+      const color = categoryColors[proj.category];
+      const gradient = generateGradient(projects.indexOf(proj), color);
+      
+      const popup = document.getElementById('projectPopup');
+      popup.style.setProperty('--project-color', color);
+      
+      // Position near click
+      popup.style.left = Math.min(e.clientX + 10, window.innerWidth - 320) + 'px';
+      popup.style.top = Math.min(e.clientY + 10, window.innerHeight - 250) + 'px';
+      
+      popup.innerHTML = `
+        <div class="popup-header">
+          <div class="popup-image">
+            <div class="project-image" style="background-image: url('${proj.image}')"></div>
+            <div class="gradient-fill" style="background: ${gradient}; width: 100%; height: 100%;"></div>
+          </div>
+          <div>
+            <div class="popup-title" style="color: var(--${proj.stream}-light, var(--text-primary))">${proj.name}</div>
+            <div class="popup-meta">${categoryNames[proj.category]} • ${proj.stream.toUpperCase()}</div>
+          </div>
+        </div>
+        <div class="popup-progress">
+          <div class="popup-progress-bar">
+            <div class="popup-progress-fill" style="width: ${proj.progress}%"></div>
+          </div>
+          <div class="popup-progress-label">${proj.progress}% complete</div>
+        </div>
+        <div class="popup-actions">
+          <button class="popup-btn" onclick="closePopup()">Close</button>
+          <button class="popup-btn danger" onclick="removeFromMap('${proj.id}')">Remove from Map</button>
+        </div>
+      `;
+      
+      popup.classList.add('active');
+    }
+
+    function closePopup() {
+      document.getElementById('projectPopup').classList.remove('active');
+    }
+
+    function removeFromMap(projectId) {
+      delete placedProjects[projectId];
+      closePopup();
+      renderPalette();
+      renderMapProjects();
+    }
+
+    // Close popup when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.project-popup') && !e.target.closest('.map-project')) {
+        closePopup();
+      }
+    });
+
+    // ===== SORT CONTROLS =====
+    document.querySelectorAll('.sort-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSort = btn.dataset.sort;
+        renderPalette();
+      });
+    });
+
+    // Also allow dropping directly on canvas (outside regions)
+    document.getElementById('mapCanvas').addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+
+    document.getElementById('mapCanvas').addEventListener('drop', (e) => {
+      if (!draggedProject) return;
+      
+      const regionsRect = document.getElementById('mapRegions').getBoundingClientRect();
+      const x = e.clientX - regionsRect.left;
+      const y = e.clientY - regionsRect.top;
+      
+      if (x > 0 && y > 0 && x < regionsRect.width && y < regionsRect.height) {
+        placedProjects[draggedProject] = { x, y, regionId: null };
+        renderPalette();
+        renderMapProjects();
+      }
+    });
+
+    // ===== INIT =====
+    renderRegions();
+    renderPalette();
+  </script>
+</body>
+</html>
