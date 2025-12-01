@@ -862,8 +862,8 @@
       
       const popup = document.getElementById('projectPopup');
       popup.style.setProperty('--project-color', color);
-      popup.style.left = Math.min(e.clientX + 10, window.innerWidth - 270) + 'px';
-      popup.style.top = Math.min(e.clientY + 10, window.innerHeight - 180) + 'px';
+      popup.style.left = '-9999px';
+      popup.style.top = '-9999px';
       
       popup.innerHTML = `
         <div class="popup-header">
@@ -888,6 +888,17 @@
         </div>`;
       
       popup.classList.add('active');
+
+      requestAnimationFrame(() => {
+        const rect = popup.getBoundingClientRect();
+        const margin = 20;
+        const minLeft = 260; // keep clear of palette
+        const minTop = 60;   // keep clear of header
+        const left = Math.max(minLeft, window.innerWidth - rect.width - margin);
+        const top = Math.max(minTop, window.innerHeight - rect.height - margin);
+        popup.style.left = left + 'px';
+        popup.style.top = top + 'px';
+      });
     }
 
     function closePopup() {
