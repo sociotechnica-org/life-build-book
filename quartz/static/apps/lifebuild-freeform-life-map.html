@@ -166,6 +166,23 @@
     .palette-project-dot.size-large { width: 34px; height: 34px; }
     .palette-project-dot.size-small { width: 22px; height: 22px; }
 
+    .palette-project-dot .project-image,
+    .map-project .project-image,
+    .popup-image .project-image {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background-size: cover;
+      background-position: center;
+      filter: saturate(0.95) brightness(0.85);
+      transition: filter 0.3s ease;
+    }
+
+    .palette-project-dot:hover .project-image,
+    .map-project:hover .project-image {
+      filter: saturate(1.05) brightness(1);
+    }
+
     .palette-project-info { flex: 1; min-width: 0; }
 
     .palette-project-name {
@@ -197,4 +214,725 @@
       justify-content: center;
       padding: 20px;
     }
-*** End Patch
+
+    .map-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 45px;
+      background: linear-gradient(180deg, var(--bg-dark) 60%, transparent 100%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 50;
+    }
+
+    .map-title {
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: 2px;
+    }
+
+    .map-action-btn {
+      padding: 5px 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 5px;
+      color: var(--text-secondary);
+      font-size: 9px;
+      cursor: pointer;
+    }
+
+    .map-action-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-primary);
+    }
+
+    /* ===== TERRITORY MAP ===== */
+    .territory-map {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      width: 860px;
+      height: 540px;
+      background: #1e1e1e;
+      border-radius: 20px;
+      border: 3px solid rgba(255,255,255,0.12);
+      overflow: hidden;
+      box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    }
+
+    /* Territory zones */
+    .territory-zone {
+      position: relative;
+      transition: filter 0.2s ease;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .territory-zone.drag-over {
+      filter: brightness(1.4);
+    }
+
+    .territory-zone:hover {
+      filter: brightness(1.15);
+    }
+
+    /* Zone positions and colors */
+    .territory-zone:nth-child(1) { background: rgba(229, 115, 115, 0.12); border-radius: 16px 0 0 0; }
+    .territory-zone:nth-child(2) { background: rgba(38, 166, 154, 0.12); }
+    .territory-zone:nth-child(3) { background: rgba(212, 160, 23, 0.12); border-radius: 0 16px 0 0; }
+    .territory-zone:nth-child(4) { background: rgba(92, 75, 138, 0.12); }
+    .territory-zone:nth-child(5) { background: rgba(100, 181, 246, 0.12); }
+    .territory-zone:nth-child(6) { background: rgba(255, 112, 67, 0.12); }
+    .territory-zone:nth-child(7) { background: rgba(76, 175, 80, 0.12); border-radius: 0 0 0 16px; }
+    .territory-zone:nth-child(8) { background: rgba(161, 136, 127, 0.12); }
+    .territory-zone:nth-child(9) { background: rgba(156, 39, 176, 0.12); border-radius: 0 0 16px 0; }
+
+    /* Zone title colors */
+    .territory-zone:nth-child(1) .zone-title { color: #F48FB1; }
+    .territory-zone:nth-child(2) .zone-title { color: #80CBC4; }
+    .territory-zone:nth-child(3) .zone-title { color: #FFD54F; }
+    .territory-zone:nth-child(4) .zone-title { color: #B39DDB; }
+    .territory-zone:nth-child(5) .zone-title { color: #90CAF9; }
+    .territory-zone:nth-child(6) .zone-title { color: #FFAB91; }
+    .territory-zone:nth-child(7) .zone-title { color: #A5D6A7; }
+    .territory-zone:nth-child(8) .zone-title { color: #BCAAA4; }
+    .territory-zone:nth-child(9) .zone-title { color: #CE93D8; }
+
+    /* Zone content */
+    .zone-content {
+      height: 100%;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .zone-header {
+      margin-bottom: 6px;
+    }
+
+    .zone-title {
+      font-size: 11px;
+      font-weight: 600;
+      background: transparent;
+      border: none;
+      outline: none;
+      width: 100%;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: background 0.2s ease;
+    }
+
+    .zone-title:hover, .zone-title:focus {
+      background: rgba(0,0,0,0.3);
+    }
+
+    .zone-subtitle {
+      font-size: 8px;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      padding-left: 4px;
+    }
+
+    .zone-projects {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 6px;
+      padding: 4px 0;
+    }
+
+    /* ===== MAP PROJECTS ===== */
+    .map-project {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: grab;
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+      border: 3px solid var(--project-color);
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .map-project:active { cursor: grabbing; }
+
+    .map-project.size-small { width: 34px; height: 34px; }
+    .map-project.size-medium { width: 44px; height: 44px; }
+    .map-project.size-large { width: 54px; height: 54px; }
+
+    .map-project:hover {
+      transform: scale(1.15);
+      z-index: 30;
+    }
+
+    .map-project.dragging {
+      transform: scale(1.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      z-index: 100;
+      opacity: 0.9;
+    }
+
+    .map-project.work-at-hand.stream-gold {
+      animation: pulse-gold 2s ease-in-out infinite;
+    }
+
+    .map-project.work-at-hand.stream-silver {
+      animation: pulse-silver 2s ease-in-out infinite;
+    }
+
+    .map-project-label {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 8px;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      background: rgba(0,0,0,0.9);
+      padding: 2px 5px;
+      border-radius: 3px;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    .map-project.stream-gold .map-project-label { color: var(--gold-light); }
+    .map-project.stream-silver .map-project-label { color: var(--silver-light); }
+    .map-project.stream-bronze .map-project-label { color: var(--bronze-light); }
+
+    .map-project:hover .map-project-label { opacity: 1; }
+
+    .gradient-fill {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* ===== PROJECT POPUP ===== */
+    .project-popup {
+      position: fixed;
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 12px;
+      padding: 16px;
+      width: 250px;
+      z-index: 200;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      display: none;
+    }
+
+    .project-popup.active { display: block; }
+
+    .popup-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .popup-image {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 3px solid var(--project-color);
+      overflow: hidden;
+    }
+
+    .popup-title {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .popup-title.stream-gold { color: var(--gold-light); }
+    .popup-title.stream-silver { color: var(--silver-light); }
+    .popup-title.stream-bronze { color: var(--bronze-light); }
+
+    .popup-meta {
+      font-size: 9px;
+      color: var(--text-secondary);
+    }
+
+    .popup-progress {
+      margin: 8px 0;
+    }
+
+    .popup-progress-bar {
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .popup-progress-fill {
+      height: 100%;
+      background: var(--project-color);
+    }
+
+    .popup-progress-label {
+      font-size: 8px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+
+    .popup-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .popup-btn {
+      flex: 1;
+      padding: 6px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: transparent;
+      border-radius: 5px;
+      color: var(--text-secondary);
+      font-size: 9px;
+      cursor: pointer;
+    }
+
+    .popup-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-primary);
+    }
+
+    .popup-btn.danger:hover {
+      background: rgba(229, 115, 115, 0.2);
+      border-color: #E57373;
+      color: #E57373;
+    }
+
+    /* ===== INSTRUCTIONS ===== */
+    .instructions-toast {
+      position: fixed;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-card);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 10px;
+      color: var(--text-secondary);
+      z-index: 100;
+      display: flex;
+      gap: 12px;
+    }
+
+    .toast-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .toast-key {
+      background: rgba(255,255,255,0.1);
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Left Panel -->
+  <div class="project-palette">
+    <div class="palette-header">
+      <div class="palette-title">📦 Project Palette</div>
+      <div class="sort-controls">
+        <button class="sort-btn active" data-sort="stream">Stream</button>
+        <button class="sort-btn" data-sort="category">Category</button>
+        <button class="sort-btn" data-sort="status">Active</button>
+        <button class="sort-btn" data-sort="compound">Active×Stream</button>
+      </div>
+    </div>
+    <div class="palette-projects" id="paletteProjects"></div>
+  </div>
+
+  <!-- Main Canvas -->
+  <div class="map-canvas">
+    <div class="map-header">
+      <div class="map-title">MY LIFE MAP</div>
+      <button class="map-action-btn" onclick="resetMap()">Reset</button>
+    </div>
+
+    <!-- Territory Map - 3x3 Grid -->
+    <div class="territory-map" id="territoryMap">
+      <!-- 9 zones in a 3x3 grid -->
+      <div class="territory-zone" data-zone-id="z1"></div>
+      <div class="territory-zone" data-zone-id="z2"></div>
+      <div class="territory-zone" data-zone-id="z3"></div>
+      <div class="territory-zone" data-zone-id="z4"></div>
+      <div class="territory-zone" data-zone-id="z5"></div>
+      <div class="territory-zone" data-zone-id="z6"></div>
+      <div class="territory-zone" data-zone-id="z7"></div>
+      <div class="territory-zone" data-zone-id="z8"></div>
+      <div class="territory-zone" data-zone-id="z9"></div>
+    </div>
+  </div>
+
+  <!-- Project Popup -->
+  <div class="project-popup" id="projectPopup"></div>
+
+  <!-- Instructions -->
+  <div class="instructions-toast">
+    <div class="toast-item"><span class="toast-key">Drag</span> to map</div>
+    <div class="toast-item"><span class="toast-key">Drag</span> between zones</div>
+    <div class="toast-item"><span class="toast-key">Click</span> for details</div>
+  </div>
+
+  <script>
+    // ===== DATA =====
+    const categoryColors = {
+      health: '#4CAF50', relationships: '#E57373', home: '#A1887F', leisure: '#64B5F6',
+      community: '#FF7043', growth: '#26A69A', finances: '#D4A017', purpose: '#5C4B8A'
+    };
+
+    const categoryNames = {
+      health: 'Health', relationships: 'Relationships', home: 'Home', leisure: 'Leisure',
+      community: 'Community', growth: 'Growth', finances: 'Finances', purpose: 'Purpose'
+    };
+
+    const projects = [
+      { id: 'h1', name: 'Morning Routine', category: 'health', status: 'live', progress: 35, stream: 'silver', scale: 'medium', workAtHand: true, isActive: true,
+        image: 'https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=200&h=200&fit=crop' },
+      { id: 'h2', name: 'Annual Physical', category: 'health', status: 'plans', progress: 0, stream: 'bronze', scale: 'small', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=200&h=200&fit=crop' },
+      { id: 'h3', name: 'Meditation', category: 'health', status: 'live', progress: 60, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=200&h=200&fit=crop' },
+      { id: 'r1', name: 'Date Night', category: 'relationships', status: 'live', progress: 80, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=200&h=200&fit=crop' },
+      { id: 'r2', name: 'Family Reunion', category: 'relationships', status: 'plans', progress: 0, stream: 'gold', scale: 'large', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?w=200&h=200&fit=crop' },
+      { id: 'ho1', name: 'Kitchen Reno', category: 'home', status: 'live', progress: 42, stream: 'gold', scale: 'large', workAtHand: true, isActive: true,
+        image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=200&fit=crop' },
+      { id: 'ho2', name: 'Garden', category: 'home', status: 'paused', progress: 20, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=200&h=200&fit=crop' },
+      { id: 'ho3', name: 'Smart Home', category: 'home', status: 'plans', progress: 0, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1558002038-1055907df827?w=200&h=200&fit=crop' },
+      { id: 'l1', name: 'Learn Piano', category: 'leisure', status: 'live', progress: 25, stream: 'gold', scale: 'large', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=200&h=200&fit=crop' },
+      { id: 'l2', name: 'Photography', category: 'leisure', status: 'plans', progress: 0, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=200&h=200&fit=crop' },
+      { id: 'c1', name: 'Volunteering', category: 'community', status: 'live', progress: 50, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=200&h=200&fit=crop' },
+      { id: 'g1', name: 'Book Club', category: 'growth', status: 'live', progress: 70, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=200&h=200&fit=crop' },
+      { id: 'g2', name: 'Public Speaking', category: 'growth', status: 'plans', progress: 0, stream: 'gold', scale: 'large', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=200&h=200&fit=crop' },
+      { id: 'g3', name: 'Journaling', category: 'growth', status: 'live', progress: 45, stream: 'bronze', scale: 'small', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1517842645767-c639042777db?w=200&h=200&fit=crop' },
+      { id: 'f1', name: 'Portfolio Review', category: 'finances', status: 'live', progress: 30, stream: 'gold', scale: 'large', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=200&h=200&fit=crop' },
+      { id: 'f2', name: 'Emergency Fund', category: 'finances', status: 'live', progress: 65, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=200&h=200&fit=crop' },
+      { id: 'p1', name: 'Values Work', category: 'purpose', status: 'live', progress: 55, stream: 'gold', scale: 'large', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1490730141103-6cac27abb37f?w=200&h=200&fit=crop' },
+      { id: 'p2', name: 'Mentorship', category: 'purpose', status: 'plans', progress: 0, stream: 'silver', scale: 'medium', workAtHand: false, isActive: false,
+        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop' },
+    ];
+
+    const zones = [
+      { id: 'z1', title: 'Heart of My Life', subtitle: 'What matters most' },
+      { id: 'z2', title: 'Growth Garden', subtitle: 'Seeds of potential' },
+      { id: 'z3', title: 'Foundation', subtitle: 'Building blocks' },
+      { id: 'z4', title: 'Dream Workshop', subtitle: 'Big ideas' },
+      { id: 'z5', title: 'Daily Rhythms', subtitle: 'The essentials' },
+      { id: 'z6', title: 'Wild Territory', subtitle: 'Uncharted' },
+      { id: 'z7', title: 'Horizon', subtitle: 'Future' },
+      { id: 'z8', title: 'Rest & Restore', subtitle: 'Recharge' },
+      { id: 'z9', title: 'Adventure Zone', subtitle: 'Play & explore' },
+    ];
+
+    let placements = {};
+    let currentSort = 'stream';
+    let draggedProjectId = null;
+
+    // ===== GRADIENT =====
+    function generateGradient(seed, color) {
+      const gradients = [
+        `radial-gradient(circle at 30% 30%, ${color}66 0%, transparent 50%), radial-gradient(circle at 70% 70%, ${color}44 0%, transparent 40%), linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)`,
+        `radial-gradient(ellipse at 50% 0%, ${color}77 0%, transparent 60%), linear-gradient(180deg, #1a1a1a 0%, #2d2d2d 100%)`,
+        `conic-gradient(from 180deg at 50% 50%, ${color}33, transparent, ${color}33), radial-gradient(circle, #2a2a2a 0%, #1a1a1a 100%)`,
+        `radial-gradient(circle at 20% 80%, ${color}55 0%, transparent 40%), radial-gradient(circle at 80% 20%, ${color}44 0%, transparent 30%), linear-gradient(45deg, #1a1a1a 0%, #252525 100%)`,
+      ];
+      return gradients[seed % gradients.length];
+    }
+
+    // ===== SORTING =====
+    function getSortedProjects() {
+      let sorted = [...projects];
+      if (currentSort === 'stream') {
+        const order = { gold: 0, silver: 1, bronze: 2 };
+        sorted.sort((a, b) => order[a.stream] - order[b.stream]);
+      } else if (currentSort === 'category') {
+        sorted.sort((a, b) => a.category.localeCompare(b.category));
+      } else if (currentSort === 'status') {
+        sorted.sort((a, b) => (b.isActive ? 1 : 0) - (a.isActive ? 1 : 0));
+      } else if (currentSort === 'compound') {
+        sorted.sort((a, b) => {
+          if (a.isActive !== b.isActive) return b.isActive ? 1 : -1;
+          const order = { gold: 0, silver: 1, bronze: 2 };
+          return order[a.stream] - order[b.stream];
+        });
+      }
+      return sorted;
+    }
+
+    function groupProjects(sorted) {
+      const groups = {};
+      if (currentSort === 'stream') {
+        groups['Gold'] = sorted.filter(p => p.stream === 'gold');
+        groups['Silver'] = sorted.filter(p => p.stream === 'silver');
+        groups['Bronze'] = sorted.filter(p => p.stream === 'bronze');
+      } else if (currentSort === 'category') {
+        Object.keys(categoryNames).forEach(cat => {
+          const catProjects = sorted.filter(p => p.category === cat);
+          if (catProjects.length) groups[categoryNames[cat]] = catProjects;
+        });
+      } else if (currentSort === 'status') {
+        groups['Active'] = sorted.filter(p => p.isActive);
+        groups['Ongoing'] = sorted.filter(p => !p.isActive);
+      } else if (currentSort === 'compound') {
+        ['Active', 'Ongoing'].forEach(status => {
+          ['gold', 'silver', 'bronze'].forEach(stream => {
+            const key = `${status} ${stream.charAt(0).toUpperCase() + stream.slice(1)}`;
+            const filtered = sorted.filter(p => (status === 'Active' ? p.isActive : !p.isActive) && p.stream === stream);
+            if (filtered.length) groups[key] = filtered;
+          });
+        });
+      }
+      return groups;
+    }
+
+    // ===== RENDER PALETTE =====
+    function renderPalette() {
+      const container = document.getElementById('paletteProjects');
+      const sorted = getSortedProjects();
+      const groups = groupProjects(sorted);
+      
+      let html = '';
+      Object.entries(groups).forEach(([name, projs]) => {
+        html += `<div class="palette-section"><div class="palette-section-title">${name}</div>`;
+        projs.forEach(proj => {
+          const color = categoryColors[proj.category];
+          const gradient = generateGradient(projects.indexOf(proj), color);
+          const onMap = placements[proj.id] !== undefined;
+          html += `
+            <div class="palette-project ${onMap ? 'on-map' : ''}" 
+                 draggable="${!onMap}" 
+                 data-project-id="${proj.id}">
+              <div class="palette-project-dot size-${proj.scale}" style="--project-color: ${color}">
+                <div class="project-image" style="background-image: url('${proj.image}')"></div>
+                <div class="gradient-fill" style="background: ${gradient}"></div>
+              </div>
+              <div class="palette-project-info">
+                <div class="palette-project-name stream-${proj.stream}">${proj.name}</div>
+                <div class="palette-project-meta">${categoryNames[proj.category]} • ${proj.progress}%</div>
+              </div>
+            </div>`;
+        });
+        html += '</div>';
+      });
+      container.innerHTML = html;
+
+      container.querySelectorAll('.palette-project[draggable="true"]').forEach(el => {
+        el.addEventListener('dragstart', handleDragStart);
+        el.addEventListener('dragend', handleDragEnd);
+      });
+    }
+
+    // ===== RENDER ZONES =====
+    function renderZones() {
+      document.querySelectorAll('.territory-zone').forEach(zoneEl => {
+        const zoneId = zoneEl.dataset.zoneId;
+        const zone = zones.find(z => z.id === zoneId);
+        if (!zone) return;
+        
+        const zoneProjects = Object.entries(placements)
+          .filter(([_, zId]) => zId === zoneId)
+          .map(([pId]) => projects.find(p => p.id === pId))
+          .filter(Boolean);
+
+        zoneEl.innerHTML = `
+          <div class="zone-content">
+            <div class="zone-header">
+              <input class="zone-title" value="${zone.title}" 
+                     onchange="updateZoneTitle('${zoneId}', this.value)">
+              <div class="zone-subtitle">${zone.subtitle}</div>
+            </div>
+            <div class="zone-projects" data-zone-id="${zoneId}">
+              ${zoneProjects.map(proj => renderMapProject(proj)).join('')}
+            </div>
+          </div>
+        `;
+
+        zoneEl.addEventListener('dragover', handleZoneDragOver);
+        zoneEl.addEventListener('dragleave', handleZoneDragLeave);
+        zoneEl.addEventListener('drop', handleZoneDrop);
+      });
+
+      document.querySelectorAll('.map-project').forEach(el => {
+        el.addEventListener('dragstart', handleProjectDragStart);
+        el.addEventListener('dragend', handleProjectDragEnd);
+        el.addEventListener('click', handleProjectClick);
+      });
+    }
+
+    function renderMapProject(proj) {
+      const color = categoryColors[proj.category];
+      const gradient = generateGradient(projects.indexOf(proj), color);
+      return `
+        <div class="map-project size-${proj.scale} stream-${proj.stream} ${proj.workAtHand ? 'work-at-hand' : ''}"
+             style="--project-color: ${color}"
+             data-project-id="${proj.id}"
+             draggable="true">
+          <div class="project-image" style="background-image: url('${proj.image}')"></div>
+          <div class="gradient-fill" style="background: ${gradient}"></div>
+          <div class="map-project-label">${proj.name}</div>
+        </div>`;
+    }
+
+    // ===== DRAG FROM PALETTE =====
+    function handleDragStart(e) {
+      draggedProjectId = e.currentTarget.dataset.projectId;
+      e.currentTarget.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', draggedProjectId);
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleDragEnd(e) {
+      e.currentTarget.classList.remove('dragging');
+    }
+
+    // ===== DRAG FROM MAP PROJECT =====
+    function handleProjectDragStart(e) {
+      draggedProjectId = e.currentTarget.dataset.projectId;
+      e.currentTarget.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', draggedProjectId);
+      e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function handleProjectDragEnd(e) {
+      e.currentTarget.classList.remove('dragging');
+    }
+
+    // ===== ZONE DROP =====
+    function handleZoneDragOver(e) {
+      e.preventDefault();
+      e.currentTarget.classList.add('drag-over');
+    }
+
+    function handleZoneDragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
+    }
+
+    function handleZoneDrop(e) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
+      
+      const zoneId = e.currentTarget.dataset.zoneId;
+      const projectId = e.dataTransfer.getData('text/plain') || draggedProjectId;
+      
+      if (projectId && zoneId) {
+        placements[projectId] = zoneId;
+        draggedProjectId = null;
+        renderPalette();
+        renderZones();
+      }
+    }
+
+    // ===== PROJECT CLICK =====
+    function handleProjectClick(e) {
+      e.stopPropagation();
+      const projectId = e.currentTarget.dataset.projectId;
+      showProjectPopup(e, projectId);
+    }
+
+    function showProjectPopup(e, projectId) {
+      const proj = projects.find(p => p.id === projectId);
+      const color = categoryColors[proj.category];
+      const gradient = generateGradient(projects.indexOf(proj), color);
+      
+      const popup = document.getElementById('projectPopup');
+      popup.style.setProperty('--project-color', color);
+      popup.style.left = Math.min(e.clientX + 10, window.innerWidth - 270) + 'px';
+      popup.style.top = Math.min(e.clientY + 10, window.innerHeight - 180) + 'px';
+      
+      popup.innerHTML = `
+        <div class="popup-header">
+          <div class="popup-image">
+            <div class="project-image" style="background-image: url('${proj.image}')"></div>
+            <div class="gradient-fill" style="background: ${gradient}; width:100%; height:100%;"></div>
+          </div>
+          <div>
+            <div class="popup-title stream-${proj.stream}">${proj.name}</div>
+            <div class="popup-meta">${categoryNames[proj.category]} • ${proj.stream.toUpperCase()}</div>
+          </div>
+        </div>
+        <div class="popup-progress">
+          <div class="popup-progress-bar">
+            <div class="popup-progress-fill" style="width: ${proj.progress}%"></div>
+          </div>
+          <div class="popup-progress-label">${proj.progress}% complete</div>
+        </div>
+        <div class="popup-actions">
+          <button class="popup-btn" onclick="closePopup()">Close</button>
+          <button class="popup-btn danger" onclick="removeFromMap('${proj.id}')">Remove</button>
+        </div>`;
+      
+      popup.classList.add('active');
+    }
+
+    function closePopup() {
+      document.getElementById('projectPopup').classList.remove('active');
+    }
+
+    function removeFromMap(projectId) {
+      delete placements[projectId];
+      closePopup();
+      renderPalette();
+      renderZones();
+    }
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.project-popup') && !e.target.closest('.map-project')) {
+        closePopup();
+      }
+    });
+
+    function updateZoneTitle(zoneId, title) {
+      const zone = zones.find(z => z.id === zoneId);
+      if (zone) zone.title = title;
+    }
+
+    function resetMap() {
+      if (confirm('Remove all projects from the map?')) {
+        placements = {};
+        renderPalette();
+        renderZones();
+      }
+    }
+
+    // ===== SORT CONTROLS =====
+    document.querySelectorAll('.sort-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentSort = btn.dataset.sort;
+        renderPalette();
+      });
+    });
+
+    // ===== INIT =====
+    renderPalette();
+    renderZones();
+  </script>
+</body>
+</html>
