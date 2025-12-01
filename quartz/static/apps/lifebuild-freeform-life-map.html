@@ -889,15 +889,24 @@
       
       popup.classList.add('active');
 
+      const clickX = e.clientX;
+      const clickY = e.clientY;
+
       requestAnimationFrame(() => {
         const rect = popup.getBoundingClientRect();
-        const margin = 20;
-        const minLeft = 260; // keep clear of palette
-        const minTop = 60;   // keep clear of header
-        const left = Math.max(minLeft, window.innerWidth - rect.width - margin);
-        const top = Math.max(minTop, window.innerHeight - rect.height - margin);
-        popup.style.left = left + 'px';
-        popup.style.top = top + 'px';
+        const margin = 16;
+        const minLeft = 260;
+        const minTop = 60;
+        let left = clickX + 16;
+        let top = clickY + 16;
+        if (left + rect.width + margin > window.innerWidth) {
+          left = window.innerWidth - rect.width - margin;
+        }
+        if (top + rect.height + margin > window.innerHeight) {
+          top = window.innerHeight - rect.height - margin;
+        }
+        popup.style.left = Math.max(minLeft, left) + 'px';
+        popup.style.top = Math.max(minTop, top) + 'px';
       });
     }
 
