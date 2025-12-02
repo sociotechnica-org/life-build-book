@@ -49,3 +49,25 @@ Play with the drag-and-drop palette where whimsical regions, editable titles, an
   </a>
   <p style="margin-top: 1rem; color: #635c52; font-style: italic; font-size: 0.9375rem;">Drag projects from the palette, resize or recolor regions, and double-click nodes for quick detail popups.</p>
 </div>
+
+## The AI Personal Empire Tour
+
+Glide through a seven-screen, starfield-backed sizzle reel that frames LifeSquared like a game: scoreboard machines, chaos-to-order overlays, the advisor roster, work crew briefs, and a brick-by-brick finale.
+
+<div style="background: linear-gradient(135deg, #f5f3f0 0%, #e8e4de 100%); padding: 2rem; border-radius: 0.75rem; margin: 2rem 0; border-left: 3px solid #a67c52;">
+  <a href="/static/apps/lifesquared-personal-empire.html" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #2f2b27; color: #faf9f7; padding: 0.875rem 2rem; border: none; border-radius: 0.5rem; font-weight: 500; text-decoration: none; transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 1px 3px rgba(47, 43, 39, 0.2);">
+    → Explore the AI Personal Empire Tour
+  </a>
+  <p style="margin-top: 1rem; color: #635c52; font-style: italic; font-size: 0.9375rem;">Click through the animated narrative—from gamified promise to advisor intros, crew workloads, orbital empire map, and a \"Let’s Get Building\" CTA.</p>
+</div>
+
+## The LifeSquared Journey Builder
+
+Prototype the Jarvis-guided onboarding that walks prospects through life-map triage, capacity sliders, planning horizons, a weekly puzzle, and an auto-generated profile.
+
+<div style="background: linear-gradient(135deg, #f5f3f0 0%, #e8e4de 100%); padding: 2rem; border-radius: 0.75rem; margin: 2rem 0; border-left: 3px solid #a67c52;">
+  <a href="/static/apps/lifesquared-journey-builder.html" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #2f2b27; color: #faf9f7; padding: 0.875rem 2rem; border: none; border-radius: 0.5rem; font-weight: 500; text-decoration: none; transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 1px 3px rgba(47, 43, 39, 0.2);">
+    → Explore the LifeSquared Journey Builder
+  </a>
+  <p style="margin-top: 1rem; color: #635c52; font-style: italic; font-size: 0.9375rem;">Run the five-chapter experience to see drag-and-drop life areas, energy diagnostics, horizon sorting, weekly puzzle packing, and a personalized quest.</p>
+</div>

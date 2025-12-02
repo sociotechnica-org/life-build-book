@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LifeSquared Journey Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 900px;
+            padding: 30px;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .jarvis-box {
+            background: linear-gradient(135deg, #6b73ff 0%, #000dff 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 15px;
+            line-height: 1.6;
+            position: relative;
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-glow {
+            0%,
+            100% {
+                box-shadow: 0 5px 15px rgba(107, 115, 255, 0.4);
+            }
+            50% {
+                box-shadow: 0 5px 20px rgba(107, 115, 255, 0.6);
+            }
+        }
+
+        .jarvis-box::before {
+            content: "🤖 JARVIS:";
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 10px 10px 0 0;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .tab.locked {
+            background: #ddd;
+            color: #999;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .tab.locked::after {
+            content: "🔒";
+            margin-left: 5px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Life Map Styles */
+        .life-map {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 20px 0;
+            min-height: 400px;
+        }
+
+        .life-area {
+            background: #f8f9fa;
+            border: 2px dashed #dee2e6;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s;
+            min-height: 120px;
+        }
+
+        .life-area.has-token {
+            transform: scale(1.02);
+        }
+
+        .life-area h3 {
+            margin-bottom: 15px;
+            color: #495057;
+            font-size: 16px;
+        }
+
+        .token-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .token {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: transform 0.3s;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .token:hover {
+            transform: scale(1.1);
+        }
+
+        .token.dragging {
+            cursor: grabbing;
+            opacity: 0.5;
+        }
+
+        .token.red {
+            background: #dc3545;
+        }
+        .token.yellow {
+            background: #ffc107;
+        }
+        .token.green {
+            background: #28a745;
+        }
+        .token.gray {
+            background: #6c757d;
+        }
+
+        .token-slot {
+            width: 40px;
+            height: 40px;
+            border: 2px dashed #ced4da;
+            border-radius: 50%;
+            margin: 10px auto;
+        }
+
+        /* Energy Dashboard Styles */
+        .dashboard {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .metric {
+            margin-bottom: 25px;
+        }
+
+        .metric-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .slider-container {
+            position: relative;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #dc3545, #ffc107, #28a745);
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        /* Time Horizon Styles */
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #dee2e6;
+            z-index: 0;
+        }
+
+        .time-bucket {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .bucket-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .bucket-drop {
+            background: white;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            min-height: 80px;
+            padding: 10px;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bucket-drop.active {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+
+        .task-chip {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: grab;
+            transition: all 0.3s;
+        }
+
+        .task-chip:hover {
+            transform: scale(1.05);
+        }
+
+        /* Puzzle Board Styles */
+        .puzzle-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        .week-container {
+            background: #f8f9fa;
+            border: 3px solid #495057;
+            border-radius: 10px;
+            padding: 20px;
+            min-height: 300px;
+            position: relative;
+        }
+
+        .week-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 250px;
+        }
+
+        .puzzle-piece {
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            font-size: 14px;
+            cursor: grab;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .puzzle-piece.work {
+            background: #3498db;
+        }
+        .puzzle-piece.health {
+            background: #2ecc71;
+        }
+        .puzzle-piece.family {
+            background: #e74c3c;
+        }
+        .puzzle-piece.admin {
+            background: #95a5a6;
+        }
+        .puzzle-piece.social {
+            background: #f39c12;
+        }
+        .puzzle-piece.growth {
+            background: #9b59b6;
+        }
+
+        .puzzle-piece:hover {
+            transform: translateX(5px);
+        }
+
+        .piece-size {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+        }
+
+        .pieces-available {
+            background: white;
+            border: 2px dashed #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        /* Summary Styles */
+        .summary {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .profile-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .trait-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .trait {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .trait-value {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .completion-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-left: 10px;
+            animation: bounceIn 0.5s;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0);
+            }
+            60% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 LifeSquared Journey Builder</h1>
+            <p style="color: #6c757d;">Let's map your path to a sustainable life</p>
+        </div>
+
+        <div class="jarvis-box" id="jarvisMessage">
+            Welcome! I'm Jarvis, your strategic life architect. We'll build your personal operating system together through interactive exercises. Each step unlocks the next, and I'll learn about your unique situation as we go. Ready to begin?
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('map')" id="tab-map">
+                1. Life Map
+            </button>
+            <button class="tab locked" onclick="switchTab('energy')" id="tab-energy">
+                2. Energy Levels
+            </button>
+            <button class="tab locked" onclick="switchTab('horizon')" id="tab-horizon">
+                3. Time Horizon
+            </button>
+            <button class="tab locked" onclick="switchTab('puzzle')" id="tab-puzzle">
+                4. Capacity Puzzle
+            </button>
+            <button class="tab locked" onclick="switchTab('summary')" id="tab-summary">
+                5. Your Profile
+            </button>
+        </div>
+
+        <!-- Life Map Tab -->
+        <div class="tab-content active" id="map-content">
+            <h2>Your Life Territory Map</h2>
+            <p style="color: #6c757d; margin-bottom: 20px;">Drag tokens onto life areas based on their current state</p>
+
+            <div class="token-container">
+                <div class="token red" draggable="true" data-type="red">🔴</div>
+                <div class="token red" draggable="true" data-type="red">🔴</div>
+                <div class="token yellow" draggable="true" data-type="yellow">🟡</div>
+                <div class="token yellow" draggable="true" data-type="yellow">🟡</div>
+                <div class="token green" draggable="true" data-type="green">🟢</div>
+                <div class="token gray" draggable="true" data-type="gray">⚫</div>
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px; font-size: 14px;">
+                <span>🔴 Crisis/Pain</span>
+                <span>🟡 Needs Attention</span>
+                <span>🟢 Stable/Good</span>
+                <span>⚫ Dormant/Ignored</span>
+            </div>
+
+            <div class="life-map">
+                <div class="life-area" data-area="health">
+                    <h3>🏃 Health & Wellness</h3>
+                    <div class="token-slot"></div>
+                </div>
+                <div class="life-area" data-area="work">
+                    <h3>💼 Work & Career</h3>
+                    <div class="token-slot"></div>
+                </div>
+                <div class="life-area" data-area="relationships">
+                    <h3>❤️ Relationships</h3>
+                    <div class="token-slot"></div>
+                </div>
+                <div class="life-area" data-area="finances">
+                    <h3>💰 Finances</h3>
+                    <div class="token-slot"></div>
+                </div>
+                <div class="life-area" data-area="growth">
+                    <h3>🌱 Personal Growth</h3>
+                    <div class="token-slot"></div>
+                </div>
+                <div class="life-area" data-area="home">
+                    <h3>🏠 Home & Environment</h3>
+                    <div class="token-slot"></div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button onclick="completeLifeMap()">Continue to Energy Assessment</button>
+            </div>
+        </div>
+
+        <!-- Energy Dashboard Tab -->
+        <div class="tab-content" id="energy-content">
+            <h2>Your Current Capacity</h2>
+            <p style="color: #6c757d; margin-bottom: 20px;">Adjust these to match how you're feeling right now</p>
+
+            <div class="dashboard">
+                <div class="metric">
+                    <div class="metric-label">
+                        <span>⚡ Daily Energy</span>
+                        <span id="energy-value">50%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="50" id="energy-slider" oninput="updateSlider('energy', this.value)" />
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">
+                        <span>🧠 Mental Bandwidth</span>
+                        <span id="bandwidth-value">50%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="50" id="bandwidth-slider" oninput="updateSlider('bandwidth', this.value)" />
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">
+                        <span>🎮 Sense of Control</span>
+                        <span id="control-value">50%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="50" id="control-slider" oninput="updateSlider('control', this.value)" />
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">
+                        <span>🎯 Goal Clarity</span>
+                        <span id="clarity-value">50%</span>
+                    </div>
+                    <input type="range" min="0" max="100" value="50" id="clarity-slider" oninput="updateSlider('clarity', this.value)" />
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">
+                        <span>📈 Current Momentum</span>
+                        <span id="momentum-value">Neutral</span>
+                    </div>
+                    <input type="range" min="-50" max="50" value="0" id="momentum-slider" oninput="updateMomentum(this.value)" />
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; color: #6c757d; margin-top: 5px;">
+                        <span>← Declining</span>
+                        <span>Static</span>
+                        <span>Improving →</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button onclick="switchTab('map')">← Back</button>
+                <button onclick="completeEnergy()">Continue to Time Planning</button>
+            </div>
+        </div>
+
+        <!-- Time Horizon Tab -->
+        <div class="tab-content" id="horizon-content">
+            <h2>Your Planning Horizon</h2>
+            <p style="color: #6c757d; margin-bottom: 20px;">Drag tasks to when you can realistically think about them</p>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; justify-content: center;">
+                <div class="task-chip" draggable="true" data-task="urgent-work">Urgent Work Item</div>
+                <div class="task-chip" draggable="true" data-task="health-goal">Exercise Routine</div>
+                <div class="task-chip" draggable="true" data-task="family-time">Family Planning</div>
+                <div class="task-chip" draggable="true" data-task="financial">Budget Review</div>
+                <div class="task-chip" draggable="true" data-task="big-project">Major Project</div>
+                <div class="task-chip" draggable="true" data-task="vacation">Vacation Plans</div>
+            </div>
+
+            <div class="timeline">
+                <div class="time-bucket">
+                    <div class="bucket-label">Today</div>
+                    <div class="bucket-drop" data-horizon="today"></div>
+                </div>
+                <div class="time-bucket">
+                    <div class="bucket-label">This Week</div>
+                    <div class="bucket-drop" data-horizon="week"></div>
+                </div>
+                <div class="time-bucket">
+                    <div class="bucket-label">This Quarter</div>
+                    <div class="bucket-drop" data-horizon="quarter"></div>
+                </div>
+                <div class="time-bucket">
+                    <div class="bucket-label">This Year</div>
+                    <div class="bucket-drop" data-horizon="year"></div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button onclick="switchTab('energy')">← Back</button>
+                <button onclick="completeHorizon()">Continue to Capacity Puzzle</button>
+            </div>
+        </div>
+
+        <!-- Puzzle Board Tab -->
+        <div class="tab-content" id="puzzle-content">
+            <h2>Your Weekly Capacity</h2>
+            <p style="color: #6c757d; margin-bottom: 20px;">Drag puzzle pieces to fill your week without exceeding 100%</p>
+
+            <div class="puzzle-container">
+                <div class="week-container">
+                    <h3>🗓️ Your Week</h3>
+                    <p id="capacity-label">Capacity Used: <span id="capacity-meter">0%</span></p>
+                    <div class="week-content" id="week-drop">
+                        <p style="color: #6c757d;">Drop pieces here</p>
+                    </div>
+                </div>
+
+                <div class="pieces-available" id="pieces-pool">
+                    <h3 style="margin-bottom: 1rem;">Available Pieces</h3>
+                    <div class="puzzle-piece work" draggable="true" data-size="30">
+                        Deep Work <span class="piece-size">30%</span>
+                    </div>
+                    <div class="puzzle-piece work" draggable="true" data-size="20">
+                        Meetings <span class="piece-size">20%</span>
+                    </div>
+                    <div class="puzzle-piece health" draggable="true" data-size="15">
+                        Health Rituals <span class="piece-size">15%</span>
+                    </div>
+                    <div class="puzzle-piece family" draggable="true" data-size="15">
+                        Family Time <span class="piece-size">15%</span>
+                    </div>
+                    <div class="puzzle-piece admin" draggable="true" data-size="10">
+                        Admin Work <span class="piece-size">10%</span>
+                    </div>
+                    <div class="puzzle-piece social" draggable="true" data-size="10">
+                        Social Life <span class="piece-size">10%</span>
+                    </div>
+                    <div class="puzzle-piece growth" draggable="true" data-size="10">
+                        Learning <span class="piece-size">10%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button onclick="switchTab('horizon')">← Back</button>
+                <button onclick="completePuzzle()">See Your Profile</button>
+            </div>
+        </div>
+
+        <!-- Summary Tab -->
+        <div class="tab-content" id="summary-content">
+            <h2>Your LifeSquared Profile</h2>
+
+            <div class="summary">
+                <div class="profile-card">
+                    <h3>🎯 Your Player Type: <span id="player-type">Calculating...</span></h3>
+                    <p id="player-description" style="margin-top: 10px; color: #6c757d;">Analyzing your patterns...</p>
+                </div>
+
+                <div class="profile-card">
+                    <h3>📊 Your Trait Scores</h3>
+                    <div class="trait-grid" id="trait-grid">
+                        <!-- Traits will be populated here -->
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <h3>🗺️ Focus Areas</h3>
+                    <div id="focus-areas" style="margin-top: 10px;">
+                        <!-- Focus areas will be listed here -->
+                    </div>
+                </div>
+
+                <div class="profile-card">
+                    <h3>🎮 Recommended First Quest</h3>
+                    <p id="first-quest" style="margin-top: 10px; font-style: italic;">
+                        Calculating your optimal starting point...
+                    </p>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button onclick="switchTab('puzzle')">← Back</button>
+                <button onclick="beginJourney()" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                    Begin Your Journey 🚀
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let userProfile = {
+            lifeAreas: {},
+            traits: {
+                energy: 50,
+                bandwidth: 50,
+                control: 50,
+                clarity: 50,
+                momentum: 0,
+                scopeTolerance: 5,
+                timeHorizon: 30,
+                support: 50,
+            },
+            timeAllocation: {},
+            weeklyCapacity: 0,
+            weeklyTasks: [],
+        };
+
+        // Tab management
+        function switchTab(tabName) {
+            // Check if tab is locked
+            const tabElement = document.getElementById(`tab-${tabName}`);
+            if (tabElement.classList.contains('locked')) {
+                return;
+            }
+
+            // Hide all content
+            document.querySelectorAll('.tab-content').forEach((content) => {
+                content.classList.remove('active');
+            });
+
+            // Remove active from all tabs
+            document.querySelectorAll('.tab').forEach((tab) => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected content and tab
+            document.getElementById(`${tabName}-content`).classList.add('active');
+            tabElement.classList.add('active');
+        }
+
+        function unlockTab(tabName) {
+            const tab = document.getElementById(`tab-${tabName}`);
+            tab.classList.remove('locked');
+            const badge = document.createElement('span');
+            badge.className = 'completion-badge';
+            badge.textContent = '✓';
+            if (!tab.querySelector('.completion-badge')) {
+                tab.appendChild(badge);
+            }
+        }
+
+        // Life Map Drag and Drop
+        let draggedToken = null;
+
+        document.querySelectorAll('.token').forEach((token) => {
+            token.addEventListener('dragstart', (e) => {
+                draggedToken = e.target;
+                e.target.classList.add('dragging');
+            });
+
+            token.addEventListener('dragend', (e) => {
+                e.target.classList.remove('dragging');
+            });
+        });
+
+        document.querySelectorAll('.life-area').forEach((area) => {
+            area.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                area.style.background = '#e3f2fd';
+            });
+
+            area.addEventListener('dragleave', (e) => {
+                area.style.background = '#f8f9fa';
+            });
+
+            area.addEventListener('drop', (e) => {
+                e.preventDefault();
+                area.style.background = '#f8f9fa';
+
+                if (draggedToken && draggedToken.classList.contains('token')) {
+                    const slot = area.querySelector('.token-slot');
+                    const existingToken = slot.querySelector('.token');
+                    if (existingToken) {
+                        document.querySelector('.token-container').appendChild(existingToken);
+                    }
+                    slot.appendChild(draggedToken);
+                    area.classList.add('has-token');
+
+                    // Record the placement
+                    const areaName = area.dataset.area;
+                    const tokenType = draggedToken.dataset.type;
+                    userProfile.lifeAreas[areaName] = tokenType;
+                }
+            });
+        });
+
+        function completeLifeMap() {
+            // Analyze the map
+            const redAreas = Object.entries(userProfile.lifeAreas).filter(([k, v]) => v === 'red');
+            const yellowAreas = Object.entries(userProfile.lifeAreas).filter(([k, v]) => v === 'yellow');
+
+            let message = 'Interesting pattern! ';
+            if (redAreas.length > 2) {
+                message += `I see you're facing challenges in multiple areas, especially ${redAreas
+                    .map(([k]) => k)
+                    .join(' and ')}. You're likely feeling overwhelmed. `;
+                userProfile.traits.energy = 30;
+                userProfile.traits.control = 25;
+            } else if (redAreas.length === 1) {
+                message += `You have a specific pain point in ${redAreas[0][0]}. This focused challenge is very addressable. `;
+                userProfile.traits.clarity = 75;
+            } else {
+                message += "Your life seems relatively stable. You're here for optimization rather than crisis management. ";
+                userProfile.traits.energy = 70;
+                userProfile.traits.clarity = 60;
+            }
+
+            message += "Now let's understand your current capacity levels.";
+
+            document.getElementById('jarvisMessage').innerHTML = `🤖 JARVIS: ${message}`;
+
+            unlockTab('energy');
+            switchTab('energy');
+        }
+
+        // Energy Dashboard
+        function updateSlider(trait, value) {
+            document.getElementById(`${trait}-value`).textContent = `${value}%`;
+            userProfile.traits[trait] = parseInt(value, 10);
+        }
+
+        function updateMomentum(value) {
+            const intValue = parseInt(value, 10);
+            let label = 'Neutral';
+            if (intValue < -20) label = 'Declining';
+            else if (intValue < -5) label = 'Slightly Negative';
+            else if (intValue > 20) label = 'Building';
+            else if (intValue > 5) label = 'Slightly Positive';
+
+            document.getElementById('momentum-value').textContent = label;
+            userProfile.traits.momentum = intValue;
+        }
+
+        function completeEnergy() {
+            // Analyze energy patterns
+            const avgEnergy = (userProfile.traits.energy + userProfile.traits.bandwidth) / 2;
+            let message = '';
+
+            if (avgEnergy < 30) {
+                message = "Your energy reserves are critically low. We need to focus on recovery and saying 'no' to non-essentials. ";
+            } else if (avgEnergy < 60) {
+                message = "You have moderate capacity. We'll need to be strategic about what we take on. ";
+            } else {
+                message = 'Great energy levels! You have room to take on meaningful challenges. ';
+            }
+
+            if (userProfile.traits.control < 30) {
+                message += "I also notice you feel limited control. We'll work on reclaiming your agency. ";
+            }
+
+            message += "Let's see how far ahead you can realistically plan.";
+
+            document.getElementById('jarvisMessage').innerHTML = `🤖 JARVIS: ${message}`;
+
+            unlockTab('horizon');
+            switchTab('horizon');
+        }
+
+        // Time Horizon
+        let draggedTask = null;
+
+        document.querySelectorAll('.task-chip').forEach((chip) => {
+            chip.addEventListener('dragstart', (e) => {
+                draggedTask = e.target;
+                e.dataTransfer.effectAllowed = 'move';
+            });
+        });
+
+        document.querySelectorAll('.bucket-drop').forEach((bucket) => {
+            bucket.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                bucket.classList.add('active');
+            });
+
+            bucket.addEventListener('dragleave', () => {
+                bucket.classList.remove('active');
+            });
+
+            bucket.addEventListener('drop', (e) => {
+                e.preventDefault();
+                bucket.classList.remove('active');
+
+                if (draggedTask) {
+                    bucket.appendChild(draggedTask);
+                    const horizon = bucket.dataset.horizon;
+                    const task = draggedTask.dataset.task;
+
+                    if (!userProfile.timeAllocation[horizon]) {
+                        userProfile.timeAllocation[horizon] = [];
+                    }
+                    userProfile.timeAllocation[horizon].push(task);
+                }
+            });
+        });
+
+        function completeHorizon() {
+            // Analyze time distribution
+            const todayCount = (userProfile.timeAllocation.today || []).length;
+            const weekCount = (userProfile.timeAllocation.week || []).length;
+
+            let message = '';
+            if (todayCount >= 3) {
+                message = "Everything feels urgent to you - classic overwhelm pattern. We'll need to triage aggressively. ";
+                userProfile.traits.timeHorizon = 1;
+            } else if (userProfile.timeAllocation.year || userProfile.timeAllocation.quarter) {
+                message = 'You can think strategically about the future - this is a strength we'll leverage. ';
+                userProfile.traits.timeHorizon = 90;
+            } else {
+                message = "You're focused on the near-term, which makes sense given your current state. ";
+                userProfile.traits.timeHorizon = 14;
+            }
+
+            message += "Final check: let's see what actually fits in your week.";
+
+            document.getElementById('jarvisMessage').innerHTML = `🤖 JARVIS: ${message}`;
+
+            unlockTab('puzzle');
+            switchTab('puzzle');
+        }
+
+        // Puzzle Board
+        let draggedPiece = null;
+        let currentCapacity = 0;
+
+        document.querySelectorAll('.puzzle-piece').forEach((piece) => {
+            piece.addEventListener('dragstart', (e) => {
+                draggedPiece = e.target;
+                e.dataTransfer.effectAllowed = 'move';
+            });
+        });
+
+        const weekDrop = document.getElementById('week-drop');
+        const piecesPool = document.getElementById('pieces-pool');
+
+        [weekDrop, piecesPool].forEach((container) => {
+            container.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+
+            container.addEventListener('drop', (e) => {
+                e.preventDefault();
+
+                if (draggedPiece) {
+                    const size = parseInt(draggedPiece.dataset.size, 10);
+
+                    if (container === weekDrop) {
+                        // Check capacity
+                        if (currentCapacity + size <= 100) {
+                            container.appendChild(draggedPiece);
+                            currentCapacity += size;
+                            userProfile.weeklyTasks.push(draggedPiece.textContent.split(' ')[0]);
+
+                            // Clear placeholder text
+                            const placeholder = weekDrop.querySelector('p');
+                            if (placeholder) placeholder.remove();
+                        } else {
+                            // Flash red to show it doesn't fit
+                            weekDrop.style.background = '#ffebee';
+                            setTimeout(() => {
+                                weekDrop.style.background = '#f8f9fa';
+                            }, 300);
+                        }
+                    } else {
+                        // Moving back to pool
+                        if (draggedPiece.parentElement === weekDrop) {
+                            currentCapacity -= size;
+                        }
+                        container.appendChild(draggedPiece);
+                    }
+
+                    document.getElementById('capacity-meter').textContent = `${currentCapacity}%`;
+                    userProfile.weeklyCapacity = currentCapacity;
+
+                    // Update scope tolerance based on variety
+                    const uniqueTasks = new Set(weekDrop.querySelectorAll('.puzzle-piece'));
+                    userProfile.traits.scopeTolerance = uniqueTasks.size * 2;
+                }
+            });
+        });
+
+        function completePuzzle() {
+            // Generate final profile
+            generateProfile();
+
+            unlockTab('summary');
+            switchTab('summary');
+        }
+
+        function generateProfile() {
+            // Determine player type based on patterns
+            let playerType = '';
+            let description = '';
+            let firstQuest = '';
+
+            const traits = userProfile.traits;
+            const redAreas = Object.entries(userProfile.lifeAreas)
+                .filter(([k, v]) => v === 'red')
+                .map(([k]) => k);
+
+            if (traits.energy < 30 && traits.control < 30) {
+                playerType = 'The Drowning Executive';
+                description = "You're in crisis mode, juggling too many urgent items with depleted reserves. You know what needs doing but lack the bandwidth to execute.";
+                firstQuest = `Emergency triage in ${redAreas[0] || 'work'}: Eliminate 3 non-critical commitments this week`;
+            } else if (traits.clarity < 40) {
+                playerType = 'The Fog Walker';
+                description = 'You have capacity but lack direction. Analysis paralysis is keeping you stuck. You need clarity through action, not more planning.';
+                firstQuest = 'Run a 7-day experiment in your yellow-flagged area to discover what actually helps';
+            } else if (traits.bandwidth > 70 && currentCapacity > 80) {
+                playerType = 'The Spinning Plate Artist';
+                description = "You're managing everything solo with impressive skill, but it's unsustainable. Time to build systems and support.";
+                firstQuest = 'Delegate or automate one recurring task that takes >2 hours weekly';
+            } else if (traits.energy > 70 && traits.clarity > 70) {
+                playerType = 'The Optimization Engineer';
+                description = "You're functional and focused, ready to level up through better systems and processes.";
+                firstQuest = 'Build an automation for your most annoying recurring task';
+            } else {
+                playerType = 'The Phoenix Rising';
+                description = "You're rebuilding after disruption, with growing clarity about what matters. Focus and patience will be your allies.";
+                firstQuest = `Stabilize ${redAreas[0] || 'health'} with one small daily habit for 7 days`;
+            }
+
+            // Update summary
+            document.getElementById('player-type').textContent = playerType;
+            document.getElementById('player-description').textContent = description;
+            document.getElementById('first-quest').textContent = firstQuest;
+
+            // Generate trait grid
+            const traitGrid = document.getElementById('trait-grid');
+            traitGrid.innerHTML = `
+                <div class="trait">
+                    <span>Energy</span>
+                    <span class="trait-value">${traits.energy < 30 ? 'Low' : traits.energy < 70 ? 'Medium' : 'High'}</span>
+                </div>
+                <div class="trait">
+                    <span>Bandwidth</span>
+                    <span class="trait-value">${traits.bandwidth < 30 ? 'Low' : traits.bandwidth < 70 ? 'Medium' : 'High'}</span>
+                </div>
+                <div class="trait">
+                    <span>Control</span>
+                    <span class="trait-value">${traits.control < 30 ? 'Low' : traits.control < 70 ? 'Medium' : 'High'}</span>
+                </div>
+                <div class="trait">
+                    <span>Clarity</span>
+                    <span class="trait-value">${traits.clarity < 30 ? 'Low' : traits.clarity < 70 ? 'Medium' : 'High'}</span>
+                </div>
+                <div class="trait">
+                    <span>Momentum</span>
+                    <span class="trait-value">${traits.momentum < -20 ? 'Declining' : traits.momentum > 20 ? 'Building' : 'Static'}</span>
+                </div>
+                <div class="trait">
+                    <span>Scope Tolerance</span>
+                    <span class="trait-value">${traits.scopeTolerance < 4 ? 'Low' : traits.scopeTolerance < 7 ? 'Medium' : 'High'}</span>
+                </div>
+            `;
+
+            // Generate focus areas
+            const focusAreas = document.getElementById('focus-areas');
+            const priorities = Object.entries(userProfile.lifeAreas)
+                .filter(([k, v]) => v === 'red' || v === 'yellow')
+                .slice(0, 3);
+
+            focusAreas.innerHTML = priorities
+                .map(([area, status]) => {
+                    const icon = status === 'red' ? '🔴' : '🟡';
+                    return `<div style="padding: 10px; background: #f8f9fa; border-radius: 5px; margin: 5px 0;">
+                    ${icon} <strong>${area.charAt(0).toUpperCase() + area.slice(1)}</strong> - ${
+                        status === 'red' ? 'Immediate attention needed' : 'Opportunity for improvement'
+                    }
+                </div>`;
+                })
+                .join('');
+
+            // Final Jarvis message
+            const finalMessage = `Excellent work! I now understand your situation. You're operating as a ${playerType}. Based on your patterns, we'll start with focused wins in ${
+                priorities[0] ? priorities[0][0] : 'your chosen area'
+            } while building sustainable systems. Ready to begin your transformation?`;
+
+            document.getElementById('jarvisMessage').innerHTML = `🤖 JARVIS: ${finalMessage}`;
+        }
+
+        function beginJourney() {
+            alert('🚀 Launching LifeSquared with your personalized configuration...\n\nYour first advisor is being activated and Marvin is preparing your task board!');
+        }
+    </script>
+</body>
+</html>
