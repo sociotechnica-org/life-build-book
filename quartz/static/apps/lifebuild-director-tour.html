@@ -240,19 +240,6 @@
             opacity: 1;
         }
 
-        .intro-overlay-tag {
-            position: absolute;
-            top: 18px;
-            left: 18px;
-            background: rgba(0, 0, 0, 0.55);
-            padding: 6px 14px;
-            border-radius: 999px;
-            font-size: 0.8rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-        }
-
         .intro-script {
             text-align: center;
             max-width: 640px;
@@ -1059,7 +1046,6 @@
 
             <div class="intro-frame">
                 <div class="intro-image-shell">
-                    <div class="intro-overlay-tag" id="introTag">Retro RTS</div>
                     <img id="introImage" src="./lifebuild-director/empires1.png" alt="LifeBuild empire memories">
                 </div>
                 <div class="intro-progress" id="introProgress"></div>
@@ -1419,38 +1405,34 @@
             headline: document.getElementById('introHeadline'),
             subline: document.getElementById('introSubline'),
             image: document.getElementById('introImage'),
-            tag: document.getElementById('introTag'),
             hint: document.getElementById('introHint'),
             progress: document.getElementById('introProgress')
         };
         const introSequences = [
             {
                 headline: "You used to build empires.",
-                subline: "",
-                tag: "Retro RTS",
+                reset: true,
                 images: ["./lifebuild-director/empires1.png"]
             },
             {
-                subline: "But life didn't come with missions.",
-                tag: "Missions",
+                append: "But life didn't come with missions",
                 images: ["./lifebuild-director/empires2.png", "./lifebuild-director/empires3.png"]
             },
             {
-                subline: "Or minions.",
-                tag: "Minions",
+                append: ", minions",
                 images: ["./lifebuild-director/empires4.png", "./lifebuild-director/empires5.png"]
             },
             {
-                subline: "Or minimaps.",
-                tag: "Minimap",
+                append: ", or minimaps.",
                 images: ["./lifebuild-director/empires6.png"]
             },
             {
                 subline: "Until now.",
-                tag: "LifeBuild",
+                reset: true,
                 images: ["./lifebuild-director/empires6.png"]
             }
         ];
+        let introCumulativeText = "";
         let introTimeouts = [];
         let introSequenceIndex = 0;
 
@@ -1507,6 +1489,7 @@
             introTimeouts.forEach(clearTimeout);
             introTimeouts = [];
             introSequenceIndex = 0;
+            introCumulativeText = "";
             if (unlockButton && nextButton) {
                 nextButton.disabled = false;
             }
@@ -1515,6 +1498,9 @@
             }
             if (introElements.progress) {
                 Array.from(introElements.progress.children).forEach(dot => dot.classList.remove('active'));
+            }
+            if (introElements.subline) {
+                introElements.subline.textContent = '';
             }
         }
 
@@ -1539,11 +1525,20 @@
             }
 
             const sequence = introSequences[introSequenceIndex];
-            if (introElements.headline && sequence.headline !== undefined && sequence.headline !== null) {
+            if (sequence.headline !== undefined) {
                 introElements.headline.textContent = sequence.headline;
             }
-            if (introElements.subline) introElements.subline.textContent = sequence.subline ?? '';
-            if (introElements.tag) introElements.tag.textContent = sequence.tag || '';
+            if (sequence.reset) {
+                introCumulativeText = sequence.subline ?? '';
+            } else if (sequence.subline !== undefined) {
+                introCumulativeText = sequence.subline;
+            }
+            if (sequence.append) {
+                introCumulativeText = introCumulativeText ? introCumulativeText + sequence.append : sequence.append;
+            }
+            if (introElements.subline) {
+                introElements.subline.textContent = introCumulativeText;
+            }
             if (introElements.hint) {
                 introElements.hint.classList.toggle('ready', introSequenceIndex === introSequences.length - 1);
             }
