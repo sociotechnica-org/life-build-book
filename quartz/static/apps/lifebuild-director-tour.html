@@ -208,236 +208,83 @@
         }
 
         /* ======================== */
-        /* SCREEN 1: EMPIRE BUILDER */
+        /* SCREEN 1: EMPIRES INTRO  */
         /* ======================== */
-        
-        .empire-scene {
-            margin: 2rem auto;
-            position: relative;
-            width: 400px;
-            height: 220px;
-        }
-
-        .resource-bar {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
+        .intro-frame {
             display: flex;
-            gap: 20px;
-            background: rgba(0,0,0,0.4);
-            padding: 8px 16px;
-            border-radius: 0 0 8px 8px;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-top: none;
-            opacity: 0;
-        }
-
-        .resource {
-            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-            font-weight: 600;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
         }
 
-        .resource-icon {
-            width: 16px;
-            height: 16px;
-            border-radius: 2px;
-        }
-
-        .resource.gold-res .resource-icon { background: var(--finances); }
-        .resource.wood-res .resource-icon { background: var(--home); }
-        .resource.food-res .resource-icon { background: var(--health); }
-        .resource.pop-res .resource-icon { background: var(--relationships); }
-
-        .resource-count {
-            color: var(--text-primary);
-            min-width: 36px;
-        }
-
-        .settlement {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 280px;
-            height: 160px;
-        }
-
-        .iso-grid {
-            position: absolute;
-            inset: 0;
-            opacity: 0.15;
-            background: 
-                linear-gradient(45deg, transparent 48%, var(--text-muted) 49%, var(--text-muted) 51%, transparent 52%),
-                linear-gradient(-45deg, transparent 48%, var(--text-muted) 49%, var(--text-muted) 51%, transparent 52%);
-            background-size: 40px 40px;
-        }
-
-        .building {
-            position: absolute;
-            opacity: 0;
-            transform: translateY(20px) scale(0.8);
-        }
-
-        .building-base {
-            position: relative;
-        }
-
-        .main-hall {
-            bottom: 35%;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px) scale(0.8);
-        }
-
-        .main-hall .building-base {
-            width: 60px;
-            height: 50px;
-            background: linear-gradient(135deg, var(--purpose) 0%, #5a4a7a 100%);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            box-shadow: 0 8px 20px rgba(123, 104, 166, 0.4);
-        }
-
-        .main-hall::after {
-            content: '♜';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.2rem;
-            color: var(--text-primary);
-            opacity: 0.8;
-        }
-
-        .barracks { bottom: 55%; left: 22%; }
-        .barracks .building-base {
-            width: 36px;
-            height: 30px;
-            background: linear-gradient(135deg, var(--relationships) 0%, #b05a62 100%);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            box-shadow: 0 4px 12px rgba(212, 114, 122, 0.3);
-        }
-
-        .farm { bottom: 20%; left: 25%; }
-        .farm .building-base {
-            width: 40px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--health) 0%, #3a7a5a 100%);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            box-shadow: 0 4px 12px rgba(74, 158, 109, 0.3);
-        }
-
-        .market { bottom: 55%; right: 22%; }
-        .market .building-base {
-            width: 38px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--finances) 0%, #a8891f 100%);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            box-shadow: 0 4px 12px rgba(201, 162, 39, 0.3);
-        }
-
-        .workshop { bottom: 20%; right: 25%; }
-        .workshop .building-base {
-            width: 34px;
-            height: 28px;
-            background: linear-gradient(135deg, var(--home) 0%, #9a5f42 100%);
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-            box-shadow: 0 4px 12px rgba(184, 111, 76, 0.3);
-        }
-
-        .minimap {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 64px;
-            height: 64px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 4px;
+        .intro-image-shell {
+            width: min(520px, 80vw);
+            aspect-ratio: 1.2;
+            border-radius: 24px;
             overflow: hidden;
+            position: relative;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .intro-image-shell img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
             opacity: 0;
+            transition: opacity 0.6s ease;
         }
 
-        .minimap-terrain {
-            position: absolute;
-            inset: 4px;
-            background: linear-gradient(135deg, #2a3a2a 0%, #1a2a1a 100%);
-            border-radius: 2px;
+        .intro-image-shell img.visible {
+            opacity: 1;
         }
 
-        .minimap-dot {
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: var(--gold);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 6px var(--gold);
+        .intro-script {
+            text-align: center;
+            max-width: 640px;
         }
 
-        .minimap-viewport {
-            position: absolute;
-            width: 20px;
-            height: 14px;
-            border: 1px solid rgba(255,255,255,0.5);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .intro-script h2 {
+            margin-bottom: 0.5rem;
         }
 
-        .selection-box {
-            position: absolute;
-            bottom: 32%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 72px;
-            height: 58px;
-            border: 2px solid var(--health);
-            border-radius: 2px;
-            opacity: 0;
-            box-shadow: 0 0 8px rgba(74, 158, 109, 0.5);
-            animation: selection-pulse 2s ease-in-out infinite;
-            animation-play-state: paused;
-        }
-
-        @keyframes selection-pulse {
-            0%, 100% { box-shadow: 0 0 8px rgba(74, 158, 109, 0.5); }
-            50% { box-shadow: 0 0 16px rgba(74, 158, 109, 0.8); }
-        }
-
-        .pop-overlay {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            background: rgba(0,0,0,0.6);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            opacity: 0;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .pop-icon { color: var(--relationships); }
-        .pop-text { color: var(--text-primary); font-weight: 600; }
-        .pop-cap { color: var(--text-muted); }
-
-        .contrast-text {
-            margin-top: 2rem;
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        .contrast-text p {
+        .intro-subline {
             color: var(--text-muted);
             font-style: italic;
-            font-size: 1.1rem;
+            min-height: 1.25rem;
+        }
+
+        .intro-progress {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .intro-progress span {
+            width: 36px;
+            height: 4px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+            transition: background 0.3s ease;
+        }
+
+        .intro-progress span.active {
+            background: var(--gold);
+        }
+
+        .intro-hint {
+            margin-top: 0.5rem;
+            color: var(--gold);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .intro-hint.ready {
+            opacity: 1;
         }
 
         /* ==================== */
@@ -1192,53 +1039,17 @@
     <!-- SCREEN 1: Empire Nostalgia -->
     <div class="screen active" id="screen1">
         <div class="content">
-            <h2>You used to build empires.</h2>
-            
-            <div class="empire-scene" id="empireScene">
-                <div class="resource-bar" id="resourceBar">
-                    <div class="resource gold-res">
-                        <div class="resource-icon"></div>
-                        <span class="resource-count" id="goldCount">0</span>
-                    </div>
-                    <div class="resource wood-res">
-                        <div class="resource-icon"></div>
-                        <span class="resource-count" id="woodCount">0</span>
-                    </div>
-                    <div class="resource food-res">
-                        <div class="resource-icon"></div>
-                        <span class="resource-count" id="foodCount">0</span>
-                    </div>
-                    <div class="resource pop-res">
-                        <div class="resource-icon"></div>
-                        <span class="resource-count" id="popCount">0</span>
-                    </div>
-                </div>
-
-                <div class="settlement">
-                    <div class="iso-grid"></div>
-                    <div class="building barracks"><div class="building-base"></div></div>
-                    <div class="building farm"><div class="building-base"></div></div>
-                    <div class="building main-hall"><div class="building-base"></div></div>
-                    <div class="building market"><div class="building-base"></div></div>
-                    <div class="building workshop"><div class="building-base"></div></div>
-                    <div class="selection-box" id="selectionBox"></div>
-                </div>
-
-                <div class="minimap" id="minimap">
-                    <div class="minimap-terrain"></div>
-                    <div class="minimap-dot"></div>
-                    <div class="minimap-viewport"></div>
-                </div>
-
-                <div class="pop-overlay" id="popOverlay">
-                    <span class="pop-icon">⛀</span>
-                    <span class="pop-text">47</span>
-                    <span class="pop-cap">/ 75</span>
-                </div>
+            <div class="intro-script">
+                <h2 id="introHeadline">You used to build empires.</h2>
+                <p class="intro-subline" id="introSubline"></p>
             </div>
-            
-            <div class="contrast-text" id="contrastText">
-                <p>Real life didn't come with a minimap.</p>
+
+            <div class="intro-frame">
+                <div class="intro-image-shell">
+                    <img id="introImage" src="./lifebuild-director/empires1.png" alt="LifeBuild empire memories">
+                </div>
+                <div class="intro-progress" id="introProgress"></div>
+                <p class="intro-hint" id="introHint">Click Next →</p>
             </div>
         </div>
     </div>
@@ -1588,6 +1399,42 @@
     <script>
         let currentScreen = 1;
         const totalScreens = 10;
+        const prevButton = document.getElementById('prevBtn');
+        const nextButton = document.getElementById('nextBtn');
+        const introElements = {
+            headline: document.getElementById('introHeadline'),
+            subline: document.getElementById('introSubline'),
+            image: document.getElementById('introImage'),
+            hint: document.getElementById('introHint'),
+            progress: document.getElementById('introProgress')
+        };
+        const introSequences = [
+            {
+                headline: "You used to build empires.",
+                reset: true,
+                images: ["./lifebuild-director/empires1.png"]
+            },
+            {
+                append: "But life didn't come with missions",
+                images: ["./lifebuild-director/empires2.png", "./lifebuild-director/empires3.png"]
+            },
+            {
+                append: ", minions",
+                images: ["./lifebuild-director/empires4.png", "./lifebuild-director/empires5.png"]
+            },
+            {
+                append: ", or minimaps.",
+                images: ["./lifebuild-director/empires6.png"]
+            },
+            {
+                subline: "Until now.",
+                reset: true,
+                images: ["./lifebuild-director/empires6.png"]
+            }
+        ];
+        let introCumulativeText = "";
+        let introTimeouts = [];
+        let introSequenceIndex = 0;
 
         function showScreen(screenNum) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1597,12 +1444,16 @@
                 dot.classList.toggle('active', i === screenNum - 1);
             });
             
-            document.getElementById('prevBtn').disabled = screenNum === 1;
-            document.getElementById('nextBtn').style.display = screenNum === totalScreens ? 'none' : 'block';
+            prevButton.disabled = screenNum === 1;
+            nextButton.style.display = screenNum === totalScreens ? 'none' : 'block';
             
             // Trigger screen-specific animations
             setTimeout(() => {
-                if (screenNum === 1) animateEmpire();
+                if (screenNum === 1) {
+                    runIntroSequence();
+                } else {
+                    resetIntroSequence(true);
+                }
                 if (screenNum === 3) animateLifeMap();
                 if (screenNum === 4) animateWorkers();
                 if (screenNum === 5) animateAdvisors();
@@ -1634,70 +1485,100 @@
             });
         });
 
-        // Screen 1: Empire animation (unchanged)
-        function animateEmpire() {
-            const resourceBar = document.getElementById('resourceBar');
-            const buildings = document.querySelectorAll('.building');
-            const minimap = document.getElementById('minimap');
-            const selectionBox = document.getElementById('selectionBox');
-            const popOverlay = document.getElementById('popOverlay');
-            const contrastText = document.getElementById('contrastText');
+        function resetIntroSequence(unlockButton = true) {
+            introTimeouts.forEach(clearTimeout);
+            introTimeouts = [];
+            introSequenceIndex = 0;
+            introCumulativeText = "";
+            if (unlockButton && nextButton) {
+                nextButton.disabled = false;
+            }
+            if (introElements.hint) {
+                introElements.hint.classList.remove('ready');
+            }
+            if (introElements.progress) {
+                Array.from(introElements.progress.children).forEach(dot => dot.classList.remove('active'));
+            }
+            if (introElements.subline) {
+                introElements.subline.textContent = '';
+            }
+        }
 
-            resourceBar.style.opacity = '0';
-            buildings.forEach(b => {
-                b.style.opacity = '0';
-                b.style.transform = b.classList.contains('main-hall') 
-                    ? 'translateX(-50%) translateY(20px) scale(0.8)'
-                    : 'translateY(20px) scale(0.8)';
-            });
-            minimap.style.opacity = '0';
-            selectionBox.style.opacity = '0';
-            selectionBox.style.animationPlayState = 'paused';
-            popOverlay.style.opacity = '0';
-            contrastText.style.opacity = '0';
+        function runIntroSequence() {
+            if (!introElements.image) return;
+            resetIntroSequence(false);
+            if (introElements.progress && introElements.progress.children.length === 0) {
+                introElements.progress.innerHTML = introSequences.map(() => '<span></span>').join('');
+            }
+            if (nextButton) {
+                nextButton.disabled = true;
+            }
+            playIntroStep();
+        }
 
-            setTimeout(() => {
-                resourceBar.style.transition = 'opacity 0.5s ease';
-                resourceBar.style.opacity = '1';
-                animateCount('goldCount', 2847, 1500);
-                animateCount('woodCount', 1523, 1500);
-                animateCount('foodCount', 892, 1500);
-                animateCount('popCount', 47, 1500);
-            }, 200);
+        function playIntroStep() {
+            if (!introElements.image) return;
+            if (introSequenceIndex >= introSequences.length) {
+                if (nextButton) nextButton.disabled = false;
+                if (introElements.hint) introElements.hint.classList.add('ready');
+                return;
+            }
 
-            const buildingOrder = ['farm', 'barracks', 'workshop', 'market', 'main-hall'];
-            buildingOrder.forEach((cls, i) => {
-                const b = document.querySelector(`.${cls}`);
-                setTimeout(() => {
-                    b.style.transition = 'opacity 0.4s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                    b.style.opacity = '1';
-                    b.style.transform = b.classList.contains('main-hall')
-                        ? 'translateX(-50%) translateY(0) scale(1)'
-                        : 'translateY(0) scale(1)';
-                }, 400 + i * 180);
-            });
+            const sequence = introSequences[introSequenceIndex];
+            if (sequence.headline !== undefined) {
+                introElements.headline.textContent = sequence.headline;
+            }
+            if (sequence.reset) {
+                introCumulativeText = sequence.subline ?? '';
+            } else if (sequence.subline !== undefined) {
+                introCumulativeText = sequence.subline;
+            }
+            if (sequence.append) {
+                introCumulativeText = introCumulativeText ? introCumulativeText + sequence.append : sequence.append;
+            }
+            if (introElements.subline) {
+                introElements.subline.textContent = introCumulativeText;
+            }
+            if (introElements.hint) {
+                introElements.hint.classList.toggle('ready', introSequenceIndex === introSequences.length - 1);
+            }
+            if (introElements.progress) {
+                Array.from(introElements.progress.children).forEach((dot, index) => {
+                    dot.classList.toggle('active', index === introSequenceIndex);
+                });
+            }
 
-            setTimeout(() => {
-                minimap.style.transition = 'opacity 0.4s ease';
-                minimap.style.opacity = '1';
-            }, 1200);
+            let imageIndex = 0;
+            const perImageDuration = sequence.images.length > 1 ? 1200 : 2000;
+            const finalHold = sequence.images.length > 1 ? 400 : 800;
 
-            setTimeout(() => {
-                selectionBox.style.transition = 'opacity 0.3s ease';
-                selectionBox.style.opacity = '1';
-                selectionBox.style.animationPlayState = 'running';
-            }, 1500);
+            const showImage = () => {
+                introElements.image.classList.remove('visible');
+                introTimeouts.push(setTimeout(() => {
+                    introElements.image.src = sequence.images[imageIndex];
+                }, 60));
+                const onLoad = () => {
+                    introElements.image.classList.add('visible');
+                    introElements.image.removeEventListener('load', onLoad);
+                };
+                introElements.image.addEventListener('load', onLoad);
+            };
 
-            setTimeout(() => {
-                popOverlay.style.transition = 'opacity 0.4s ease';
-                popOverlay.style.opacity = '1';
-            }, 1700);
+            const advance = () => {
+                imageIndex++;
+                if (imageIndex < sequence.images.length) {
+                    showImage();
+                    introTimeouts.push(setTimeout(advance, perImageDuration));
+                } else {
+                    introSequenceIndex++;
+                    introTimeouts.push(setTimeout(() => {
+                        playIntroStep();
+                    }, finalHold));
+                }
+            };
 
-            setTimeout(() => {
-                contrastText.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-                contrastText.style.opacity = '1';
-                contrastText.style.transform = 'translateY(0)';
-            }, 2200);
+            showImage();
+            introTimeouts.push(setTimeout(advance, perImageDuration));
         }
 
         // Screen 3: Life Map animation
@@ -1879,19 +1760,6 @@
             }, 400);
         }
 
-        function animateCount(elementId, target, duration) {
-            const el = document.getElementById(elementId);
-            const startTime = performance.now();
-            
-            function update(currentTime) {
-                const progress = Math.min((currentTime - startTime) / duration, 1);
-                const easeOut = 1 - Math.pow(1 - progress, 3);
-                el.textContent = Math.floor(target * easeOut).toLocaleString();
-                if (progress < 1) requestAnimationFrame(update);
-            }
-            requestAnimationFrame(update);
-        }
-
         function startJourney() {
             alert("Welcome to LifeBuild! Let's begin building your empire...");
         }
@@ -1902,7 +1770,6 @@
         });
 
         showScreen(1);
-        setTimeout(animateEmpire, 500);
     </script>
 </body>
 </html>
