@@ -299,118 +299,6 @@
             opacity: 1;
         }
 
-        /* ==================== */
-        /* SCREEN 3: LIFE MAP   */
-        /* ==================== */
-
-        .life-map-viz {
-            margin: 2rem auto;
-            position: relative;
-            width: 380px;
-            height: 240px;
-        }
-
-        .map-frame {
-            position: absolute;
-            inset: 0;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: var(--radius);
-            background: rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-
-        .map-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 6px;
-            padding: 12px;
-            height: 100%;
-        }
-
-        .domain-tile {
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            opacity: 0;
-            transform: scale(0.8);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .domain-tile::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: currentColor;
-            opacity: 0.15;
-        }
-
-        .domain-tile:hover {
-            transform: scale(1.05);
-        }
-
-        .domain-tile span {
-            position: relative;
-            z-index: 1;
-        }
-
-        .domain-tile .tile-icon {
-            font-size: 1.1rem;
-            margin-bottom: 2px;
-        }
-
-        .domain-tile.health { color: var(--health); border: 1px solid var(--health); }
-        .domain-tile.purpose { color: var(--purpose); border: 1px solid var(--purpose); }
-        .domain-tile.finances { color: var(--finances); border: 1px solid var(--finances); }
-        .domain-tile.relationships { color: var(--relationships); border: 1px solid var(--relationships); }
-        .domain-tile.home { color: var(--home); border: 1px solid var(--home); }
-        .domain-tile.community { color: var(--community); border: 1px solid var(--community); }
-        .domain-tile.leisure { color: var(--leisure); border: 1px solid var(--leisure); }
-        .domain-tile.growth { color: var(--growth); border: 1px solid var(--growth); }
-
-        /* Zoom level indicators */
-        .zoom-indicators {
-            position: absolute;
-            bottom: -36px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            opacity: 0;
-        }
-
-        .zoom-level {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 8px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .zoom-level.active {
-            background: rgba(212, 168, 75, 0.2);
-            color: var(--gold);
-        }
-
-        .zoom-arrow {
-            color: var(--text-muted);
-            font-size: 0.6rem;
-        }
-
         /* ========================== */
         /* SCREEN 4: AI WORKERS       */
         /* ========================== */
@@ -1086,60 +974,23 @@
         </div>
     </div>
 
-    <!-- SCREEN 3: Life Map -->
+    <!-- SCREEN 3: Map Reveal -->
     <div class="screen" id="screen3">
         <div class="content">
-            <h2>Your personal life—mapped out.</h2>
-            
-            <div class="life-map-viz" id="lifeMapViz">
-                <div class="map-frame">
-                    <div class="map-grid">
-                        <div class="domain-tile health">
-                            <span class="tile-icon">◐</span>
-                            <span>Health</span>
-                        </div>
-                        <div class="domain-tile purpose">
-                            <span class="tile-icon">★</span>
-                            <span>Purpose</span>
-                        </div>
-                        <div class="domain-tile finances">
-                            <span class="tile-icon">◈</span>
-                            <span>Finances</span>
-                        </div>
-                        <div class="domain-tile relationships">
-                            <span class="tile-icon">♡</span>
-                            <span>Relations</span>
-                        </div>
-                        <div class="domain-tile home">
-                            <span class="tile-icon">⌂</span>
-                            <span>Home</span>
-                        </div>
-                        <div class="domain-tile community">
-                            <span class="tile-icon">◎</span>
-                            <span>Community</span>
-                        </div>
-                        <div class="domain-tile leisure">
-                            <span class="tile-icon">◇</span>
-                            <span>Leisure</span>
-                        </div>
-                        <div class="domain-tile growth">
-                            <span class="tile-icon">↗</span>
-                            <span>Growth</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="zoom-indicators" id="zoomIndicators">
-                    <div class="zoom-level active">Life Map</div>
-                    <span class="zoom-arrow">→</span>
-                    <div class="zoom-level">Territories</div>
-                    <span class="zoom-arrow">→</span>
-                    <div class="zoom-level">Projects</div>
-                    <span class="zoom-arrow">→</span>
-                    <div class="zoom-level">Tasks</div>
-                </div>
+            <div class="intro-script">
+                <h2>Your personal life — as a map.</h2>
+                <p class="intro-subline" id="mapSubline"></p>
             </div>
 
-            <p style="margin-top: 2.5rem;">Zoom from your entire domain to a single project—see everything, focus anywhere.</p>
+            <div class="intro-frame">
+                <div class="intro-image-shell">
+                    <img id="mapImage" src="./lifebuild-director/act3-1.jpg" alt="LifeBuild map reveal">
+                </div>
+                <div class="intro-progress" id="mapProgress"></div>
+                <p class="intro-hint" id="mapHint">Click Next →</p>
+            </div>
+
+            <p class="upgrade-tagline" id="mapTagline">See every domain, territory, and stream in one glance.</p>
         </div>
     </div>
 
@@ -1438,6 +1289,13 @@
             hint: document.getElementById('upgradeHint'),
             tagline: document.getElementById('upgradeTagline')
         };
+        const mapElements = {
+            subline: document.getElementById('mapSubline'),
+            image: document.getElementById('mapImage'),
+            progress: document.getElementById('mapProgress'),
+            hint: document.getElementById('mapHint'),
+            tagline: document.getElementById('mapTagline')
+        };
         const introSequences = [
             {
                 headline: "You used to build empires.",
@@ -1465,11 +1323,18 @@
             "./lifebuild-director/act2-5.jpg",
             "./lifebuild-director/act2-6.jpg"
         ];
+        const mapSequenceImages = [
+            "./lifebuild-director/act3-1.jpg",
+            "./lifebuild-director/act3-2.jpg",
+            "./lifebuild-director/act3-3.jpg"
+        ];
         let introCumulativeText = "";
         let introTimeouts = [];
         let introSequenceIndex = 0;
         let upgradeTimeouts = [];
         let upgradeImageIndex = 0;
+        let mapTimeouts = [];
+        let mapImageIndex = 0;
 
         function showScreen(screenNum) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1494,7 +1359,11 @@
                 } else {
                     resetUpgradeSequence(true);
                 }
-                if (screenNum === 3) animateLifeMap();
+                if (screenNum === 3) {
+                    runMapSequence();
+                } else {
+                    resetMapSequence(true);
+                }
                 if (screenNum === 4) animateWorkers();
                 if (screenNum === 5) animateAdvisors();
                 if (screenNum === 6) animateArchitecture();
@@ -1688,41 +1557,71 @@
             }, hold));
         }
 
-        // Screen 3: Life Map animation
-        function animateLifeMap() {
-            const tiles = document.querySelectorAll('.domain-tile');
-            const zoomIndicators = document.getElementById('zoomIndicators');
-            
-            tiles.forEach(t => { t.style.opacity = '0'; t.style.transform = 'scale(0.8)'; });
-            zoomIndicators.style.opacity = '0';
+        function resetMapSequence(unlockButton = true) {
+            mapTimeouts.forEach(clearTimeout);
+            mapTimeouts = [];
+            mapImageIndex = 0;
+            if (unlockButton && nextButton) {
+                nextButton.disabled = false;
+            }
+            if (mapElements.hint) {
+                mapElements.hint.classList.remove('ready');
+            }
+            if (mapElements.tagline) {
+                mapElements.tagline.classList.remove('visible');
+            }
+            if (mapElements.progress) {
+                Array.from(mapElements.progress.children).forEach(dot => dot.classList.remove('active'));
+            }
+            if (mapElements.subline) {
+                mapElements.subline.textContent = '';
+            }
+        }
 
-            tiles.forEach((tile, i) => {
-                setTimeout(() => {
-                    tile.style.transition = 'opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                    tile.style.opacity = '1';
-                    tile.style.transform = 'scale(1)';
-                }, i * 80);
-            });
+        function runMapSequence() {
+            if (!mapElements.image) return;
+            resetMapSequence(false);
+            if (mapElements.progress && mapElements.progress.children.length === 0) {
+                mapElements.progress.innerHTML = mapSequenceImages.map(() => '<span></span>').join('');
+            }
+            if (nextButton) {
+                nextButton.disabled = true;
+            }
+            playMapStep();
+        }
 
-            setTimeout(() => {
-                zoomIndicators.style.transition = 'opacity 0.5s ease';
-                zoomIndicators.style.opacity = '1';
-                
-                // Animate zoom levels sequentially
-                const levels = document.querySelectorAll('.zoom-level');
-                levels.forEach((level, i) => {
-                    setTimeout(() => {
-                        levels.forEach(l => l.classList.remove('active'));
-                        level.classList.add('active');
-                    }, i * 600 + 500);
+        function playMapStep() {
+            if (!mapElements.image) return;
+            if (mapImageIndex >= mapSequenceImages.length) {
+                if (nextButton) nextButton.disabled = false;
+                if (mapElements.hint) mapElements.hint.classList.add('ready');
+                if (mapElements.tagline) mapElements.tagline.classList.add('visible');
+                if (mapElements.subline) mapElements.subline.textContent = '';
+                return;
+            }
+
+            const src = mapSequenceImages[mapImageIndex];
+            mapElements.image.classList.remove('visible');
+            mapTimeouts.push(setTimeout(() => {
+                mapElements.image.src = src;
+            }, 60));
+            const onLoad = () => {
+                mapElements.image.classList.add('visible');
+                mapElements.image.removeEventListener('load', onLoad);
+            };
+            mapElements.image.addEventListener('load', onLoad);
+
+            if (mapElements.progress) {
+                Array.from(mapElements.progress.children).forEach((dot, index) => {
+                    dot.classList.toggle('active', index === mapImageIndex);
                 });
-                
-                // Return to first level
-                setTimeout(() => {
-                    levels.forEach(l => l.classList.remove('active'));
-                    levels[0].classList.add('active');
-                }, 3000);
-            }, 800);
+            }
+
+            const hold = 1400;
+            mapTimeouts.push(setTimeout(() => {
+                mapImageIndex++;
+                playMapStep();
+            }, hold));
         }
 
         // Screen 4: Workers animation
