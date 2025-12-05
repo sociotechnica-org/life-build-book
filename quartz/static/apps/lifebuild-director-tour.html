@@ -287,6 +287,18 @@
             opacity: 1;
         }
 
+        .upgrade-tagline {
+            margin-top: 1.25rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+
+        .upgrade-tagline.visible {
+            opacity: 1;
+        }
+
         /* ==================== */
         /* SCREEN 3: LIFE MAP   */
         /* ==================== */
@@ -1057,9 +1069,20 @@
     <!-- SCREEN 2: Product Reveal -->
     <div class="screen" id="screen2">
         <div class="content">
-            <p class="subhead">Until now.</p>
-            <h1 class="logo-reveal">LifeBuild</h1>
-            <p style="margin-top: 1.5rem;">Choose the life you want to build; direct your AI team to make it real.</p>
+            <div class="intro-script">
+                <h2>Until now.</h2>
+                <p class="intro-subline" id="upgradeSubline"></p>
+            </div>
+
+            <div class="intro-frame">
+                <div class="intro-image-shell">
+                    <img id="upgradeImage" src="./lifebuild-director/act2-1.jpg" alt="LifeBuild automation sequence">
+                </div>
+                <div class="intro-progress" id="upgradeProgress"></div>
+                <p class="intro-hint" id="upgradeHint">Click Next →</p>
+            </div>
+
+            <p class="upgrade-tagline" id="upgradeTagline">Choose the life you want to build; direct your AI team to make it real.</p>
         </div>
     </div>
 
@@ -1408,6 +1431,13 @@
             hint: document.getElementById('introHint'),
             progress: document.getElementById('introProgress')
         };
+        const upgradeElements = {
+            subline: document.getElementById('upgradeSubline'),
+            image: document.getElementById('upgradeImage'),
+            progress: document.getElementById('upgradeProgress'),
+            hint: document.getElementById('upgradeHint'),
+            tagline: document.getElementById('upgradeTagline')
+        };
         const introSequences = [
             {
                 headline: "You used to build empires.",
@@ -1425,16 +1455,21 @@
             {
                 append: ", or minimaps.",
                 images: ["./lifebuild-director/empires6.png"]
-            },
-            {
-                subline: "Until now.",
-                reset: true,
-                images: ["./lifebuild-director/empires6.png"]
             }
+        ];
+        const upgradeSequenceImages = [
+            "./lifebuild-director/act2-1.jpg",
+            "./lifebuild-director/act2-2.jpg",
+            "./lifebuild-director/act2-3.jpg",
+            "./lifebuild-director/act2-4.jpg",
+            "./lifebuild-director/act2-5.jpg",
+            "./lifebuild-director/act2-6.jpg"
         ];
         let introCumulativeText = "";
         let introTimeouts = [];
         let introSequenceIndex = 0;
+        let upgradeTimeouts = [];
+        let upgradeImageIndex = 0;
 
         function showScreen(screenNum) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1453,6 +1488,11 @@
                     runIntroSequence();
                 } else {
                     resetIntroSequence(true);
+                }
+                if (screenNum === 2) {
+                    runUpgradeSequence();
+                } else {
+                    resetUpgradeSequence(true);
                 }
                 if (screenNum === 3) animateLifeMap();
                 if (screenNum === 4) animateWorkers();
@@ -1579,6 +1619,73 @@
 
             showImage();
             introTimeouts.push(setTimeout(advance, perImageDuration));
+        }
+
+        function resetUpgradeSequence(unlockButton = true) {
+            upgradeTimeouts.forEach(clearTimeout);
+            upgradeTimeouts = [];
+            upgradeImageIndex = 0;
+            if (unlockButton && nextButton) {
+                nextButton.disabled = false;
+            }
+            if (upgradeElements.hint) {
+                upgradeElements.hint.classList.remove('ready');
+            }
+            if (upgradeElements.tagline) {
+                upgradeElements.tagline.classList.remove('visible');
+            }
+            if (upgradeElements.progress) {
+                Array.from(upgradeElements.progress.children).forEach(dot => dot.classList.remove('active'));
+            }
+            if (upgradeElements.subline) {
+                upgradeElements.subline.textContent = '';
+            }
+        }
+
+        function runUpgradeSequence() {
+            if (!upgradeElements.image) return;
+            resetUpgradeSequence(false);
+            if (upgradeElements.progress && upgradeElements.progress.children.length === 0) {
+                upgradeElements.progress.innerHTML = upgradeSequenceImages.map(() => '<span></span>').join('');
+            }
+            if (nextButton) {
+                nextButton.disabled = true;
+            }
+            playUpgradeStep();
+        }
+
+        function playUpgradeStep() {
+            if (!upgradeElements.image) return;
+            if (upgradeImageIndex >= upgradeSequenceImages.length) {
+                if (nextButton) nextButton.disabled = false;
+                if (upgradeElements.hint) upgradeElements.hint.classList.add('ready');
+                if (upgradeElements.tagline) upgradeElements.tagline.classList.add('visible');
+                if (upgradeElements.subline) upgradeElements.subline.textContent = '';
+                return;
+            }
+
+            const src = upgradeSequenceImages[upgradeImageIndex];
+            upgradeElements.image.classList.remove('visible');
+            upgradeTimeouts.push(setTimeout(() => {
+                upgradeElements.image.src = src;
+            }, 60));
+            const onLoad = () => {
+                upgradeElements.image.classList.add('visible');
+                upgradeElements.image.removeEventListener('load', onLoad);
+            };
+            upgradeElements.image.addEventListener('load', onLoad);
+
+            if (upgradeElements.progress) {
+                Array.from(upgradeElements.progress.children).forEach((dot, index) => {
+                    dot.classList.toggle('active', index === upgradeImageIndex);
+                });
+            }
+
+            const hold = 1400;
+            upgradeTimeouts.push(setTimeout(() => {
+                upgradeImageIndex++;
+                playUpgradeStep();
+            }, hold));
         }
 
         // Screen 3: Life Map animation
