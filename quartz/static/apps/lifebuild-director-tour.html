@@ -994,8 +994,27 @@
         </div>
     </div>
 
-    <!-- SCREEN 4: AI Workers -->
     <div class="screen" id="screen4">
+        <div class="content">
+            <div class="intro-script">
+                <h2>Easily zoom in.</h2>
+                <p class="intro-subline" id="zoomSubline"></p>
+            </div>
+
+            <div class="intro-frame">
+                <div class="intro-image-shell">
+                    <img id="zoomImage" src="./lifebuild-director/zoom-1.jpg" alt="Zooming into the map">
+                </div>
+                <div class="intro-progress" id="zoomProgress"></div>
+                <p class="intro-hint" id="zoomHint">Click Next →</p>
+            </div>
+
+            <p class="upgrade-tagline" id="zoomTagline">Drill from territories to projects to rituals in seconds.</p>
+        </div>
+    </div>
+
+    <!-- SCREEN 5: AI Workers -->
+    <div class="screen" id="screen5">
         <div class="content">
             <h2>Direct a corps of AI advisors, managers, & workers.</h2>
 
@@ -1009,8 +1028,8 @@
         </div>
     </div>
 
-    <!-- SCREEN 5: AI Advisors -->
-    <div class="screen" id="screen5">
+    <!-- SCREEN 6: AI Advisors -->
+    <div class="screen" id="screen6">
         <div class="content">
             <h2>...equipped with AI advisors.</h2>
             
@@ -1044,8 +1063,8 @@
         </div>
     </div>
 
-    <!-- SCREEN 6: Architecture -->
-    <div class="screen" id="screen6">
+    <!-- SCREEN 7: Architecture -->
+    <div class="screen" id="screen7">
         <div class="content">
             <h2>All orchestrated by your core team.</h2>
             
@@ -1110,8 +1129,8 @@
         </div>
     </div>
 
-    <!-- SCREEN 7: Jarvis -->
-    <div class="screen" id="screen7">
+    <!-- SCREEN 8: Jarvis -->
+    <div class="screen" id="screen8">
         <div class="content">
             <h2>Jarvis: Your Chief of Staff</h2>
             
@@ -1137,8 +1156,8 @@
         </div>
     </div>
 
-    <!-- SCREEN 8: Marvin -->
-    <div class="screen" id="screen8">
+    <!-- SCREEN 9: Marvin -->
+    <div class="screen" id="screen9">
         <div class="content">
             <h2>Marvin: Your Project Planner</h2>
             
@@ -1175,8 +1194,8 @@
         </div>
     </div>
 
-    <!-- SCREEN 9: Conan -->
-    <div class="screen" id="screen9">
+    <!-- SCREEN 10: Conan -->
+    <div class="screen" id="screen10">
         <div class="content">
             <h2>Conan: Your Historian</h2>
             
@@ -1208,8 +1227,8 @@
         </div>
     </div>
 
-    <!-- SCREEN 10: CTA -->
-    <div class="screen" id="screen10">
+    <!-- SCREEN 11: CTA -->
+    <div class="screen" id="screen11">
         <div class="content">
             <div class="cta-statement">
                 <span>Map your life.</span>
@@ -1238,6 +1257,7 @@
         <div class="dot" data-screen="8"></div>
         <div class="dot" data-screen="9"></div>
         <div class="dot" data-screen="10"></div>
+        <div class="dot" data-screen="11"></div>
     </div>
 
     <div class="nav-container">
@@ -1247,7 +1267,7 @@
 
     <script>
         let currentScreen = 1;
-        const totalScreens = 10;
+        const totalScreens = 11;
         const prevButton = document.getElementById('prevBtn');
         const nextButton = document.getElementById('nextBtn');
         const introElements = {
@@ -1270,6 +1290,13 @@
             progress: document.getElementById('mapProgress'),
             hint: document.getElementById('mapHint'),
             tagline: document.getElementById('mapTagline')
+        };
+        const zoomElements = {
+            subline: document.getElementById('zoomSubline'),
+            image: document.getElementById('zoomImage'),
+            progress: document.getElementById('zoomProgress'),
+            hint: document.getElementById('zoomHint'),
+            tagline: document.getElementById('zoomTagline')
         };
         const introSequences = [
             {
@@ -1303,6 +1330,12 @@
             "./lifebuild-director/act3-2.jpg",
             "./lifebuild-director/act3-3.jpg"
         ];
+        const zoomSequenceImages = [
+            "./lifebuild-director/zoom-1.jpg",
+            "./lifebuild-director/zoom-2.jpg",
+            "./lifebuild-director/zoom-3.jpg",
+            "./lifebuild-director/zoom-4.jpg"
+        ];
         let introCumulativeText = "";
         let introTimeouts = [];
         let introSequenceIndex = 0;
@@ -1310,6 +1343,8 @@
         let upgradeImageIndex = 0;
         let mapTimeouts = [];
         let mapImageIndex = 0;
+        let zoomTimeouts = [];
+        let zoomImageIndex = 0;
 
         function showScreen(screenNum) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1339,11 +1374,16 @@
                 } else {
                     resetMapSequence(true);
                 }
-                if (screenNum === 5) animateAdvisors();
-                if (screenNum === 6) animateArchitecture();
-                if (screenNum === 7) animateJarvis();
-                if (screenNum === 8) animateMarvin();
-                if (screenNum === 9) animateConan();
+                if (screenNum === 4) {
+                    runZoomSequence();
+                } else {
+                    resetZoomSequence(true);
+                }
+                if (screenNum === 6) animateAdvisors();
+                if (screenNum === 7) animateArchitecture();
+                if (screenNum === 8) animateJarvis();
+                if (screenNum === 9) animateMarvin();
+                if (screenNum === 10) animateConan();
             }, 200);
         }
 
@@ -1595,6 +1635,73 @@
             mapTimeouts.push(setTimeout(() => {
                 mapImageIndex++;
                 playMapStep();
+            }, hold));
+        }
+
+        function resetZoomSequence(unlockButton = true) {
+            zoomTimeouts.forEach(clearTimeout);
+            zoomTimeouts = [];
+            zoomImageIndex = 0;
+            if (unlockButton && nextButton) {
+                nextButton.disabled = false;
+            }
+            if (zoomElements.hint) {
+                zoomElements.hint.classList.remove('ready');
+            }
+            if (zoomElements.tagline) {
+                zoomElements.tagline.classList.remove('visible');
+            }
+            if (zoomElements.progress) {
+                Array.from(zoomElements.progress.children).forEach(dot => dot.classList.remove('active'));
+            }
+            if (zoomElements.subline) {
+                zoomElements.subline.textContent = '';
+            }
+        }
+
+        function runZoomSequence() {
+            if (!zoomElements.image) return;
+            resetZoomSequence(false);
+            if (zoomElements.progress && zoomElements.progress.children.length === 0) {
+                zoomElements.progress.innerHTML = zoomSequenceImages.map(() => '<span></span>').join('');
+            }
+            if (nextButton) {
+                nextButton.disabled = true;
+            }
+            playZoomStep();
+        }
+
+        function playZoomStep() {
+            if (!zoomElements.image) return;
+            if (zoomImageIndex >= zoomSequenceImages.length) {
+                if (nextButton) nextButton.disabled = false;
+                if (zoomElements.hint) zoomElements.hint.classList.add('ready');
+                if (zoomElements.tagline) zoomElements.tagline.classList.add('visible');
+                if (zoomElements.subline) zoomElements.subline.textContent = '';
+                return;
+            }
+
+            const src = zoomSequenceImages[zoomImageIndex];
+            zoomElements.image.classList.remove('visible');
+            zoomTimeouts.push(setTimeout(() => {
+                zoomElements.image.src = src;
+            }, 60));
+            const onLoad = () => {
+                zoomElements.image.classList.add('visible');
+                zoomElements.image.removeEventListener('load', onLoad);
+            };
+            zoomElements.image.addEventListener('load', onLoad);
+
+            if (zoomElements.progress) {
+                Array.from(zoomElements.progress.children).forEach((dot, index) => {
+                    dot.classList.toggle('active', index === zoomImageIndex);
+                });
+            }
+
+            const hold = 1400;
+            zoomTimeouts.push(setTimeout(() => {
+                zoomImageIndex++;
+                playZoomStep();
             }, hold));
         }
 
