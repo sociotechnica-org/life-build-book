@@ -287,116 +287,16 @@
             opacity: 1;
         }
 
-        /* ==================== */
-        /* SCREEN 3: LIFE MAP   */
-        /* ==================== */
-
-        .life-map-viz {
-            margin: 2rem auto;
-            position: relative;
-            width: 380px;
-            height: 240px;
-        }
-
-        .map-frame {
-            position: absolute;
-            inset: 0;
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: var(--radius);
-            background: rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-
-        .map-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 6px;
-            padding: 12px;
-            height: 100%;
-        }
-
-        .domain-tile {
-            border-radius: 6px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
+        .upgrade-tagline {
+            margin-top: 1.25rem;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
             opacity: 0;
-            transform: scale(0.8);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
+            transition: opacity 0.6s ease;
         }
 
-        .domain-tile::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: currentColor;
-            opacity: 0.15;
-        }
-
-        .domain-tile:hover {
-            transform: scale(1.05);
-        }
-
-        .domain-tile span {
-            position: relative;
-            z-index: 1;
-        }
-
-        .domain-tile .tile-icon {
-            font-size: 1.1rem;
-            margin-bottom: 2px;
-        }
-
-        .domain-tile.health { color: var(--health); border: 1px solid var(--health); }
-        .domain-tile.purpose { color: var(--purpose); border: 1px solid var(--purpose); }
-        .domain-tile.finances { color: var(--finances); border: 1px solid var(--finances); }
-        .domain-tile.relationships { color: var(--relationships); border: 1px solid var(--relationships); }
-        .domain-tile.home { color: var(--home); border: 1px solid var(--home); }
-        .domain-tile.community { color: var(--community); border: 1px solid var(--community); }
-        .domain-tile.leisure { color: var(--leisure); border: 1px solid var(--leisure); }
-        .domain-tile.growth { color: var(--growth); border: 1px solid var(--growth); }
-
-        /* Zoom level indicators */
-        .zoom-indicators {
-            position: absolute;
-            bottom: -36px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            opacity: 0;
-        }
-
-        .zoom-level {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 4px 8px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .zoom-level.active {
-            background: rgba(212, 168, 75, 0.2);
-            color: var(--gold);
-        }
-
-        .zoom-arrow {
-            color: var(--text-muted);
-            font-size: 0.6rem;
+        .upgrade-tagline.visible {
+            opacity: 1;
         }
 
         /* ========================== */
@@ -617,280 +517,11 @@
         /* SCREEN 6: ARCHITECTURE           */
         /* ================================ */
 
-        .architecture-viz {
-            margin: 2rem auto;
-            position: relative;
-            width: 340px;
-            height: 280px;
-        }
-
-        .arch-layer {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            opacity: 0;
-        }
-
-        .arch-layer.director {
-            top: 0;
-        }
-
-        .arch-layer.big3 {
-            top: 70px;
-        }
-
-        .arch-layer.advisors {
-            top: 150px;
-        }
-
-        .arch-layer.workers {
-            top: 210px;
-        }
-
-        .arch-label {
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-        }
-
-        .arch-node {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .director-badge {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--gold), var(--bronze));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            box-shadow: 0 4px 20px rgba(212, 168, 75, 0.4);
-        }
-
-        .big3-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            transition: transform 0.3s ease;
-        }
-
-        .big3-avatar:hover {
-            transform: scale(1.15);
-        }
-
-        .big3-avatar.jarvis {
-            background: linear-gradient(135deg, var(--jarvis-primary), var(--jarvis-secondary));
-            box-shadow: 0 4px 12px rgba(123, 104, 166, 0.4);
-        }
-
-        .big3-avatar.marvin {
-            background: linear-gradient(135deg, var(--marvin-primary), var(--marvin-secondary));
-            box-shadow: 0 4px 12px rgba(212, 168, 75, 0.4);
-        }
-
-        .big3-avatar.conan {
-            background: linear-gradient(135deg, var(--conan-primary), var(--conan-secondary));
-            box-shadow: 0 4px 12px rgba(61, 148, 144, 0.4);
-        }
-
-        .mini-avatars {
-            display: flex;
-            gap: 6px;
-        }
-
-        .mini-avatar {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.7rem;
-            background: var(--bg-elevated);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* Connection lines */
-        .arch-connections {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            opacity: 0;
-        }
-
-        .arch-connections svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .arch-connections line {
-            stroke: rgba(255,255,255,0.15);
-            stroke-width: 1;
-            stroke-dasharray: 4,4;
-        }
-
         /* ========================== */
         /* SCREENS 7-9: BIG 3 AGENTS  */
         /* ========================== */
 
-        .agent-showcase {
-            margin: 2rem auto;
-            max-width: 480px;
-        }
-
-        .agent-hero {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            transform: scale(0.9);
-        }
-
-        .agent-avatar-large {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .agent-avatar-large.jarvis {
-            background: linear-gradient(135deg, var(--jarvis-primary), var(--jarvis-secondary));
-            box-shadow: 0 8px 32px rgba(123, 104, 166, 0.5);
-        }
-
-        .agent-avatar-large.marvin {
-            background: linear-gradient(135deg, var(--marvin-primary), var(--marvin-secondary));
-            box-shadow: 0 8px 32px rgba(212, 168, 75, 0.5);
-        }
-
-        .agent-avatar-large.conan {
-            background: linear-gradient(135deg, var(--conan-primary), var(--conan-secondary));
-            box-shadow: 0 8px 32px rgba(61, 148, 144, 0.5);
-        }
-
-        .agent-examples {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .agent-example {
-            background: var(--bg-surface);
-            border-radius: 8px;
-            padding: 12px 16px;
-            text-align: left;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            border: 1px solid rgba(255,255,255,0.05);
-            opacity: 0;
-            transform: translateX(-15px);
-        }
-
-        .agent-example.jarvis { border-left: 3px solid var(--jarvis-primary); }
-        .agent-example.marvin { border-left: 3px solid var(--marvin-primary); }
-        .agent-example.conan { border-left: 3px solid var(--conan-primary); }
-
-        .agent-example strong {
-            color: var(--text-primary);
-            font-weight: 500;
-        }
-
-        /* Marvin workflow */
-        .marvin-workflow {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 1rem;
-            opacity: 0;
-        }
-
-        .workflow-step {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .workflow-box {
-            padding: 8px 12px;
-            background: var(--bg-surface);
-            border-radius: 6px;
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        .workflow-box.highlight {
-            background: rgba(212, 168, 75, 0.15);
-            border-color: var(--marvin-primary);
-            color: var(--gold);
-        }
-
-        .workflow-arrow {
-            color: var(--text-muted);
-            font-size: 1.2rem;
-        }
-
-        /* Conan timeline */
-        .conan-timeline {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 1rem;
-            opacity: 0;
-        }
-
-        .timeline-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: var(--bg-surface);
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-
-        .timeline-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--conan-primary);
-            flex-shrink: 0;
-        }
-
-        .timeline-content {
-            flex: 1;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            text-align: left;
-        }
-
-        .timeline-date {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
+        /* (Agent showcase styles removed with retired screens) */
 
         /* ============= */
         /* SCREEN 10: CTA */
@@ -1057,310 +688,86 @@
     <!-- SCREEN 2: Product Reveal -->
     <div class="screen" id="screen2">
         <div class="content">
-            <p class="subhead">Until now.</p>
-            <h1 class="logo-reveal">LifeBuild</h1>
-            <p style="margin-top: 1.5rem;">Choose the life you want to build; direct your AI team to make it real.</p>
+            <div class="intro-script">
+                <h2>Until now.</h2>
+                <p class="intro-subline" id="upgradeSubline"></p>
+            </div>
+
+            <div class="intro-frame">
+                <div class="intro-image-shell">
+                    <img id="upgradeImage" src="./lifebuild-director/act2-1.jpg" alt="LifeBuild automation sequence">
+                </div>
+                <div class="intro-progress" id="upgradeProgress"></div>
+                <p class="intro-hint" id="upgradeHint">Click Next →</p>
+            </div>
         </div>
     </div>
 
-    <!-- SCREEN 3: Life Map -->
+    <!-- SCREEN 3: Map Reveal -->
     <div class="screen" id="screen3">
         <div class="content">
-            <h2>Your personal life—mapped out.</h2>
-            
-            <div class="life-map-viz" id="lifeMapViz">
-                <div class="map-frame">
-                    <div class="map-grid">
-                        <div class="domain-tile health">
-                            <span class="tile-icon">◐</span>
-                            <span>Health</span>
-                        </div>
-                        <div class="domain-tile purpose">
-                            <span class="tile-icon">★</span>
-                            <span>Purpose</span>
-                        </div>
-                        <div class="domain-tile finances">
-                            <span class="tile-icon">◈</span>
-                            <span>Finances</span>
-                        </div>
-                        <div class="domain-tile relationships">
-                            <span class="tile-icon">♡</span>
-                            <span>Relations</span>
-                        </div>
-                        <div class="domain-tile home">
-                            <span class="tile-icon">⌂</span>
-                            <span>Home</span>
-                        </div>
-                        <div class="domain-tile community">
-                            <span class="tile-icon">◎</span>
-                            <span>Community</span>
-                        </div>
-                        <div class="domain-tile leisure">
-                            <span class="tile-icon">◇</span>
-                            <span>Leisure</span>
-                        </div>
-                        <div class="domain-tile growth">
-                            <span class="tile-icon">↗</span>
-                            <span>Growth</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="zoom-indicators" id="zoomIndicators">
-                    <div class="zoom-level active">Life Map</div>
-                    <span class="zoom-arrow">→</span>
-                    <div class="zoom-level">Territories</div>
-                    <span class="zoom-arrow">→</span>
-                    <div class="zoom-level">Projects</div>
-                    <span class="zoom-arrow">→</span>
-                    <div class="zoom-level">Tasks</div>
-                </div>
+            <div class="intro-script">
+                <h2>Your personal life — as a map.</h2>
+                <p class="intro-subline" id="mapSubline"></p>
             </div>
 
-            <p style="margin-top: 2.5rem;">Zoom from your entire domain to a single project—see everything, focus anywhere.</p>
+            <div class="intro-frame">
+                <div class="intro-image-shell">
+                    <img id="mapImage" src="./lifebuild-director/act3-1.jpg" alt="LifeBuild map reveal">
+                </div>
+                <div class="intro-progress" id="mapProgress"></div>
+                <p class="intro-hint" id="mapHint">Click Next →</p>
+            </div>
         </div>
     </div>
 
-    <!-- SCREEN 4: AI Workers -->
+    <!-- SCREEN 4: AI Advisors -->
     <div class="screen" id="screen4">
         <div class="content">
-            <h2>...staffed with AI workers.</h2>
-            
-            <div class="workers-viz" id="workersViz">
-                <div class="chat-bubble human">
-                    <div class="chat-avatar">👦</div>
-                    <div class="chat-content">
-                        <div class="chat-name">Clarence (again)</div>
-                        <div class="chat-text">When is soccer practice this week?</div>
-                    </div>
-                </div>
-                
-                <div class="chat-bubble ai">
-                    <div class="chat-avatar">🤖</div>
-                    <div class="chat-content">
-                        <div class="chat-name">AI Worker</div>
-                        <div class="chat-text">Same time as every week—7pm at Field #9.</div>
-                        <div class="chat-meta">📍 Map attached</div>
-                    </div>
-                </div>
+            <h2>Direct a corps of AI advisors, managers, & workers.</h2>
 
-                <div class="reminder-card" id="reminderCard">
-                    <div class="reminder-header">
-                        <span class="reminder-icon">🎂</span>
-                        <span class="reminder-title">Upcoming</span>
-                    </div>
-                    <div class="reminder-text">Your mom's birthday is in 10 days!</div>
-                    <div class="reminder-actions">
-                        <button class="reminder-btn primary">Pick a card</button>
-                        <button class="reminder-btn secondary">Set reminder</button>
-                    </div>
+            <div class="intro-frame">
+                <div class="intro-image-shell">
+                    <img class="visible" src="./lifebuild-director/act4-team.jpg" alt="AI advisor lineup">
                 </div>
             </div>
-
-            <p style="margin-top: 1.5rem;">Delegate the small stuff to AI workers with infinite patience.</p>
         </div>
     </div>
 
-    <!-- SCREEN 5: AI Advisors -->
+    <!-- SCREEN 5: Map Zoom -->
     <div class="screen" id="screen5">
         <div class="content">
-            <h2>...equipped with AI advisors.</h2>
-            
-            <div class="advisors-viz" id="advisorsViz">
-                <div class="insight-card health">
-                    <div class="insight-domain">◐</div>
-                    <div class="insight-content">
-                        <div class="insight-label">Health Advisor</div>
-                        <div class="insight-text">You're neglecting cardio. <em>Heart health risk in 10 years</em> if this continues.</div>
-                    </div>
-                </div>
-                
-                <div class="insight-card home">
-                    <div class="insight-domain">⌂</div>
-                    <div class="insight-content">
-                        <div class="insight-label">Home Advisor</div>
-                        <div class="insight-text">Consider learning basic plumbing—<em>DIY could save $5K annually.</em></div>
-                    </div>
-                </div>
-                
-                <div class="insight-card purpose">
-                    <div class="insight-domain">★</div>
-                    <div class="insight-content">
-                        <div class="insight-label">Purpose Advisor</div>
-                        <div class="insight-text">Your skills align with product management—<em>worth exploring?</em></div>
-                    </div>
-                </div>
+            <div class="intro-script">
+                <h2>Easily zoom in.</h2>
+                <p class="intro-subline" id="zoomSubline"></p>
             </div>
 
-            <p style="margin-top: 1.5rem;">They identify blind spots, flag problems before they surface, and spot opportunities you're missing.</p>
+            <div class="intro-frame">
+                <div class="intro-image-shell">
+                    <img id="zoomImage" src="./lifebuild-director/zoom-1.jpg" alt="Zooming into the map">
+                </div>
+                <div class="intro-progress" id="zoomProgress"></div>
+                <p class="intro-hint" id="zoomHint">Click Next →</p>
+            </div>
         </div>
     </div>
 
-    <!-- SCREEN 6: Architecture -->
     <div class="screen" id="screen6">
         <div class="content">
-            <h2>All orchestrated by your core team.</h2>
-            
-            <div class="architecture-viz" id="architectureViz">
-                <div class="arch-connections" id="archConnections">
-                    <svg viewBox="0 0 340 280">
-                        <line x1="170" y1="48" x2="130" y2="85" />
-                        <line x1="170" y1="48" x2="170" y2="85" />
-                        <line x1="170" y1="48" x2="210" y2="85" />
-                        <line x1="130" y1="115" x2="120" y2="160" />
-                        <line x1="170" y1="115" x2="170" y2="160" />
-                        <line x1="210" y1="115" x2="220" y2="160" />
-                        <line x1="120" y1="180" x2="110" y2="220" />
-                        <line x1="170" y1="180" x2="170" y2="220" />
-                        <line x1="220" y1="180" x2="230" y2="220" />
-                    </svg>
-                </div>
-                
-                <div class="arch-layer director">
-                    <div class="arch-label">You</div>
-                    <div class="arch-node">
-                        <div class="director-badge">👑</div>
-                    </div>
-                </div>
-                
-                <div class="arch-layer big3">
-                    <div class="arch-label">Core Team</div>
-                    <div class="arch-node">
-                        <div class="big3-avatar jarvis">🎯</div>
-                        <div class="big3-avatar marvin">📋</div>
-                        <div class="big3-avatar conan">📚</div>
-                    </div>
-                </div>
-                
-                <div class="arch-layer advisors">
-                    <div class="arch-label">Advisors</div>
-                    <div class="arch-node">
-                        <div class="mini-avatars">
-                            <div class="mini-avatar">◐</div>
-                            <div class="mini-avatar">◈</div>
-                            <div class="mini-avatar">♡</div>
-                            <div class="mini-avatar">⌂</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="arch-layer workers">
-                    <div class="arch-label">Workers</div>
-                    <div class="arch-node">
-                        <div class="mini-avatars">
-                            <div class="mini-avatar">🔍</div>
-                            <div class="mini-avatar">✍️</div>
-                            <div class="mini-avatar">📊</div>
-                            <div class="mini-avatar">📧</div>
-                            <div class="mini-avatar">📅</div>
-                        </div>
-                    </div>
-                </div>
+            <div class="intro-script">
+                <h2>To the past, present, and future.</h2>
             </div>
 
-            <p style="margin-top: 1rem;">Workers handle tasks. Advisors guide projects. The Big 3 coordinate everything—so you direct from above, not manage from within.</p>
+            <div class="intro-frame">
+                <div class="intro-image-shell">
+                    <img class="visible" src="./lifebuild-director/act5-finale.jpg" alt="LifeBuild finale">
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- SCREEN 7: Jarvis -->
+    <!-- SCREEN 7: CTA -->
     <div class="screen" id="screen7">
-        <div class="content">
-            <h2>Jarvis: Your Chief of Staff</h2>
-            
-            <div class="agent-showcase" id="jarvisShowcase">
-                <div class="agent-hero">
-                    <div class="agent-avatar-large jarvis">🎯</div>
-                </div>
-                
-                <div class="agent-examples">
-                    <div class="agent-example jarvis">
-                        <strong>Trade-off analysis:</strong> "Health vs. Finances tension—here's how to resolve it..."
-                    </div>
-                    <div class="agent-example jarvis">
-                        <strong>Charter alignment:</strong> "This project conflicts with your family-first principle."
-                    </div>
-                    <div class="agent-example jarvis">
-                        <strong>Strategic priorities:</strong> "Q4 priorities ranked by impact across all domains."
-                    </div>
-                </div>
-            </div>
-
-            <p style="margin-top: 1.5rem;">Jarvis provides strategic counsel across all eight domains—so you spend less time planning and more time directing.</p>
-        </div>
-    </div>
-
-    <!-- SCREEN 8: Marvin -->
-    <div class="screen" id="screen8">
-        <div class="content">
-            <h2>Marvin: Your Project Planner</h2>
-            
-            <div class="agent-showcase" id="marvinShowcase">
-                <div class="agent-hero">
-                    <div class="agent-avatar-large marvin">📋</div>
-                </div>
-                
-                <div class="marvin-workflow" id="marvinWorkflow">
-                    <div class="workflow-step">
-                        <div class="workflow-box">Vague idea</div>
-                    </div>
-                    <span class="workflow-arrow">→</span>
-                    <div class="workflow-step">
-                        <div class="workflow-box highlight">Marvin</div>
-                    </div>
-                    <span class="workflow-arrow">→</span>
-                    <div class="workflow-step">
-                        <div class="workflow-box">Structured project</div>
-                    </div>
-                </div>
-                
-                <div class="agent-examples" style="margin-top: 1.5rem;">
-                    <div class="agent-example marvin">
-                        <strong>Scoping:</strong> Takes rough ideas and structures them into workable projects.
-                    </div>
-                    <div class="agent-example marvin">
-                        <strong>Staging:</strong> Tracks progress: Identified → Scoped → Drafted → Prioritized.
-                    </div>
-                </div>
-            </div>
-
-            <p style="margin-top: 1.5rem;">Marvin handles the project management overhead you hate.</p>
-        </div>
-    </div>
-
-    <!-- SCREEN 9: Conan -->
-    <div class="screen" id="screen9">
-        <div class="content">
-            <h2>Conan: Your Historian</h2>
-            
-            <div class="agent-showcase" id="conanShowcase">
-                <div class="agent-hero">
-                    <div class="agent-avatar-large conan">📚</div>
-                </div>
-                
-                <div class="conan-timeline" id="conanTimeline">
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">"Last time you tried intermittent fasting..."</div>
-                        <div class="timeline-date">2023</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">"Your 2023 budget strategy reduced debt by 30%"</div>
-                        <div class="timeline-date">Success</div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="timeline-dot"></div>
-                        <div class="timeline-content">"Similar projects: 3 succeeded, 2 failed—here's why"</div>
-                        <div class="timeline-date">Pattern</div>
-                    </div>
-                </div>
-            </div>
-
-            <p style="margin-top: 1.5rem;">Conan tracks what worked, what failed, and surfaces patterns—so you build on experience instead of repeating mistakes.</p>
-        </div>
-    </div>
-
-    <!-- SCREEN 10: CTA -->
-    <div class="screen" id="screen10">
         <div class="content">
             <div class="cta-statement">
                 <span>Map your life.</span>
@@ -1386,9 +793,6 @@
         <div class="dot" data-screen="5"></div>
         <div class="dot" data-screen="6"></div>
         <div class="dot" data-screen="7"></div>
-        <div class="dot" data-screen="8"></div>
-        <div class="dot" data-screen="9"></div>
-        <div class="dot" data-screen="10"></div>
     </div>
 
     <div class="nav-container">
@@ -1398,7 +802,7 @@
 
     <script>
         let currentScreen = 1;
-        const totalScreens = 10;
+        const totalScreens = 7;
         const prevButton = document.getElementById('prevBtn');
         const nextButton = document.getElementById('nextBtn');
         const introElements = {
@@ -1407,6 +811,27 @@
             image: document.getElementById('introImage'),
             hint: document.getElementById('introHint'),
             progress: document.getElementById('introProgress')
+        };
+        const upgradeElements = {
+            subline: document.getElementById('upgradeSubline'),
+            image: document.getElementById('upgradeImage'),
+            progress: document.getElementById('upgradeProgress'),
+            hint: document.getElementById('upgradeHint'),
+            tagline: document.getElementById('upgradeTagline')
+        };
+        const mapElements = {
+            subline: document.getElementById('mapSubline'),
+            image: document.getElementById('mapImage'),
+            progress: document.getElementById('mapProgress'),
+            hint: document.getElementById('mapHint'),
+            tagline: document.getElementById('mapTagline')
+        };
+        const zoomElements = {
+            subline: document.getElementById('zoomSubline'),
+            image: document.getElementById('zoomImage'),
+            progress: document.getElementById('zoomProgress'),
+            hint: document.getElementById('zoomHint'),
+            tagline: document.getElementById('zoomTagline')
         };
         const introSequences = [
             {
@@ -1425,16 +850,36 @@
             {
                 append: ", or minimaps.",
                 images: ["./lifebuild-director/empires6.png"]
-            },
-            {
-                subline: "Until now.",
-                reset: true,
-                images: ["./lifebuild-director/empires6.png"]
             }
+        ];
+        const upgradeSequenceImages = [
+            "./lifebuild-director/act2-1.jpg",
+            "./lifebuild-director/act2-2.jpg",
+            "./lifebuild-director/act2-3.jpg",
+            "./lifebuild-director/act2-4.jpg",
+            "./lifebuild-director/act2-5.jpg",
+            "./lifebuild-director/act2-6.jpg"
+        ];
+        const mapSequenceImages = [
+            "./lifebuild-director/act3-1.jpg",
+            "./lifebuild-director/act3-2.jpg",
+            "./lifebuild-director/act3-3.jpg"
+        ];
+        const zoomSequenceImages = [
+            "./lifebuild-director/zoom-1.jpg",
+            "./lifebuild-director/zoom-2.jpg",
+            "./lifebuild-director/zoom-3.jpg",
+            "./lifebuild-director/zoom-4.jpg"
         ];
         let introCumulativeText = "";
         let introTimeouts = [];
         let introSequenceIndex = 0;
+        let upgradeTimeouts = [];
+        let upgradeImageIndex = 0;
+        let mapTimeouts = [];
+        let mapImageIndex = 0;
+        let zoomTimeouts = [];
+        let zoomImageIndex = 0;
 
         function showScreen(screenNum) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -1454,13 +899,21 @@
                 } else {
                     resetIntroSequence(true);
                 }
-                if (screenNum === 3) animateLifeMap();
-                if (screenNum === 4) animateWorkers();
-                if (screenNum === 5) animateAdvisors();
-                if (screenNum === 6) animateArchitecture();
-                if (screenNum === 7) animateJarvis();
-                if (screenNum === 8) animateMarvin();
-                if (screenNum === 9) animateConan();
+                if (screenNum === 2) {
+                    runUpgradeSequence();
+                } else {
+                    resetUpgradeSequence(true);
+                }
+                if (screenNum === 3) {
+                    runMapSequence();
+                } else {
+                    resetMapSequence(true);
+                }
+                if (screenNum === 5) {
+                    runZoomSequence();
+                } else {
+                    resetZoomSequence(true);
+                }
             }, 200);
         }
 
@@ -1581,183 +1034,205 @@
             introTimeouts.push(setTimeout(advance, perImageDuration));
         }
 
-        // Screen 3: Life Map animation
-        function animateLifeMap() {
-            const tiles = document.querySelectorAll('.domain-tile');
-            const zoomIndicators = document.getElementById('zoomIndicators');
-            
-            tiles.forEach(t => { t.style.opacity = '0'; t.style.transform = 'scale(0.8)'; });
-            zoomIndicators.style.opacity = '0';
+        function resetUpgradeSequence(unlockButton = true) {
+            upgradeTimeouts.forEach(clearTimeout);
+            upgradeTimeouts = [];
+            upgradeImageIndex = 0;
+            if (unlockButton && nextButton) {
+                nextButton.disabled = false;
+            }
+            if (upgradeElements.hint) {
+                upgradeElements.hint.classList.remove('ready');
+            }
+            if (upgradeElements.tagline) {
+                upgradeElements.tagline.classList.remove('visible');
+            }
+            if (upgradeElements.progress) {
+                Array.from(upgradeElements.progress.children).forEach(dot => dot.classList.remove('active'));
+            }
+            if (upgradeElements.subline) {
+                upgradeElements.subline.textContent = '';
+            }
+        }
 
-            tiles.forEach((tile, i) => {
-                setTimeout(() => {
-                    tile.style.transition = 'opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                    tile.style.opacity = '1';
-                    tile.style.transform = 'scale(1)';
-                }, i * 80);
-            });
+        function runUpgradeSequence() {
+            if (!upgradeElements.image) return;
+            resetUpgradeSequence(false);
+            if (upgradeElements.progress && upgradeElements.progress.children.length === 0) {
+                upgradeElements.progress.innerHTML = upgradeSequenceImages.map(() => '<span></span>').join('');
+            }
+            if (nextButton) {
+                nextButton.disabled = true;
+            }
+            playUpgradeStep();
+        }
 
-            setTimeout(() => {
-                zoomIndicators.style.transition = 'opacity 0.5s ease';
-                zoomIndicators.style.opacity = '1';
-                
-                // Animate zoom levels sequentially
-                const levels = document.querySelectorAll('.zoom-level');
-                levels.forEach((level, i) => {
-                    setTimeout(() => {
-                        levels.forEach(l => l.classList.remove('active'));
-                        level.classList.add('active');
-                    }, i * 600 + 500);
+        function playUpgradeStep() {
+            if (!upgradeElements.image) return;
+            if (upgradeImageIndex >= upgradeSequenceImages.length) {
+                if (nextButton) nextButton.disabled = false;
+                if (upgradeElements.hint) upgradeElements.hint.classList.add('ready');
+                if (upgradeElements.tagline) upgradeElements.tagline.classList.add('visible');
+                if (upgradeElements.subline) upgradeElements.subline.textContent = '';
+                return;
+            }
+
+            const src = upgradeSequenceImages[upgradeImageIndex];
+            upgradeElements.image.classList.remove('visible');
+            upgradeTimeouts.push(setTimeout(() => {
+                upgradeElements.image.src = src;
+            }, 60));
+            const onLoad = () => {
+                upgradeElements.image.classList.add('visible');
+                upgradeElements.image.removeEventListener('load', onLoad);
+            };
+            upgradeElements.image.addEventListener('load', onLoad);
+
+            if (upgradeElements.progress) {
+                Array.from(upgradeElements.progress.children).forEach((dot, index) => {
+                    dot.classList.toggle('active', index === upgradeImageIndex);
                 });
-                
-                // Return to first level
-                setTimeout(() => {
-                    levels.forEach(l => l.classList.remove('active'));
-                    levels[0].classList.add('active');
-                }, 3000);
-            }, 800);
+            }
+
+            const hold = 1400;
+            upgradeTimeouts.push(setTimeout(() => {
+                upgradeImageIndex++;
+                playUpgradeStep();
+            }, hold));
         }
 
-        // Screen 4: Workers animation
-        function animateWorkers() {
-            const bubbles = document.querySelectorAll('.chat-bubble');
-            const reminder = document.getElementById('reminderCard');
-            
-            bubbles.forEach(b => { 
-                b.style.opacity = '0'; 
-                b.style.transform = b.classList.contains('ai') ? 'translateX(20px)' : 'translateX(-20px)';
-            });
-            reminder.style.opacity = '0';
-            reminder.style.transform = 'translateY(10px)';
-
-            bubbles.forEach((bubble, i) => {
-                setTimeout(() => {
-                    bubble.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-                    bubble.style.opacity = '1';
-                    bubble.style.transform = 'translateX(0)';
-                }, i * 300);
-            });
-
-            setTimeout(() => {
-                reminder.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                reminder.style.opacity = '1';
-                reminder.style.transform = 'translateY(0)';
-            }, 800);
+        function resetMapSequence(unlockButton = true) {
+            mapTimeouts.forEach(clearTimeout);
+            mapTimeouts = [];
+            mapImageIndex = 0;
+            if (unlockButton && nextButton) {
+                nextButton.disabled = false;
+            }
+            if (mapElements.hint) {
+                mapElements.hint.classList.remove('ready');
+            }
+            if (mapElements.tagline) {
+                mapElements.tagline.classList.remove('visible');
+            }
+            if (mapElements.progress) {
+                Array.from(mapElements.progress.children).forEach(dot => dot.classList.remove('active'));
+            }
+            if (mapElements.subline) {
+                mapElements.subline.textContent = '';
+            }
         }
 
-        // Screen 5: Advisors animation
-        function animateAdvisors() {
-            const cards = document.querySelectorAll('.insight-card');
-            cards.forEach(c => { c.style.opacity = '0'; c.style.transform = 'translateY(15px)'; });
-
-            cards.forEach((card, i) => {
-                setTimeout(() => {
-                    card.style.transition = 'opacity 0.4s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                    card.style.opacity = '1';
-                    card.style.transform = 'translateY(0)';
-                }, i * 180);
-            });
+        function runMapSequence() {
+            if (!mapElements.image) return;
+            resetMapSequence(false);
+            if (mapElements.progress && mapElements.progress.children.length === 0) {
+                mapElements.progress.innerHTML = mapSequenceImages.map(() => '<span></span>').join('');
+            }
+            if (nextButton) {
+                nextButton.disabled = true;
+            }
+            playMapStep();
         }
 
-        // Screen 6: Architecture animation
-        function animateArchitecture() {
-            const layers = document.querySelectorAll('.arch-layer');
-            const connections = document.getElementById('archConnections');
-            
-            layers.forEach(l => l.style.opacity = '0');
-            connections.style.opacity = '0';
+        function playMapStep() {
+            if (!mapElements.image) return;
+            if (mapImageIndex >= mapSequenceImages.length) {
+                if (nextButton) nextButton.disabled = false;
+                if (mapElements.hint) mapElements.hint.classList.add('ready');
+                if (mapElements.tagline) mapElements.tagline.classList.add('visible');
+                if (mapElements.subline) mapElements.subline.textContent = '';
+                return;
+            }
 
-            // Animate from bottom to top
-            const order = ['workers', 'advisors', 'big3', 'director'];
-            order.forEach((cls, i) => {
-                const layer = document.querySelector(`.arch-layer.${cls}`);
-                setTimeout(() => {
-                    layer.style.transition = 'opacity 0.4s ease';
-                    layer.style.opacity = '1';
-                }, i * 200);
-            });
+            const src = mapSequenceImages[mapImageIndex];
+            mapElements.image.classList.remove('visible');
+            mapTimeouts.push(setTimeout(() => {
+                mapElements.image.src = src;
+            }, 60));
+            const onLoad = () => {
+                mapElements.image.classList.add('visible');
+                mapElements.image.removeEventListener('load', onLoad);
+            };
+            mapElements.image.addEventListener('load', onLoad);
 
-            setTimeout(() => {
-                connections.style.transition = 'opacity 0.6s ease';
-                connections.style.opacity = '1';
-            }, 900);
+            if (mapElements.progress) {
+                Array.from(mapElements.progress.children).forEach((dot, index) => {
+                    dot.classList.toggle('active', index === mapImageIndex);
+                });
+            }
+
+            const hold = 1400;
+            mapTimeouts.push(setTimeout(() => {
+                mapImageIndex++;
+                playMapStep();
+            }, hold));
         }
 
-        // Screen 7: Jarvis animation
-        function animateJarvis() {
-            const hero = document.querySelector('#jarvisShowcase .agent-hero');
-            const examples = document.querySelectorAll('#jarvisShowcase .agent-example');
-            
-            hero.style.opacity = '0';
-            hero.style.transform = 'scale(0.9)';
-            examples.forEach(e => { e.style.opacity = '0'; e.style.transform = 'translateX(-15px)'; });
-
-            setTimeout(() => {
-                hero.style.transition = 'opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                hero.style.opacity = '1';
-                hero.style.transform = 'scale(1)';
-            }, 100);
-
-            examples.forEach((ex, i) => {
-                setTimeout(() => {
-                    ex.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-                    ex.style.opacity = '1';
-                    ex.style.transform = 'translateX(0)';
-                }, 400 + i * 150);
-            });
+        function resetZoomSequence(unlockButton = true) {
+            zoomTimeouts.forEach(clearTimeout);
+            zoomTimeouts = [];
+            zoomImageIndex = 0;
+            if (unlockButton && nextButton) {
+                nextButton.disabled = false;
+            }
+            if (zoomElements.hint) {
+                zoomElements.hint.classList.remove('ready');
+            }
+            if (zoomElements.tagline) {
+                zoomElements.tagline.classList.remove('visible');
+            }
+            if (zoomElements.progress) {
+                Array.from(zoomElements.progress.children).forEach(dot => dot.classList.remove('active'));
+            }
+            if (zoomElements.subline) {
+                zoomElements.subline.textContent = '';
+            }
         }
 
-        // Screen 8: Marvin animation
-        function animateMarvin() {
-            const hero = document.querySelector('#marvinShowcase .agent-hero');
-            const workflow = document.getElementById('marvinWorkflow');
-            const examples = document.querySelectorAll('#marvinShowcase .agent-example');
-            
-            hero.style.opacity = '0';
-            hero.style.transform = 'scale(0.9)';
-            workflow.style.opacity = '0';
-            examples.forEach(e => { e.style.opacity = '0'; e.style.transform = 'translateX(-15px)'; });
-
-            setTimeout(() => {
-                hero.style.transition = 'opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                hero.style.opacity = '1';
-                hero.style.transform = 'scale(1)';
-            }, 100);
-
-            setTimeout(() => {
-                workflow.style.transition = 'opacity 0.5s ease';
-                workflow.style.opacity = '1';
-            }, 400);
-
-            examples.forEach((ex, i) => {
-                setTimeout(() => {
-                    ex.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-                    ex.style.opacity = '1';
-                    ex.style.transform = 'translateX(0)';
-                }, 700 + i * 150);
-            });
+        function runZoomSequence() {
+            if (!zoomElements.image) return;
+            resetZoomSequence(false);
+            if (zoomElements.progress && zoomElements.progress.children.length === 0) {
+                zoomElements.progress.innerHTML = zoomSequenceImages.map(() => '<span></span>').join('');
+            }
+            if (nextButton) {
+                nextButton.disabled = true;
+            }
+            playZoomStep();
         }
 
-        // Screen 9: Conan animation
-        function animateConan() {
-            const hero = document.querySelector('#conanShowcase .agent-hero');
-            const timeline = document.getElementById('conanTimeline');
-            const items = document.querySelectorAll('.timeline-item');
-            
-            hero.style.opacity = '0';
-            hero.style.transform = 'scale(0.9)';
-            timeline.style.opacity = '0';
+        function playZoomStep() {
+            if (!zoomElements.image) return;
+            if (zoomImageIndex >= zoomSequenceImages.length) {
+                if (nextButton) nextButton.disabled = false;
+                if (zoomElements.hint) zoomElements.hint.classList.add('ready');
+                if (zoomElements.tagline) zoomElements.tagline.classList.add('visible');
+                if (zoomElements.subline) zoomElements.subline.textContent = '';
+                return;
+            }
 
-            setTimeout(() => {
-                hero.style.transition = 'opacity 0.5s ease, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)';
-                hero.style.opacity = '1';
-                hero.style.transform = 'scale(1)';
-            }, 100);
+            const src = zoomSequenceImages[zoomImageIndex];
+            zoomElements.image.classList.remove('visible');
+            zoomTimeouts.push(setTimeout(() => {
+                zoomElements.image.src = src;
+            }, 60));
+            const onLoad = () => {
+                zoomElements.image.classList.add('visible');
+                zoomElements.image.removeEventListener('load', onLoad);
+            };
+            zoomElements.image.addEventListener('load', onLoad);
 
-            setTimeout(() => {
-                timeline.style.transition = 'opacity 0.5s ease';
-                timeline.style.opacity = '1';
-            }, 400);
+            if (zoomElements.progress) {
+                Array.from(zoomElements.progress.children).forEach((dot, index) => {
+                    dot.classList.toggle('active', index === zoomImageIndex);
+                });
+            }
+
+            const hold = 1400;
+            zoomTimeouts.push(setTimeout(() => {
+                zoomImageIndex++;
+                playZoomStep();
+            }, hold));
         }
 
         function startJourney() {
