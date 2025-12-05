@@ -994,42 +994,8 @@
         </div>
     </div>
 
+    <!-- SCREEN 4: AI Advisors -->
     <div class="screen" id="screen4">
-        <div class="content">
-            <div class="intro-script">
-                <h2>Easily zoom in.</h2>
-                <p class="intro-subline" id="zoomSubline"></p>
-            </div>
-
-            <div class="intro-frame">
-                <div class="intro-image-shell">
-                    <img id="zoomImage" src="./lifebuild-director/zoom-1.jpg" alt="Zooming into the map">
-                </div>
-                <div class="intro-progress" id="zoomProgress"></div>
-                <p class="intro-hint" id="zoomHint">Click Next →</p>
-            </div>
-
-            <p class="upgrade-tagline" id="zoomTagline">Drill from territories to projects to rituals in seconds.</p>
-        </div>
-    </div>
-
-    <!-- SCREEN 5: AI Workers -->
-    <div class="screen" id="screen5">
-        <div class="content">
-            <h2>Direct a corps of AI advisors, managers, & workers.</h2>
-
-            <div class="intro-frame">
-                <div class="intro-image-shell">
-                    <img class="visible" src="./lifebuild-director/act4-team.jpg" alt="AI advisor lineup">
-                </div>
-            </div>
-
-            <p class="upgrade-tagline visible" style="margin-top: 1.5rem;">Every domain gets a specialist—strategists, planners, and executors following your lead.</p>
-        </div>
-    </div>
-
-    <!-- SCREEN 6: AI Advisors -->
-    <div class="screen" id="screen6">
         <div class="content">
             <h2>...equipped with AI advisors.</h2>
             
@@ -1060,6 +1026,41 @@
             </div>
 
             <p style="margin-top: 1.5rem;">They identify blind spots, flag problems before they surface, and spot opportunities you're missing.</p>
+        </div>
+    </div>
+
+    <!-- SCREEN 5: Map Zoom -->
+    <div class="screen" id="screen5">
+        <div class="content">
+            <div class="intro-script">
+                <h2>Easily zoom in.</h2>
+                <p class="intro-subline" id="zoomSubline"></p>
+            </div>
+
+            <div class="intro-frame">
+                <div class="intro-image-shell">
+                    <img id="zoomImage" src="./lifebuild-director/zoom-1.jpg" alt="Zooming into the map">
+                </div>
+                <div class="intro-progress" id="zoomProgress"></div>
+                <p class="intro-hint" id="zoomHint">Click Next →</p>
+            </div>
+
+            <p class="upgrade-tagline" id="zoomTagline">Drill from territories to projects to rituals in seconds.</p>
+        </div>
+    </div>
+
+    <!-- SCREEN 6: AI Corps -->
+    <div class="screen" id="screen6">
+        <div class="content">
+            <h2>Direct a corps of AI advisors, managers, & workers.</h2>
+
+            <div class="intro-frame">
+                <div class="intro-image-shell">
+                    <img class="visible" src="./lifebuild-director/act4-team.jpg" alt="AI advisor lineup">
+                </div>
+            </div>
+
+            <p class="upgrade-tagline visible" style="margin-top: 1.5rem;">Every domain gets a specialist—strategists, planners, and executors following your lead.</p>
         </div>
     </div>
 
@@ -1374,12 +1375,12 @@
                 } else {
                     resetMapSequence(true);
                 }
-                if (screenNum === 4) {
+                if (screenNum === 4) animateAdvisors();
+                if (screenNum === 5) {
                     runZoomSequence();
                 } else {
                     resetZoomSequence(true);
                 }
-                if (screenNum === 6) animateAdvisors();
                 if (screenNum === 7) animateArchitecture();
                 if (screenNum === 8) animateJarvis();
                 if (screenNum === 9) animateMarvin();
