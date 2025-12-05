@@ -997,40 +997,15 @@
     <!-- SCREEN 4: AI Workers -->
     <div class="screen" id="screen4">
         <div class="content">
-            <h2>...staffed with AI workers.</h2>
-            
-            <div class="workers-viz" id="workersViz">
-                <div class="chat-bubble human">
-                    <div class="chat-avatar">👦</div>
-                    <div class="chat-content">
-                        <div class="chat-name">Clarence (again)</div>
-                        <div class="chat-text">When is soccer practice this week?</div>
-                    </div>
-                </div>
-                
-                <div class="chat-bubble ai">
-                    <div class="chat-avatar">🤖</div>
-                    <div class="chat-content">
-                        <div class="chat-name">AI Worker</div>
-                        <div class="chat-text">Same time as every week—7pm at Field #9.</div>
-                        <div class="chat-meta">📍 Map attached</div>
-                    </div>
-                </div>
+            <h2>Direct a corps of AI advisors, managers, & workers.</h2>
 
-                <div class="reminder-card" id="reminderCard">
-                    <div class="reminder-header">
-                        <span class="reminder-icon">🎂</span>
-                        <span class="reminder-title">Upcoming</span>
-                    </div>
-                    <div class="reminder-text">Your mom's birthday is in 10 days!</div>
-                    <div class="reminder-actions">
-                        <button class="reminder-btn primary">Pick a card</button>
-                        <button class="reminder-btn secondary">Set reminder</button>
-                    </div>
+            <div class="intro-frame">
+                <div class="intro-image-shell">
+                    <img class="visible" src="./lifebuild-director/act4-team.jpg" alt="AI advisor lineup">
                 </div>
             </div>
 
-            <p style="margin-top: 1.5rem;">Delegate the small stuff to AI workers with infinite patience.</p>
+            <p class="upgrade-tagline visible" style="margin-top: 1.5rem;">Every domain gets a specialist—strategists, planners, and executors following your lead.</p>
         </div>
     </div>
 
@@ -1364,7 +1339,6 @@
                 } else {
                     resetMapSequence(true);
                 }
-                if (screenNum === 4) animateWorkers();
                 if (screenNum === 5) animateAdvisors();
                 if (screenNum === 6) animateArchitecture();
                 if (screenNum === 7) animateJarvis();
@@ -1622,33 +1596,6 @@
                 mapImageIndex++;
                 playMapStep();
             }, hold));
-        }
-
-        // Screen 4: Workers animation
-        function animateWorkers() {
-            const bubbles = document.querySelectorAll('.chat-bubble');
-            const reminder = document.getElementById('reminderCard');
-            
-            bubbles.forEach(b => { 
-                b.style.opacity = '0'; 
-                b.style.transform = b.classList.contains('ai') ? 'translateX(20px)' : 'translateX(-20px)';
-            });
-            reminder.style.opacity = '0';
-            reminder.style.transform = 'translateY(10px)';
-
-            bubbles.forEach((bubble, i) => {
-                setTimeout(() => {
-                    bubble.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-                    bubble.style.opacity = '1';
-                    bubble.style.transform = 'translateX(0)';
-                }, i * 300);
-            });
-
-            setTimeout(() => {
-                reminder.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-                reminder.style.opacity = '1';
-                reminder.style.transform = 'translateY(0)';
-            }, 800);
         }
 
         // Screen 5: Advisors animation
