@@ -240,6 +240,36 @@
             opacity: 1;
         }
 
+        .zoom-label {
+            position: absolute;
+            right: 14%;
+            bottom: 28%;
+            padding: 10px 20px;
+            border-radius: 26px;
+            background: rgba(255, 244, 233, 0.92);
+            color: #b05a62;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            min-width: 150px;
+            text-align: center;
+            box-shadow: 0 18px 32px rgba(0, 0, 0, 0.35);
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            pointer-events: none;
+        }
+
+        .zoom-label.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .zoom-label.glow {
+            box-shadow: 0 0 28px rgba(212, 168, 75, 0.65);
+        }
+
         .intro-script {
             text-align: center;
             max-width: 640px;
@@ -247,18 +277,15 @@
 
         .intro-script h2 {
             margin-bottom: 0.5rem;
-        }
-
-        .intro-subline {
-            color: var(--text-muted);
-            font-style: italic;
-            min-height: 1.25rem;
+            font-style: normal;
         }
 
         .intro-progress {
             display: flex;
             gap: 8px;
             justify-content: center;
+            margin-top: 8px;
+            margin-bottom: 36px;
         }
 
         .intro-progress span {
@@ -271,32 +298,6 @@
 
         .intro-progress span.active {
             background: var(--gold);
-        }
-
-        .intro-hint {
-            margin-top: 0.5rem;
-            color: var(--gold);
-            font-size: 0.95rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .intro-hint.ready {
-            opacity: 1;
-        }
-
-        .upgrade-tagline {
-            margin-top: 1.25rem;
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            opacity: 0;
-            transition: opacity 0.6s ease;
-        }
-
-        .upgrade-tagline.visible {
-            opacity: 1;
         }
 
         /* ========================== */
@@ -610,6 +611,19 @@
             cursor: not-allowed;
         }
 
+        .nav-btn.pulse {
+            animation: nextPulse 0.9s ease-in-out infinite alternate;
+        }
+
+        @keyframes nextPulse {
+            0% {
+                box-shadow: 0 0 0 rgba(212, 168, 75, 0.2);
+            }
+            100% {
+                box-shadow: 0 0 18px rgba(212, 168, 75, 0.6);
+            }
+        }
+
         .progress-dots {
             position: fixed;
             bottom: 100px;
@@ -672,7 +686,6 @@
         <div class="content">
             <div class="intro-script">
                 <h2 id="introHeadline">You used to build empires.</h2>
-                <p class="intro-subline" id="introSubline"></p>
             </div>
 
             <div class="intro-frame">
@@ -680,7 +693,6 @@
                     <img id="introImage" src="./lifebuild-director/empires1.png" alt="LifeBuild empire memories">
                 </div>
                 <div class="intro-progress" id="introProgress"></div>
-                <p class="intro-hint" id="introHint">Click Next →</p>
             </div>
         </div>
     </div>
@@ -690,7 +702,6 @@
         <div class="content">
             <div class="intro-script">
                 <h2>Until now.</h2>
-                <p class="intro-subline" id="upgradeSubline"></p>
             </div>
 
             <div class="intro-frame">
@@ -698,7 +709,6 @@
                     <img id="upgradeImage" src="./lifebuild-director/act2-1.jpg" alt="LifeBuild automation sequence">
                 </div>
                 <div class="intro-progress" id="upgradeProgress"></div>
-                <p class="intro-hint" id="upgradeHint">Click Next →</p>
             </div>
         </div>
     </div>
@@ -708,7 +718,6 @@
         <div class="content">
             <div class="intro-script">
                 <h2>Your personal life — as a map.</h2>
-                <p class="intro-subline" id="mapSubline"></p>
             </div>
 
             <div class="intro-frame">
@@ -716,7 +725,6 @@
                     <img id="mapImage" src="./lifebuild-director/act3-1.jpg" alt="LifeBuild map reveal">
                 </div>
                 <div class="intro-progress" id="mapProgress"></div>
-                <p class="intro-hint" id="mapHint">Click Next →</p>
             </div>
         </div>
     </div>
@@ -739,15 +747,14 @@
         <div class="content">
             <div class="intro-script">
                 <h2>Easily zoom in.</h2>
-                <p class="intro-subline" id="zoomSubline"></p>
             </div>
 
             <div class="intro-frame">
                 <div class="intro-image-shell">
                     <img id="zoomImage" src="./lifebuild-director/zoom-1.jpg" alt="Zooming into the map">
+                    <div class="zoom-label" id="zoomLabel">Date Nights</div>
                 </div>
                 <div class="intro-progress" id="zoomProgress"></div>
-                <p class="intro-hint" id="zoomHint">Click Next →</p>
             </div>
         </div>
     </div>
@@ -798,7 +805,7 @@
     <div class="nav-container">
         <button class="nav-btn" onclick="previousScreen()" id="prevBtn" disabled>← Back</button>
         <button class="nav-btn" onclick="nextScreen()" id="nextBtn">Next →</button>
-    </div>
+</div>
 
     <script>
         let currentScreen = 1;
@@ -807,50 +814,27 @@
         const nextButton = document.getElementById('nextBtn');
         const introElements = {
             headline: document.getElementById('introHeadline'),
-            subline: document.getElementById('introSubline'),
             image: document.getElementById('introImage'),
-            hint: document.getElementById('introHint'),
             progress: document.getElementById('introProgress')
         };
         const upgradeElements = {
-            subline: document.getElementById('upgradeSubline'),
             image: document.getElementById('upgradeImage'),
-            progress: document.getElementById('upgradeProgress'),
-            hint: document.getElementById('upgradeHint'),
-            tagline: document.getElementById('upgradeTagline')
+            progress: document.getElementById('upgradeProgress')
         };
         const mapElements = {
-            subline: document.getElementById('mapSubline'),
             image: document.getElementById('mapImage'),
-            progress: document.getElementById('mapProgress'),
-            hint: document.getElementById('mapHint'),
-            tagline: document.getElementById('mapTagline')
+            progress: document.getElementById('mapProgress')
         };
         const zoomElements = {
-            subline: document.getElementById('zoomSubline'),
             image: document.getElementById('zoomImage'),
             progress: document.getElementById('zoomProgress'),
-            hint: document.getElementById('zoomHint'),
-            tagline: document.getElementById('zoomTagline')
+            label: document.getElementById('zoomLabel')
         };
         const introSequences = [
-            {
-                headline: "You used to build empires.",
-                reset: true,
-                images: ["./lifebuild-director/empires1.png"]
-            },
-            {
-                append: "But life didn't come with missions",
-                images: ["./lifebuild-director/empires2.png", "./lifebuild-director/empires3.png"]
-            },
-            {
-                append: ", minions",
-                images: ["./lifebuild-director/empires4.png", "./lifebuild-director/empires5.png"]
-            },
-            {
-                append: ", or minimaps.",
-                images: ["./lifebuild-director/empires6.png"]
-            }
+            { headline: "You used to build empires.", images: ["./lifebuild-director/empires1.png"] },
+            { images: ["./lifebuild-director/empires2.png", "./lifebuild-director/empires3.png"] },
+            { images: ["./lifebuild-director/empires4.png", "./lifebuild-director/empires5.png"] },
+            { headline: "But life didn't come with missions, minions, or minimaps.", images: ["./lifebuild-director/empires6.png"] }
         ];
         const upgradeSequenceImages = [
             "./lifebuild-director/act2-1.jpg",
@@ -871,7 +855,6 @@
             "./lifebuild-director/zoom-3.jpg",
             "./lifebuild-director/zoom-4.jpg"
         ];
-        let introCumulativeText = "";
         let introTimeouts = [];
         let introSequenceIndex = 0;
         let upgradeTimeouts = [];
@@ -880,44 +863,74 @@
         let mapImageIndex = 0;
         let zoomTimeouts = [];
         let zoomImageIndex = 0;
+        let navigationLocked = false;
+
+        function lockNext() {
+            navigationLocked = true;
+            nextButton.classList.remove('pulse');
+            if (nextButton.style.display !== 'none') {
+                nextButton.disabled = true;
+            }
+        }
+
+        function unlockNext() {
+            navigationLocked = false;
+            if (nextButton.style.display === 'none') {
+                return;
+            }
+            nextButton.disabled = false;
+            nextButton.classList.add('pulse');
+        }
 
         function showScreen(screenNum) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(`screen${screenNum}`).classList.add('active');
-            
             document.querySelectorAll('.dot').forEach((dot, i) => {
                 dot.classList.toggle('active', i === screenNum - 1);
             });
-            
             prevButton.disabled = screenNum === 1;
-            nextButton.style.display = screenNum === totalScreens ? 'none' : 'block';
-            
-            // Trigger screen-specific animations
+            const isFinalScreen = screenNum === totalScreens;
+            nextButton.style.display = isFinalScreen ? 'none' : 'block';
+            if (isFinalScreen) {
+                nextButton.disabled = true;
+                nextButton.classList.remove('pulse');
+            }
+            lockNext();
+
             setTimeout(() => {
+                let handled = false;
                 if (screenNum === 1) {
+                    handled = true;
                     runIntroSequence();
                 } else {
-                    resetIntroSequence(true);
+                    resetIntroSequence();
                 }
                 if (screenNum === 2) {
+                    handled = true;
                     runUpgradeSequence();
                 } else {
-                    resetUpgradeSequence(true);
+                    resetUpgradeSequence();
                 }
                 if (screenNum === 3) {
+                    handled = true;
                     runMapSequence();
                 } else {
-                    resetMapSequence(true);
+                    resetMapSequence();
                 }
                 if (screenNum === 5) {
+                    handled = true;
                     runZoomSequence();
                 } else {
-                    resetZoomSequence(true);
+                    resetZoomSequence();
+                }
+                if (!handled) {
+                    unlockNext();
                 }
             }, 200);
         }
 
         function nextScreen() {
+            if (navigationLocked) return;
             if (currentScreen < totalScreens) {
                 currentScreen++;
                 showScreen(currentScreen);
@@ -933,38 +946,28 @@
 
         document.querySelectorAll('.dot').forEach(dot => {
             dot.addEventListener('click', () => {
-                currentScreen = parseInt(dot.dataset.screen);
+                const targetScreen = parseInt(dot.dataset.screen, 10);
+                if (Number.isNaN(targetScreen)) return;
+                if (navigationLocked && targetScreen > currentScreen) return;
+                currentScreen = targetScreen;
                 showScreen(currentScreen);
             });
         });
 
-        function resetIntroSequence(unlockButton = true) {
+        function resetIntroSequence() {
             introTimeouts.forEach(clearTimeout);
             introTimeouts = [];
             introSequenceIndex = 0;
-            introCumulativeText = "";
-            if (unlockButton && nextButton) {
-                nextButton.disabled = false;
-            }
-            if (introElements.hint) {
-                introElements.hint.classList.remove('ready');
-            }
             if (introElements.progress) {
                 Array.from(introElements.progress.children).forEach(dot => dot.classList.remove('active'));
-            }
-            if (introElements.subline) {
-                introElements.subline.textContent = '';
             }
         }
 
         function runIntroSequence() {
             if (!introElements.image) return;
-            resetIntroSequence(false);
+            resetIntroSequence();
             if (introElements.progress && introElements.progress.children.length === 0) {
                 introElements.progress.innerHTML = introSequences.map(() => '<span></span>').join('');
-            }
-            if (nextButton) {
-                nextButton.disabled = true;
             }
             playIntroStep();
         }
@@ -972,28 +975,13 @@
         function playIntroStep() {
             if (!introElements.image) return;
             if (introSequenceIndex >= introSequences.length) {
-                if (nextButton) nextButton.disabled = false;
-                if (introElements.hint) introElements.hint.classList.add('ready');
+                unlockNext();
                 return;
             }
 
             const sequence = introSequences[introSequenceIndex];
-            if (sequence.headline !== undefined) {
+            if (sequence.headline) {
                 introElements.headline.textContent = sequence.headline;
-            }
-            if (sequence.reset) {
-                introCumulativeText = sequence.subline ?? '';
-            } else if (sequence.subline !== undefined) {
-                introCumulativeText = sequence.subline;
-            }
-            if (sequence.append) {
-                introCumulativeText = introCumulativeText ? introCumulativeText + sequence.append : sequence.append;
-            }
-            if (introElements.subline) {
-                introElements.subline.textContent = introCumulativeText;
-            }
-            if (introElements.hint) {
-                introElements.hint.classList.toggle('ready', introSequenceIndex === introSequences.length - 1);
             }
             if (introElements.progress) {
                 Array.from(introElements.progress.children).forEach((dot, index) => {
@@ -1024,9 +1012,7 @@
                     introTimeouts.push(setTimeout(advance, perImageDuration));
                 } else {
                     introSequenceIndex++;
-                    introTimeouts.push(setTimeout(() => {
-                        playIntroStep();
-                    }, finalHold));
+                    introTimeouts.push(setTimeout(() => playIntroStep(), finalHold));
                 }
             };
 
@@ -1034,35 +1020,20 @@
             introTimeouts.push(setTimeout(advance, perImageDuration));
         }
 
-        function resetUpgradeSequence(unlockButton = true) {
+        function resetUpgradeSequence() {
             upgradeTimeouts.forEach(clearTimeout);
             upgradeTimeouts = [];
             upgradeImageIndex = 0;
-            if (unlockButton && nextButton) {
-                nextButton.disabled = false;
-            }
-            if (upgradeElements.hint) {
-                upgradeElements.hint.classList.remove('ready');
-            }
-            if (upgradeElements.tagline) {
-                upgradeElements.tagline.classList.remove('visible');
-            }
             if (upgradeElements.progress) {
                 Array.from(upgradeElements.progress.children).forEach(dot => dot.classList.remove('active'));
-            }
-            if (upgradeElements.subline) {
-                upgradeElements.subline.textContent = '';
             }
         }
 
         function runUpgradeSequence() {
             if (!upgradeElements.image) return;
-            resetUpgradeSequence(false);
+            resetUpgradeSequence();
             if (upgradeElements.progress && upgradeElements.progress.children.length === 0) {
                 upgradeElements.progress.innerHTML = upgradeSequenceImages.map(() => '<span></span>').join('');
-            }
-            if (nextButton) {
-                nextButton.disabled = true;
             }
             playUpgradeStep();
         }
@@ -1070,10 +1041,7 @@
         function playUpgradeStep() {
             if (!upgradeElements.image) return;
             if (upgradeImageIndex >= upgradeSequenceImages.length) {
-                if (nextButton) nextButton.disabled = false;
-                if (upgradeElements.hint) upgradeElements.hint.classList.add('ready');
-                if (upgradeElements.tagline) upgradeElements.tagline.classList.add('visible');
-                if (upgradeElements.subline) upgradeElements.subline.textContent = '';
+                unlockNext();
                 return;
             }
 
@@ -1101,35 +1069,20 @@
             }, hold));
         }
 
-        function resetMapSequence(unlockButton = true) {
+        function resetMapSequence() {
             mapTimeouts.forEach(clearTimeout);
             mapTimeouts = [];
             mapImageIndex = 0;
-            if (unlockButton && nextButton) {
-                nextButton.disabled = false;
-            }
-            if (mapElements.hint) {
-                mapElements.hint.classList.remove('ready');
-            }
-            if (mapElements.tagline) {
-                mapElements.tagline.classList.remove('visible');
-            }
             if (mapElements.progress) {
                 Array.from(mapElements.progress.children).forEach(dot => dot.classList.remove('active'));
-            }
-            if (mapElements.subline) {
-                mapElements.subline.textContent = '';
             }
         }
 
         function runMapSequence() {
             if (!mapElements.image) return;
-            resetMapSequence(false);
+            resetMapSequence();
             if (mapElements.progress && mapElements.progress.children.length === 0) {
                 mapElements.progress.innerHTML = mapSequenceImages.map(() => '<span></span>').join('');
-            }
-            if (nextButton) {
-                nextButton.disabled = true;
             }
             playMapStep();
         }
@@ -1137,10 +1090,7 @@
         function playMapStep() {
             if (!mapElements.image) return;
             if (mapImageIndex >= mapSequenceImages.length) {
-                if (nextButton) nextButton.disabled = false;
-                if (mapElements.hint) mapElements.hint.classList.add('ready');
-                if (mapElements.tagline) mapElements.tagline.classList.add('visible');
-                if (mapElements.subline) mapElements.subline.textContent = '';
+                unlockNext();
                 return;
             }
 
@@ -1161,53 +1111,47 @@
                 });
             }
 
-            const hold = 1400;
+            const hold = 1500;
             mapTimeouts.push(setTimeout(() => {
                 mapImageIndex++;
                 playMapStep();
             }, hold));
         }
 
-        function resetZoomSequence(unlockButton = true) {
+        function resetZoomSequence() {
             zoomTimeouts.forEach(clearTimeout);
             zoomTimeouts = [];
             zoomImageIndex = 0;
-            if (unlockButton && nextButton) {
-                nextButton.disabled = false;
-            }
-            if (zoomElements.hint) {
-                zoomElements.hint.classList.remove('ready');
-            }
-            if (zoomElements.tagline) {
-                zoomElements.tagline.classList.remove('visible');
-            }
             if (zoomElements.progress) {
                 Array.from(zoomElements.progress.children).forEach(dot => dot.classList.remove('active'));
             }
-            if (zoomElements.subline) {
-                zoomElements.subline.textContent = '';
-            }
+            setZoomLabelState('hide');
         }
 
         function runZoomSequence() {
             if (!zoomElements.image) return;
-            resetZoomSequence(false);
+            resetZoomSequence();
             if (zoomElements.progress && zoomElements.progress.children.length === 0) {
                 zoomElements.progress.innerHTML = zoomSequenceImages.map(() => '<span></span>').join('');
             }
-            if (nextButton) {
-                nextButton.disabled = true;
-            }
             playZoomStep();
+        }
+
+        function setZoomLabelState(state) {
+            if (!zoomElements.label) return;
+            zoomElements.label.classList.remove('visible', 'glow');
+            if (state === 'show') {
+                zoomElements.label.classList.add('visible');
+            } else if (state === 'glow') {
+                zoomElements.label.classList.add('visible', 'glow');
+            }
         }
 
         function playZoomStep() {
             if (!zoomElements.image) return;
             if (zoomImageIndex >= zoomSequenceImages.length) {
-                if (nextButton) nextButton.disabled = false;
-                if (zoomElements.hint) zoomElements.hint.classList.add('ready');
-                if (zoomElements.tagline) zoomElements.tagline.classList.add('visible');
-                if (zoomElements.subline) zoomElements.subline.textContent = '';
+                setZoomLabelState('glow');
+                unlockNext();
                 return;
             }
 
@@ -1219,6 +1163,12 @@
             const onLoad = () => {
                 zoomElements.image.classList.add('visible');
                 zoomElements.image.removeEventListener('load', onLoad);
+                if (zoomImageIndex >= 2) {
+                    const isFinalFrame = zoomImageIndex === zoomSequenceImages.length - 1;
+                    setZoomLabelState(isFinalFrame ? 'glow' : 'show');
+                } else {
+                    setZoomLabelState('hide');
+                }
             };
             zoomElements.image.addEventListener('load', onLoad);
 
@@ -1228,7 +1178,7 @@
                 });
             }
 
-            const hold = 1400;
+            const hold = 1500;
             zoomTimeouts.push(setTimeout(() => {
                 zoomImageIndex++;
                 playZoomStep();
@@ -1240,7 +1190,10 @@
         }
 
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') nextScreen();
+            if (e.key === 'ArrowRight') {
+                if (navigationLocked) return;
+                nextScreen();
+            }
             if (e.key === 'ArrowLeft') previousScreen();
         });
 
