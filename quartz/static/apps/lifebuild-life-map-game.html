@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LifeBuild - Life Map Tile Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Georgia:wght@400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: 'Georgia', serif;
+      background-color: #1f1c18;
+      background-image: radial-gradient(circle at 50% 50%, #3d3830 0%, #1f1c18 70%);
+    }
+
+    #root {
+      min-height: 100vh;
+    }
+
+    button {
+      font-family: inherit;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useCallback } = React;
+
+    const hexToPixel = (q, r, size) => {
+      const x = size * (1.5 * q);
+      const y = size * ((Math.sqrt(3) / 2) * q + Math.sqrt(3) * r);
+      return { x, y };
+    };
+
+    const getHexCorners = (centerX, centerY, size) => {
+      const corners = [];
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI / 180) * (60 * i - 30);
+        corners.push({
+          x: centerX + size * Math.cos(angle),
+          y: centerY + size * Math.sin(angle)
+        });
+      }
+      return corners;
+    };
+
+    const hexNeighbors = [
+      { q: 1, r: 0 },
+      { q: 1, r: -1 },
+      { q: 0, r: -1 },
+      { q: -1, r: 0 },
+      { q: -1, r: 1 },
+      { q: 0, r: 1 }
+    ];
+
+    const tileTypes = {
+      goldProject: {
+        name: 'Strategic Project',
+        color: '#C9A227',
+        borderColor: '#8B7355',
+        icon: '🏰',
+        category: 'project',
+        description: 'Transformative initiative'
+      },
+      silverProject: {
+        name: 'Growth Project',
+        color: '#7D8471',
+        borderColor: '#5C6356',
+        icon: '🏛️',
+        category: 'project',
+        description: 'Capacity building'
+      },
+      bronzeProject: {
+        name: 'Operational Task',
+        color: '#A0522D',
+        borderColor: '#6B4423',
+        icon: '🏠',
+        category: 'project',
+        description: 'Maintenance work'
+      },
+      path: {
+        name: 'Path',
+        color: '#D4C4A8',
+        borderColor: '#B8A88A',
+        icon: '═',
+        category: 'spacer',
+        description: 'Connection'
+      },
+      garden: {
+        name: 'Garden',
+        color: '#6B8E4E',
+        borderColor: '#4A6B3A',
+        icon: '🌿',
+        category: 'spacer',
+        description: 'Breathing room'
+      },
+      water: {
+        name: 'Stream',
+        color: '#5B8FA8',
+        borderColor: '#3D6B80',
+        icon: '〰️',
+        category: 'spacer',
+        description: 'Boundary'
+      }
+    };
+
+    const generateQueue = () => {
+      const types = Object.keys(tileTypes);
+      return Array.from({ length: 5 }).map((_, idx) => {
+        const typeKey = types[Math.floor(Math.random() * types.length)];
+        return {
+          id: Date.now() + idx,
+          type: typeKey,
+          ...tileTypes[typeKey]
+        };
+      });
+    };
+
+    const HexTile = ({
+      q,
+      r,
+      size,
+      tile,
+      isPlaceholder,
+      isHovered,
+      onClick,
+      onHover
+    }) => {
+      const { x, y } = hexToPixel(q, r, size);
+      const corners = getHexCorners(x, y, size * 0.95);
+      const points = corners.map((corner) => `${corner.x},${corner.y}`).join(' ');
+
+      const fillColor = tile
+        ? tile.color
+        : isHovered
+        ? 'rgba(201, 162, 39, 0.25)'
+        : 'rgba(139, 115, 85, 0.15)';
+
+      const strokeColor = tile
+        ? tile.borderColor
+        : isHovered
+        ? '#C9A227'
+        : 'rgba(139, 115, 85, 0.4)';
+
+      return (
+        <g
+          onClick={onClick}
+          onMouseEnter={() => onHover(true)}
+          onMouseLeave={() => onHover(false)}
+          style={{ cursor: isPlaceholder ? 'pointer' : 'default' }}
+        >
+          <polygon
+            points={points}
+            fill={fillColor}
+            stroke={strokeColor}
+            strokeWidth={tile ? 3 : 2}
+            strokeDasharray={isPlaceholder && !tile ? '5,5' : 'none'}
+          />
+          {tile && (
+            <>
+              <text
+                x={x}
+                y={y - 5}
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fontSize={size * 0.5}
+              >
+                {tile.icon}
+              </text>
+              {tile.label && (
+                <text
+                  x={x}
+                  y={y + size * 0.35}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fontSize={size * 0.2}
+                  fill="#3D3225"
+                  fontFamily="Georgia, serif"
+                >
+                  {tile.label.length > 10 ? `${tile.label.slice(0, 9)}…` : tile.label}
+                </text>
+              )}
+            </>
+          )}
+        </g>
+      );
+    };
+
+    const QueueTile = ({ tile, isActive, onClick }) => (
+      <div
+        onClick={onClick}
+        style={{
+          width: 70,
+          height: 80,
+          backgroundColor: tile.color,
+          border: `3px solid ${isActive ? '#F5E6C8' : tile.borderColor}`,
+          borderRadius: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          cursor: 'pointer',
+          transform: isActive ? 'scale(1.1)' : 'scale(1)',
+          transition: 'all 0.2s ease',
+          boxShadow: isActive
+            ? '0 4px 12px rgba(0, 0, 0, 0.3)'
+            : '0 2px 4px rgba(0, 0, 0, 0.2)'
+        }}
+      >
+        <span style={{ fontSize: 24 }}>{tile.icon}</span>
+        <span
+          style={{
+            fontSize: 10,
+            color: '#3D3225',
+            fontFamily: 'Georgia, serif',
+            textAlign: 'center',
+            padding: '0 4px'
+          }}
+        >
+          {tile.name}
+        </span>
+      </div>
+    );
+
+    function LifeMapPrototype() {
+      const [placedTiles, setPlacedTiles] = useState({
+        '0,0': { ...tileTypes.goldProject, label: 'Vision' }
+      });
+      const [queue, setQueue] = useState(generateQueue);
+      const [selectedQueueIndex, setSelectedQueueIndex] = useState(0);
+      const [hoveredHex, setHoveredHex] = useState(null);
+      const [labelInput, setLabelInput] = useState('');
+      const [showLabelModal, setShowLabelModal] = useState(false);
+      const [pendingPlacement, setPendingPlacement] = useState(null);
+
+      const hexSize = 50;
+
+      const getPlacementSpots = useCallback(() => {
+        const spots = new Set();
+        Object.keys(placedTiles).forEach((key) => {
+          const [q, r] = key.split(',').map(Number);
+          hexNeighbors.forEach((neighbor) => {
+            const newKey = `${q + neighbor.q},${r + neighbor.r}`;
+            if (!placedTiles[newKey]) {
+              spots.add(newKey);
+            }
+          });
+        });
+        return Array.from(spots);
+      }, [placedTiles]);
+
+      const placementSpots = getPlacementSpots();
+
+      const completePlacement = (key, tile, label) => {
+        setPlacedTiles((prev) => ({
+          ...prev,
+          [key]: { ...tile, label }
+        }));
+
+        setQueue((prev) => {
+          const newQueue = prev.filter((_, idx) => idx !== selectedQueueIndex);
+          const types = Object.keys(tileTypes);
+          const typeKey = types[Math.floor(Math.random() * types.length)];
+          newQueue.push({
+            id: Date.now(),
+            type: typeKey,
+            ...tileTypes[typeKey]
+          });
+          return newQueue;
+        });
+
+        setSelectedQueueIndex(0);
+        setShowLabelModal(false);
+        setLabelInput('');
+        setPendingPlacement(null);
+      };
+
+      const handlePlacement = (key) => {
+        if (!queue.length) return;
+        const selectedTile = queue[selectedQueueIndex];
+        if (selectedTile.category === 'project') {
+          setPendingPlacement({ key, tile: selectedTile });
+          setShowLabelModal(true);
+        } else {
+          completePlacement(key, selectedTile, null);
+        }
+      };
+
+      const allHexes = [...Object.keys(placedTiles), ...placementSpots];
+      let minX = Infinity;
+      let maxX = -Infinity;
+      let minY = Infinity;
+      let maxY = -Infinity;
+
+      allHexes.forEach((key) => {
+        const [q, r] = key.split(',').map(Number);
+        const { x, y } = hexToPixel(q, r, hexSize);
+        minX = Math.min(minX, x - hexSize);
+        maxX = Math.max(maxX, x + hexSize);
+        minY = Math.min(minY, y - hexSize);
+        maxY = Math.max(maxY, y + hexSize);
+      });
+
+      const padding = 40;
+      const viewBox = `${minX - padding} ${minY - padding} ${
+        maxX - minX + padding * 2
+      } ${maxY - minY + padding * 2}`;
+
+      return (
+        <div
+          style={{
+            minHeight: '100vh',
+            backgroundColor: '#2D2A24',
+            backgroundImage: 'radial-gradient(circle at 50% 50%, #3D3830 0%, #2D2A24 100%)',
+            padding: 20
+          }}
+        >
+          <div style={{ textAlign: 'center', marginBottom: 20 }}>
+            <h1
+              style={{
+                color: '#F5E6C8',
+                margin: 0,
+                fontSize: 28,
+                fontWeight: 'normal',
+                letterSpacing: 2
+              }}
+            >
+              Your Life Map
+            </h1>
+            <p style={{ color: '#8B8477', margin: '8px 0 0 0', fontSize: 14 }}>
+              Click a tile from your queue, then place it on the map
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              gap: 20,
+              justifyContent: 'center',
+              alignItems: 'flex-start',
+              flexWrap: 'wrap'
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: 'rgba(61, 50, 37, 0.8)',
+                borderRadius: 12,
+                padding: 16,
+                border: '2px solid #5C5347',
+                minWidth: 110
+              }}
+            >
+              <h3
+                style={{
+                  color: '#C9A227',
+                  margin: '0 0 12px 0',
+                  fontSize: 14,
+                  textTransform: 'uppercase',
+                  letterSpacing: 1
+                }}
+              >
+                Incoming
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {queue.map((tile, index) => (
+                  <QueueTile
+                    key={tile.id}
+                    tile={tile}
+                    isActive={index === selectedQueueIndex}
+                    onClick={() => setSelectedQueueIndex(index)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div
+              style={{
+                backgroundColor: 'rgba(45, 42, 36, 0.9)',
+                borderRadius: 16,
+                border: '3px solid #5C5347',
+                overflow: 'hidden',
+                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
+              }}
+            >
+              <svg width={500} height={450} viewBox={viewBox} style={{ display: 'block' }}>
+                <defs>
+                  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <circle cx="10" cy="10" r="0.5" fill="rgba(139, 115, 85, 0.2)" />
+                  </pattern>
+                </defs>
+                <rect
+                  x={minX - padding}
+                  y={minY - padding}
+                  width="100%"
+                  height="100%"
+                  fill="url(#grid)"
+                />
+
+                {placementSpots.map((key) => {
+                  const [q, r] = key.split(',').map(Number);
+                  return (
+                    <HexTile
+                      key={key}
+                      q={q}
+                      r={r}
+                      size={hexSize}
+                      tile={null}
+                      isPlaceholder
+                      isHovered={hoveredHex === key}
+                      onClick={() => handlePlacement(key)}
+                      onHover={(hovered) => setHoveredHex(hovered ? key : null)}
+                    />
+                  );
+                })}
+
+                {Object.entries(placedTiles).map(([key, tile]) => {
+                  const [q, r] = key.split(',').map(Number);
+                  return (
+                    <HexTile
+                      key={key}
+                      q={q}
+                      r={r}
+                      size={hexSize}
+                      tile={tile}
+                      isPlaceholder={false}
+                      isHovered={false}
+                      onClick={() => {}}
+                      onHover={() => {}}
+                    />
+                  );
+                })}
+              </svg>
+            </div>
+
+            <div
+              style={{
+                backgroundColor: 'rgba(61, 50, 37, 0.8)',
+                borderRadius: 12,
+                padding: 16,
+                border: '2px solid #5C5347',
+                minWidth: 140
+              }}
+            >
+              <h3
+                style={{
+                  color: '#C9A227',
+                  margin: '0 0 12px 0',
+                  fontSize: 14,
+                  textTransform: 'uppercase',
+                  letterSpacing: 1
+                }}
+              >
+                Legend
+              </h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {Object.entries(tileTypes).map(([key, tile]) => (
+                  <div key={key} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div
+                      style={{
+                        width: 20,
+                        height: 20,
+                        backgroundColor: tile.color,
+                        border: `2px solid ${tile.borderColor}`,
+                        borderRadius: 4,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 10
+                      }}
+                    >
+                      {tile.icon}
+                    </div>
+                    <span style={{ color: '#B8A88A', fontSize: 11 }}>{tile.name}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px solid #5C5347' }}>
+                <p style={{ color: '#8B8477', fontSize: 11, margin: 0, lineHeight: 1.4 }}>
+                  <strong style={{ color: '#C9A227' }}>Tiles placed:</strong>
+                  <br />
+                  {Object.keys(placedTiles).length}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {showLabelModal && (
+            <div
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: 'rgba(0,0,0,0.7)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 1000
+              }}
+            >
+              <div
+                style={{
+                  backgroundColor: '#3D3225',
+                  borderRadius: 12,
+                  padding: 24,
+                  border: '3px solid #C9A227',
+                  maxWidth: 300
+                }}
+              >
+                <h3 style={{ color: '#F5E6C8', margin: '0 0 16px 0' }}>
+                  Name Your {pendingPlacement?.tile.name}
+                </h3>
+                <input
+                  type="text"
+                  value={labelInput}
+                  onChange={(e) => setLabelInput(e.target.value)}
+                  placeholder="e.g., Launch MVP"
+                  autoFocus
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    fontSize: 16,
+                    backgroundColor: '#2D2A24',
+                    border: '2px solid #5C5347',
+                    borderRadius: 8,
+                    color: '#F5E6C8',
+                    outline: 'none'
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && labelInput.trim()) {
+                      completePlacement(
+                        pendingPlacement.key,
+                        pendingPlacement.tile,
+                        labelInput.trim()
+                      );
+                    }
+                  }}
+                />
+                <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+                  <button
+                    onClick={() => {
+                      setShowLabelModal(false);
+                      setPendingPlacement(null);
+                      setLabelInput('');
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: '10px 16px',
+                      backgroundColor: 'transparent',
+                      border: '2px solid #5C5347',
+                      borderRadius: 8,
+                      color: '#8B8477',
+                      cursor: 'pointer',
+                      fontSize: 14
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (labelInput.trim()) {
+                        completePlacement(
+                          pendingPlacement.key,
+                          pendingPlacement.tile,
+                          labelInput.trim()
+                        );
+                      }
+                    }}
+                    style={{
+                      flex: 1,
+                      padding: '10px 16px',
+                      backgroundColor: '#C9A227',
+                      border: 'none',
+                      borderRadius: 8,
+                      color: '#2D2A24',
+                      cursor: 'pointer',
+                      fontSize: 14,
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    Place
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<LifeMapPrototype />, document.getElementById('root'));
+  </script>
+</body>
+</html>
