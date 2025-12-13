@@ -11,9 +11,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -21,42 +19,220 @@
       font-family: 'Georgia', serif;
       background-color: #1f1c18;
       background-image: radial-gradient(circle at 50% 50%, #3d3830 0%, #1f1c18 70%);
+      color: #f5e6c8;
     }
 
-    #root {
-      min-height: 100vh;
+    #root { min-height: 100vh; }
+
+    button, input { font-family: inherit; }
+
+    .page { padding: 24px; }
+
+    .header { text-align: center; margin-bottom: 24px; }
+    .header h1 { margin: 0; font-weight: 400; letter-spacing: 2px; }
+    .header p { color: #8b8477; margin-top: 8px; font-size: 15px; }
+
+    .layout {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
     }
 
-    button {
-      font-family: inherit;
+    .panel {
+      background-color: rgba(45, 42, 36, 0.92);
+      border-radius: 16px;
+      border: 3px solid #5c5347;
+      padding: 16px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     }
+
+    .queue-panel, .legend-panel { width: 230px; }
+    .queue-panel h3, .legend-panel h3 {
+      margin-top: 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #c9a227;
+      font-size: 14px;
+    }
+
+    .queue-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .queue-item {
+      width: 100%;
+      height: 100px;
+      border-radius: 14px;
+      border: 3px solid rgba(245, 230, 200, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: grab;
+      user-select: none;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+      transition: transform 0.2s ease, border 0.2s ease;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .queue-item:active { cursor: grabbing; transform: scale(1.04); }
+    .queue-item span { text-shadow: 0 2px 6px rgba(0,0,0,0.6); }
+    .queue-item small { color: #f5e6c8; opacity: 0.8; margin-top: 4px; font-size: 11px; }
+
+    .map-panel { padding: 0; }
+    .map-shell { background-color: rgba(30,27,23,0.92); border-radius: 16px; border: 2px solid #5c5347; }
+
+    svg { display: block; border-radius: 16px; cursor: grab; user-select: none; }
+    svg:active { cursor: grabbing; }
+
+    .legend-items { display: flex; flex-direction: column; gap: 12px; }
+    .legend-row { display: flex; align-items: center; gap: 10px; color: #b8a88a; font-size: 12px; }
+    .legend-swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: 2px solid rgba(255,255,255,0.5);
+      background-size: cover;
+      background-position: center;
+      box-shadow: inset 0 0 0 2px rgba(0,0,0,0.4);
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0,0,0,0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+    }
+
+    .modal {
+      background-color: #3d3225;
+      border-radius: 12px;
+      padding: 24px;
+      border: 3px solid #c9a227;
+      width: 340px;
+    }
+
+    .modal input {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 16px;
+      background-color: #2d2a24;
+      border: 2px solid #5c5347;
+      border-radius: 8px;
+      color: #f5e6c8;
+    }
+
+    .modal-actions { display: flex; gap: 10px; margin-top: 16px; }
+    .btn-secondary, .btn-primary {
+      flex: 1;
+      padding: 10px 16px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .btn-secondary { background: transparent; border: 2px solid #5c5347; color: #8b8477; }
+    .btn-primary { background-color: #c9a227; color: #2d2a24; }
+
+    .project-card {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 380px;
+      background: #2b2620;
+      border: 2px solid #c9a227;
+      border-radius: 18px;
+      padding: 22px;
+      z-index: 30;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.65);
+    }
+
+    .project-card h2 { margin: 0 0 8px; }
+    .project-card p { margin: 4px 0; color: #b8a88a; font-size: 14px; }
+    .project-card button { margin-top: 16px; width: 100%; padding: 10px; border-radius: 8px; border: none; cursor: pointer; background: #c9a227; color: #2d2a24; font-weight: 600; }
   </style>
 </head>
 <body>
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useState, useCallback } = React;
+    const { useState, useEffect, useMemo, useRef, useCallback } = React;
 
-    const hexToPixel = (q, r, size) => {
-      const x = size * (1.5 * q);
-      const y = size * ((Math.sqrt(3) / 2) * q + Math.sqrt(3) * r);
-      return { x, y };
+    const HEX_SIZE = 50;
+    const START_KEY = '0,0';
+    const STORAGE_KEY = 'lifebuild-life-map-v2';
+    const SVG_WIDTH = 900;
+    const SVG_HEIGHT = 620;
+
+    const CATEGORY_PALETTE = {
+      HEALTH: { color: '#6B8E7A', border: '#4E6B58', name: 'Health & Well-Being' },
+      PURPOSE: { color: '#7B6B8E', border: '#5B4D6B', name: 'Purpose & Spirituality' },
+      FINANCES: { color: '#C4A962', border: '#8F7B45', name: 'Financial Resources' },
+      RELATIONSHIPS: { color: '#C4847B', border: '#935C55', name: 'Relationships' },
+      HOME: { color: '#8B7355', border: '#64503A', name: 'Home & Environment' },
+      COMMUNITY: { color: '#D4956A', border: '#9C6A45', name: 'Community & Contributions' },
+      LEISURE: { color: '#7BA3B8', border: '#557284', name: 'Leisure & Lifestyle' },
+      GROWTH: { color: '#5B8E8E', border: '#3F6363', name: 'Personal Growth & Learning' }
     };
 
-    const getHexCorners = (centerX, centerY, size) => {
-      const corners = [];
-      for (let i = 0; i < 6; i++) {
-        const angle = (Math.PI / 180) * (60 * i - 30);
-        corners.push({
-          x: centerX + size * Math.cos(angle),
-          y: centerY + size * Math.sin(angle)
-        });
+    const TILE_LIBRARY = {
+      goldProject: {
+        name: 'Strategic Project',
+        kind: 'project',
+        icon: '🏰',
+        accent: '#C9A227',
+        categoryKey: 'FINANCES',
+        image: 'assets/lifemap/tile-blueprints.png'
+      },
+      silverProject: {
+        name: 'Growth Project',
+        kind: 'project',
+        icon: '🏛️',
+        accent: '#7D8471',
+        categoryKey: 'GROWTH',
+        image: 'assets/lifemap/tile-kitchen.jpg'
+      },
+      bronzeProject: {
+        name: 'Operational Task',
+        kind: 'project',
+        icon: '🏠',
+        accent: '#A0522D',
+        categoryKey: 'HOME',
+        image: 'assets/lifemap/tile-garden.jpg'
+      },
+      path: {
+        name: 'Path',
+        kind: 'spacer',
+        icon: '═',
+        accent: '#D4C4A8',
+        categoryKey: 'COMMUNITY',
+        image: 'assets/lifemap/tile-caravan.png'
+      },
+      garden: {
+        name: 'Garden',
+        kind: 'spacer',
+        icon: '🌿',
+        accent: '#6B8E4E',
+        categoryKey: 'HEALTH',
+        image: 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=600&q=60'
+      },
+      water: {
+        name: 'Stream',
+        kind: 'spacer',
+        icon: '〰️',
+        accent: '#5B8FA8',
+        categoryKey: 'LEISURE',
+        image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=600&q=60'
       }
-      return corners;
     };
 
-    const hexNeighbors = [
+    const HEX_NEIGHBORS = [
       { q: 1, r: 0 },
       { q: 1, r: -1 },
       { q: 0, r: -1 },
@@ -65,67 +241,100 @@
       { q: 0, r: 1 }
     ];
 
-    const tileTypes = {
-      goldProject: {
-        name: 'Strategic Project',
-        color: '#C9A227',
-        borderColor: '#8B7355',
-        icon: '🏰',
-        category: 'project',
-        description: 'Transformative initiative'
-      },
-      silverProject: {
-        name: 'Growth Project',
-        color: '#7D8471',
-        borderColor: '#5C6356',
-        icon: '🏛️',
-        category: 'project',
-        description: 'Capacity building'
-      },
-      bronzeProject: {
-        name: 'Operational Task',
-        color: '#A0522D',
-        borderColor: '#6B4423',
-        icon: '🏠',
-        category: 'project',
-        description: 'Maintenance work'
-      },
-      path: {
-        name: 'Path',
-        color: '#D4C4A8',
-        borderColor: '#B8A88A',
-        icon: '═',
-        category: 'spacer',
-        description: 'Connection'
-      },
-      garden: {
-        name: 'Garden',
-        color: '#6B8E4E',
-        borderColor: '#4A6B3A',
-        icon: '🌿',
-        category: 'spacer',
-        description: 'Breathing room'
-      },
-      water: {
-        name: 'Stream',
-        color: '#5B8FA8',
-        borderColor: '#3D6B80',
-        icon: '〰️',
-        category: 'spacer',
-        description: 'Boundary'
-      }
+    const getNeighborKeys = (key) => {
+      const [q, r] = key.split(',').map(Number);
+      return HEX_NEIGHBORS.map((neighbor) => `${q + neighbor.q},${r + neighbor.r}`);
     };
 
-    const generateQueue = () => {
-      const types = Object.keys(tileTypes);
-      return Array.from({ length: 5 }).map((_, idx) => {
-        const typeKey = types[Math.floor(Math.random() * types.length)];
-        return {
-          id: Date.now() + idx,
-          type: typeKey,
-          ...tileTypes[typeKey]
-        };
+    const canPlaceOnKey = (key, tiles) => {
+      if (tiles[key]) return false;
+      const keys = Object.keys(tiles);
+      if (!keys.length) return key === START_KEY;
+      return getNeighborKeys(key).some((neighbor) => tiles[neighbor]);
+    };
+
+    const hexToPixel = (q, r, size) => {
+      const x = size * (1.5 * q);
+      const y = size * ((Math.sqrt(3) / 2) * q + Math.sqrt(3) * r);
+      return { x, y };
+    };
+
+    const pixelToAxial = (x, y, size) => {
+      const q = ((2 / 3) * x) / size;
+      const r = ((-1 / 3) * x + (Math.sqrt(3) / 3) * y) / size;
+      return { q, r };
+    };
+
+    const roundAxial = ({ q, r }) => {
+      let x = q;
+      let z = r;
+      let y = -x - z;
+
+      let rx = Math.round(x);
+      let ry = Math.round(y);
+      let rz = Math.round(z);
+
+      const xDiff = Math.abs(rx - x);
+      const yDiff = Math.abs(ry - y);
+      const zDiff = Math.abs(rz - z);
+
+      if (xDiff > yDiff && xDiff > zDiff) {
+        rx = -ry - rz;
+      } else if (yDiff > zDiff) {
+        ry = -rx - rz;
+      } else {
+        rz = -rx - ry;
+      }
+
+      return { q: rx, r: rz };
+    };
+
+    const generateQueueTile = () => {
+      const typeKeys = Object.keys(TILE_LIBRARY);
+      const type = typeKeys[Math.floor(Math.random() * typeKeys.length)];
+      return { id: `${Date.now()}-${Math.random().toString(36).slice(2)}`, type };
+    };
+
+    const generateQueue = (count = 5) => Array.from({ length: count }, generateQueueTile);
+
+    const normalizePlacedTiles = (stored = {}) => {
+      const normalized = {};
+      Object.entries(stored).forEach(([key, value]) => {
+        if (value && TILE_LIBRARY[value.type]) {
+          normalized[key] = {
+            type: value.type,
+            label: value.label || null,
+            categoryKey: value.categoryKey || TILE_LIBRARY[value.type].categoryKey,
+            dioramaUrl: value.dioramaUrl || TILE_LIBRARY[value.type].image,
+            aiState: value.aiState || 'ready'
+          };
+        }
       });
+      return normalized;
+    };
+
+    const normalizeQueue = (stored = []) => {
+      const cleaned = stored.filter((item) => item && TILE_LIBRARY[item.type]);
+      if (!cleaned.length) return generateQueue();
+      while (cleaned.length < 5) cleaned.push(generateQueueTile());
+      return cleaned;
+    };
+
+    const defaultCamera = { x: SVG_WIDTH / 2, y: SVG_HEIGHT / 2, scale: 1 };
+
+    const loadInitialState = () => {
+      const defaults = { placedTiles: {}, queue: generateQueue(), camera: defaultCamera };
+      try {
+        const stored = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (!stored) return defaults;
+        return {
+          placedTiles: normalizePlacedTiles(stored.placedTiles || {}),
+          queue: normalizeQueue(stored.queue || []),
+          camera: stored.camera || defaultCamera
+        };
+      } catch (err) {
+        return defaults;
+      }
     };
 
     const HexTile = ({
@@ -133,468 +342,595 @@
       r,
       size,
       tile,
-      isPlaceholder,
       isHovered,
-      onClick,
-      onHover
+      isTarget,
+      isStart,
+      isDropAllowed,
+      onMouseEnter,
+      onMouseLeave,
+      onMouseDown,
+      onDoubleClick,
+      isDragging
     }) => {
       const { x, y } = hexToPixel(q, r, size);
-      const corners = getHexCorners(x, y, size * 0.95);
-      const points = corners.map((corner) => `${corner.x},${corner.y}`).join(' ');
+      const corners = Array.from({ length: 6 }).map((_, i) => {
+        const angle = (Math.PI / 180) * (60 * i - 30);
+        return { x: x + size * Math.cos(angle), y: y + size * Math.sin(angle) };
+      });
+      const outerPoints = corners.map((corner) => `${corner.x},${corner.y}`).join(' ');
+      const innerCorners = corners.map((corner) => ({
+        x: x + (corner.x - x) * 0.92,
+        y: y + (corner.y - y) * 0.92
+      }));
+      const innerPoints = innerCorners.map((corner) => `${corner.x},${corner.y}`).join(' ');
+      const maskId = `mask-${q}-${r}`;
 
-      const fillColor = tile
-        ? tile.color
-        : isHovered
-        ? 'rgba(201, 162, 39, 0.25)'
-        : 'rgba(139, 115, 85, 0.15)';
-
-      const strokeColor = tile
-        ? tile.borderColor
-        : isHovered
+      const categoryData = tile ? CATEGORY_PALETTE[tile.categoryKey] : null;
+      const borderColor = tile
+        ? categoryData?.border || '#C9A227'
+        : isStart
+        ? '#F5E6C8'
+        : isDropAllowed
         ? '#C9A227'
-        : 'rgba(139, 115, 85, 0.4)';
+        : 'rgba(139,115,85,0.35)';
 
       return (
         <g
-          onClick={onClick}
-          onMouseEnter={() => onHover(true)}
-          onMouseLeave={() => onHover(false)}
-          style={{ cursor: isPlaceholder ? 'pointer' : 'default' }}
+          data-hex-tile="true"
+          onMouseEnter={onMouseEnter}
+          onMouseLeave={onMouseLeave}
+          onMouseDown={onMouseDown}
+          onDoubleClick={onDoubleClick}
+          style={{ cursor: tile ? 'grab' : isDropAllowed ? 'pointer' : 'default' }}
+          opacity={isDragging ? 0.4 : 1}
         >
-          <polygon
-            points={points}
-            fill={fillColor}
-            stroke={strokeColor}
-            strokeWidth={tile ? 3 : 2}
-            strokeDasharray={isPlaceholder && !tile ? '5,5' : 'none'}
-          />
-          {tile && (
-            <>
-              <text
-                x={x}
-                y={y - 5}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fontSize={size * 0.5}
-              >
-                {tile.icon}
-              </text>
-              {tile.label && (
-                <text
-                  x={x}
-                  y={y + size * 0.35}
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  fontSize={size * 0.2}
-                  fill="#3D3225"
-                  fontFamily="Georgia, serif"
-                >
-                  {tile.label.length > 10 ? `${tile.label.slice(0, 9)}…` : tile.label}
-                </text>
-              )}
-            </>
+          <g filter={tile ? 'url(#tileShadow)' : 'none'}>
+            <polygon
+              points={outerPoints}
+              fill={tile ? '#221d18' : isDropAllowed ? 'rgba(201,162,39,0.35)' : isHovered ? 'rgba(139,115,85,0.22)' : 'rgba(139,115,85,0.12)'}
+              stroke={borderColor}
+              strokeWidth={tile ? 4 : 2}
+              strokeDasharray={tile ? 'none' : isStart ? '4,4' : '6,6'}
+              filter={isStart && !tile ? 'url(#startGlow)' : 'none'}
+            />
+
+            {tile && (
+              <>
+                <clipPath id={maskId}>
+                  <polygon points={innerPoints} />
+                </clipPath>
+                <image
+                  x={x - size}
+                  y={y - size}
+                  width={size * 2}
+                  height={size * 2}
+                  href={tile.dioramaUrl}
+                  clipPath={`url(#${maskId})`}
+                  preserveAspectRatio="xMidYMid slice"
+                />
+                <polygon
+                  points={innerPoints}
+                  fill="none"
+                  stroke={categoryData?.color || '#F5E6C8'}
+                  strokeWidth={3}
+                />
+              </>
+            )}
+          </g>
+
+          {tile?.label && (
+            <text
+              x={x}
+              y={y + size * 0.75}
+              textAnchor="middle"
+              fill="#f5e6c8"
+              fontSize={12}
+              style={{ textShadow: '0 2px 6px rgba(0,0,0,0.6)' }}
+            >
+              {tile.label.length > 14 ? `${tile.label.slice(0, 13)}…` : tile.label}
+            </text>
+          )}
+
+          {tile?.aiState === 'loading' && (
+            <text x={x} y={y} textAnchor="middle" fill="#C9A227" fontSize={11}>
+              Generating…
+            </text>
           )}
         </g>
       );
     };
 
-    const QueueTile = ({ tile, isActive, onClick }) => (
-      <div
-        onClick={onClick}
-        style={{
-          width: 70,
-          height: 80,
-          backgroundColor: tile.color,
-          border: `3px solid ${isActive ? '#F5E6C8' : tile.borderColor}`,
-          borderRadius: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          transform: isActive ? 'scale(1.1)' : 'scale(1)',
-          transition: 'all 0.2s ease',
-          boxShadow: isActive
-            ? '0 4px 12px rgba(0, 0, 0, 0.3)'
-            : '0 2px 4px rgba(0, 0, 0, 0.2)'
-        }}
-      >
-        <span style={{ fontSize: 24 }}>{tile.icon}</span>
-        <span
+    const QueueTile = ({ tile, onMouseDown }) => {
+      const def = TILE_LIBRARY[tile.type];
+      const palette = CATEGORY_PALETTE[def.categoryKey];
+      return (
+        <div
+          className="queue-item"
+          onMouseDown={onMouseDown}
           style={{
-            fontSize: 10,
-            color: '#3D3225',
-            fontFamily: 'Georgia, serif',
-            textAlign: 'center',
-            padding: '0 4px'
+            backgroundImage: `linear-gradient(rgba(20,17,14,0.55), rgba(20,17,14,0.85)), url(${def.image})`,
+            borderColor: palette.border
           }}
         >
-          {tile.name}
-        </span>
-      </div>
-    );
+          <span style={{ fontSize: 24 }}>{def.icon} {def.name}</span>
+          <small>{palette.name}</small>
+          <small>Drag to place</small>
+        </div>
+      );
+    };
+
+    const mockGenerateDiorama = (title, type) => {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({
+            url: TILE_LIBRARY[type].image,
+            categoryKey: TILE_LIBRARY[type].categoryKey
+          });
+        }, 1200);
+      });
+    };
 
     function LifeMapPrototype() {
-      const [placedTiles, setPlacedTiles] = useState({
-        '0,0': { ...tileTypes.goldProject, label: 'Vision' }
-      });
-      const [queue, setQueue] = useState(generateQueue);
-      const [selectedQueueIndex, setSelectedQueueIndex] = useState(0);
+      const initial = useMemo(() => loadInitialState(), []);
+      const [placedTiles, setPlacedTiles] = useState(initial.placedTiles);
+      const [queue, setQueue] = useState(initial.queue);
+      const [camera, setCamera] = useState(initial.camera);
       const [hoveredHex, setHoveredHex] = useState(null);
       const [labelInput, setLabelInput] = useState('');
       const [showLabelModal, setShowLabelModal] = useState(false);
       const [pendingPlacement, setPendingPlacement] = useState(null);
+      const [activeTileKey, setActiveTileKey] = useState(null);
+      const [dragState, setDragState] = useState(null);
+      const panRef = useRef({ active: false, last: { x: 0, y: 0 } });
+      const svgRef = useRef(null);
 
-      const hexSize = 50;
+      useEffect(() => {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ placedTiles, queue, camera })
+        );
+      }, [placedTiles, queue, camera]);
 
-      const getPlacementSpots = useCallback(() => {
-        const spots = new Set();
-        Object.keys(placedTiles).forEach((key) => {
-          const [q, r] = key.split(',').map(Number);
-          hexNeighbors.forEach((neighbor) => {
-            const newKey = `${q + neighbor.q},${r + neighbor.r}`;
-            if (!placedTiles[newKey]) {
-              spots.add(newKey);
-            }
-          });
+      const hasTilesPlaced = Object.keys(placedTiles).length > 0;
+
+      const applyPlacement = (key, tileData) => {
+        setPlacedTiles((prev) => {
+          if (!canPlaceOnKey(key, prev)) return prev;
+          return { ...prev, [key]: tileData };
         });
-        return Array.from(spots);
-      }, [placedTiles]);
-
-      const placementSpots = getPlacementSpots();
-
-      const completePlacement = (key, tile, label) => {
-        setPlacedTiles((prev) => ({
-          ...prev,
-          [key]: { ...tile, label }
-        }));
-
-        setQueue((prev) => {
-          const newQueue = prev.filter((_, idx) => idx !== selectedQueueIndex);
-          const types = Object.keys(tileTypes);
-          const typeKey = types[Math.floor(Math.random() * types.length)];
-          newQueue.push({
-            id: Date.now(),
-            type: typeKey,
-            ...tileTypes[typeKey]
-          });
-          return newQueue;
-        });
-
-        setSelectedQueueIndex(0);
-        setShowLabelModal(false);
-        setLabelInput('');
-        setPendingPlacement(null);
       };
 
-      const handlePlacement = (key) => {
-        if (!queue.length) return;
-        const selectedTile = queue[selectedQueueIndex];
-        if (selectedTile.category === 'project') {
-          setPendingPlacement({ key, tile: selectedTile });
-          setShowLabelModal(true);
-        } else {
-          completePlacement(key, selectedTile, null);
+      const completePlacement = async (key, queueTile, label, fromQueueIndex) => {
+        const def = TILE_LIBRARY[queueTile.type];
+        const initialTile = {
+          type: queueTile.type,
+          label: label || null,
+          categoryKey: def.categoryKey,
+          dioramaUrl: def.image,
+          aiState: 'loading'
+        };
+
+        applyPlacement(key, initialTile);
+
+        if (typeof fromQueueIndex === 'number') {
+          setQueue((prev) => {
+            const updated = [...prev];
+            updated.splice(fromQueueIndex, 1);
+            while (updated.length < 5) updated.push(generateQueueTile());
+            return updated;
+          });
+        }
+
+        try {
+          const result = await mockGenerateDiorama(label || def.name, queueTile.type);
+          setPlacedTiles((prev) => {
+            if (!prev[key]) return prev;
+            return {
+              ...prev,
+              [key]: {
+                ...prev[key],
+                dioramaUrl: result.url,
+                categoryKey: result.categoryKey,
+                aiState: 'ready'
+              }
+            };
+          });
+        } catch (err) {
+          setPlacedTiles((prev) => {
+            if (!prev[key]) return prev;
+            return {
+              ...prev,
+              [key]: { ...prev[key], aiState: 'error' }
+            };
+          });
         }
       };
 
-      const allHexes = [...Object.keys(placedTiles), ...placementSpots];
-      let minX = Infinity;
-      let maxX = -Infinity;
-      let minY = Infinity;
-      let maxY = -Infinity;
+      const swapTiles = (sourceKey, targetKey) => {
+        if (sourceKey === targetKey) return;
+        setPlacedTiles((prev) => {
+          const updated = { ...prev };
+          const sourceTile = updated[sourceKey];
+          if (!sourceTile) return prev;
+          const targetTile = updated[targetKey];
+          if (targetTile) {
+            updated[targetKey] = sourceTile;
+            updated[sourceKey] = targetTile;
+          } else {
+            const withoutSource = { ...prev };
+            delete withoutSource[sourceKey];
+            if (!canPlaceOnKey(targetKey, withoutSource)) return prev;
+            updated[targetKey] = sourceTile;
+            delete updated[sourceKey];
+          }
+          return updated;
+        });
+      };
 
-      allHexes.forEach((key) => {
-        const [q, r] = key.split(',').map(Number);
-        const { x, y } = hexToPixel(q, r, hexSize);
-        minX = Math.min(minX, x - hexSize);
-        maxX = Math.max(maxX, x + hexSize);
-        minY = Math.min(minY, y - hexSize);
-        maxY = Math.max(maxY, y + hexSize);
+      const svgPointFromClient = useCallback((clientX, clientY) => {
+        if (!svgRef.current) return { x: clientX, y: clientY };
+        const pt = svgRef.current.createSVGPoint();
+        pt.x = clientX;
+        pt.y = clientY;
+        const screenCTM = svgRef.current.getScreenCTM();
+        if (!screenCTM) return { x: clientX, y: clientY };
+        const inverted = screenCTM.inverse();
+        return pt.matrixTransform(inverted);
+      }, []);
+
+      const worldPointFromClient = useCallback(
+        (clientX, clientY) => {
+          const svgPoint = svgPointFromClient(clientX, clientY);
+          return {
+            x: (svgPoint.x - camera.x) / camera.scale,
+            y: (svgPoint.y - camera.y) / camera.scale
+          };
+        },
+        [camera, svgPointFromClient]
+      );
+
+      const handleWheel = (e) => {
+        e.preventDefault();
+        const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+        setCamera((prev) => {
+          const newScale = Math.min(2.5, Math.max(0.4, prev.scale * zoomFactor));
+          const svgPoint = svgPointFromClient(e.clientX, e.clientY);
+          const worldPoint = { x: (svgPoint.x - prev.x) / prev.scale, y: (svgPoint.y - prev.y) / prev.scale };
+          return {
+            scale: newScale,
+            x: svgPoint.x - worldPoint.x * newScale,
+            y: svgPoint.y - worldPoint.y * newScale
+          };
+        });
+      };
+
+      const startPanning = (e) => {
+        if (dragState || e.button !== 0) return;
+        panRef.current = { active: true, last: { x: e.clientX, y: e.clientY } };
+      };
+
+      const handleSvgMouseDown = (e) => {
+        const isTile = e.target.closest('[data-hex-tile]');
+        if (!isTile) startPanning(e);
+      };
+
+      useEffect(() => {
+        const handleMove = (e) => {
+          if (panRef.current.active) {
+            const dx = e.clientX - panRef.current.last.x;
+            const dy = e.clientY - panRef.current.last.y;
+            panRef.current.last = { x: e.clientX, y: e.clientY };
+            setCamera((prev) => ({ ...prev, x: prev.x + dx, y: prev.y + dy }));
+          }
+          if (dragState) {
+            e.preventDefault();
+            const worldPoint = worldPointFromClient(e.clientX, e.clientY);
+            setDragState((prev) => ({ ...prev, pointerWorld: worldPoint }));
+          }
+        };
+
+        const handleUp = (e) => {
+          if (panRef.current.active) panRef.current.active = false;
+          if (dragState) {
+            const worldPoint = worldPointFromClient(e.clientX, e.clientY);
+            const axial = roundAxial(pixelToAxial(worldPoint.x, worldPoint.y, HEX_SIZE));
+            const targetKey = `${axial.q},${axial.r}`;
+            if (dragState.source === 'board') {
+              swapTiles(dragState.sourceKey, targetKey);
+            } else if (dragState.source === 'queue') {
+              handleQueueDrop(targetKey, dragState);
+            }
+            setDragState(null);
+          }
+        };
+
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('mouseup', handleUp);
+        return () => {
+          window.removeEventListener('mousemove', handleMove);
+          window.removeEventListener('mouseup', handleUp);
+        };
+      }, [dragState, worldPointFromClient]);
+
+      const startBoardDrag = (key) => (e) => {
+        if (e.button !== 0) return;
+        e.stopPropagation();
+        e.preventDefault();
+        const worldPoint = worldPointFromClient(e.clientX, e.clientY);
+        setDragState({
+          source: 'board',
+          sourceKey: key,
+          tile: placedTiles[key],
+          pointerWorld: worldPoint
+        });
+      };
+
+      const startQueueDrag = (index) => (e) => {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        const worldPoint = worldPointFromClient(e.clientX, e.clientY);
+        setDragState({
+          source: 'queue',
+          queueIndex: index,
+          tile: queue[index],
+          pointerWorld: worldPoint
+        });
+      };
+
+      const handleTileDoubleClick = (key) => (e) => {
+        e.stopPropagation();
+        setActiveTileKey(key);
+      };
+
+      const closeModal = () => {
+        setShowLabelModal(false);
+        setPendingPlacement(null);
+        setLabelInput('');
+      };
+
+      const closeProjectCard = () => setActiveTileKey(null);
+
+      const handleQueueDrop = (targetKey, dragInfo) => {
+        if (!dragInfo || dragInfo.source !== 'queue') return;
+        if (!dragInfo.tile) return;
+        if (!canPlaceOnKey(targetKey, placedTiles)) return;
+
+        const tileDef = TILE_LIBRARY[dragInfo.tile.type];
+        if (tileDef.kind === 'project') {
+          setPendingPlacement({ key: targetKey, tile: dragInfo.tile, queueIndex: dragInfo.queueIndex });
+          setLabelInput('');
+          setShowLabelModal(true);
+        } else {
+          completePlacement(targetKey, dragInfo.tile, null, dragInfo.queueIndex);
+        }
+      };
+
+      const baseKeys = Object.keys(placedTiles).length ? Object.keys(placedTiles) : [START_KEY];
+      const gridSet = new Set();
+      baseKeys.forEach((key) => {
+        gridSet.add(key);
+        getNeighborKeys(key).forEach((neighbor) => gridSet.add(neighbor));
       });
+      const gridHexes = Array.from(gridSet);
 
-      const padding = 40;
-      const viewBox = `${minX - padding} ${minY - padding} ${
-        maxX - minX + padding * 2
-      } ${maxY - minY + padding * 2}`;
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      gridHexes.forEach((key) => {
+        const [q, r] = key.split(',').map(Number);
+        const { x, y } = hexToPixel(q, r, HEX_SIZE);
+        minX = Math.min(minX, x - HEX_SIZE);
+        maxX = Math.max(maxX, x + HEX_SIZE);
+        minY = Math.min(minY, y - HEX_SIZE);
+        maxY = Math.max(maxY, y + HEX_SIZE);
+      });
+      if (!isFinite(minX)) {
+        minX = -200;
+        maxX = 200;
+        minY = -200;
+        maxY = 200;
+      }
+      const padding = 150;
+      const worldBounds = { minX: minX - padding, maxX: maxX + padding, minY: minY - padding, maxY: maxY + padding };
+
+      const dragTargetKey = useMemo(() => {
+        if (!dragState) return null;
+        const axial = roundAxial(pixelToAxial(dragState.pointerWorld.x, dragState.pointerWorld.y, HEX_SIZE));
+        return `${axial.q},${axial.r}`;
+      }, [dragState]);
+
+      const activeTile = activeTileKey ? placedTiles[activeTileKey] : null;
+      const activeTileDef = activeTile ? TILE_LIBRARY[activeTile.type] : null;
 
       return (
-        <div
-          style={{
-            minHeight: '100vh',
-            backgroundColor: '#2D2A24',
-            backgroundImage: 'radial-gradient(circle at 50% 50%, #3D3830 0%, #2D2A24 100%)',
-            padding: 20
-          }}
-        >
-          <div style={{ textAlign: 'center', marginBottom: 20 }}>
-            <h1
-              style={{
-                color: '#F5E6C8',
-                margin: 0,
-                fontSize: 28,
-                fontWeight: 'normal',
-                letterSpacing: 2
-              }}
-            >
-              Your Life Map
-            </h1>
-            <p style={{ color: '#8B8477', margin: '8px 0 0 0', fontSize: 14 }}>
-              Click a tile from your queue, then place it on the map
-            </p>
+        <div className="page">
+          <div className="header">
+            <h1>Your Life Map</h1>
+            <p>Drag diorama tiles from the queue, drop them on glowing edges, and watch the kingdom take shape.</p>
           </div>
 
-          <div
-            style={{
-              display: 'flex',
-              gap: 20,
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              flexWrap: 'wrap'
-            }}
-          >
-            <div
-              style={{
-                backgroundColor: 'rgba(61, 50, 37, 0.8)',
-                borderRadius: 12,
-                padding: 16,
-                border: '2px solid #5C5347',
-                minWidth: 110
-              }}
-            >
-              <h3
-                style={{
-                  color: '#C9A227',
-                  margin: '0 0 12px 0',
-                  fontSize: 14,
-                  textTransform: 'uppercase',
-                  letterSpacing: 1
-                }}
-              >
-                Incoming
-              </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div className="layout">
+            <div className="panel queue-panel">
+              <h3>Incoming</h3>
+              <div className="queue-list">
                 {queue.map((tile, index) => (
-                  <QueueTile
-                    key={tile.id}
-                    tile={tile}
-                    isActive={index === selectedQueueIndex}
-                    onClick={() => setSelectedQueueIndex(index)}
-                  />
+                  <QueueTile key={tile.id} tile={tile} onMouseDown={startQueueDrag(index)} />
                 ))}
               </div>
             </div>
 
-            <div
-              style={{
-                backgroundColor: 'rgba(45, 42, 36, 0.9)',
-                borderRadius: 16,
-                border: '3px solid #5C5347',
-                overflow: 'hidden',
-                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
-              }}
-            >
-              <svg width={500} height={450} viewBox={viewBox} style={{ display: 'block' }}>
-                <defs>
-                  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <circle cx="10" cy="10" r="0.5" fill="rgba(139, 115, 85, 0.2)" />
-                  </pattern>
-                </defs>
-                <rect
-                  x={minX - padding}
-                  y={minY - padding}
-                  width="100%"
-                  height="100%"
-                  fill="url(#grid)"
-                />
+            <div className="panel map-panel">
+              <div className="map-shell">
+                <svg ref={svgRef} width={SVG_WIDTH} height={SVG_HEIGHT} onWheel={handleWheel} onMouseDown={handleSvgMouseDown}>
+                  <defs>
+                    <filter id="startGlow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                      <feMerge>
+                        <feMergeNode in="coloredBlur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                    <filter id="tileShadow" x="-50%" y="-50%" width="200%" height="200%">
+                      <feDropShadow dx="-4" dy="6" stdDeviation="5" flood-color="rgba(0,0,0,0.45)" />
+                    </filter>
+                    <pattern id="mapGrid" width="140" height="120" patternUnits="userSpaceOnUse">
+                      <circle cx="20" cy="20" r="1" fill="rgba(139,115,85,0.3)" />
+                      <circle cx="80" cy="60" r="1" fill="rgba(139,115,85,0.15)" />
+                    </pattern>
+                  </defs>
 
-                {placementSpots.map((key) => {
-                  const [q, r] = key.split(',').map(Number);
-                  return (
-                    <HexTile
-                      key={key}
-                      q={q}
-                      r={r}
-                      size={hexSize}
-                      tile={null}
-                      isPlaceholder
-                      isHovered={hoveredHex === key}
-                      onClick={() => handlePlacement(key)}
-                      onHover={(hovered) => setHoveredHex(hovered ? key : null)}
-                    />
-                  );
-                })}
+                  <g transform={`translate(${camera.x}, ${camera.y})`}>
+                    <g transform={`scale(${camera.scale})`}>
+                      <rect
+                        x={worldBounds.minX}
+                        y={worldBounds.minY}
+                        width={worldBounds.maxX - worldBounds.minX}
+                        height={worldBounds.maxY - worldBounds.minY}
+                        fill="url(#mapGrid)"
+                      />
 
-                {Object.entries(placedTiles).map(([key, tile]) => {
-                  const [q, r] = key.split(',').map(Number);
-                  return (
-                    <HexTile
-                      key={key}
-                      q={q}
-                      r={r}
-                      size={hexSize}
-                      tile={tile}
-                      isPlaceholder={false}
-                      isHovered={false}
-                      onClick={() => {}}
-                      onHover={() => {}}
-                    />
-                  );
-                })}
-              </svg>
+                      {gridHexes.map((key) => {
+                        const [q, r] = key.split(',').map(Number);
+                        const tile = placedTiles[key];
+                        const isStart = key === START_KEY && !hasTilesPlaced;
+                        const dropAllowed = dragState && dragState.source === 'queue' && canPlaceOnKey(key, placedTiles);
+                        return (
+                          <HexTile
+                            key={key}
+                            q={q}
+                            r={r}
+                            size={HEX_SIZE}
+                            tile={tile}
+                            isHovered={hoveredHex === key}
+                            isTarget={dragTargetKey === key}
+                            isStart={isStart}
+                            isDropAllowed={dropAllowed}
+                            onMouseEnter={() => setHoveredHex(key)}
+                            onMouseLeave={() => setHoveredHex(null)}
+                            onMouseDown={tile ? startBoardDrag(key) : undefined}
+                            onDoubleClick={tile ? handleTileDoubleClick(key) : undefined}
+                            isDragging={dragState && dragState.source === 'board' && dragState.sourceKey === key}
+                          />
+                        );
+                      })}
+
+                      {dragState && dragState.tile && (
+                        <g pointerEvents="none">
+                          {(() => {
+                            const corners = Array.from({ length: 6 }).map((_, i) => {
+                              const angle = (Math.PI / 180) * (60 * i - 30);
+                              return {
+                                x: dragState.pointerWorld.x + HEX_SIZE * Math.cos(angle),
+                                y: dragState.pointerWorld.y + HEX_SIZE * Math.sin(angle)
+                              };
+                            });
+                            const outer = corners.map((corner) => `${corner.x},${corner.y}`).join(' ');
+                            const inner = corners
+                              .map((corner) => ({
+                                x: dragState.pointerWorld.x + (corner.x - dragState.pointerWorld.x) * 0.92,
+                                y: dragState.pointerWorld.y + (corner.y - dragState.pointerWorld.y) * 0.92
+                              }))
+                              .map((corner) => `${corner.x},${corner.y}`)
+                              .join(' ');
+                            const def = TILE_LIBRARY[dragState.tile.type];
+                            const palette = CATEGORY_PALETTE[def.categoryKey];
+
+                            return (
+                              <g filter="url(#tileShadow)">
+                                <polygon points={outer} fill="#221d18" stroke={palette.border} strokeWidth={4} opacity={0.9} />
+                                <clipPath id="dragMask">
+                                  <polygon points={inner} />
+                                </clipPath>
+                                <image
+                                  x={dragState.pointerWorld.x - HEX_SIZE}
+                                  y={dragState.pointerWorld.y - HEX_SIZE}
+                                  width={HEX_SIZE * 2}
+                                  height={HEX_SIZE * 2}
+                                  href={def.image}
+                                  clipPath="url(#dragMask)"
+                                  preserveAspectRatio="xMidYMid slice"
+                                />
+                                <polygon points={inner} fill="none" stroke={palette.color} strokeWidth={3} />
+                              </g>
+                            );
+                          })()}
+                        </g>
+                      )}
+                    </g>
+                  </g>
+                </svg>
+              </div>
             </div>
 
-            <div
-              style={{
-                backgroundColor: 'rgba(61, 50, 37, 0.8)',
-                borderRadius: 12,
-                padding: 16,
-                border: '2px solid #5C5347',
-                minWidth: 140
-              }}
-            >
-              <h3
-                style={{
-                  color: '#C9A227',
-                  margin: '0 0 12px 0',
-                  fontSize: 14,
-                  textTransform: 'uppercase',
-                  letterSpacing: 1
-                }}
-              >
-                Legend
-              </h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {Object.entries(tileTypes).map(([key, tile]) => (
-                  <div key={key} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div className="panel legend-panel">
+              <h3>Legend</h3>
+              <div className="legend-items">
+                {Object.entries(TILE_LIBRARY).map(([key, def]) => (
+                  <div className="legend-row" key={key}>
                     <div
-                      style={{
-                        width: 20,
-                        height: 20,
-                        backgroundColor: tile.color,
-                        border: `2px solid ${tile.borderColor}`,
-                        borderRadius: 4,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: 10
-                      }}
-                    >
-                      {tile.icon}
-                    </div>
-                    <span style={{ color: '#B8A88A', fontSize: 11 }}>{tile.name}</span>
+                      className="legend-swatch"
+                      style={{ borderColor: CATEGORY_PALETTE[def.categoryKey].border, backgroundImage: `url(${def.image})` }}
+                    ></div>
+                    <span>
+                      {def.icon} {def.name}
+                      <br />
+                      <small style={{ color: '#8B8477' }}>{CATEGORY_PALETTE[def.categoryKey].name}</small>
+                    </span>
                   </div>
                 ))}
               </div>
-              <div style={{ marginTop: 16, paddingTop: 12, borderTop: '1px solid #5C5347' }}>
-                <p style={{ color: '#8B8477', fontSize: 11, margin: 0, lineHeight: 1.4 }}>
-                  <strong style={{ color: '#C9A227' }}>Tiles placed:</strong>
-                  <br />
-                  {Object.keys(placedTiles).length}
-                </p>
-              </div>
             </div>
           </div>
 
-          {showLabelModal && (
-            <div
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0,0,0,0.7)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                zIndex: 1000
-              }}
-            >
-              <div
-                style={{
-                  backgroundColor: '#3D3225',
-                  borderRadius: 12,
-                  padding: 24,
-                  border: '3px solid #C9A227',
-                  maxWidth: 300
-                }}
-              >
-                <h3 style={{ color: '#F5E6C8', margin: '0 0 16px 0' }}>
-                  Name Your {pendingPlacement?.tile.name}
-                </h3>
+          {showLabelModal && pendingPlacement && (
+            <div className="modal-backdrop">
+              <div className="modal">
+                <h3 style={{ marginTop: 0 }}>Name Your {TILE_LIBRARY[pendingPlacement.tile.type].name}</h3>
                 <input
                   type="text"
+                  placeholder="e.g., Launch MVP"
                   value={labelInput}
                   onChange={(e) => setLabelInput(e.target.value)}
-                  placeholder="e.g., Launch MVP"
                   autoFocus
-                  style={{
-                    width: '100%',
-                    padding: '10px 12px',
-                    fontSize: 16,
-                    backgroundColor: '#2D2A24',
-                    border: '2px solid #5C5347',
-                    borderRadius: 8,
-                    color: '#F5E6C8',
-                    outline: 'none'
-                  }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && labelInput.trim()) {
                       completePlacement(
                         pendingPlacement.key,
                         pendingPlacement.tile,
-                        labelInput.trim()
+                        labelInput.trim(),
+                        pendingPlacement.queueIndex
                       );
+                      closeModal();
                     }
                   }}
                 />
-                <div style={{ display: 'flex', gap: 10, marginTop: 16 }}>
+                <div className="modal-actions">
+                  <button className="btn-secondary" onClick={closeModal}>Cancel</button>
                   <button
-                    onClick={() => {
-                      setShowLabelModal(false);
-                      setPendingPlacement(null);
-                      setLabelInput('');
-                    }}
-                    style={{
-                      flex: 1,
-                      padding: '10px 16px',
-                      backgroundColor: 'transparent',
-                      border: '2px solid #5C5347',
-                      borderRadius: 8,
-                      color: '#8B8477',
-                      cursor: 'pointer',
-                      fontSize: 14
-                    }}
-                  >
-                    Cancel
-                  </button>
-                  <button
+                    className="btn-primary"
                     onClick={() => {
                       if (labelInput.trim()) {
                         completePlacement(
                           pendingPlacement.key,
                           pendingPlacement.tile,
-                          labelInput.trim()
+                          labelInput.trim(),
+                          pendingPlacement.queueIndex
                         );
+                        closeModal();
                       }
-                    }}
-                    style={{
-                      flex: 1,
-                      padding: '10px 16px',
-                      backgroundColor: '#C9A227',
-                      border: 'none',
-                      borderRadius: 8,
-                      color: '#2D2A24',
-                      cursor: 'pointer',
-                      fontSize: 14,
-                      fontWeight: 'bold'
                     }}
                   >
                     Place
                   </button>
                 </div>
               </div>
+            </div>
+          )}
+
+          {activeTile && activeTileDef && (
+            <div className="project-card">
+              <h2>{activeTile.label || activeTileDef.name}</h2>
+              <p>{activeTileDef.kind === 'project' ? 'Priority Project' : 'Spacer / Terrain'}</p>
+              <p><strong>Category:</strong> {CATEGORY_PALETTE[activeTile.categoryKey].name}</p>
+              <button onClick={closeProjectCard}>Close</button>
             </div>
           )}
         </div>
