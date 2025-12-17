@@ -20,17 +20,6 @@
   var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
   const React = window.React;
   const ReactDOM = window.ReactDOM;
-  const categories = {
-    home: { name: "Home", color: "var(--home)" },
-    finances: { name: "Finances", color: "var(--finances)" },
-    health: { name: "Health", color: "var(--health)" }
-  };
-  const initialTasks = {
-    todo: ["Deep clean interior", "Research pricing", "Repair cabinet latch", "Write listing draft"],
-    doing: [],
-    review: [],
-    done: []
-  };
   const BRONZE_TABLE_LIMIT = 10;
   const cloneData = (value) => JSON.parse(JSON.stringify(value));
   const DEFAULT_GOLD_QUEUE = [
@@ -597,7 +586,7 @@
       3: filteredProjects.filter((p) => p.draftingStage === 3),
       4: filteredProjects.filter((p) => p.draftingStage === 4)
     };
-    const categories2 = [
+    const categories = [
       { id: "all", label: "All" },
       { id: "health", label: "Health" },
       { id: "purpose", label: "Purpose" },
@@ -621,7 +610,7 @@
       gap: "0.5rem",
       marginBottom: "0.75rem",
       alignItems: "center"
-    } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "0.85rem", color: "var(--muted)", marginRight: "0.25rem" } }, "Category:"), categories2.map((cat) => /* @__PURE__ */ React.createElement(
+    } }, /* @__PURE__ */ React.createElement("span", { style: { fontSize: "0.85rem", color: "var(--muted)", marginRight: "0.25rem" } }, "Category:"), categories.map((cat) => /* @__PURE__ */ React.createElement(
       "button",
       {
         key: cat.id,
@@ -1195,27 +1184,6 @@
     const bronzeWaiting = state.bronzeQueue.slice(state.bronzeLimit);
     return /* @__PURE__ */ React.createElement("div", { className: "card sorting-room" }, /* @__PURE__ */ React.createElement("div", { className: "sorting-header" }, /* @__PURE__ */ React.createElement("div", { className: "sorting-banner" }, /* @__PURE__ */ React.createElement("span", { className: "pulse-dot" }), /* @__PURE__ */ React.createElement("span", null, state.status))), /* @__PURE__ */ React.createElement("div", { className: "queue-grid" }, laneConfig.map((lane) => /* @__PURE__ */ React.createElement("div", { key: lane.id, className: "queue-column", "data-lane": lane.id }, /* @__PURE__ */ React.createElement("div", { className: "lane-head" }, /* @__PURE__ */ React.createElement("div", { className: "lane-info" }, /* @__PURE__ */ React.createElement("span", { className: "lane-dot", style: { background: lane.color } }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "lane-label" }, lane.label), /* @__PURE__ */ React.createElement("div", { className: "lane-desc" }, lane.queue.length, " waiting in queue"))), /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: () => state.toggleQueue(lane.id) }, state.openQueue === lane.id ? "Hide queue" : "Expand queue")), /* @__PURE__ */ React.createElement("div", { className: "lane-table-card", "data-lane": lane.id }, /* @__PURE__ */ React.createElement("div", { className: "card-label" }, "On Table"), /* @__PURE__ */ React.createElement("div", { className: "lane-title-main" }, lane.table.title), /* @__PURE__ */ React.createElement("div", { className: "lane-meta" }, lane.table.meta), lane.table.progress !== void 0 && /* @__PURE__ */ React.createElement("div", { className: "mini-progress" }, /* @__PURE__ */ React.createElement("div", { className: "mini-bar", style: { width: `${Math.round((lane.table.progress || 0) * 100)}%`, background: lane.color } }))), state.openQueue === lane.id && /* @__PURE__ */ React.createElement("div", { className: "queue-body" }, lane.queue.map((card, idx) => /* @__PURE__ */ React.createElement("div", { key: card.title, className: "priority-card" }, /* @__PURE__ */ React.createElement("div", { className: "priority-rank" }, "#", idx + 1), /* @__PURE__ */ React.createElement("div", { className: "priority-copy" }, /* @__PURE__ */ React.createElement("div", { className: "priority-title" }, card.title), /* @__PURE__ */ React.createElement("div", { className: "priority-meta" }, card.meta), /* @__PURE__ */ React.createElement("div", { className: "priority-tags" }, card.stage && /* @__PURE__ */ React.createElement("span", { className: "chip" }, card.stage), card.status && /* @__PURE__ */ React.createElement("span", { className: "chip muted" }, card.status), card.focus && /* @__PURE__ */ React.createElement("span", { className: "chip outline" }, card.focus))), /* @__PURE__ */ React.createElement("div", { className: "priority-actions" }, /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: () => state.nudgeQueue(lane.id, idx, -1), disabled: idx === 0 }, "Move up"), /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: () => state.nudgeQueue(lane.id, idx, 1), disabled: idx === lane.queue.length - 1 }, "Move down"), /* @__PURE__ */ React.createElement("button", { className: "pill-btn", onClick: () => lane.activate(card.title) }, "Activate to Table")))), !lane.queue.length && /* @__PURE__ */ React.createElement("div", { className: "empty-note" }, "Queue clear. Head to Drafting Room to add new cards.")))), /* @__PURE__ */ React.createElement("div", { className: "queue-column", "data-lane": "bronze" }, /* @__PURE__ */ React.createElement("div", { className: "lane-head" }, /* @__PURE__ */ React.createElement("div", { className: "lane-info" }, /* @__PURE__ */ React.createElement("span", { className: "lane-dot", style: { background: "var(--bronze)" } }), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "lane-label" }, "Bronze * Execution"), /* @__PURE__ */ React.createElement("div", { className: "lane-desc" }, bronzeTabled.length, " tabled \xB7 ", bronzeWaiting.length, " queued"))), /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: () => state.toggleQueue("bronze") }, state.openQueue === "bronze" ? "Hide queue" : "Expand queue")), /* @__PURE__ */ React.createElement("div", { className: "lane-table-card", "data-lane": "bronze" }, /* @__PURE__ */ React.createElement("div", { className: "card-label" }, "On Table"), /* @__PURE__ */ React.createElement("div", { className: "lane-title-main" }, state.table.bronze.title), /* @__PURE__ */ React.createElement("div", { className: "lane-meta" }, state.table.bronze.meta)), state.openQueue === "bronze" && /* @__PURE__ */ React.createElement("div", { className: "queue-body" }, /* @__PURE__ */ React.createElement("div", { className: "queue-section-title" }, "Tabled (", bronzeTabled.length, "/", state.bronzeLimit, ")"), bronzeTabled.map((card, idx) => /* @__PURE__ */ React.createElement("div", { key: card.title, className: "priority-card tabled" }, /* @__PURE__ */ React.createElement("div", { className: "priority-rank" }, "#", idx + 1), /* @__PURE__ */ React.createElement("div", { className: "priority-copy" }, /* @__PURE__ */ React.createElement("div", { className: "priority-title" }, card.title), /* @__PURE__ */ React.createElement("div", { className: "priority-meta" }, card.meta), /* @__PURE__ */ React.createElement("div", { className: "priority-tags" }, card.stage && /* @__PURE__ */ React.createElement("span", { className: "chip" }, card.stage), card.energy && /* @__PURE__ */ React.createElement("span", { className: "chip muted" }, card.energy))), /* @__PURE__ */ React.createElement("div", { className: "priority-actions" }, /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: () => state.nudgeBronze(idx, -1), disabled: idx === 0 }, "Move up"), /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: () => state.nudgeBronze(idx, 1), disabled: idx === bronzeTabled.length - 1 && !bronzeWaiting.length }, "Move down"), /* @__PURE__ */ React.createElement("button", { className: "pill-btn", onClick: () => state.releaseBronze(idx) }, "Release to Queue")))), /* @__PURE__ */ React.createElement("div", { className: "queue-section-title" }, "Queue (", bronzeWaiting.length, ")"), bronzeWaiting.map((card, idx) => /* @__PURE__ */ React.createElement("div", { key: card.title, className: "priority-card idle" }, /* @__PURE__ */ React.createElement("div", { className: "priority-rank" }, "#", state.bronzeLimit + idx + 1), /* @__PURE__ */ React.createElement("div", { className: "priority-copy" }, /* @__PURE__ */ React.createElement("div", { className: "priority-title" }, card.title), /* @__PURE__ */ React.createElement("div", { className: "priority-meta" }, card.meta), /* @__PURE__ */ React.createElement("div", { className: "priority-tags" }, card.stage && /* @__PURE__ */ React.createElement("span", { className: "chip" }, card.stage), card.energy && /* @__PURE__ */ React.createElement("span", { className: "chip muted" }, card.energy))), /* @__PURE__ */ React.createElement("div", { className: "priority-actions" }, /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: () => state.nudgeBronze(state.bronzeLimit + idx, -1), disabled: state.bronzeLimit + idx === state.bronzeLimit }, "Move up"), /* @__PURE__ */ React.createElement("button", { className: "pill-btn ghost", onClick: () => state.nudgeBronze(state.bronzeLimit + idx, 1), disabled: state.bronzeLimit + idx === state.bronzeQueue.length - 1 }, "Move down"), /* @__PURE__ */ React.createElement("button", { className: "pill-btn", onClick: () => state.tableBronze(state.bronzeLimit + idx) }, "Table this card")))), !bronzeWaiting.length && /* @__PURE__ */ React.createElement("div", { className: "empty-note" }, "Queue clear. Load more from Drafting Room.")))));
   };
-  const ActivationMap = ({ state }) => /* @__PURE__ */ React.createElement("div", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "map-grid" }, /* @__PURE__ */ React.createElement("div", { className: "cat", style: { borderColor: categories.finances.color } }, /* @__PURE__ */ React.createElement("h3", null, /* @__PURE__ */ React.createElement("span", { style: { color: categories.finances.color } }, "\u25CF"), " Finances"), /* @__PURE__ */ React.createElement("div", { className: "project pulse" }, /* @__PURE__ */ React.createElement("div", { className: "title" }, state.table.gold.title), /* @__PURE__ */ React.createElement("div", { className: "meta" }, "Gold \xB7 On Table & in Finances")), /* @__PURE__ */ React.createElement("div", { className: "project" }, /* @__PURE__ */ React.createElement("div", { className: "title" }, "Automate Monthly Budget Review"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, "Silver candidate"))), /* @__PURE__ */ React.createElement("div", { className: "cat", style: { borderColor: categories.home.color } }, /* @__PURE__ */ React.createElement("h3", null, /* @__PURE__ */ React.createElement("span", { style: { color: categories.home.color } }, "\u25CF"), " Home"), /* @__PURE__ */ React.createElement("div", { className: "project" }, /* @__PURE__ */ React.createElement("div", { className: "title" }, "Build Backyard Deck"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, "In Gold queue \xB7 50%")), /* @__PURE__ */ React.createElement("div", { className: "project" }, /* @__PURE__ */ React.createElement("div", { className: "title" }, "Plan Family Camping Trip"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, "Live \xB7 33%")))));
-  const ProjectBoard = ({ state }) => {
-    const moveTask = (from, to, task) => {
-      state.setTasks((prev) => {
-        const next = __spreadProps(__spreadValues({}, prev), { [from]: prev[from].filter((t) => t !== task), [to]: [...prev[to], task] });
-        const doneCount = next.done.length + next.review.length + next.doing.length;
-        const progress = Math.min(doneCount / 12, 1);
-        state.setCamperProgress(progress);
-        return next;
-      });
-    };
-    const clickTask = (from) => (task) => {
-      if (from === "todo") return moveTask("todo", "doing", task);
-      if (from === "doing") return moveTask("doing", "review", task);
-      if (from === "review") return moveTask("review", "done", task);
-    };
-    const pct = Math.round(state.camperProgress * 100);
-    return /* @__PURE__ */ React.createElement("div", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "kanban" }, ["todo", "doing", "review", "done"].map((col) => /* @__PURE__ */ React.createElement("div", { key: col, className: "col" }, /* @__PURE__ */ React.createElement("h4", null, col === "todo" ? "To-Do" : col === "doing" ? "Doing" : col === "review" ? "Review" : "Done"), state.tasks[col].map((task) => /* @__PURE__ */ React.createElement("div", { key: task, className: "task", onClick: () => clickTask(col)(task) }, task))))), /* @__PURE__ */ React.createElement("div", { className: "progress-ring", style: { "--pct": pct }, "data-label": `${pct}%` }), /* @__PURE__ */ React.createElement("div", { className: "status" }, /* @__PURE__ */ React.createElement("div", { className: "dot" }), /* @__PURE__ */ React.createElement("div", null, pct >= 40 ? "Momentum established \xB7 Buyers incoming" : "First tasks in motion \xB7 keep pushing")));
-  };
-  const FinanceZoom = ({ state }) => /* @__PURE__ */ React.createElement("div", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "map-grid" }, /* @__PURE__ */ React.createElement("div", { className: "cat", style: { borderColor: categories.finances.color } }, /* @__PURE__ */ React.createElement("h3", null, /* @__PURE__ */ React.createElement("span", { style: { color: categories.finances.color } }, "\u25CF"), " Finances"), /* @__PURE__ */ React.createElement("div", { className: "project" }, /* @__PURE__ */ React.createElement("div", { className: "title" }, "Sell Camper Van"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, Math.round(state.camperProgress * 100), "% \xB7 Stage: ", state.camperProgress >= 1 ? "Decoration" : state.camperProgress >= 0.4 ? "Polish" : "Color Emergence"), /* @__PURE__ */ React.createElement("div", { className: "progress" }, /* @__PURE__ */ React.createElement("div", { className: "bar", style: { width: `${Math.round(state.camperProgress * 100)}%`, background: categories.finances.color } }))), /* @__PURE__ */ React.createElement("div", { className: "project" }, /* @__PURE__ */ React.createElement("div", { className: "title" }, "Automate Monthly Budget Review"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, "Silver candidate")), /* @__PURE__ */ React.createElement("div", { className: "project" }, /* @__PURE__ */ React.createElement("div", { className: "title" }, "Mortgage Refinance"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, "Queued")))));
-  const SortingReturn = ({ state }) => /* @__PURE__ */ React.createElement("div", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "map-grid" }, /* @__PURE__ */ React.createElement("div", { className: "project", style: { borderColor: "var(--gold)", boxShadow: "0 12px 26px rgba(216,166,80,0.2)" } }, /* @__PURE__ */ React.createElement("div", { className: "title" }, state.table.gold.title === "Sell Camper Van" ? "Sell Camper Van" : "Sell Camper Van"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, "Complete \xB7 Decoration stage")), /* @__PURE__ */ React.createElement("div", { className: "project" }, /* @__PURE__ */ React.createElement("div", { className: "title" }, "Launch Consulting"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, "Gold Candidate \xB7 Paused at 60%"), /* @__PURE__ */ React.createElement("div", { className: "actions", style: { marginTop: "0.5rem" } }, /* @__PURE__ */ React.createElement("button", { className: "btn", onClick: state.reactivateConsulting }, "Reactivate Consulting"))), /* @__PURE__ */ React.createElement("div", { className: "project" }, /* @__PURE__ */ React.createElement("div", { className: "title" }, "Gold Queue"), state.goldQueue.map((item, idx) => /* @__PURE__ */ React.createElement("div", { key: item.title, className: "meta" }, idx + 1, ". ", item.title)))));
   const MOCK_AGENTS = [
     {
       id: "agent-1",
@@ -1798,7 +1766,6 @@
     )))), filteredAgents.map((agent) => renderAgentCard(agent))))), successMessage && /* @__PURE__ */ React.createElement("div", { className: "success-banner" }, /* @__PURE__ */ React.createElement("span", null, successMessage))), /* @__PURE__ */ React.createElement("div", { className: "wizard-navigation" }, currentStep > 1 && /* @__PURE__ */ React.createElement("button", { className: "nav-btn back-btn", onClick: handleBack }, "\u2190 Back"), /* @__PURE__ */ React.createElement("button", { className: "nav-btn cancel-btn", onClick: handleCancel }, "Cancel"))));
   };
   const App = () => {
-    var _a;
     const [chapter, setChapter] = React.useState(0);
     const [goldQueue, setGoldQueue] = React.useState(initialGoldQueue);
     const [silverQueue, setSilverQueue] = React.useState(initialSilverQueue);
@@ -1809,11 +1776,7 @@
       bronze: getBronzeTableSummary(initialBronzeQueue)
     });
     const [openQueue, setOpenQueue] = React.useState("gold");
-    const [status, setStatus] = React.useState("Consulting active. Camper ready to activate.");
-    const [tasks, setTasks] = React.useState(initialTasks);
-    const [camperProgress, setCamperProgress] = React.useState(0);
-    const camperActive = table.gold.title === "Sell Camper Van";
-    const camperPct = Math.round(camperProgress * 100);
+    const [status, setStatus] = React.useState("Ready.");
     const toggleQueue = (lane) => setOpenQueue((prev) => prev === lane ? null : lane);
     const reorderList = (list, from, to) => {
       if (from === to) return list;
@@ -1854,18 +1817,6 @@
     };
     const activateGold = (title) => activateLane("gold", title);
     const activateSilver = (title) => activateLane("silver", title);
-    const swapGold = () => {
-      if (camperActive) return;
-      activateGold("Sell Camper Van");
-      setStatus("Camper active. Consulting preserved in Gold queue.");
-    };
-    const fastForward = () => {
-      setTasks({ todo: [], doing: [], review: [], done: ["All tasks"] });
-      setCamperProgress(1);
-      if (table.gold.title === "Sell Camper Van") {
-        setTable((prev) => __spreadProps(__spreadValues({}, prev), { gold: __spreadProps(__spreadValues({}, prev.gold), { progress: 1, meta: "Finances \xB7 Gold \xB7 Complete" }) }));
-      }
-    };
     const releaseBronze = (index) => {
       setBronzeQueue((prev) => {
         const tableCount = Math.min(BRONZE_TABLE_LIMIT, prev.length);
@@ -1892,105 +1843,6 @@
     React.useEffect(() => {
       setTable((prevTable) => __spreadProps(__spreadValues({}, prevTable), { bronze: getBronzeTableSummary(bronzeQueue) }));
     }, [bronzeQueue]);
-    const reactivateConsulting = () => {
-      const currentActive = table.gold;
-      setGoldQueue((prev) => {
-        const filtered = prev.filter((card) => card.title !== goldTableSeed.title && card.title !== currentActive.title);
-        if (currentActive.title === goldTableSeed.title) return filtered;
-        return [currentActive, ...filtered];
-      });
-      setTable((prevTable) => __spreadProps(__spreadValues({}, prevTable), { gold: __spreadValues({}, goldTableSeed) }));
-      setStatus("Consulting back on Table. Camper preserved in Gold queue.");
-    };
-    const chapterStories = [
-      {
-        label: "Chapter 1",
-        title: "Life Map \xB7 Jess at pace",
-        lines: [
-          { text: "\u201CJess scans his Life Map\u2014Gold consulting up front, deck work simmering, a stack of Bronze chores behaving for once.\u201D", tone: "em" },
-          { text: "\u201CThen his wife says: list the camper this week or I\u2019m doing it myself.\u201D", tone: "em" },
-          { text: "He remembers crafting this project two weeks ago in the Drafting Room." }
-        ],
-        prompts: [
-          { label: "Head to the Drafting Room", onClick: () => setChapter(1) }
-        ]
-      },
-      {
-        label: "Chapter 2",
-        title: "Drafting Room \xB7 Crisis surfaces",
-        lines: [
-          { text: "Gold queue, crisis on top." },
-          { text: "Jess planned \u201CSell Camper Van\u201D two weeks ago (Stage 4). Wife\u2019s ultimatum makes it urgent." }
-        ],
-        prompts: [
-          { label: "Open Sorting Room", onClick: () => setChapter(2) },
-          { label: "Back to Life Map", onClick: () => setChapter(0), variant: "secondary" }
-        ]
-      },
-      {
-        label: "Chapter 3",
-        title: "Sorting Room \xB7 Hard choice",
-        lines: [
-          { text: "Three lanes mirror the Table below\u2014Gold and Silver show their live slot, Bronze tracks ten tabled cards." },
-          { text: "Jess must pause consulting and activate the camper sale. Progress will be preserved." }
-        ],
-        prompts: [
-          { label: camperActive ? "Camper activated" : "Activate Camper as Gold", onClick: camperActive ? null : () => swapGold(), disabled: camperActive },
-          { label: "Show updated Life Map", onClick: () => setChapter(0), disabled: !camperActive },
-          { label: "Back to Drafting Room", onClick: () => setChapter(1), variant: "secondary" }
-        ]
-      },
-      {
-        label: "Chapter 4",
-        title: "Life Map \xB7 Activation lands",
-        lines: [
-          { text: "Table updated \xB7 Consulting preserved." },
-          { text: "Camper is now Gold. Consulting sits paused inside Finances. Finance shows dual presence." }
-        ],
-        prompts: [
-          { label: "Open Project Board", onClick: () => setChapter(4) },
-          { label: "Back to Sorting Room", onClick: () => setChapter(2), variant: "secondary" }
-        ]
-      },
-      {
-        label: "Chapter 5",
-        title: "Project Board \xB7 Execute",
-        lines: [
-          { text: "Sell Camper Van \xB7 Work at Hand." },
-          { text: "Move the first tasks. Progress fills; Bronze keeps pace in background." }
-        ],
-        prompts: [
-          { label: "Fast forward 2 weeks", onClick: () => {
-            fastForward();
-            setChapter(5);
-          } },
-          { label: "Back to Life Map", onClick: () => setChapter(3), variant: "secondary" }
-        ]
-      },
-      {
-        label: "Chapter 6",
-        title: "Finances \xB7 Progress check",
-        lines: [
-          { text: `Camper sale at ${camperPct}%. Budget automation queued. Mortgage refinance waiting.` }
-        ],
-        prompts: [
-          { label: "Resume in Sorting Room", onClick: () => setChapter(6) },
-          { label: "Back to Project Board", onClick: () => setChapter(4), variant: "secondary" }
-        ]
-      },
-      {
-        label: "Chapter 7",
-        title: "Sorting Room \xB7 Resume rhythm",
-        lines: [
-          { text: "Decoration stage achieved; consulting is still waiting at the top. Reactivate with one click." }
-        ],
-        prompts: [
-          { label: "Reactivate Consulting", onClick: () => reactivateConsulting() },
-          { label: "Back to Finances", onClick: () => setChapter(5), variant: "secondary" }
-        ]
-      }
-    ];
-    const currentStory = chapterStories[chapter] || chapterStories[0];
     const screen = () => {
       if (chapter === 0) return /* @__PURE__ */ React.createElement(LifeMap, { table });
       if (chapter === 1) return /* @__PURE__ */ React.createElement(DraftingRoom, null);
@@ -2017,22 +1869,10 @@
           }
         );
       }
-      if (chapter === 3) return /* @__PURE__ */ React.createElement(ActivationMap, { state: { table, goldQueue } });
-      if (chapter === 4) return /* @__PURE__ */ React.createElement(ProjectBoard, { state: { tasks, setTasks, camperProgress, setCamperProgress } });
-      if (chapter === 5) return /* @__PURE__ */ React.createElement(FinanceZoom, { state: { camperProgress } });
       if (chapter === 7) return /* @__PURE__ */ React.createElement(RosterRoom, null);
-      return /* @__PURE__ */ React.createElement(SortingReturn, { state: { reactivateConsulting, goldQueue, table } });
+      return /* @__PURE__ */ React.createElement(LifeMap, { table });
     };
-    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "story-overlay" }, /* @__PURE__ */ React.createElement("div", { className: "story-bubble" }, /* @__PURE__ */ React.createElement("div", { className: "chapter-tag" }, currentStory.label), /* @__PURE__ */ React.createElement("h2", null, currentStory.title), /* @__PURE__ */ React.createElement("div", { className: "story-text" }, currentStory.lines.map((line, idx) => /* @__PURE__ */ React.createElement("p", { key: idx }, line.tone === "em" ? /* @__PURE__ */ React.createElement("em", null, line.text) : line.text))), ((_a = currentStory.prompts) == null ? void 0 : _a.length) ? /* @__PURE__ */ React.createElement("div", { className: "story-prompts" }, currentStory.prompts.map((prompt) => /* @__PURE__ */ React.createElement(
-      "button",
-      {
-        key: prompt.label,
-        className: `story-cta${prompt.variant === "secondary" ? " secondary" : ""}`,
-        onClick: prompt.onClick,
-        disabled: prompt.disabled
-      },
-      prompt.label
-    ))) : null)), /* @__PURE__ */ React.createElement("div", { className: "nav" }, /* @__PURE__ */ React.createElement("div", { className: "nav-links" }, /* @__PURE__ */ React.createElement("a", { className: chapter === 1 ? "active" : "", onClick: () => setChapter(1) }, "Drafting Room"), /* @__PURE__ */ React.createElement("a", { className: chapter === 2 || chapter === 6 ? "active" : "", onClick: () => setChapter(2) }, "Sorting Room"), /* @__PURE__ */ React.createElement("a", { className: chapter === 7 ? "active" : "", onClick: () => setChapter(7) }, "Roster Room"), /* @__PURE__ */ React.createElement("a", { className: chapter === 0 || chapter === 3 ? "active" : "", onClick: () => setChapter(0) }, "Life Map")), /* @__PURE__ */ React.createElement("div", { className: "pill" }, "Jess \xB7 Director")), /* @__PURE__ */ React.createElement("div", { className: "shell" }, screen()), /* @__PURE__ */ React.createElement(TableBar, { table }));
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "nav" }, /* @__PURE__ */ React.createElement("div", { className: "nav-links" }, /* @__PURE__ */ React.createElement("a", { className: chapter === 1 ? "active" : "", onClick: () => setChapter(1) }, "Drafting Room"), /* @__PURE__ */ React.createElement("a", { className: chapter === 2 ? "active" : "", onClick: () => setChapter(2) }, "Sorting Room"), /* @__PURE__ */ React.createElement("a", { className: chapter === 7 ? "active" : "", onClick: () => setChapter(7) }, "Roster Room"), /* @__PURE__ */ React.createElement("a", { className: chapter === 0 ? "active" : "", onClick: () => setChapter(0) }, "Life Map")), /* @__PURE__ */ React.createElement("div", { className: "pill" }, "Jess \xB7 Director")), /* @__PURE__ */ React.createElement("div", { className: "shell" }, screen()), /* @__PURE__ */ React.createElement(TableBar, { table }));
   };
   const container = document.getElementById("root");
   const root = ReactDOM.createRoot(container);
