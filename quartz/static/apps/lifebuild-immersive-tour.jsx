@@ -931,47 +931,50 @@ const ReactDOM = window.ReactDOM;
               </div>
 
               <div className="lifemap-chat" aria-label="Agent chat">
-                <div className="lifemap-chat-head">
-                  <div>
-                    <div className="lifemap-chat-title">Agent</div>
-                    <div className="lifemap-chat-sub">Plan, place, and refine projects from the map.</div>
-                  </div>
-                  <button
-                    className="lifemap-chat-clear"
-                    onClick={() =>
-                      setMessages([
-                        {
-                          role: 'agent',
-                          text:
-                            'Chat cleared. Click a hex on the map to pick a territory, then tell me what you want to build there.',
-                        },
-                      ])
-                    }
-                  >
-                    Clear
-                  </button>
-                </div>
-                <div className="lifemap-chat-body">
-                  {messages.map((m, i) => (
-                    <div key={i} className={`lifemap-msg ${m.role}`}>
-                      <div className="lifemap-msg-bubble">{m.text}</div>
+                <div className="lifemap-paper">
+                  <img className="mesa-figure" src="assets/lifemap/mesa.webp" alt="MESA" draggable={false} />
+                  <div className="lifemap-chat-head">
+                    <div>
+                      <div className="lifemap-chat-title">MESA</div>
+                      <div className="lifemap-chat-sub">Ink on paper. Let’s map your life.</div>
                     </div>
-                  ))}
-                  <div ref={endRef} />
-                </div>
-                <div className="lifemap-chat-input">
-                  <input
-                    className="lifemap-chat-field"
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    placeholder={selectedKey ? 'Message the agent…' : 'Select a hex first…'}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') onSend();
-                    }}
-                  />
-                  <button className="lifemap-chat-send" onClick={onSend} disabled={!draft.trim()}>
-                    Send
-                  </button>
+                    <button
+                      className="lifemap-chat-clear"
+                      onClick={() =>
+                        setMessages([
+                          {
+                            role: 'agent',
+                            text:
+                              'Chat cleared. Click a hex on the map to pick a territory, then tell me what you want to build there.',
+                          },
+                        ])
+                      }
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div className="lifemap-chat-body">
+                    {messages.map((m, i) => (
+                      <div key={i} className={`lifemap-msg ${m.role}`}>
+                        <div className="lifemap-msg-bubble">{m.text}</div>
+                      </div>
+                    ))}
+                    <div ref={endRef} />
+                  </div>
+                  <div className="lifemap-chat-input">
+                    <input
+                      className="lifemap-chat-field"
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      placeholder={selectedKey ? 'Ask MESA…' : 'Select a hex first…'}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') onSend();
+                      }}
+                    />
+                    <button className="lifemap-chat-send" onClick={onSend} disabled={!draft.trim()}>
+                      Send
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
