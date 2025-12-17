@@ -376,6 +376,8 @@ const ReactDOM = window.ReactDOM;
       const VIEW_H = 905;
       const HEX_SIZE = 70;
       const MAP_ORIGIN = React.useMemo(() => ({ x: VIEW_W / 2, y: VIEW_H / 2 }), []);
+      const BASE_SCALE = 1.22;
+      const BASE_C = React.useMemo(() => ({ x: VIEW_W / 2, y: VIEW_H / 2 }), []);
 
       const [selectedKey, setSelectedKey] = React.useState(null);
       const [messages, setMessages] = React.useState(() => [
@@ -514,12 +516,15 @@ const ReactDOM = window.ReactDOM;
       const worldPointFromClient = React.useCallback(
         (clientX, clientY) => {
           const pt = svgPointFromClient(clientX, clientY);
+          // Invert camera zoom first...
+          const zoomed = { x: pt.x / camera.scale, y: pt.y / camera.scale };
+          // ...then invert the base scale around center so interaction math stays stable.
           return {
-            x: pt.x / camera.scale,
-            y: pt.y / camera.scale,
+            x: BASE_C.x + (zoomed.x - BASE_C.x) / BASE_SCALE,
+            y: BASE_C.y + (zoomed.y - BASE_C.y) / BASE_SCALE,
           };
         },
-        [camera, svgPointFromClient],
+        [BASE_C.x, BASE_C.y, BASE_SCALE, camera.scale, svgPointFromClient],
       );
 
       const hexPoints = React.useCallback((cx, cy, r) => {
@@ -808,6 +813,9 @@ const ReactDOM = window.ReactDOM;
                     onMouseDown={handleMouseDown}
                   >
                     <g transform={`scale(${camera.scale})`}>
+                      <g
+                        transform={`translate(${BASE_C.x}, ${BASE_C.y}) scale(${BASE_SCALE}) translate(${-BASE_C.x}, ${-BASE_C.y})`}
+                      >
                         <image
                           href="assets/lifemap/lifemap-parchment.png"
                           x="0"
@@ -896,16 +904,9 @@ const ReactDOM = window.ReactDOM;
                             })()}
                           </g>
                         ) : null}
+                      </g>
                     </g>
                   </svg>
-                  <div className="lifemap-board-hud">
-                    <div className="lifemap-hud-pill">{keyLabel(selectedKey)}</div>
-                    <div className="lifemap-hud-hint">
-                      {clickMove?.sourceKey
-                        ? `Click destination to move · Esc to cancel (${keyLabel(clickMove.sourceKey)})`
-                        : 'Scroll to zoom · drag background to pan · click tile to move · drag tiles to move.'}
-                    </div>
-                  </div>
                 </div>
               </div>
 
