@@ -729,6 +729,7 @@ const ReactDOM = window.ReactDOM;
                           width={VIEW_W}
                           height={VIEW_H}
                           preserveAspectRatio="none"
+                          pointerEvents="none"
                         />
 
                         {boardHexes.map((h) => {
@@ -763,6 +764,7 @@ const ReactDOM = window.ReactDOM;
                                     height={HEX_SIZE * 2}
                                     clipPath={`url(#tile-mask-${h.q}-${h.r})`}
                                     preserveAspectRatio="xMidYMid slice"
+                                    pointerEvents="none"
                                   />
                                 </>
                               ) : null}
@@ -794,6 +796,7 @@ const ReactDOM = window.ReactDOM;
                                     height={HEX_SIZE * 2}
                                     clipPath="url(#drag-mask)"
                                     preserveAspectRatio="xMidYMid slice"
+                                    pointerEvents="none"
                                   />
                                 </g>
                               );

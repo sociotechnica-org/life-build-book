@@ -631,7 +631,8 @@
           y: "0",
           width: VIEW_W,
           height: VIEW_H,
-          preserveAspectRatio: "none"
+          preserveAspectRatio: "none",
+          pointerEvents: "none"
         }
       ), boardHexes.map((h) => {
         const tile = placedTiles[h.key];
@@ -661,7 +662,8 @@
             width: HEX_SIZE * 2,
             height: HEX_SIZE * 2,
             clipPath: `url(#tile-mask-${h.q}-${h.r})`,
-            preserveAspectRatio: "xMidYMid slice"
+            preserveAspectRatio: "xMidYMid slice",
+            pointerEvents: "none"
           }
         )) : null);
       }), (dragState == null ? void 0 : dragState.tile) ? /* @__PURE__ */ React.createElement("g", { pointerEvents: "none" }, (() => {
@@ -684,7 +686,8 @@
             width: HEX_SIZE * 2,
             height: HEX_SIZE * 2,
             clipPath: "url(#drag-mask)",
-            preserveAspectRatio: "xMidYMid slice"
+            preserveAspectRatio: "xMidYMid slice",
+            pointerEvents: "none"
           }
         ));
       })()) : null))
