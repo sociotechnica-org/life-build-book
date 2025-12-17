@@ -165,6 +165,14 @@
       stroke-width: 2;
       transition: fill 140ms ease, stroke 140ms ease, stroke-width 140ms ease;
     }
+    .lifemap-hex[data-lane="gold"] {
+      stroke: rgba(216, 166, 80, 0.72);
+      fill: rgba(216, 166, 80, 0.05);
+    }
+    .lifemap-hex[data-lane="silver"] {
+      stroke: rgba(197, 206, 216, 0.78);
+      fill: rgba(197, 206, 216, 0.05);
+    }
     .lifemap-hex:hover {
       fill: rgba(216, 166, 80, 0.08);
       stroke: rgba(216, 166, 80, 0.45);
@@ -174,6 +182,11 @@
       fill: rgba(123, 158, 168, 0.14);
       stroke: rgba(123, 158, 168, 0.8);
       stroke-width: 3;
+    }
+    .lifemap-hex[data-new="true"] {
+      stroke: rgba(216, 166, 80, 0.95) !important;
+      stroke-width: 3.5 !important;
+      filter: drop-shadow(0 0 10px rgba(216, 166, 80, 0.35));
     }
     .lifemap-hex[data-moving="true"] {
       stroke: rgba(216, 166, 80, 0.92);

@@ -314,6 +314,7 @@
     return /* @__PURE__ */ React.createElement("div", { className: "table-bar" }, /* @__PURE__ */ React.createElement("div", { className: "table-grid" }, /* @__PURE__ */ React.createElement("div", { className: "slot", style: { borderColor: "rgba(216,166,80,0.6)", background: "linear-gradient(145deg, rgba(216,166,80,0.12), #fff)" } }, /* @__PURE__ */ React.createElement("h4", null, "Gold"), /* @__PURE__ */ React.createElement("div", { className: "body" }, table.gold.title || "Empty"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, table.gold.meta, goldStaffing && ` \xB7 \u{1F464} ${goldStaffing.staffing.agentName}`), table.gold.progress !== void 0 && /* @__PURE__ */ React.createElement("div", { className: "progress", style: { marginTop: "0.4rem" } }, /* @__PURE__ */ React.createElement("div", { className: "bar", style: { width: `${Math.round((table.gold.progress || 0) * 100)}%`, background: "var(--gold)" } }))), /* @__PURE__ */ React.createElement("div", { className: "slot", style: { borderColor: "rgba(197,206,216,0.7)", background: "linear-gradient(145deg, rgba(197,206,216,0.14), #fff)" } }, /* @__PURE__ */ React.createElement("h4", null, "Silver"), /* @__PURE__ */ React.createElement("div", { className: "body" }, table.silver.title || "Empty"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, table.silver.meta, silverStaffing && ` \xB7 \u{1F464} ${silverStaffing.staffing.agentName}`), table.silver.progress !== void 0 && /* @__PURE__ */ React.createElement("div", { className: "progress", style: { marginTop: "0.4rem" } }, /* @__PURE__ */ React.createElement("div", { className: "bar", style: { width: `${Math.round((table.silver.progress || 0) * 100)}%`, background: "var(--silver)" } }))), /* @__PURE__ */ React.createElement("div", { className: "slot", style: { borderColor: "rgba(196,139,90,0.7)", background: "linear-gradient(145deg, rgba(196,139,90,0.12), #fff)" } }, /* @__PURE__ */ React.createElement("h4", null, "Bronze"), /* @__PURE__ */ React.createElement("div", { className: "body" }, table.bronze.title), /* @__PURE__ */ React.createElement("div", { className: "meta" }, table.bronze.meta))));
   };
   const LifeMap = ({ table }) => {
+    var _a, _b, _c, _d;
     const VIEW_W = 1024;
     const VIEW_H = 905;
     const HEX_SIZE = 70;
@@ -329,8 +330,8 @@
     const endRef = React.useRef(null);
     const svgRef = React.useRef(null);
     React.useEffect(() => {
-      var _a;
-      (_a = endRef.current) == null ? void 0 : _a.scrollIntoView({ behavior: "smooth", block: "end" });
+      var _a2;
+      (_a2 = endRef.current) == null ? void 0 : _a2.scrollIntoView({ behavior: "smooth", block: "end" });
     }, [messages.length]);
     const TILE_LIBRARY = React.useMemo(
       () => ({
@@ -393,18 +394,38 @@
     const [dragState, setDragState] = React.useState(null);
     const [clickMove, setClickMove] = React.useState(null);
     const ignoreNextClickRef = React.useRef(false);
-    const [placedTiles, setPlacedTiles] = React.useState(() => ({
-      "0,0": {
-        type: "blueprints",
-        label: "Deck plan",
-        dioramaUrl: "assets/lifemap/tile-blueprints.png"
-      },
-      "1,0": {
-        type: "garden",
-        label: "Garden",
-        dioramaUrl: "assets/lifemap/tile-garden.jpg"
+    const LIFE_MAP_STORAGE_KEY = "integrated_lifemap_tiles_v1";
+    const [placedTiles, setPlacedTiles] = React.useState(() => {
+      try {
+        const raw = localStorage.getItem(LIFE_MAP_STORAGE_KEY);
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object") return {};
+        const cleaned = {};
+        Object.entries(parsed).forEach(([key, value]) => {
+          if (!value || typeof value !== "object") return;
+          if (!value.type || !TILE_LIBRARY[value.type]) return;
+          if (!value.lane || value.lane !== "gold" && value.lane !== "silver") return;
+          if (!value.title) return;
+          cleaned[key] = {
+            type: value.type,
+            lane: value.lane,
+            title: value.title,
+            dioramaUrl: value.dioramaUrl || TILE_LIBRARY[value.type].image,
+            isNew: !!value.isNew
+          };
+        });
+        return cleaned;
+      } catch (e) {
+        return {};
       }
-    }));
+    });
+    React.useEffect(() => {
+      try {
+        localStorage.setItem(LIFE_MAP_STORAGE_KEY, JSON.stringify(placedTiles));
+      } catch (e) {
+      }
+    }, [placedTiles]);
     const svgPointFromClient = React.useCallback(
       (clientX, clientY) => {
         const svg = svgRef.current;
@@ -482,9 +503,9 @@
     );
     const handleMouseDown = React.useCallback(
       (e) => {
-        var _a, _b;
+        var _a2, _b2;
         if (dragState || e.button !== 0) return;
-        const isTile = (_b = (_a = e.target).closest) == null ? void 0 : _b.call(_a, "[data-hex-tile]");
+        const isTile = (_b2 = (_a2 = e.target).closest) == null ? void 0 : _b2.call(_a2, "[data-hex-tile]");
         if (isTile) return;
         setClickMove(null);
         panRef.current = { active: true, last: { x: e.clientX, y: e.clientY } };
@@ -562,6 +583,68 @@
       }
       return items;
     }, [HEX_SIZE, MAP_ORIGIN.x, MAP_ORIGIN.y, VIEW_H, VIEW_W, hexToPixel]);
+    const allowedKeys = React.useMemo(() => new Set(boardHexes.map((h) => h.key)), [boardHexes]);
+    const findSpawnKey = React.useCallback(
+      (currentTiles) => {
+        const occupied = new Set(Object.keys(currentTiles || {}));
+        const candidates = [...allowedKeys].map((key) => {
+          const [q, r] = key.split(",").map(Number);
+          const dist = Math.abs(q) + Math.abs(r);
+          return { key, dist };
+        }).sort((a, b) => a.dist - b.dist);
+        for (const c of candidates) {
+          if (!occupied.has(c.key)) return c.key;
+        }
+        return "0,0";
+      },
+      [allowedKeys]
+    );
+    const reconcileTilesWithTable = React.useCallback(() => {
+      var _a2, _b2;
+      const desired = [
+        { lane: "gold", title: ((_a2 = table == null ? void 0 : table.gold) == null ? void 0 : _a2.title) || "" },
+        { lane: "silver", title: ((_b2 = table == null ? void 0 : table.silver) == null ? void 0 : _b2.title) || "" }
+      ].filter((d) => d.title && d.title !== "Empty");
+      setPlacedTiles((prev) => {
+        const next = __spreadValues({}, prev);
+        const tileEntries = Object.entries(next);
+        const byLane = {};
+        tileEntries.forEach(([key, tile]) => {
+          if (tile == null ? void 0 : tile.lane) byLane[tile.lane] = { key, tile };
+        });
+        ["gold", "silver"].forEach((lane) => {
+          const want = desired.find((d) => d.lane === lane);
+          const existing = byLane[lane];
+          if (!want && existing) {
+            delete next[existing.key];
+          }
+        });
+        desired.forEach((want) => {
+          const existing = byLane[want.lane];
+          if (existing && existing.tile.title !== want.title) {
+            delete next[existing.key];
+            delete byLane[want.lane];
+          }
+        });
+        desired.forEach((want) => {
+          const existing = Object.entries(next).find(([, t]) => (t == null ? void 0 : t.lane) === want.lane && (t == null ? void 0 : t.title) === want.title);
+          if (existing) return;
+          const spawnKey = findSpawnKey(next);
+          const type = want.lane === "gold" ? "blueprints" : "garden";
+          next[spawnKey] = {
+            type,
+            lane: want.lane,
+            title: want.title,
+            dioramaUrl: TILE_LIBRARY[type].image,
+            isNew: true
+          };
+        });
+        return next;
+      });
+    }, [TILE_LIBRARY, findSpawnKey, (_a = table == null ? void 0 : table.gold) == null ? void 0 : _a.title, (_b = table == null ? void 0 : table.silver) == null ? void 0 : _b.title]);
+    React.useEffect(() => {
+      reconcileTilesWithTable();
+    }, [(_c = table == null ? void 0 : table.gold) == null ? void 0 : _c.title, (_d = table == null ? void 0 : table.silver) == null ? void 0 : _d.title]);
     const pushAgent = React.useCallback(
       (text) => setMessages((prev) => [...prev, { role: "agent", text }]),
       []
@@ -593,6 +676,11 @@
         if (hasTile) {
           setSelectedKey(key);
           setClickMove({ sourceKey: key });
+          setPlacedTiles((prev) => {
+            const tile = prev[key];
+            if (!tile || !tile.isNew) return prev;
+            return __spreadProps(__spreadValues({}, prev), { [key]: __spreadProps(__spreadValues({}, tile), { isNew: false }) });
+          });
           return;
         }
         onSelectKey(key);
@@ -600,7 +688,7 @@
       [clickMove == null ? void 0 : clickMove.sourceKey, onSelectKey, swapTiles]
     );
     const onSend = React.useCallback(() => {
-      var _a, _b, _c;
+      var _a2, _b2, _c2;
       const text = draft.trim();
       if (!text) return;
       setDraft("");
@@ -609,7 +697,7 @@
         pushAgent("Pick a hex first so we can anchor the plan to a territory.");
         return;
       }
-      const tableTitles = [(_a = table == null ? void 0 : table.gold) == null ? void 0 : _a.title, (_b = table == null ? void 0 : table.silver) == null ? void 0 : _b.title, (_c = table == null ? void 0 : table.bronze) == null ? void 0 : _c.title].filter(Boolean);
+      const tableTitles = [(_a2 = table == null ? void 0 : table.gold) == null ? void 0 : _a2.title, (_b2 = table == null ? void 0 : table.silver) == null ? void 0 : _b2.title, (_c2 = table == null ? void 0 : table.bronze) == null ? void 0 : _c2.title].filter(Boolean);
       const tableLine = tableTitles.length ? `On your table right now: ${tableTitles.join(" \xB7 ")}.` : "Your table is empty.";
       pushAgent(`Got it. ${tableLine} Want this new work to replace something, or stay off-table for now?`);
     }, [draft, pushAgent, selectedKey, table]);
@@ -636,7 +724,6 @@
         }
       ), boardHexes.map((h) => {
         const tile = placedTiles[h.key];
-        const tileDef = tile ? TILE_LIBRARY[tile.type] : null;
         const isSelected = selectedKey === h.key;
         const isMovingSource = (clickMove == null ? void 0 : clickMove.sourceKey) === h.key;
         return /* @__PURE__ */ React.createElement("g", { key: h.key, "data-hex-tile": tile ? "true" : void 0 }, /* @__PURE__ */ React.createElement(
@@ -645,13 +732,11 @@
             className: "lifemap-hex",
             "data-selected": isSelected ? "true" : "false",
             "data-moving": isMovingSource ? "true" : "false",
+            "data-new": (tile == null ? void 0 : tile.isNew) ? "true" : "false",
+            "data-lane": (tile == null ? void 0 : tile.lane) || "",
             points: hexPoints(h.cx, h.cy, HEX_SIZE),
             onClick: () => onHexClick(h.key, !!tile),
-            onMouseDown: tile ? startBoardDrag(h.key) : void 0,
-            style: {
-              fill: tileDef ? tileDef.glow : void 0,
-              stroke: tileDef ? tileDef.border : void 0
-            }
+            onMouseDown: tile ? startBoardDrag(h.key) : void 0
           }
         ), tile ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("clipPath", { id: `tile-mask-${h.q}-${h.r}` }, /* @__PURE__ */ React.createElement("polygon", { points: hexPoints(h.cx, h.cy, HEX_SIZE * 0.92) })), /* @__PURE__ */ React.createElement(
           "image",
@@ -665,6 +750,17 @@
             preserveAspectRatio: "xMidYMid slice",
             pointerEvents: "none"
           }
+        ), /* @__PURE__ */ React.createElement(
+          "text",
+          {
+            x: h.cx,
+            y: h.cy + HEX_SIZE * 0.78,
+            textAnchor: "middle",
+            fill: "#faf9f7",
+            fontSize: 12,
+            style: { textShadow: "0 2px 6px rgba(0,0,0,0.55)", fontWeight: 700 }
+          },
+          tile.title.length > 16 ? `${tile.title.slice(0, 15)}\u2026` : tile.title
         )) : null);
       }), (dragState == null ? void 0 : dragState.tile) ? /* @__PURE__ */ React.createElement("g", { pointerEvents: "none" }, (() => {
         const world = dragState.pointerWorld;

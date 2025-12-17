@@ -464,18 +464,41 @@ const ReactDOM = window.ReactDOM;
       const [clickMove, setClickMove] = React.useState(null); // { sourceKey }
       const ignoreNextClickRef = React.useRef(false);
 
-      const [placedTiles, setPlacedTiles] = React.useState(() => ({
-        '0,0': {
-          type: 'blueprints',
-          label: 'Deck plan',
-          dioramaUrl: 'assets/lifemap/tile-blueprints.png',
-        },
-        '1,0': {
-          type: 'garden',
-          label: 'Garden',
-          dioramaUrl: 'assets/lifemap/tile-garden.jpg',
-        },
-      }));
+      const LIFE_MAP_STORAGE_KEY = 'integrated_lifemap_tiles_v1';
+
+      const [placedTiles, setPlacedTiles] = React.useState(() => {
+        try {
+          const raw = localStorage.getItem(LIFE_MAP_STORAGE_KEY);
+          if (!raw) return {};
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== 'object') return {};
+          const cleaned = {};
+          Object.entries(parsed).forEach(([key, value]) => {
+            if (!value || typeof value !== 'object') return;
+            if (!value.type || !TILE_LIBRARY[value.type]) return;
+            if (!value.lane || (value.lane !== 'gold' && value.lane !== 'silver')) return;
+            if (!value.title) return;
+            cleaned[key] = {
+              type: value.type,
+              lane: value.lane,
+              title: value.title,
+              dioramaUrl: value.dioramaUrl || TILE_LIBRARY[value.type].image,
+              isNew: !!value.isNew,
+            };
+          });
+          return cleaned;
+        } catch {
+          return {};
+        }
+      });
+
+      React.useEffect(() => {
+        try {
+          localStorage.setItem(LIFE_MAP_STORAGE_KEY, JSON.stringify(placedTiles));
+        } catch {
+          // ignore
+        }
+      }, [placedTiles]);
 
       const svgPointFromClient = React.useCallback(
         (clientX, clientY) => {
@@ -647,6 +670,84 @@ const ReactDOM = window.ReactDOM;
         return items;
       }, [HEX_SIZE, MAP_ORIGIN.x, MAP_ORIGIN.y, VIEW_H, VIEW_W, hexToPixel]);
 
+      const allowedKeys = React.useMemo(() => new Set(boardHexes.map((h) => h.key)), [boardHexes]);
+
+      const findSpawnKey = React.useCallback(
+        (currentTiles) => {
+          const occupied = new Set(Object.keys(currentTiles || {}));
+          const candidates = [...allowedKeys]
+            .map((key) => {
+              const [q, r] = key.split(',').map(Number);
+              const dist = Math.abs(q) + Math.abs(r);
+              return { key, dist };
+            })
+            .sort((a, b) => a.dist - b.dist);
+          for (const c of candidates) {
+            if (!occupied.has(c.key)) return c.key;
+          }
+          return '0,0';
+        },
+        [allowedKeys],
+      );
+
+      const reconcileTilesWithTable = React.useCallback(() => {
+        const desired = [
+          { lane: 'gold', title: table?.gold?.title || '' },
+          { lane: 'silver', title: table?.silver?.title || '' },
+        ].filter((d) => d.title && d.title !== 'Empty');
+
+        setPlacedTiles((prev) => {
+          const next = { ...prev };
+
+          const tileEntries = Object.entries(next);
+          const byLane = {};
+          tileEntries.forEach(([key, tile]) => {
+            if (tile?.lane) byLane[tile.lane] = { key, tile };
+          });
+
+          // Remove tiles whose lane is no longer present on table.
+          (['gold', 'silver']).forEach((lane) => {
+            const want = desired.find((d) => d.lane === lane);
+            const existing = byLane[lane];
+            if (!want && existing) {
+              delete next[existing.key];
+            }
+          });
+
+          // If title changed, remove old tile and spawn a new one at center-ish.
+          desired.forEach((want) => {
+            const existing = byLane[want.lane];
+            if (existing && existing.tile.title !== want.title) {
+              delete next[existing.key];
+              delete byLane[want.lane];
+            }
+          });
+
+          // Ensure each desired lane exists.
+          desired.forEach((want) => {
+            const existing = Object.entries(next).find(([, t]) => t?.lane === want.lane && t?.title === want.title);
+            if (existing) return;
+
+            const spawnKey = findSpawnKey(next);
+            const type = want.lane === 'gold' ? 'blueprints' : 'garden';
+            next[spawnKey] = {
+              type,
+              lane: want.lane,
+              title: want.title,
+              dioramaUrl: TILE_LIBRARY[type].image,
+              isNew: true,
+            };
+          });
+
+          return next;
+        });
+      }, [TILE_LIBRARY, findSpawnKey, table?.gold?.title, table?.silver?.title]);
+
+      React.useEffect(() => {
+        reconcileTilesWithTable();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [table?.gold?.title, table?.silver?.title]);
+
       const pushAgent = React.useCallback(
         (text) => setMessages((prev) => [...prev, { role: 'agent', text }]),
         [],
@@ -682,6 +783,11 @@ const ReactDOM = window.ReactDOM;
           if (hasTile) {
             setSelectedKey(key);
             setClickMove({ sourceKey: key });
+            setPlacedTiles((prev) => {
+              const tile = prev[key];
+              if (!tile || !tile.isNew) return prev;
+              return { ...prev, [key]: { ...tile, isNew: false } };
+            });
             return;
           }
 
@@ -734,7 +840,6 @@ const ReactDOM = window.ReactDOM;
 
                         {boardHexes.map((h) => {
                           const tile = placedTiles[h.key];
-                          const tileDef = tile ? TILE_LIBRARY[tile.type] : null;
                           const isSelected = selectedKey === h.key;
                           const isMovingSource = clickMove?.sourceKey === h.key;
                           return (
@@ -743,13 +848,11 @@ const ReactDOM = window.ReactDOM;
                                 className="lifemap-hex"
                                 data-selected={isSelected ? 'true' : 'false'}
                                 data-moving={isMovingSource ? 'true' : 'false'}
+                                data-new={tile?.isNew ? 'true' : 'false'}
+                                data-lane={tile?.lane || ''}
                                 points={hexPoints(h.cx, h.cy, HEX_SIZE)}
                                 onClick={() => onHexClick(h.key, !!tile)}
                                 onMouseDown={tile ? startBoardDrag(h.key) : undefined}
-                                style={{
-                                  fill: tileDef ? tileDef.glow : undefined,
-                                  stroke: tileDef ? tileDef.border : undefined,
-                                }}
                               />
                               {tile ? (
                                 <>
@@ -766,6 +869,16 @@ const ReactDOM = window.ReactDOM;
                                     preserveAspectRatio="xMidYMid slice"
                                     pointerEvents="none"
                                   />
+                                  <text
+                                    x={h.cx}
+                                    y={h.cy + HEX_SIZE * 0.78}
+                                    textAnchor="middle"
+                                    fill="#faf9f7"
+                                    fontSize={12}
+                                    style={{ textShadow: '0 2px 6px rgba(0,0,0,0.55)', fontWeight: 700 }}
+                                  >
+                                    {tile.title.length > 16 ? `${tile.title.slice(0, 15)}…` : tile.title}
+                                  </text>
                                 </>
                               ) : null}
                             </g>
