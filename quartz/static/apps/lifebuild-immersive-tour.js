@@ -787,7 +787,7 @@
           }
         ));
       })()) : null))
-    ), /* @__PURE__ */ React.createElement("div", { className: "lifemap-board-hud" }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-hud-pill" }, keyLabel(selectedKey)), /* @__PURE__ */ React.createElement("div", { className: "lifemap-hud-hint" }, (clickMove == null ? void 0 : clickMove.sourceKey) ? `Click destination to move \xB7 Esc to cancel (${keyLabel(clickMove.sourceKey)})` : "Scroll to zoom \xB7 drag background to pan \xB7 click tile to move \xB7 drag tiles to move.")))), /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat", "aria-label": "Agent chat" }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-title" }, "Agent"), /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-sub" }, "Plan, place, and refine projects from the map.")), /* @__PURE__ */ React.createElement(
+    ), /* @__PURE__ */ React.createElement("div", { className: "lifemap-board-hud" }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-hud-pill" }, keyLabel(selectedKey)), /* @__PURE__ */ React.createElement("div", { className: "lifemap-hud-hint" }, (clickMove == null ? void 0 : clickMove.sourceKey) ? `Click destination to move \xB7 Esc to cancel (${keyLabel(clickMove.sourceKey)})` : "Scroll to zoom \xB7 drag background to pan \xB7 click tile to move \xB7 drag tiles to move.")))), /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat", "aria-label": "Agent chat" }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-paper" }, /* @__PURE__ */ React.createElement("img", { className: "mesa-figure", src: "assets/lifemap/mesa.webp", alt: "MESA", draggable: false }), /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-title" }, "MESA"), /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-sub" }, "Ink on paper. Let\u2019s map your life.")), /* @__PURE__ */ React.createElement(
       "button",
       {
         className: "lifemap-chat-clear",
@@ -805,12 +805,12 @@
         className: "lifemap-chat-field",
         value: draft,
         onChange: (e) => setDraft(e.target.value),
-        placeholder: selectedKey ? "Message the agent\u2026" : "Select a hex first\u2026",
+        placeholder: selectedKey ? "Ask MESA\u2026" : "Select a hex first\u2026",
         onKeyDown: (e) => {
           if (e.key === "Enter") onSend();
         }
       }
-    ), /* @__PURE__ */ React.createElement("button", { className: "lifemap-chat-send", onClick: onSend, disabled: !draft.trim() }, "Send"))))));
+    ), /* @__PURE__ */ React.createElement("button", { className: "lifemap-chat-send", onClick: onSend, disabled: !draft.trim() }, "Send")))))));
   };
   const DraftingRoom = () => {
     const [view, setView] = React.useState("queue");
