@@ -319,7 +319,7 @@
     const VIEW_H = 905;
     const HEX_SIZE = 70;
     const MAP_ORIGIN = React.useMemo(() => ({ x: VIEW_W / 2, y: VIEW_H / 2 }), []);
-    const BASE_SCALE = 1.22;
+    const BASE_SCALE = 1.35;
     const BASE_C = React.useMemo(() => ({ x: VIEW_W / 2, y: VIEW_H / 2 }), []);
     const [selectedKey, setSelectedKey] = React.useState(null);
     const [messages, setMessages] = React.useState(() => [
@@ -391,7 +391,7 @@
       if (!Number.isFinite(q) || !Number.isFinite(r)) return "No tile selected";
       return `Tile \xB7 Q${q} R${r}`;
     }, []);
-    const [camera, setCamera] = React.useState(() => ({ x: 0, y: 0, scale: 1 }));
+    const cameraScale = 1;
     const [dragState, setDragState] = React.useState(null);
     const [clickMove, setClickMove] = React.useState(null);
     const ignoreNextClickRef = React.useRef(false);
@@ -441,13 +441,13 @@
     const worldPointFromClient = React.useCallback(
       (clientX, clientY) => {
         const pt = svgPointFromClient(clientX, clientY);
-        const zoomed = { x: pt.x / camera.scale, y: pt.y / camera.scale };
+        const zoomed = { x: pt.x / cameraScale, y: pt.y / cameraScale };
         return {
           x: BASE_C.x + (zoomed.x - BASE_C.x) / BASE_SCALE,
           y: BASE_C.y + (zoomed.y - BASE_C.y) / BASE_SCALE
         };
       },
-      [BASE_C.x, BASE_C.y, BASE_SCALE, camera.scale, svgPointFromClient]
+      [BASE_C.x, BASE_C.y, BASE_SCALE, cameraScale, svgPointFromClient]
     );
     const hexPoints = React.useCallback((cx, cy, r) => {
       const pts = [];
@@ -485,18 +485,6 @@
         return updated;
       });
     }, []);
-    const handleWheel = React.useCallback(
-      (e) => {
-        e.preventDefault();
-        const delta = e.deltaY;
-        const zoomFactor = delta < 0 ? 1.1 : 0.9;
-        setCamera((prev) => {
-          const nextScale = Math.min(2.5, Math.max(0.55, prev.scale * zoomFactor));
-          return { x: 0, y: 0, scale: nextScale };
-        });
-      },
-      []
-    );
     const handleMouseDown = React.useCallback(
       (e) => {
         var _a2, _b2;
@@ -692,10 +680,9 @@
         className: "lifemap-map-svg",
         viewBox: `0 0 ${VIEW_W} ${VIEW_H}`,
         role: "presentation",
-        onWheel: handleWheel,
         onMouseDown: handleMouseDown
       },
-      /* @__PURE__ */ React.createElement("g", { transform: `scale(${camera.scale})` }, /* @__PURE__ */ React.createElement(
+      /* @__PURE__ */ React.createElement("g", { transform: `scale(${cameraScale})` }, /* @__PURE__ */ React.createElement(
         "g",
         {
           transform: `translate(${BASE_C.x}, ${BASE_C.y}) scale(${BASE_SCALE}) translate(${-BASE_C.x}, ${-BASE_C.y})`
