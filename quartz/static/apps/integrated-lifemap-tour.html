@@ -59,7 +59,7 @@
       text-decoration: none;
       color: rgba(47, 43, 39, 0.82);
       padding: 0.55rem 0.9rem;
-      border-radius: 0.7rem;
+      border-radius: 0.1rem;
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(250, 244, 232, 0.72)),
         repeating-linear-gradient(0deg, rgba(47, 43, 39, 0.03), rgba(47, 43, 39, 0.03) 1px, transparent 1px, transparent 6px);
@@ -67,6 +67,19 @@
       box-shadow: 0 10px 18px rgba(0, 0, 0, 0.10);
       transition: transform 140ms ease, box-shadow 140ms ease, color 140ms ease;
       transform: rotate(-0.8deg);
+      clip-path: polygon(1% 6%, 8% 1%, 94% 2%, 99% 10%, 98% 90%, 92% 99%, 6% 98%, 1% 92%);
+    }
+    .nav a::after {
+      content: '';
+      position: absolute;
+      inset: -3px -3px -3px -3px;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(47, 43, 39, 0.10), transparent 35%),
+        radial-gradient(circle at 82% 74%, rgba(47, 43, 39, 0.08), transparent 40%);
+      opacity: 0.22;
+      pointer-events: none;
+      clip-path: inherit;
+      mix-blend-mode: multiply;
     }
     .nav a:nth-child(2) { transform: rotate(0.6deg); }
     .nav a:nth-child(3) { transform: rotate(-0.2deg); }
@@ -248,31 +261,64 @@
     }
     .lifemap-paper {
       height: 100%;
-      border-radius: 1.05rem;
+      border-radius: 0.35rem;
       border: 1px solid rgba(47, 43, 39, 0.14);
       background:
-        radial-gradient(circle at 18% 12%, rgba(0, 0, 0, 0.04), transparent 55%),
-        radial-gradient(circle at 90% 78%, rgba(0, 0, 0, 0.03), transparent 48%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(250, 244, 232, 0.88)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.60), rgba(247, 239, 222, 0.82)),
         repeating-linear-gradient(0deg, rgba(47, 43, 39, 0.018), rgba(47, 43, 39, 0.018) 1px, transparent 1px, transparent 7px);
       box-shadow:
         0 22px 44px rgba(0, 0, 0, 0.12),
         inset 0 0 0 1px rgba(255, 255, 255, 0.35);
       display: grid;
-      grid-template-rows: auto 1fr auto;
+      grid-template-columns: 1fr 3fr;
       overflow: hidden;
       position: relative;
+      clip-path: polygon(1% 2%, 6% 0.5%, 94% 1%, 99% 6%, 98.5% 95%, 93% 99%, 7% 98.5%, 1% 92%);
+    }
+    .lifemap-paper::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(0, 0, 0, 0.045), transparent 55%),
+        radial-gradient(circle at 90% 78%, rgba(0, 0, 0, 0.035), transparent 48%);
+      opacity: 0.55;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+    }
+    .mesa-alley {
+      position: relative;
+      border-right: 1px solid rgba(47, 43, 39, 0.10);
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+    .mesa-alley::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 40% 20%, rgba(0, 0, 0, 0.03), transparent 52%),
+        radial-gradient(circle at 70% 80%, rgba(0, 0, 0, 0.02), transparent 58%);
+      opacity: 0.65;
+      pointer-events: none;
     }
     .mesa-figure {
       position: absolute;
-      left: 0.55rem;
-      bottom: 0.9rem;
-      width: min(160px, 42%);
+      left: 50%;
+      bottom: 0.65rem;
+      transform: translateX(-50%);
+      width: min(210px, 90%);
       height: auto;
       opacity: 0.92;
-      filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.18));
+      filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.18));
       pointer-events: none;
       user-select: none;
+    }
+    .lifemap-chat-col {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      position: relative;
+      z-index: 1;
     }
     .lifemap-chat-head {
       padding: 0.9rem 1rem;
@@ -281,7 +327,6 @@
       justify-content: space-between;
       gap: 1rem;
       align-items: center;
-      padding-left: 6.8rem;
     }
     .lifemap-chat-title {
       font-family: 'Source Serif 4', Georgia, serif;
@@ -312,7 +357,6 @@
       display: flex;
       flex-direction: column;
       gap: 0.55rem;
-      padding-left: 6.8rem;
     }
     .lifemap-msg {
       display: flex;
@@ -345,7 +389,6 @@
       gap: 0.6rem;
       align-items: center;
       background: rgba(255, 255, 255, 0.20);
-      padding-left: 6.8rem;
     }
     .lifemap-chat-field {
       width: 100%;
@@ -391,18 +434,8 @@
       .lifemap-chat {
         min-height: 520px;
       }
-      .lifemap-chat-head,
-      .lifemap-chat-body,
-      .lifemap-chat-input {
-        padding-left: 1rem;
-      }
-      .mesa-figure {
-        left: auto;
-        right: 0.6rem;
-        bottom: 0.6rem;
-        width: 140px;
-        opacity: 0.32;
-      }
+      .lifemap-paper { grid-template-columns: 1fr; }
+      .mesa-alley { display: none; }
     }
     .cat {
       border: 1px solid var(--border);
