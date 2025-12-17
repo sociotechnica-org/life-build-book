@@ -144,11 +144,6 @@
     stage: "Stage 4 \xB7 Running",
     status: "System live"
   };
-  const automationBadges = {
-    ai: { icon: "\u{1F916}", label: "AI Delegated" },
-    service: { icon: "\u{1F4C5}", label: "Scheduled Service" },
-    system: { icon: "\u2699\uFE0F", label: "Self-Running System" }
-  };
   const DEFAULT_PLANTED_PROJECTS = {
     home: [
       {
@@ -330,70 +325,129 @@
     return /* @__PURE__ */ React.createElement("div", { className: "table-bar" }, /* @__PURE__ */ React.createElement("div", { className: "table-grid" }, /* @__PURE__ */ React.createElement("div", { className: "slot", style: { borderColor: "rgba(216,166,80,0.6)", background: "linear-gradient(145deg, rgba(216,166,80,0.12), #fff)" } }, /* @__PURE__ */ React.createElement("h4", null, "Gold"), /* @__PURE__ */ React.createElement("div", { className: "body" }, table.gold.title || "Empty"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, table.gold.meta, goldStaffing && ` \xB7 \u{1F464} ${goldStaffing.staffing.agentName}`), table.gold.progress !== void 0 && /* @__PURE__ */ React.createElement("div", { className: "progress", style: { marginTop: "0.4rem" } }, /* @__PURE__ */ React.createElement("div", { className: "bar", style: { width: `${Math.round((table.gold.progress || 0) * 100)}%`, background: "var(--gold)" } }))), /* @__PURE__ */ React.createElement("div", { className: "slot", style: { borderColor: "rgba(197,206,216,0.7)", background: "linear-gradient(145deg, rgba(197,206,216,0.14), #fff)" } }, /* @__PURE__ */ React.createElement("h4", null, "Silver"), /* @__PURE__ */ React.createElement("div", { className: "body" }, table.silver.title || "Empty"), /* @__PURE__ */ React.createElement("div", { className: "meta" }, table.silver.meta, silverStaffing && ` \xB7 \u{1F464} ${silverStaffing.staffing.agentName}`), table.silver.progress !== void 0 && /* @__PURE__ */ React.createElement("div", { className: "progress", style: { marginTop: "0.4rem" } }, /* @__PURE__ */ React.createElement("div", { className: "bar", style: { width: `${Math.round((table.silver.progress || 0) * 100)}%`, background: "var(--silver)" } }))), /* @__PURE__ */ React.createElement("div", { className: "slot", style: { borderColor: "rgba(196,139,90,0.7)", background: "linear-gradient(145deg, rgba(196,139,90,0.12), #fff)" } }, /* @__PURE__ */ React.createElement("h4", null, "Bronze"), /* @__PURE__ */ React.createElement("div", { className: "body" }, table.bronze.title), /* @__PURE__ */ React.createElement("div", { className: "meta" }, table.bronze.meta))));
   };
   const LifeMap = ({ table }) => {
-    const catList = ["home", "finances", "health"];
-    const [rosterProjects, setRosterProjects] = React.useState([]);
-    const loadRosterProjects = React.useCallback(() => {
-      try {
-        const stored = localStorage.getItem("rosterRoom_projects");
-        if (stored) {
-          const projects = JSON.parse(stored);
-          setRosterProjects(projects.filter((p) => p.staffing.assigned));
-        }
-      } catch (error) {
-        console.warn("Failed to load roster projects:", error);
+    const [selectedHexId, setSelectedHexId] = React.useState(null);
+    const [messages, setMessages] = React.useState(() => [
+      {
+        role: "agent",
+        text: "Welcome back. Click a hex on the map to pick a territory, then tell me what you want to build there."
       }
-    }, []);
+    ]);
+    const [draft, setDraft] = React.useState("");
+    const endRef = React.useRef(null);
     React.useEffect(() => {
-      loadRosterProjects();
-      const handleRosterUpdate = () => loadRosterProjects();
-      window.addEventListener("rosterUpdated", handleRosterUpdate);
-      return () => {
-        window.removeEventListener("rosterUpdated", handleRosterUpdate);
-      };
-    }, [loadRosterProjects]);
-    return /* @__PURE__ */ React.createElement("div", { className: "card" }, /* @__PURE__ */ React.createElement("div", { className: "map-grid" }, catList.map((id) => {
-      var _a, _b;
-      const cat = categories[id];
-      if (!cat) return null;
-      return /* @__PURE__ */ React.createElement("div", { key: id, className: "cat", style: { borderColor: cat.color } }, /* @__PURE__ */ React.createElement("h3", null, /* @__PURE__ */ React.createElement("span", { style: { color: cat.color } }, "\u25CF"), " ", cat.name), /* @__PURE__ */ React.createElement("div", { className: "count" }, "Active"), /* @__PURE__ */ React.createElement("div", { className: "active-wrap" }, table.gold && table.gold.category === id && (() => {
-        const staffedProject = rosterProjects.find(
-          (p) => p.title === table.gold.title && p.status === "active"
-        );
-        return /* @__PURE__ */ React.createElement("div", { className: "project" }, /* @__PURE__ */ React.createElement("div", { className: "title" }, table.gold.title), /* @__PURE__ */ React.createElement("div", { className: "meta" }, table.gold.meta, staffedProject && ` \xB7 \u{1F464} ${staffedProject.staffing.agentName}`), table.gold.progress >= 0 && /* @__PURE__ */ React.createElement("div", { className: "progress" }, /* @__PURE__ */ React.createElement("div", { className: "bar", style: { width: `${Math.round((table.gold.progress || 0) * 100)}%`, background: cat.color } })));
-      })(), table.silver && table.silver.category === id && (() => {
-        const staffedProject = rosterProjects.find(
-          (p) => p.title === table.silver.title && p.status === "active"
-        );
-        return /* @__PURE__ */ React.createElement("div", { className: "project" }, /* @__PURE__ */ React.createElement("div", { className: "title" }, table.silver.title), /* @__PURE__ */ React.createElement("div", { className: "meta" }, table.silver.meta, staffedProject && ` \xB7 \u{1F464} ${staffedProject.staffing.agentName}`), /* @__PURE__ */ React.createElement("div", { className: "progress" }, /* @__PURE__ */ React.createElement("div", { className: "bar", style: { width: `${Math.round(table.silver.progress * 100)}%`, background: cat.color } })));
-      })(), bronzeStacks[id] && /* @__PURE__ */ React.createElement("div", { className: "project" }, /* @__PURE__ */ React.createElement("div", { className: "title" }, bronzeStacks[id].top), /* @__PURE__ */ React.createElement("div", { className: "meta" }, "Bronze stack \xB7 +", bronzeStacks[id].extra, " more"))), ((_a = plantedProjects[id]) == null ? void 0 : _a.length) || rosterProjects.filter((p) => p.category === id && p.status === "ongoing").length ? /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", { className: "planted-label" }, "Ongoing"), /* @__PURE__ */ React.createElement("div", { className: "planted-grid" }, rosterProjects.filter((p) => p.category === id && p.status === "ongoing").map((project) => {
-        return /* @__PURE__ */ React.createElement(
-          "div",
+      var _a;
+      (_a = endRef.current) == null ? void 0 : _a.scrollIntoView({ behavior: "smooth", block: "end" });
+    }, [messages.length]);
+    const hexes = React.useMemo(() => {
+      const width = 1024;
+      const height = 905;
+      const r = 70;
+      const hexH = Math.sqrt(3) * r;
+      const xStep = 1.5 * r;
+      const yStep = hexH;
+      const originX = 150;
+      const originY = 165;
+      const cols = 8;
+      const rows = 6;
+      const items = [];
+      let idx = 0;
+      for (let col = 0; col < cols; col++) {
+        for (let row = 0; row < rows; row++) {
+          const cx = originX + col * xStep;
+          const cy = originY + row * yStep + (col % 2 ? yStep / 2 : 0);
+          if (cx < 110 || cx > width - 110) continue;
+          if (cy < 120 || cy > height - 110) continue;
+          const id = `h${idx++}`;
+          items.push({ id, cx, cy, r, col, row });
+        }
+      }
+      return items;
+    }, []);
+    const hexPoints = React.useCallback((cx, cy, r) => {
+      const pts = [];
+      for (let i = 0; i < 6; i++) {
+        const a = Math.PI / 180 * (60 * i);
+        const x = cx + r * Math.cos(a);
+        const y = cy + r * Math.sin(a);
+        pts.push(`${x.toFixed(2)},${y.toFixed(2)}`);
+      }
+      return pts.join(" ");
+    }, []);
+    const selectedLabel = React.useMemo(() => {
+      if (!selectedHexId) return "No tile selected";
+      const match = hexes.find((h) => h.id === selectedHexId);
+      if (!match) return "No tile selected";
+      return `Tile \xB7 C${match.col + 1} R${match.row + 1}`;
+    }, [hexes, selectedHexId]);
+    const pushAgent = React.useCallback(
+      (text) => setMessages((prev) => [...prev, { role: "agent", text }]),
+      []
+    );
+    const onSelectHex = React.useCallback(
+      (id) => {
+        setSelectedHexId(id);
+        const match = hexes.find((h) => h.id === id);
+        const label = match ? `C${match.col + 1} R${match.row + 1}` : id;
+        pushAgent(`Selected ${label}. What are we building here?`);
+      },
+      [hexes, pushAgent]
+    );
+    const onSend = React.useCallback(() => {
+      var _a, _b, _c;
+      const text = draft.trim();
+      if (!text) return;
+      setDraft("");
+      setMessages((prev) => [...prev, { role: "user", text }]);
+      if (!selectedHexId) {
+        pushAgent("Pick a hex first so we can anchor the plan to a territory.");
+        return;
+      }
+      const tableTitles = [(_a = table == null ? void 0 : table.gold) == null ? void 0 : _a.title, (_b = table == null ? void 0 : table.silver) == null ? void 0 : _b.title, (_c = table == null ? void 0 : table.bronze) == null ? void 0 : _c.title].filter(Boolean);
+      const tableLine = tableTitles.length ? `On your table right now: ${tableTitles.join(" \xB7 ")}.` : "Your table is empty.";
+      pushAgent(`Got it. ${tableLine} Want this new work to replace something, or stay off-table for now?`);
+    }, [draft, pushAgent, selectedHexId, table]);
+    return /* @__PURE__ */ React.createElement("div", { className: "lifemap-wrap" }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-surface" }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-surface-grid" }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-board", "aria-label": "Life Map board" }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-board-inner" }, /* @__PURE__ */ React.createElement(
+      "img",
+      {
+        className: "lifemap-parchment",
+        src: "assets/lifemap/lifemap-parchment.png",
+        alt: "Life Map parchment",
+        draggable: false
+      }
+    ), /* @__PURE__ */ React.createElement("svg", { className: "lifemap-hex-svg", viewBox: "0 0 1024 905", role: "presentation" }, hexes.map((h) => /* @__PURE__ */ React.createElement(
+      "polygon",
+      {
+        key: h.id,
+        className: "lifemap-hex",
+        "data-selected": selectedHexId === h.id ? "true" : "false",
+        points: hexPoints(h.cx, h.cy, h.r),
+        onClick: () => onSelectHex(h.id)
+      },
+      /* @__PURE__ */ React.createElement("title", null, `Tile C${h.col + 1} R${h.row + 1}`)
+    ))), /* @__PURE__ */ React.createElement("div", { className: "lifemap-board-hud" }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-hud-pill" }, selectedLabel), /* @__PURE__ */ React.createElement("div", { className: "lifemap-hud-hint" }, "Click a hex to select a territory.")))), /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat", "aria-label": "Agent chat" }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-title" }, "Agent"), /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-sub" }, "Plan, place, and refine projects from the map.")), /* @__PURE__ */ React.createElement(
+      "button",
+      {
+        className: "lifemap-chat-clear",
+        onClick: () => setMessages([
           {
-            key: project.id,
-            className: "planted-card",
-            "data-automation": "ai",
-            "data-attention": "idle"
-          },
-          /* @__PURE__ */ React.createElement("div", { className: "planted-top" }, /* @__PURE__ */ React.createElement("span", { className: "planted-badge" }, /* @__PURE__ */ React.createElement("span", null, "\u{1F464}"), /* @__PURE__ */ React.createElement("span", null, "Agent Staffed"))),
-          /* @__PURE__ */ React.createElement("div", { className: "planted-title" }, project.title),
-          /* @__PURE__ */ React.createElement("div", { className: "planted-line schedule" }, "Staffed: ", project.staffing.agentName)
-        );
-      }), (_b = plantedProjects[id]) == null ? void 0 : _b.map((project) => {
-        const badge = automationBadges[project.automation] || automationBadges.system;
-        return /* @__PURE__ */ React.createElement(
-          "div",
-          {
-            key: project.title,
-            className: "planted-card",
-            "data-automation": project.automation,
-            "data-attention": project.attention || "idle"
-          },
-          /* @__PURE__ */ React.createElement("div", { className: "planted-top" }, /* @__PURE__ */ React.createElement("span", { className: "planted-badge" }, /* @__PURE__ */ React.createElement("span", null, badge.icon), /* @__PURE__ */ React.createElement("span", null, badge.label))),
-          /* @__PURE__ */ React.createElement("div", { className: "planted-title" }, project.title),
-          /* @__PURE__ */ React.createElement("div", { className: "planted-line schedule" }, project.statusDetail || project.status)
-        );
-      }))) : null);
-    })));
+            role: "agent",
+            text: "Chat cleared. Click a hex on the map to pick a territory, then tell me what you want to build there."
+          }
+        ])
+      },
+      "Clear"
+    )), /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-body" }, messages.map((m, i) => /* @__PURE__ */ React.createElement("div", { key: i, className: `lifemap-msg ${m.role}` }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-msg-bubble" }, m.text))), /* @__PURE__ */ React.createElement("div", { ref: endRef })), /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-input" }, /* @__PURE__ */ React.createElement(
+      "input",
+      {
+        className: "lifemap-chat-field",
+        value: draft,
+        onChange: (e) => setDraft(e.target.value),
+        placeholder: selectedHexId ? "Message the agent\u2026" : "Select a hex first\u2026",
+        onKeyDown: (e) => {
+          if (e.key === "Enter") onSend();
+        }
+      }
+    ), /* @__PURE__ */ React.createElement("button", { className: "lifemap-chat-send", onClick: onSend, disabled: !draft.trim() }, "Send"))))));
   };
   const DraftingRoom = () => {
     const [view, setView] = React.useState("queue");

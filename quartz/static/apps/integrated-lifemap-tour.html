@@ -172,6 +172,241 @@
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
       gap: 1rem;
     }
+
+    /* Life Map (hex table + chat) */
+    .lifemap-wrap {
+      width: 100%;
+    }
+    .lifemap-surface {
+      border-radius: 1.25rem;
+      border: 1px solid rgba(47, 43, 39, 0.14);
+      background:
+        radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.22), transparent 45%),
+        radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.16), transparent 52%),
+        linear-gradient(rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.10)),
+        url("assets/lifemap/table-wood.webp");
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 22px 50px rgba(0, 0, 0, 0.14);
+      padding: 1rem;
+    }
+    .lifemap-surface-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1rem;
+      min-height: 560px;
+      align-items: stretch;
+    }
+    .lifemap-board {
+      border-radius: 1.1rem;
+      background: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .lifemap-board-inner {
+      position: relative;
+      height: 100%;
+      min-height: 560px;
+      border-radius: 1.1rem;
+      background: transparent;
+    }
+    .lifemap-board-inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: inset 0 0 0 1px rgba(47, 43, 39, 0.10);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .lifemap-parchment {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center;
+      background: transparent;
+      filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.18));
+      user-select: none;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .lifemap-hex-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+    }
+    .lifemap-hex {
+      cursor: pointer;
+      fill: rgba(255, 255, 255, 0.02);
+      stroke: rgba(47, 43, 39, 0.18);
+      stroke-width: 2;
+      transition: fill 140ms ease, stroke 140ms ease, stroke-width 140ms ease;
+    }
+    .lifemap-hex:hover {
+      fill: rgba(216, 166, 80, 0.12);
+      stroke: rgba(216, 166, 80, 0.55);
+      stroke-width: 2.4;
+    }
+    .lifemap-hex[data-selected="true"] {
+      fill: rgba(123, 158, 168, 0.14);
+      stroke: rgba(123, 158, 168, 0.8);
+      stroke-width: 3;
+    }
+    .lifemap-board-hud {
+      position: absolute;
+      left: 1rem;
+      bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      pointer-events: none;
+      z-index: 3;
+    }
+    .lifemap-hud-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      background: rgba(250, 249, 247, 0.92);
+      border: 1px solid rgba(47, 43, 39, 0.12);
+      font-weight: 600;
+      color: var(--ink);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+    }
+    .lifemap-hud-hint {
+      font-size: 0.85rem;
+      color: rgba(47, 43, 39, 0.72);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
+    }
+    .lifemap-chat {
+      border-radius: 1.1rem;
+      border: 1px solid rgba(47, 43, 39, 0.12);
+      background: rgba(250, 249, 247, 0.86);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      overflow: hidden;
+      min-height: 560px;
+    }
+    .lifemap-chat-head {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid rgba(47, 43, 39, 0.10);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: center;
+    }
+    .lifemap-chat-title {
+      font-family: 'Source Serif 4', Georgia, serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.1rem;
+    }
+    .lifemap-chat-sub {
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+    .lifemap-chat-clear {
+      background: transparent;
+      border: 1px solid rgba(47, 43, 39, 0.14);
+      color: var(--ink);
+      border-radius: 0.8rem;
+      padding: 0.45rem 0.65rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .lifemap-chat-clear:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+    .lifemap-chat-body {
+      padding: 0.9rem 1rem;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+    .lifemap-msg {
+      display: flex;
+      width: 100%;
+    }
+    .lifemap-msg.agent { justify-content: flex-start; }
+    .lifemap-msg.user { justify-content: flex-end; }
+    .lifemap-msg-bubble {
+      max-width: 92%;
+      padding: 0.65rem 0.75rem;
+      border-radius: 0.9rem;
+      border: 1px solid rgba(47, 43, 39, 0.12);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--ink);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+      font-size: 0.93rem;
+      line-height: 1.45;
+    }
+    .lifemap-msg.user .lifemap-msg-bubble {
+      background: rgba(47, 43, 39, 0.92);
+      color: #faf9f7;
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+    .lifemap-chat-input {
+      padding: 0.85rem 1rem;
+      border-top: 1px solid rgba(47, 43, 39, 0.10);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.6rem;
+      align-items: center;
+      background: rgba(250, 249, 247, 0.92);
+    }
+    .lifemap-chat-field {
+      width: 100%;
+      border-radius: 0.85rem;
+      border: 1px solid rgba(47, 43, 39, 0.14);
+      padding: 0.7rem 0.8rem;
+      font-size: 0.95rem;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--ink);
+      outline: none;
+    }
+    .lifemap-chat-field:focus {
+      border-color: rgba(123, 158, 168, 0.65);
+      box-shadow: 0 0 0 4px rgba(123, 158, 168, 0.18);
+    }
+    .lifemap-chat-send {
+      background: #2f2b27;
+      color: #faf9f7;
+      border: none;
+      border-radius: 0.85rem;
+      padding: 0.7rem 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+      transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
+    }
+    .lifemap-chat-send:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .lifemap-chat-send:not(:disabled):hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 26px rgba(0,0,0,0.14);
+    }
+    @media (max-width: 980px) {
+      .lifemap-surface-grid {
+        grid-template-columns: 1fr;
+      }
+      .lifemap-board-inner,
+      .lifemap-chat {
+        min-height: 520px;
+      }
+    }
     .cat {
       border: 1px solid var(--border);
       border-radius: 1rem;

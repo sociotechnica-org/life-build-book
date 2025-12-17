@@ -461,7 +461,7 @@ The Roster Room is where directors assign AI Workers (agents) to projects during
 ## Technical Implementation Plan
 
 ### Architecture Approach
-- Continue single-file React app pattern (`lifebuild-immersive-tour.html`)
+- Continue single-file React app pattern (`integrated-lifemap-tour.html`)
 - Add new chapter(s) for Roster Room (e.g., Chapter 7+)
 - Use React hooks for state management
 - Follow existing component patterns
@@ -738,7 +738,7 @@ const [isCreatingAgent, setIsCreatingAgent] = useState(false);
 - Devin: `content/platform/ai-team/AI Team - Devin Roster Room Facilitation.md`
 
 ### Implementation File
-- `quartz/static/apps/lifebuild-immersive-tour.html` (lines 1-1800+)
+- `quartz/static/apps/integrated-lifemap-tour.html` (lines 1-1800+)
 
 ### Related Components
 - Sorting Room implementation (reference for lane-based layouts)

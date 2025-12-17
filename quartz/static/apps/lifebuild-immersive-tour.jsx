@@ -379,143 +379,175 @@ const ReactDOM = window.ReactDOM;
     };
 
     const LifeMap = ({ table }) => {
-      const catList = ['home', 'finances', 'health'];
-
-      // Load Roster Room projects to show agent assignments
-      const [rosterProjects, setRosterProjects] = React.useState([]);
-
-      const loadRosterProjects = React.useCallback(() => {
-        try {
-          const stored = localStorage.getItem('rosterRoom_projects');
-          if (stored) {
-            const projects = JSON.parse(stored);
-            // Filter for all staffed projects (both active on table and ongoing)
-            setRosterProjects(projects.filter(p => p.staffing.assigned));
-          }
-        } catch (error) {
-          console.warn('Failed to load roster projects:', error);
-        }
-      }, []);
+      const [selectedHexId, setSelectedHexId] = React.useState(null);
+      const [messages, setMessages] = React.useState(() => [
+        {
+          role: 'agent',
+          text:
+            'Welcome back. Click a hex on the map to pick a territory, then tell me what you want to build there.',
+        },
+      ]);
+      const [draft, setDraft] = React.useState('');
+      const endRef = React.useRef(null);
 
       React.useEffect(() => {
-        loadRosterProjects();
+        endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }, [messages.length]);
 
-        // Listen for custom roster update events
-        const handleRosterUpdate = () => loadRosterProjects();
-        window.addEventListener('rosterUpdated', handleRosterUpdate);
+      const hexes = React.useMemo(() => {
+        const width = 1024;
+        const height = 905;
+        const r = 70;
+        const hexH = Math.sqrt(3) * r;
+        const xStep = 1.5 * r;
+        const yStep = hexH;
+        const originX = 150;
+        const originY = 165;
+        const cols = 8;
+        const rows = 6;
 
-        return () => {
-          window.removeEventListener('rosterUpdated', handleRosterUpdate);
-        };
-      }, [loadRosterProjects]);
+        const items = [];
+        let idx = 0;
+        for (let col = 0; col < cols; col++) {
+          for (let row = 0; row < rows; row++) {
+            const cx = originX + col * xStep;
+            const cy = originY + row * yStep + (col % 2 ? yStep / 2 : 0);
+            // Keep only those reasonably inside the parchment border.
+            if (cx < 110 || cx > width - 110) continue;
+            if (cy < 120 || cy > height - 110) continue;
+            const id = `h${idx++}`;
+            items.push({ id, cx, cy, r, col, row });
+          }
+        }
+        return items;
+      }, []);
+
+      const hexPoints = React.useCallback((cx, cy, r) => {
+        const pts = [];
+        for (let i = 0; i < 6; i++) {
+          const a = (Math.PI / 180) * (60 * i);
+          const x = cx + r * Math.cos(a);
+          const y = cy + r * Math.sin(a);
+          pts.push(`${x.toFixed(2)},${y.toFixed(2)}`);
+        }
+        return pts.join(' ');
+      }, []);
+
+      const selectedLabel = React.useMemo(() => {
+        if (!selectedHexId) return 'No tile selected';
+        const match = hexes.find((h) => h.id === selectedHexId);
+        if (!match) return 'No tile selected';
+        return `Tile · C${match.col + 1} R${match.row + 1}`;
+      }, [hexes, selectedHexId]);
+
+      const pushAgent = React.useCallback(
+        (text) => setMessages((prev) => [...prev, { role: 'agent', text }]),
+        [],
+      );
+
+      const onSelectHex = React.useCallback(
+        (id) => {
+          setSelectedHexId(id);
+          const match = hexes.find((h) => h.id === id);
+          const label = match ? `C${match.col + 1} R${match.row + 1}` : id;
+          pushAgent(`Selected ${label}. What are we building here?`);
+        },
+        [hexes, pushAgent],
+      );
+
+      const onSend = React.useCallback(() => {
+        const text = draft.trim();
+        if (!text) return;
+        setDraft('');
+        setMessages((prev) => [...prev, { role: 'user', text }]);
+
+        if (!selectedHexId) {
+          pushAgent('Pick a hex first so we can anchor the plan to a territory.');
+          return;
+        }
+
+        const tableTitles = [table?.gold?.title, table?.silver?.title, table?.bronze?.title].filter(Boolean);
+        const tableLine = tableTitles.length ? `On your table right now: ${tableTitles.join(' · ')}.` : 'Your table is empty.';
+        pushAgent(`Got it. ${tableLine} Want this new work to replace something, or stay off-table for now?`);
+      }, [draft, pushAgent, selectedHexId, table]);
 
       return (
-        <div className="card">
-          <div className="map-grid">
-            {catList.map((id) => {
-              const cat = categories[id];
-              if (!cat) return null;
-              return (
-                <div key={id} className="cat" style={{ borderColor: cat.color }}>
-                  <h3><span style={{ color: cat.color }}>●</span> {cat.name}</h3>
-                  <div className="count">Active</div>
-                  <div className="active-wrap">
-                    {table.gold && table.gold.category === id && (() => {
-                      // Check if this project is staffed with an agent
-                      const staffedProject = rosterProjects.find(p =>
-                        p.title === table.gold.title && p.status === 'active'
-                      );
-                      return (
-                        <div className="project">
-                          <div className="title">{table.gold.title}</div>
-                          <div className="meta">
-                            {table.gold.meta}
-                            {staffedProject && ` · 👤 ${staffedProject.staffing.agentName}`}
-                          </div>
-                          {table.gold.progress >= 0 && (
-                            <div className="progress">
-                              <div className="bar" style={{ width: `${Math.round((table.gold.progress || 0) * 100)}%`, background: cat.color }}></div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })()}
-                    {table.silver && table.silver.category === id && (() => {
-                      // Check if this project is staffed with an agent
-                      const staffedProject = rosterProjects.find(p =>
-                        p.title === table.silver.title && p.status === 'active'
-                      );
-                      return (
-                        <div className="project">
-                          <div className="title">{table.silver.title}</div>
-                          <div className="meta">
-                            {table.silver.meta}
-                            {staffedProject && ` · 👤 ${staffedProject.staffing.agentName}`}
-                          </div>
-                          <div className="progress">
-                            <div className="bar" style={{ width: `${Math.round(table.silver.progress * 100)}%`, background: cat.color }}></div>
-                          </div>
-                        </div>
-                      );
-                    })()}
-                    {bronzeStacks[id] && (
-                      <div className="project">
-                        <div className="title">{bronzeStacks[id].top}</div>
-                        <div className="meta">Bronze stack · +{bronzeStacks[id].extra} more</div>
-                      </div>
-                    )}
+        <div className="lifemap-wrap">
+          <div className="lifemap-surface">
+            <div className="lifemap-surface-grid">
+              <div className="lifemap-board" aria-label="Life Map board">
+                <div className="lifemap-board-inner">
+                  <img
+                    className="lifemap-parchment"
+                    src="assets/lifemap/lifemap-parchment.png"
+                    alt="Life Map parchment"
+                    draggable={false}
+                  />
+                  <svg className="lifemap-hex-svg" viewBox="0 0 1024 905" role="presentation">
+                    {hexes.map((h) => (
+                      <polygon
+                        key={h.id}
+                        className="lifemap-hex"
+                        data-selected={selectedHexId === h.id ? 'true' : 'false'}
+                        points={hexPoints(h.cx, h.cy, h.r)}
+                        onClick={() => onSelectHex(h.id)}
+                      >
+                        <title>{`Tile C${h.col + 1} R${h.row + 1}`}</title>
+                      </polygon>
+                    ))}
+                  </svg>
+                  <div className="lifemap-board-hud">
+                    <div className="lifemap-hud-pill">{selectedLabel}</div>
+                    <div className="lifemap-hud-hint">Click a hex to select a territory.</div>
                   </div>
-                  {(plantedProjects[id]?.length || rosterProjects.filter(p => p.category === id && p.status === 'ongoing').length) ? (
-                    <>
-                      <div className="planted-label">Ongoing</div>
-                      <div className="planted-grid">
-                        {/* Roster Room staffed projects (ongoing only) */}
-                        {rosterProjects.filter(p => p.category === id && p.status === 'ongoing').map((project) => {
-                          return (
-                            <div
-                              key={project.id}
-                              className="planted-card"
-                              data-automation="ai"
-                              data-attention="idle"
-                            >
-                              <div className="planted-top">
-                                <span className="planted-badge">
-                                  <span>👤</span>
-                                  <span>Agent Staffed</span>
-                                </span>
-                              </div>
-                              <div className="planted-title">{project.title}</div>
-                              <div className="planted-line schedule">Staffed: {project.staffing.agentName}</div>
-                            </div>
-                          );
-                        })}
-                        {/* Original planted projects */}
-                        {plantedProjects[id]?.map((project) => {
-                          const badge = automationBadges[project.automation] || automationBadges.system;
-                          return (
-                            <div
-                              key={project.title}
-                              className="planted-card"
-                              data-automation={project.automation}
-                              data-attention={project.attention || 'idle'}
-                            >
-                              <div className="planted-top">
-                                <span className="planted-badge">
-                                  <span>{badge.icon}</span>
-                                  <span>{badge.label}</span>
-                                </span>
-                              </div>
-                              <div className="planted-title">{project.title}</div>
-                              <div className="planted-line schedule">{project.statusDetail || project.status}</div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </>
-                  ) : null}
                 </div>
-              );
-            })}
+              </div>
+
+              <div className="lifemap-chat" aria-label="Agent chat">
+                <div className="lifemap-chat-head">
+                  <div>
+                    <div className="lifemap-chat-title">Agent</div>
+                    <div className="lifemap-chat-sub">Plan, place, and refine projects from the map.</div>
+                  </div>
+                  <button
+                    className="lifemap-chat-clear"
+                    onClick={() =>
+                      setMessages([
+                        {
+                          role: 'agent',
+                          text:
+                            'Chat cleared. Click a hex on the map to pick a territory, then tell me what you want to build there.',
+                        },
+                      ])
+                    }
+                  >
+                    Clear
+                  </button>
+                </div>
+                <div className="lifemap-chat-body">
+                  {messages.map((m, i) => (
+                    <div key={i} className={`lifemap-msg ${m.role}`}>
+                      <div className="lifemap-msg-bubble">{m.text}</div>
+                    </div>
+                  ))}
+                  <div ref={endRef} />
+                </div>
+                <div className="lifemap-chat-input">
+                  <input
+                    className="lifemap-chat-field"
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    placeholder={selectedHexId ? 'Message the agent…' : 'Select a hex first…'}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') onSend();
+                    }}
+                  />
+                  <button className="lifemap-chat-send" onClick={onSend} disabled={!draft.trim()}>
+                    Send
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       );
