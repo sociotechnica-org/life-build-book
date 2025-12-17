@@ -7,13 +7,6 @@ const ReactDOM = window.ReactDOM;
       health: { name: 'Health', color: 'var(--health)' },
     };
 
-    const initialTasks = {
-      todo: ['Deep clean interior', 'Research pricing', 'Repair cabinet latch', 'Write listing draft'],
-      doing: [],
-      review: [],
-      done: [],
-    };
-
     const BRONZE_TABLE_LIMIT = 10;
 
     const cloneData = (value) => JSON.parse(JSON.stringify(value));
@@ -379,7 +372,12 @@ const ReactDOM = window.ReactDOM;
     };
 
     const LifeMap = ({ table }) => {
-      const [selectedHexId, setSelectedHexId] = React.useState(null);
+      const VIEW_W = 1024;
+      const VIEW_H = 905;
+      const HEX_SIZE = 70;
+      const MAP_ORIGIN = React.useMemo(() => ({ x: VIEW_W / 2, y: VIEW_H / 2 }), []);
+
+      const [selectedKey, setSelectedKey] = React.useState(null);
       const [messages, setMessages] = React.useState(() => [
         {
           role: 'agent',
@@ -389,43 +387,146 @@ const ReactDOM = window.ReactDOM;
       ]);
       const [draft, setDraft] = React.useState('');
       const endRef = React.useRef(null);
+      const svgRef = React.useRef(null);
 
       React.useEffect(() => {
         endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
       }, [messages.length]);
 
-      const hexes = React.useMemo(() => {
-        const width = 1024;
-        const height = 905;
-        const r = 70;
-        const hexH = Math.sqrt(3) * r;
-        const xStep = 1.5 * r;
-        const yStep = hexH;
-        const originX = 150;
-        const originY = 165;
-        const cols = 8;
-        const rows = 6;
+      const TILE_LIBRARY = React.useMemo(
+        () => ({
+          blueprints: {
+            name: 'Blueprints',
+            kind: 'project',
+            categoryKey: 'HOME',
+            image: 'assets/lifemap/tile-blueprints.png',
+            border: 'rgba(123,158,168,0.85)',
+            glow: 'rgba(123,158,168,0.25)',
+          },
+          garden: {
+            name: 'Garden',
+            kind: 'project',
+            categoryKey: 'HEALTH',
+            image: 'assets/lifemap/tile-garden.jpg',
+            border: 'rgba(232,180,160,0.85)',
+            glow: 'rgba(232,180,160,0.22)',
+          },
+        }),
+        [],
+      );
 
-        const items = [];
-        let idx = 0;
-        for (let col = 0; col < cols; col++) {
-          for (let row = 0; row < rows; row++) {
-            const cx = originX + col * xStep;
-            const cy = originY + row * yStep + (col % 2 ? yStep / 2 : 0);
-            // Keep only those reasonably inside the parchment border.
-            if (cx < 110 || cx > width - 110) continue;
-            if (cy < 120 || cy > height - 110) continue;
-            const id = `h${idx++}`;
-            items.push({ id, cx, cy, r, col, row });
-          }
-        }
-        return items;
+      const hexToPixel = React.useCallback((q, r, size) => {
+        const x = size * (1.5 * q);
+        const y = size * ((Math.sqrt(3) / 2) * q + Math.sqrt(3) * r);
+        return { x, y };
       }, []);
+
+      const pixelToAxial = React.useCallback((x, y, size) => {
+        const q = ((2 / 3) * x) / size;
+        const r = ((-1 / 3) * x + (Math.sqrt(3) / 3) * y) / size;
+        return { q, r };
+      }, []);
+
+      const roundAxial = React.useCallback(({ q, r }) => {
+        let x = q;
+        let z = r;
+        let y = -x - z;
+
+        let rx = Math.round(x);
+        let ry = Math.round(y);
+        let rz = Math.round(z);
+
+        const xDiff = Math.abs(rx - x);
+        const yDiff = Math.abs(ry - y);
+        const zDiff = Math.abs(rz - z);
+
+        if (xDiff > yDiff && xDiff > zDiff) {
+          rx = -ry - rz;
+        } else if (yDiff > zDiff) {
+          ry = -rx - rz;
+        } else {
+          rz = -rx - ry;
+        }
+
+        return { q: rx, r: rz };
+      }, []);
+
+      const keyLabel = React.useCallback((key) => {
+        if (!key) return 'No tile selected';
+        const [q, r] = key.split(',').map(Number);
+        if (!Number.isFinite(q) || !Number.isFinite(r)) return 'No tile selected';
+        return `Tile · Q${q} R${r}`;
+      }, []);
+
+      const [camera, setCamera] = React.useState(() => ({ x: 0, y: 0, scale: 1 }));
+      const panRef = React.useRef({ active: false, last: { x: 0, y: 0 } });
+      const [dragState, setDragState] = React.useState(null);
+      const [clickMove, setClickMove] = React.useState(null); // { sourceKey }
+      const ignoreNextClickRef = React.useRef(false);
+
+      const LIFE_MAP_STORAGE_KEY = 'integrated_lifemap_tiles_v1';
+
+      const [placedTiles, setPlacedTiles] = React.useState(() => {
+        try {
+          const raw = localStorage.getItem(LIFE_MAP_STORAGE_KEY);
+          if (!raw) return {};
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== 'object') return {};
+          const cleaned = {};
+          Object.entries(parsed).forEach(([key, value]) => {
+            if (!value || typeof value !== 'object') return;
+            if (!value.type || !TILE_LIBRARY[value.type]) return;
+            if (!value.lane || (value.lane !== 'gold' && value.lane !== 'silver')) return;
+            if (!value.title) return;
+            cleaned[key] = {
+              type: value.type,
+              lane: value.lane,
+              title: value.title,
+              dioramaUrl: value.dioramaUrl || TILE_LIBRARY[value.type].image,
+              isNew: !!value.isNew,
+            };
+          });
+          return cleaned;
+        } catch {
+          return {};
+        }
+      });
+
+      React.useEffect(() => {
+        try {
+          localStorage.setItem(LIFE_MAP_STORAGE_KEY, JSON.stringify(placedTiles));
+        } catch {
+          // ignore
+        }
+      }, [placedTiles]);
+
+      const svgPointFromClient = React.useCallback(
+        (clientX, clientY) => {
+          const svg = svgRef.current;
+          if (!svg) return { x: clientX, y: clientY };
+          const rect = svg.getBoundingClientRect();
+          const x = ((clientX - rect.left) / rect.width) * VIEW_W;
+          const y = ((clientY - rect.top) / rect.height) * VIEW_H;
+          return { x, y };
+        },
+        [VIEW_H, VIEW_W],
+      );
+
+      const worldPointFromClient = React.useCallback(
+        (clientX, clientY) => {
+          const pt = svgPointFromClient(clientX, clientY);
+          return {
+            x: (pt.x - camera.x) / camera.scale,
+            y: (pt.y - camera.y) / camera.scale,
+          };
+        },
+        [camera, svgPointFromClient],
+      );
 
       const hexPoints = React.useCallback((cx, cy, r) => {
         const pts = [];
         for (let i = 0; i < 6; i++) {
-          const a = (Math.PI / 180) * (60 * i);
+          const a = (Math.PI / 180) * (60 * i - 30);
           const x = cx + r * Math.cos(a);
           const y = cy + r * Math.sin(a);
           pts.push(`${x.toFixed(2)},${y.toFixed(2)}`);
@@ -433,26 +534,266 @@ const ReactDOM = window.ReactDOM;
         return pts.join(' ');
       }, []);
 
-      const selectedLabel = React.useMemo(() => {
-        if (!selectedHexId) return 'No tile selected';
-        const match = hexes.find((h) => h.id === selectedHexId);
-        if (!match) return 'No tile selected';
-        return `Tile · C${match.col + 1} R${match.row + 1}`;
-      }, [hexes, selectedHexId]);
+      const computeKeyFromWorld = React.useCallback(
+        (world) => {
+          const localX = world.x - MAP_ORIGIN.x;
+          const localY = world.y - MAP_ORIGIN.y;
+          const axial = roundAxial(pixelToAxial(localX, localY, HEX_SIZE));
+          return `${axial.q},${axial.r}`;
+        },
+        [HEX_SIZE, MAP_ORIGIN.x, MAP_ORIGIN.y, pixelToAxial, roundAxial],
+      );
+
+      const swapTiles = React.useCallback((sourceKey, targetKey) => {
+        if (!sourceKey || !targetKey || sourceKey === targetKey) return;
+        setPlacedTiles((prev) => {
+          const updated = { ...prev };
+          const sourceTile = updated[sourceKey];
+          if (!sourceTile) return prev;
+          const targetTile = updated[targetKey];
+          if (targetTile) {
+            updated[targetKey] = sourceTile;
+            updated[sourceKey] = targetTile;
+          } else {
+            updated[targetKey] = sourceTile;
+            delete updated[sourceKey];
+          }
+          return updated;
+        });
+      }, []);
+
+      const handleWheel = React.useCallback(
+        (e) => {
+          e.preventDefault();
+          const delta = e.deltaY;
+          const zoomFactor = delta < 0 ? 1.1 : 0.9;
+          const svgPt = svgPointFromClient(e.clientX, e.clientY);
+          const world = worldPointFromClient(e.clientX, e.clientY);
+          setCamera((prev) => {
+            const nextScale = Math.min(2.5, Math.max(0.55, prev.scale * zoomFactor));
+            return {
+              scale: nextScale,
+              x: svgPt.x - world.x * nextScale,
+              y: svgPt.y - world.y * nextScale,
+            };
+          });
+        },
+        [svgPointFromClient, worldPointFromClient],
+      );
+
+      const handleMouseDown = React.useCallback(
+        (e) => {
+          if (dragState || e.button !== 0) return;
+          const isTile = e.target.closest?.('[data-hex-tile]');
+          if (isTile) return;
+          setClickMove(null);
+          panRef.current = { active: true, last: { x: e.clientX, y: e.clientY } };
+        },
+        [dragState],
+      );
+
+      React.useEffect(() => {
+        const handleMove = (e) => {
+          if (panRef.current.active) {
+            const svg = svgRef.current;
+            if (svg) {
+              const rect = svg.getBoundingClientRect();
+              const dx = ((e.clientX - panRef.current.last.x) / rect.width) * VIEW_W;
+              const dy = ((e.clientY - panRef.current.last.y) / rect.height) * VIEW_H;
+              panRef.current.last = { x: e.clientX, y: e.clientY };
+              setCamera((prev) => ({ ...prev, x: prev.x + dx, y: prev.y + dy }));
+            }
+          }
+
+          if (dragState) {
+            const world = worldPointFromClient(e.clientX, e.clientY);
+            setDragState((prev) => (prev ? { ...prev, pointerWorld: world } : prev));
+          }
+        };
+
+        const handleUp = (e) => {
+          if (panRef.current.active) panRef.current.active = false;
+          if (!dragState) return;
+          const world = worldPointFromClient(e.clientX, e.clientY);
+          const targetKey = computeKeyFromWorld(world);
+          if (dragState.source === 'board') {
+            swapTiles(dragState.sourceKey, targetKey);
+            setSelectedKey(targetKey);
+          }
+          setDragState(null);
+          ignoreNextClickRef.current = true;
+        };
+
+        const handleKey = (e) => {
+          if (e.key === 'Escape') setClickMove(null);
+        };
+
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('mouseup', handleUp);
+        window.addEventListener('keydown', handleKey);
+        return () => {
+          window.removeEventListener('mousemove', handleMove);
+          window.removeEventListener('mouseup', handleUp);
+          window.removeEventListener('keydown', handleKey);
+        };
+      }, [VIEW_H, VIEW_W, computeKeyFromWorld, dragState, swapTiles, worldPointFromClient]);
+
+      const startBoardDrag = React.useCallback(
+        (key) => (e) => {
+          if (e.button !== 0) return;
+          e.stopPropagation();
+          e.preventDefault();
+          setClickMove(null);
+          const worldPoint = worldPointFromClient(e.clientX, e.clientY);
+          setDragState({
+            source: 'board',
+            sourceKey: key,
+            tile: placedTiles[key],
+            pointerWorld: worldPoint,
+          });
+        },
+        [placedTiles, worldPointFromClient],
+      );
+
+      const boardHexes = React.useMemo(() => {
+        const items = [];
+        for (let q = -7; q <= 7; q++) {
+          for (let r = -7; r <= 7; r++) {
+            const p = hexToPixel(q, r, HEX_SIZE);
+            const cx = MAP_ORIGIN.x + p.x;
+            const cy = MAP_ORIGIN.y + p.y;
+            if (cx < 120 || cx > VIEW_W - 120) continue;
+            if (cy < 120 || cy > VIEW_H - 120) continue;
+            items.push({ q, r, cx, cy, key: `${q},${r}` });
+          }
+        }
+        return items;
+      }, [HEX_SIZE, MAP_ORIGIN.x, MAP_ORIGIN.y, VIEW_H, VIEW_W, hexToPixel]);
+
+      const allowedKeys = React.useMemo(() => new Set(boardHexes.map((h) => h.key)), [boardHexes]);
+
+      const findSpawnKey = React.useCallback(
+        (currentTiles) => {
+          const occupied = new Set(Object.keys(currentTiles || {}));
+          const candidates = [...allowedKeys]
+            .map((key) => {
+              const [q, r] = key.split(',').map(Number);
+              const dist = Math.abs(q) + Math.abs(r);
+              return { key, dist };
+            })
+            .sort((a, b) => a.dist - b.dist);
+          for (const c of candidates) {
+            if (!occupied.has(c.key)) return c.key;
+          }
+          return '0,0';
+        },
+        [allowedKeys],
+      );
+
+      const reconcileTilesWithTable = React.useCallback(() => {
+        const desired = [
+          { lane: 'gold', title: table?.gold?.title || '' },
+          { lane: 'silver', title: table?.silver?.title || '' },
+        ].filter((d) => d.title && d.title !== 'Empty');
+
+        setPlacedTiles((prev) => {
+          const next = { ...prev };
+
+          const tileEntries = Object.entries(next);
+          const byLane = {};
+          tileEntries.forEach(([key, tile]) => {
+            if (tile?.lane) byLane[tile.lane] = { key, tile };
+          });
+
+          // Remove tiles whose lane is no longer present on table.
+          (['gold', 'silver']).forEach((lane) => {
+            const want = desired.find((d) => d.lane === lane);
+            const existing = byLane[lane];
+            if (!want && existing) {
+              delete next[existing.key];
+            }
+          });
+
+          // If title changed, remove old tile and spawn a new one at center-ish.
+          desired.forEach((want) => {
+            const existing = byLane[want.lane];
+            if (existing && existing.tile.title !== want.title) {
+              delete next[existing.key];
+              delete byLane[want.lane];
+            }
+          });
+
+          // Ensure each desired lane exists.
+          desired.forEach((want) => {
+            const existing = Object.entries(next).find(([, t]) => t?.lane === want.lane && t?.title === want.title);
+            if (existing) return;
+
+            const spawnKey = findSpawnKey(next);
+            const type = want.lane === 'gold' ? 'blueprints' : 'garden';
+            next[spawnKey] = {
+              type,
+              lane: want.lane,
+              title: want.title,
+              dioramaUrl: TILE_LIBRARY[type].image,
+              isNew: true,
+            };
+          });
+
+          return next;
+        });
+      }, [TILE_LIBRARY, findSpawnKey, table?.gold?.title, table?.silver?.title]);
+
+      React.useEffect(() => {
+        reconcileTilesWithTable();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [table?.gold?.title, table?.silver?.title]);
 
       const pushAgent = React.useCallback(
         (text) => setMessages((prev) => [...prev, { role: 'agent', text }]),
         [],
       );
 
-      const onSelectHex = React.useCallback(
-        (id) => {
-          setSelectedHexId(id);
-          const match = hexes.find((h) => h.id === id);
-          const label = match ? `C${match.col + 1} R${match.row + 1}` : id;
-          pushAgent(`Selected ${label}. What are we building here?`);
+      const onSelectKey = React.useCallback(
+        (key) => {
+          setSelectedKey(key);
+          pushAgent(`Selected ${keyLabel(key)}. What are we building here?`);
         },
-        [hexes, pushAgent],
+        [keyLabel, pushAgent],
+      );
+
+      const onHexClick = React.useCallback(
+        (key, hasTile) => {
+          if (ignoreNextClickRef.current) {
+            ignoreNextClickRef.current = false;
+            return;
+          }
+
+          if (clickMove?.sourceKey) {
+            const sourceKey = clickMove.sourceKey;
+            if (sourceKey === key) {
+              setClickMove(null);
+              return;
+            }
+            swapTiles(sourceKey, key);
+            setSelectedKey(key);
+            setClickMove(null);
+            return;
+          }
+
+          if (hasTile) {
+            setSelectedKey(key);
+            setClickMove({ sourceKey: key });
+            setPlacedTiles((prev) => {
+              const tile = prev[key];
+              if (!tile || !tile.isNew) return prev;
+              return { ...prev, [key]: { ...tile, isNew: false } };
+            });
+            return;
+          }
+
+          onSelectKey(key);
+        },
+        [clickMove?.sourceKey, onSelectKey, swapTiles],
       );
 
       const onSend = React.useCallback(() => {
@@ -461,7 +802,7 @@ const ReactDOM = window.ReactDOM;
         setDraft('');
         setMessages((prev) => [...prev, { role: 'user', text }]);
 
-        if (!selectedHexId) {
+        if (!selectedKey) {
           pushAgent('Pick a hex first so we can anchor the plan to a territory.');
           return;
         }
@@ -469,7 +810,7 @@ const ReactDOM = window.ReactDOM;
         const tableTitles = [table?.gold?.title, table?.silver?.title, table?.bronze?.title].filter(Boolean);
         const tableLine = tableTitles.length ? `On your table right now: ${tableTitles.join(' · ')}.` : 'Your table is empty.';
         pushAgent(`Got it. ${tableLine} Want this new work to replace something, or stay off-table for now?`);
-      }, [draft, pushAgent, selectedHexId, table]);
+      }, [draft, pushAgent, selectedKey, table]);
 
       return (
         <div className="lifemap-wrap">
@@ -477,28 +818,114 @@ const ReactDOM = window.ReactDOM;
             <div className="lifemap-surface-grid">
               <div className="lifemap-board" aria-label="Life Map board">
                 <div className="lifemap-board-inner">
-                  <img
-                    className="lifemap-parchment"
-                    src="assets/lifemap/lifemap-parchment.png"
-                    alt="Life Map parchment"
-                    draggable={false}
-                  />
-                  <svg className="lifemap-hex-svg" viewBox="0 0 1024 905" role="presentation">
-                    {hexes.map((h) => (
-                      <polygon
-                        key={h.id}
-                        className="lifemap-hex"
-                        data-selected={selectedHexId === h.id ? 'true' : 'false'}
-                        points={hexPoints(h.cx, h.cy, h.r)}
-                        onClick={() => onSelectHex(h.id)}
-                      >
-                        <title>{`Tile C${h.col + 1} R${h.row + 1}`}</title>
-                      </polygon>
-                    ))}
+                  <svg
+                    ref={svgRef}
+                    className="lifemap-map-svg"
+                    viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+                    role="presentation"
+                    onWheel={handleWheel}
+                    onMouseDown={handleMouseDown}
+                  >
+                    <g transform={`translate(${camera.x}, ${camera.y})`}>
+                      <g transform={`scale(${camera.scale})`}>
+                        <image
+                          href="assets/lifemap/lifemap-parchment.png"
+                          x="0"
+                          y="0"
+                          width={VIEW_W}
+                          height={VIEW_H}
+                          preserveAspectRatio="none"
+                          pointerEvents="none"
+                        />
+
+                        {boardHexes.map((h) => {
+                          const tile = placedTiles[h.key];
+                          const isSelected = selectedKey === h.key;
+                          const isMovingSource = clickMove?.sourceKey === h.key;
+                          return (
+                            <g key={h.key} data-hex-tile={tile ? 'true' : undefined}>
+                              <polygon
+                                className="lifemap-hex"
+                                data-selected={isSelected ? 'true' : 'false'}
+                                data-moving={isMovingSource ? 'true' : 'false'}
+                                data-new={tile?.isNew ? 'true' : 'false'}
+                                data-lane={tile?.lane || ''}
+                                points={hexPoints(h.cx, h.cy, HEX_SIZE)}
+                                onClick={() => onHexClick(h.key, !!tile)}
+                                onMouseDown={tile ? startBoardDrag(h.key) : undefined}
+                              />
+                              {tile ? (
+                                <>
+                                  <clipPath id={`tile-mask-${h.q}-${h.r}`}>
+                                    <polygon points={hexPoints(h.cx, h.cy, HEX_SIZE * 0.92)} />
+                                  </clipPath>
+                                  <image
+                                    href={tile.dioramaUrl}
+                                    x={h.cx - HEX_SIZE}
+                                    y={h.cy - HEX_SIZE}
+                                    width={HEX_SIZE * 2}
+                                    height={HEX_SIZE * 2}
+                                    clipPath={`url(#tile-mask-${h.q}-${h.r})`}
+                                    preserveAspectRatio="xMidYMid slice"
+                                    pointerEvents="none"
+                                  />
+                                  <text
+                                    x={h.cx}
+                                    y={h.cy + HEX_SIZE * 0.78}
+                                    textAnchor="middle"
+                                    fill="#faf9f7"
+                                    fontSize={12}
+                                    style={{ textShadow: '0 2px 6px rgba(0,0,0,0.55)', fontWeight: 700 }}
+                                  >
+                                    {tile.title.length > 16 ? `${tile.title.slice(0, 15)}…` : tile.title}
+                                  </text>
+                                </>
+                              ) : null}
+                            </g>
+                          );
+                        })}
+
+                        {dragState?.tile ? (
+                          <g pointerEvents="none">
+                            {(() => {
+                              const world = dragState.pointerWorld;
+                              const def = TILE_LIBRARY[dragState.tile.type];
+                              return (
+                                <g opacity={0.92}>
+                                  <polygon
+                                    points={hexPoints(world.x, world.y, HEX_SIZE)}
+                                    fill="rgba(255,255,255,0.06)"
+                                    stroke={def.border}
+                                    strokeWidth={3}
+                                  />
+                                  <clipPath id="drag-mask">
+                                    <polygon points={hexPoints(world.x, world.y, HEX_SIZE * 0.92)} />
+                                  </clipPath>
+                                  <image
+                                    href={dragState.tile.dioramaUrl}
+                                    x={world.x - HEX_SIZE}
+                                    y={world.y - HEX_SIZE}
+                                    width={HEX_SIZE * 2}
+                                    height={HEX_SIZE * 2}
+                                    clipPath="url(#drag-mask)"
+                                    preserveAspectRatio="xMidYMid slice"
+                                    pointerEvents="none"
+                                  />
+                                </g>
+                              );
+                            })()}
+                          </g>
+                        ) : null}
+                      </g>
+                    </g>
                   </svg>
                   <div className="lifemap-board-hud">
-                    <div className="lifemap-hud-pill">{selectedLabel}</div>
-                    <div className="lifemap-hud-hint">Click a hex to select a territory.</div>
+                    <div className="lifemap-hud-pill">{keyLabel(selectedKey)}</div>
+                    <div className="lifemap-hud-hint">
+                      {clickMove?.sourceKey
+                        ? `Click destination to move · Esc to cancel (${keyLabel(clickMove.sourceKey)})`
+                        : 'Scroll to zoom · drag background to pan · click tile to move · drag tiles to move.'}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -537,7 +964,7 @@ const ReactDOM = window.ReactDOM;
                     className="lifemap-chat-field"
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
-                    placeholder={selectedHexId ? 'Message the agent…' : 'Select a hex first…'}
+                    placeholder={selectedKey ? 'Message the agent…' : 'Select a hex first…'}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') onSend();
                     }}
@@ -1802,119 +2229,6 @@ const ReactDOM = window.ReactDOM;
       );
     };
 
-    const ActivationMap = ({ state }) => (
-      <div className="card">
-        <div className="map-grid">
-          <div className="cat" style={{ borderColor: categories.finances.color }}>
-            <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
-            <div className="project pulse">
-              <div className="title">{state.table.gold.title}</div>
-              <div className="meta">Gold · On Table & in Finances</div>
-            </div>
-            <div className="project">
-              <div className="title">Automate Monthly Budget Review</div>
-              <div className="meta">Silver candidate</div>
-            </div>
-          </div>
-          <div className="cat" style={{ borderColor: categories.home.color }}>
-            <h3><span style={{ color: categories.home.color }}>●</span> Home</h3>
-            <div className="project">
-              <div className="title">Build Backyard Deck</div>
-              <div className="meta">In Gold queue · 50%</div>
-            </div>
-            <div className="project">
-              <div className="title">Plan Family Camping Trip</div>
-              <div className="meta">Live · 33%</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-
-    const ProjectBoard = ({ state }) => {
-      const moveTask = (from, to, task) => {
-        state.setTasks((prev) => {
-          const next = { ...prev, [from]: prev[from].filter(t => t !== task), [to]: [...prev[to], task] };
-          const doneCount = next.done.length + next.review.length + next.doing.length;
-          const progress = Math.min((doneCount / 12), 1);
-          state.setCamperProgress(progress);
-          return next;
-        });
-      };
-      const clickTask = (from) => (task) => {
-        if (from === 'todo') return moveTask('todo', 'doing', task);
-        if (from === 'doing') return moveTask('doing', 'review', task);
-        if (from === 'review') return moveTask('review', 'done', task);
-      };
-      const pct = Math.round(state.camperProgress * 100);
-      return (
-        <div className="card">
-          <div className="kanban">
-            {['todo','doing','review','done'].map((col) => (
-              <div key={col} className="col">
-                <h4>{col === 'todo' ? 'To-Do' : col === 'doing' ? 'Doing' : col === 'review' ? 'Review' : 'Done'}</h4>
-                {state.tasks[col].map((task) => (
-                  <div key={task} className="task" onClick={() => clickTask(col)(task)}>{task}</div>
-                ))}
-              </div>
-            ))}
-          </div>
-          <div className="progress-ring" style={{ '--pct': pct }} data-label={`${pct}%`}></div>
-          <div className="status">
-            <div className="dot"></div>
-            <div>{pct >= 40 ? 'Momentum established · Buyers incoming' : 'First tasks in motion · keep pushing'}</div>
-          </div>
-        </div>
-      );
-    };
-
-    const FinanceZoom = ({ state }) => (
-      <div className="card">
-        <div className="map-grid">
-          <div className="cat" style={{ borderColor: categories.finances.color }}>
-            <h3><span style={{ color: categories.finances.color }}>●</span> Finances</h3>
-            <div className="project">
-              <div className="title">Sell Camper Van</div>
-              <div className="meta">{Math.round(state.camperProgress * 100)}% · Stage: {state.camperProgress >= 1 ? 'Decoration' : state.camperProgress >= 0.4 ? 'Polish' : 'Color Emergence'}</div>
-              <div className="progress"><div className="bar" style={{ width: `${Math.round(state.camperProgress * 100)}%`, background: categories.finances.color }}></div></div>
-            </div>
-            <div className="project">
-              <div className="title">Automate Monthly Budget Review</div>
-              <div className="meta">Silver candidate</div>
-            </div>
-            <div className="project">
-              <div className="title">Mortgage Refinance</div>
-              <div className="meta">Queued</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-
-    const SortingReturn = ({ state }) => (
-      <div className="card">
-        <div className="map-grid">
-          <div className="project" style={{ borderColor: 'var(--gold)', boxShadow: '0 12px 26px rgba(216,166,80,0.2)' }}>
-            <div className="title">{state.table.gold.title === 'Sell Camper Van' ? 'Sell Camper Van' : 'Sell Camper Van'}</div>
-            <div className="meta">Complete · Decoration stage</div>
-          </div>
-          <div className="project">
-            <div className="title">Launch Consulting</div>
-            <div className="meta">Gold Candidate · Paused at 60%</div>
-            <div className="actions" style={{ marginTop: '0.5rem' }}>
-              <button className="btn" onClick={state.reactivateConsulting}>Reactivate Consulting</button>
-            </div>
-          </div>
-          <div className="project">
-            <div className="title">Gold Queue</div>
-            {state.goldQueue.map((item, idx) => (
-              <div key={item.title} className="meta">{idx + 1}. {item.title}</div>
-            ))}
-          </div>
-        </div>
-      </div>
-    );
-
     // ===== ROSTER ROOM MOCK DATA =====
     const MOCK_AGENTS = [
       {
@@ -2842,12 +3156,7 @@ const ReactDOM = window.ReactDOM;
         bronze: getBronzeTableSummary(initialBronzeQueue),
       });
       const [openQueue, setOpenQueue] = React.useState('gold');
-      const [status, setStatus] = React.useState('Consulting active. Camper ready to activate.');
-      const [tasks, setTasks] = React.useState(initialTasks);
-      const [camperProgress, setCamperProgress] = React.useState(0);
-
-      const camperActive = table.gold.title === 'Sell Camper Van';
-      const camperPct = Math.round(camperProgress * 100);
+      const [status, setStatus] = React.useState('Ready.');
 
       const toggleQueue = (lane) => setOpenQueue((prev) => (prev === lane ? null : lane));
 
@@ -2895,20 +3204,6 @@ const ReactDOM = window.ReactDOM;
       const activateGold = (title) => activateLane('gold', title);
       const activateSilver = (title) => activateLane('silver', title);
 
-      const swapGold = () => {
-        if (camperActive) return;
-        activateGold('Sell Camper Van');
-        setStatus('Camper active. Consulting preserved in Gold queue.');
-      };
-
-      const fastForward = () => {
-        setTasks({ todo: [], doing: [], review: [], done: ['All tasks'] });
-        setCamperProgress(1);
-        if (table.gold.title === 'Sell Camper Van') {
-          setTable((prev) => ({ ...prev, gold: { ...prev.gold, progress: 1, meta: 'Finances · Gold · Complete' } }));
-        }
-      };
-
       const releaseBronze = (index) => {
         setBronzeQueue((prev) => {
           const tableCount = Math.min(BRONZE_TABLE_LIMIT, prev.length);
@@ -2938,105 +3233,6 @@ const ReactDOM = window.ReactDOM;
         setTable((prevTable) => ({ ...prevTable, bronze: getBronzeTableSummary(bronzeQueue) }));
       }, [bronzeQueue]);
 
-      const reactivateConsulting = () => {
-        const currentActive = table.gold;
-        setGoldQueue((prev) => {
-          const filtered = prev.filter((card) => card.title !== goldTableSeed.title && card.title !== currentActive.title);
-          if (currentActive.title === goldTableSeed.title) return filtered;
-          return [currentActive, ...filtered];
-        });
-        setTable((prevTable) => ({ ...prevTable, gold: { ...goldTableSeed } }));
-        setStatus('Consulting back on Table. Camper preserved in Gold queue.');
-      };
-
-      const chapterStories = [
-        {
-          label: 'Chapter 1',
-          title: 'Life Map · Jess at pace',
-          lines: [
-            { text: '“Jess scans his Life Map—Gold consulting up front, deck work simmering, a stack of Bronze chores behaving for once.”', tone: 'em' },
-            { text: '“Then his wife says: list the camper this week or I’m doing it myself.”', tone: 'em' },
-            { text: 'He remembers crafting this project two weeks ago in the Drafting Room.' },
-          ],
-          prompts: [
-            { label: 'Head to the Drafting Room', onClick: () => setChapter(1) },
-          ],
-        },
-        {
-          label: 'Chapter 2',
-          title: 'Drafting Room · Crisis surfaces',
-          lines: [
-            { text: 'Gold queue, crisis on top.' },
-            { text: 'Jess planned “Sell Camper Van” two weeks ago (Stage 4). Wife’s ultimatum makes it urgent.' },
-          ],
-          prompts: [
-            { label: 'Open Sorting Room', onClick: () => setChapter(2) },
-            { label: 'Back to Life Map', onClick: () => setChapter(0), variant: 'secondary' },
-          ],
-        },
-        {
-          label: 'Chapter 3',
-          title: 'Sorting Room · Hard choice',
-          lines: [
-            { text: 'Three lanes mirror the Table below—Gold and Silver show their live slot, Bronze tracks ten tabled cards.' },
-            { text: 'Jess must pause consulting and activate the camper sale. Progress will be preserved.' },
-          ],
-          prompts: [
-            { label: camperActive ? 'Camper activated' : 'Activate Camper as Gold', onClick: camperActive ? null : () => swapGold(), disabled: camperActive },
-            { label: 'Show updated Life Map', onClick: () => setChapter(0), disabled: !camperActive },
-            { label: 'Back to Drafting Room', onClick: () => setChapter(1), variant: 'secondary' },
-          ],
-        },
-        {
-          label: 'Chapter 4',
-          title: 'Life Map · Activation lands',
-          lines: [
-            { text: 'Table updated · Consulting preserved.' },
-            { text: 'Camper is now Gold. Consulting sits paused inside Finances. Finance shows dual presence.' },
-          ],
-          prompts: [
-            { label: 'Open Project Board', onClick: () => setChapter(4) },
-            { label: 'Back to Sorting Room', onClick: () => setChapter(2), variant: 'secondary' },
-          ],
-        },
-        {
-          label: 'Chapter 5',
-          title: 'Project Board · Execute',
-          lines: [
-            { text: 'Sell Camper Van · Work at Hand.' },
-            { text: 'Move the first tasks. Progress fills; Bronze keeps pace in background.' },
-          ],
-          prompts: [
-            { label: 'Fast forward 2 weeks', onClick: () => { fastForward(); setChapter(5); } },
-            { label: 'Back to Life Map', onClick: () => setChapter(3), variant: 'secondary' },
-          ],
-        },
-        {
-          label: 'Chapter 6',
-          title: 'Finances · Progress check',
-          lines: [
-            { text: `Camper sale at ${camperPct}%. Budget automation queued. Mortgage refinance waiting.` },
-          ],
-          prompts: [
-            { label: 'Resume in Sorting Room', onClick: () => setChapter(6) },
-            { label: 'Back to Project Board', onClick: () => setChapter(4), variant: 'secondary' },
-          ],
-        },
-        {
-          label: 'Chapter 7',
-          title: 'Sorting Room · Resume rhythm',
-          lines: [
-            { text: 'Decoration stage achieved; consulting is still waiting at the top. Reactivate with one click.' },
-          ],
-          prompts: [
-            { label: 'Reactivate Consulting', onClick: () => reactivateConsulting() },
-            { label: 'Back to Finances', onClick: () => setChapter(5), variant: 'secondary' },
-          ],
-        },
-      ];
-
-      const currentStory = chapterStories[chapter] || chapterStories[0];
-
       const screen = () => {
         if (chapter === 0) return <LifeMap table={table} />;
         if (chapter === 1) return <DraftingRoom />;
@@ -3062,46 +3258,18 @@ const ReactDOM = window.ReactDOM;
             />
           );
         }
-        if (chapter === 3) return <ActivationMap state={{ table, goldQueue }} />;
-        if (chapter === 4) return <ProjectBoard state={{ tasks, setTasks, camperProgress, setCamperProgress }} />;
-        if (chapter === 5) return <FinanceZoom state={{ camperProgress }} />;
         if (chapter === 7) return <RosterRoom />;
-        return <SortingReturn state={{ reactivateConsulting, goldQueue, table }} />;
+        return <LifeMap table={table} />;
       };
 
       return (
         <>
-          <div className="story-overlay">
-            <div className="story-bubble">
-              <div className="chapter-tag">{currentStory.label}</div>
-              <h2>{currentStory.title}</h2>
-              <div className="story-text">
-                {currentStory.lines.map((line, idx) => (
-                  <p key={idx}>{line.tone === 'em' ? <em>{line.text}</em> : line.text}</p>
-                ))}
-              </div>
-              {currentStory.prompts?.length ? (
-                <div className="story-prompts">
-                  {currentStory.prompts.map((prompt) => (
-                    <button
-                      key={prompt.label}
-                      className={`story-cta${prompt.variant === 'secondary' ? ' secondary' : ''}`}
-                      onClick={prompt.onClick}
-                      disabled={prompt.disabled}
-                    >
-                      {prompt.label}
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-          </div>
           <div className="nav">
             <div className="nav-links">
               <a className={chapter===1 ? 'active' : ''} onClick={() => setChapter(1)}>Drafting Room</a>
-              <a className={chapter===2 || chapter===6 ? 'active' : ''} onClick={() => setChapter(2)}>Sorting Room</a>
+              <a className={chapter===2 ? 'active' : ''} onClick={() => setChapter(2)}>Sorting Room</a>
               <a className={chapter===7 ? 'active' : ''} onClick={() => setChapter(7)}>Roster Room</a>
-              <a className={chapter===0 || chapter===3 ? 'active' : ''} onClick={() => setChapter(0)}>Life Map</a>
+              <a className={chapter===0 ? 'active' : ''} onClick={() => setChapter(0)}>Life Map</a>
             </div>
             <div className="pill">Jess · Director</div>
           </div>

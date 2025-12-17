@@ -6,6 +6,17 @@ title: Current Apps
 
 Fresh, in-flight experiences we share publicly.
 
+## The Integrated Life Map Tour
+
+An interactive Life Map with pan/zoom, draggable hex tiles, and an agent chat panel—integrated into the immersive tour shell.
+
+<div style="background: linear-gradient(135deg, #f5f3f0 0%, #e8e4de 100%); padding: 2rem; border-radius: 0.75rem; margin: 2rem 0; border-left: 3px solid #a67c52;">
+  <a href="/static/apps/integrated-lifemap-tour.html" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #2f2b27; color: #faf9f7; padding: 0.875rem 2rem; border: none; border-radius: 0.5rem; font-weight: 500; text-decoration: none; transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 1px 3px rgba(47, 43, 39, 0.2);">
+    → Explore the Integrated Life Map Tour
+  </a>
+  <p style="margin-top: 1rem; color: #635c52; font-style: italic; font-size: 0.9375rem;">Scroll to zoom, drag to pan, drag tiles to move—then plan the territory with an agent on the right.</p>
+</div>
+
 ## The Life Map Tile Game
 
 Fan out hex tiles from a random queue, drop them next to existing projects, and label the strategic ones so you can sketch a kingdom in minutes.
@@ -15,17 +26,6 @@ Fan out hex tiles from a random queue, drop them next to existing projects, and 
     → Play the Hex Tile Game
   </a>
   <p style="margin-top: 1rem; color: #635c52; font-style: italic; font-size: 0.9375rem;">Pick a tile, hover over glowing spots, name key projects, and try to weave paths, streams, and gardens around your core Vision hub.</p>
-</div>
-
-## The Integrated Life Map Tour
-
-An interactive Life Map with hex tiles and an agent chat panel, integrated into the immersive tour flow.
-
-<div style="background: linear-gradient(135deg, #f5f3f0 0%, #e8e4de 100%); padding: 2rem; border-radius: 0.75rem; margin: 2rem 0; border-left: 3px solid #a67c52;">
-  <a href="/static/apps/integrated-lifemap-tour.html" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #2f2b27; color: #faf9f7; padding: 0.875rem 2rem; border: none; border-radius: 0.5rem; font-weight: 500; text-decoration: none; transition: all 400ms cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 1px 3px rgba(47, 43, 39, 0.2);">
-    → Explore the Integrated Life Map Tour
-  </a>
-  <p style="margin-top: 1rem; color: #635c52; font-style: italic; font-size: 0.9375rem;">Click a hex territory, then plan with an agent—while the table bar stays persistent below.</p>
 </div>
 
 ## The Three Altitude Life Map
