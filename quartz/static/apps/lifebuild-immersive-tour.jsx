@@ -459,7 +459,6 @@ const ReactDOM = window.ReactDOM;
       }, []);
 
       const [camera, setCamera] = React.useState(() => ({ x: 0, y: 0, scale: 1 }));
-      const panRef = React.useRef({ active: false, last: { x: 0, y: 0 } });
       const [dragState, setDragState] = React.useState(null);
       const [clickMove, setClickMove] = React.useState(null); // { sourceKey }
       const ignoreNextClickRef = React.useRef(false);
@@ -516,8 +515,8 @@ const ReactDOM = window.ReactDOM;
         (clientX, clientY) => {
           const pt = svgPointFromClient(clientX, clientY);
           return {
-            x: (pt.x - camera.x) / camera.scale,
-            y: (pt.y - camera.y) / camera.scale,
+            x: pt.x / camera.scale,
+            y: pt.y / camera.scale,
           };
         },
         [camera, svgPointFromClient],
@@ -567,18 +566,13 @@ const ReactDOM = window.ReactDOM;
           e.preventDefault();
           const delta = e.deltaY;
           const zoomFactor = delta < 0 ? 1.1 : 0.9;
-          const svgPt = svgPointFromClient(e.clientX, e.clientY);
-          const world = worldPointFromClient(e.clientX, e.clientY);
           setCamera((prev) => {
             const nextScale = Math.min(2.5, Math.max(0.55, prev.scale * zoomFactor));
-            return {
-              scale: nextScale,
-              x: svgPt.x - world.x * nextScale,
-              y: svgPt.y - world.y * nextScale,
-            };
+            // Keep the map fixed in place: scale only (no panning/translation).
+            return { x: 0, y: 0, scale: nextScale };
           });
         },
-        [svgPointFromClient, worldPointFromClient],
+        [],
       );
 
       const handleMouseDown = React.useCallback(
@@ -587,24 +581,12 @@ const ReactDOM = window.ReactDOM;
           const isTile = e.target.closest?.('[data-hex-tile]');
           if (isTile) return;
           setClickMove(null);
-          panRef.current = { active: true, last: { x: e.clientX, y: e.clientY } };
         },
         [dragState],
       );
 
       React.useEffect(() => {
         const handleMove = (e) => {
-          if (panRef.current.active) {
-            const svg = svgRef.current;
-            if (svg) {
-              const rect = svg.getBoundingClientRect();
-              const dx = ((e.clientX - panRef.current.last.x) / rect.width) * VIEW_W;
-              const dy = ((e.clientY - panRef.current.last.y) / rect.height) * VIEW_H;
-              panRef.current.last = { x: e.clientX, y: e.clientY };
-              setCamera((prev) => ({ ...prev, x: prev.x + dx, y: prev.y + dy }));
-            }
-          }
-
           if (dragState) {
             const world = worldPointFromClient(e.clientX, e.clientY);
             setDragState((prev) => (prev ? { ...prev, pointerWorld: world } : prev));
@@ -612,7 +594,6 @@ const ReactDOM = window.ReactDOM;
         };
 
         const handleUp = (e) => {
-          if (panRef.current.active) panRef.current.active = false;
           if (!dragState) return;
           const world = worldPointFromClient(e.clientX, e.clientY);
           const targetKey = computeKeyFromWorld(world);
@@ -636,7 +617,7 @@ const ReactDOM = window.ReactDOM;
           window.removeEventListener('mouseup', handleUp);
           window.removeEventListener('keydown', handleKey);
         };
-      }, [VIEW_H, VIEW_W, computeKeyFromWorld, dragState, swapTiles, worldPointFromClient]);
+      }, [computeKeyFromWorld, dragState, swapTiles, worldPointFromClient]);
 
       const startBoardDrag = React.useCallback(
         (key) => (e) => {
@@ -826,8 +807,7 @@ const ReactDOM = window.ReactDOM;
                     onWheel={handleWheel}
                     onMouseDown={handleMouseDown}
                   >
-                    <g transform={`translate(${camera.x}, ${camera.y})`}>
-                      <g transform={`scale(${camera.scale})`}>
+                    <g transform={`scale(${camera.scale})`}>
                         <image
                           href="assets/lifemap/lifemap-parchment.png"
                           x="0"
@@ -916,7 +896,6 @@ const ReactDOM = window.ReactDOM;
                             })()}
                           </g>
                         ) : null}
-                      </g>
                     </g>
                   </svg>
                   <div className="lifemap-board-hud">

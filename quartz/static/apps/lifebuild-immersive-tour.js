@@ -390,7 +390,6 @@
       return `Tile \xB7 Q${q} R${r}`;
     }, []);
     const [camera, setCamera] = React.useState(() => ({ x: 0, y: 0, scale: 1 }));
-    const panRef = React.useRef({ active: false, last: { x: 0, y: 0 } });
     const [dragState, setDragState] = React.useState(null);
     const [clickMove, setClickMove] = React.useState(null);
     const ignoreNextClickRef = React.useRef(false);
@@ -441,8 +440,8 @@
       (clientX, clientY) => {
         const pt = svgPointFromClient(clientX, clientY);
         return {
-          x: (pt.x - camera.x) / camera.scale,
-          y: (pt.y - camera.y) / camera.scale
+          x: pt.x / camera.scale,
+          y: pt.y / camera.scale
         };
       },
       [camera, svgPointFromClient]
@@ -488,18 +487,12 @@
         e.preventDefault();
         const delta = e.deltaY;
         const zoomFactor = delta < 0 ? 1.1 : 0.9;
-        const svgPt = svgPointFromClient(e.clientX, e.clientY);
-        const world = worldPointFromClient(e.clientX, e.clientY);
         setCamera((prev) => {
           const nextScale = Math.min(2.5, Math.max(0.55, prev.scale * zoomFactor));
-          return {
-            scale: nextScale,
-            x: svgPt.x - world.x * nextScale,
-            y: svgPt.y - world.y * nextScale
-          };
+          return { x: 0, y: 0, scale: nextScale };
         });
       },
-      [svgPointFromClient, worldPointFromClient]
+      []
     );
     const handleMouseDown = React.useCallback(
       (e) => {
@@ -508,29 +501,17 @@
         const isTile = (_b2 = (_a2 = e.target).closest) == null ? void 0 : _b2.call(_a2, "[data-hex-tile]");
         if (isTile) return;
         setClickMove(null);
-        panRef.current = { active: true, last: { x: e.clientX, y: e.clientY } };
       },
       [dragState]
     );
     React.useEffect(() => {
       const handleMove = (e) => {
-        if (panRef.current.active) {
-          const svg = svgRef.current;
-          if (svg) {
-            const rect = svg.getBoundingClientRect();
-            const dx = (e.clientX - panRef.current.last.x) / rect.width * VIEW_W;
-            const dy = (e.clientY - panRef.current.last.y) / rect.height * VIEW_H;
-            panRef.current.last = { x: e.clientX, y: e.clientY };
-            setCamera((prev) => __spreadProps(__spreadValues({}, prev), { x: prev.x + dx, y: prev.y + dy }));
-          }
-        }
         if (dragState) {
           const world = worldPointFromClient(e.clientX, e.clientY);
           setDragState((prev) => prev ? __spreadProps(__spreadValues({}, prev), { pointerWorld: world }) : prev);
         }
       };
       const handleUp = (e) => {
-        if (panRef.current.active) panRef.current.active = false;
         if (!dragState) return;
         const world = worldPointFromClient(e.clientX, e.clientY);
         const targetKey = computeKeyFromWorld(world);
@@ -552,7 +533,7 @@
         window.removeEventListener("mouseup", handleUp);
         window.removeEventListener("keydown", handleKey);
       };
-    }, [VIEW_H, VIEW_W, computeKeyFromWorld, dragState, swapTiles, worldPointFromClient]);
+    }, [computeKeyFromWorld, dragState, swapTiles, worldPointFromClient]);
     const startBoardDrag = React.useCallback(
       (key) => (e) => {
         if (e.button !== 0) return;
@@ -711,7 +692,7 @@
         onWheel: handleWheel,
         onMouseDown: handleMouseDown
       },
-      /* @__PURE__ */ React.createElement("g", { transform: `translate(${camera.x}, ${camera.y})` }, /* @__PURE__ */ React.createElement("g", { transform: `scale(${camera.scale})` }, /* @__PURE__ */ React.createElement(
+      /* @__PURE__ */ React.createElement("g", { transform: `scale(${camera.scale})` }, /* @__PURE__ */ React.createElement(
         "image",
         {
           href: "assets/lifemap/lifemap-parchment.png",
@@ -786,7 +767,7 @@
             pointerEvents: "none"
           }
         ));
-      })()) : null))
+      })()) : null)
     ), /* @__PURE__ */ React.createElement("div", { className: "lifemap-board-hud" }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-hud-pill" }, keyLabel(selectedKey)), /* @__PURE__ */ React.createElement("div", { className: "lifemap-hud-hint" }, (clickMove == null ? void 0 : clickMove.sourceKey) ? `Click destination to move \xB7 Esc to cancel (${keyLabel(clickMove.sourceKey)})` : "Scroll to zoom \xB7 drag background to pan \xB7 click tile to move \xB7 drag tiles to move.")))), /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat", "aria-label": "Agent chat" }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-paper" }, /* @__PURE__ */ React.createElement("div", { className: "mesa-alley", "aria-hidden": "true" }, /* @__PURE__ */ React.createElement("img", { className: "mesa-figure", src: "assets/lifemap/mesa-cutout.webp", alt: "", draggable: false })), /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-col" }, /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-head" }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-title" }, "MESA"), /* @__PURE__ */ React.createElement("div", { className: "lifemap-chat-sub" }, "Ink on paper. Let\u2019s map your life.")), /* @__PURE__ */ React.createElement(
       "button",
       {

@@ -28,17 +28,32 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', system-ui, sans-serif;
-      background:
-        radial-gradient(circle at 16% 18%, rgba(255, 255, 255, 0.18), transparent 42%),
-        radial-gradient(circle at 78% 24%, rgba(0, 0, 0, 0.10), transparent 55%),
-        linear-gradient(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.08)),
-        url("assets/lifemap/table-wood.webp");
-      background-size: cover;
-      background-position: center;
+      background: #0f0d0b;
       color: var(--ink);
       line-height: 1.6;
       min-height: 100vh;
       padding-bottom: 140px; /* room for table bar */
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: url("assets/lifemap/table-wood.webp") center / cover no-repeat;
+      transform: scale(1.02);
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 16% 18%, rgba(255, 255, 255, 0.14), transparent 42%),
+        radial-gradient(circle at 78% 24%, rgba(0, 0, 0, 0.20), transparent 55%),
+        linear-gradient(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.08));
+      mix-blend-mode: multiply;
+      opacity: 0.9;
     }
     .nav {
       position: sticky;
@@ -46,12 +61,9 @@
       z-index: 8;
       backdrop-filter: blur(8px);
       background:
-        linear-gradient(rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08)),
-        radial-gradient(circle at 22% 28%, rgba(255, 255, 255, 0.14), transparent 50%),
-        radial-gradient(circle at 78% 20%, rgba(0, 0, 0, 0.18), transparent 58%),
-        url("assets/lifemap/table-wood.webp");
-      background-size: cover;
-      background-position: center;
+        linear-gradient(rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.06)),
+        radial-gradient(circle at 22% 28%, rgba(255, 255, 255, 0.12), transparent 50%),
+        radial-gradient(circle at 78% 20%, rgba(0, 0, 0, 0.14), transparent 58%);
       border-bottom: 1px solid rgba(47, 43, 39, 0.10);
       padding: 0.9rem 1.5rem;
       display: flex;
@@ -605,10 +617,7 @@
       bottom: 0;
       background:
         linear-gradient(rgba(0, 0, 0, 0.10), rgba(0, 0, 0, 0.06)),
-        radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.10), transparent 58%),
-        url("assets/lifemap/table-wood.webp");
-      background-size: cover;
-      background-position: center;
+        radial-gradient(circle at 30% 10%, rgba(255, 255, 255, 0.08), transparent 58%);
       border-top: 1px solid rgba(0, 0, 0, 0.18);
       box-shadow:
         0 -18px 32px rgba(0, 0, 0, 0.20),
