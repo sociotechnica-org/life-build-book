@@ -461,6 +461,8 @@ const ReactDOM = window.ReactDOM;
       const [camera, setCamera] = React.useState(() => ({ x: 0, y: 0, scale: 1 }));
       const panRef = React.useRef({ active: false, last: { x: 0, y: 0 } });
       const [dragState, setDragState] = React.useState(null);
+      const [clickMove, setClickMove] = React.useState(null); // { sourceKey }
+      const ignoreNextClickRef = React.useRef(false);
 
       const [placedTiles, setPlacedTiles] = React.useState(() => ({
         '0,0': {
@@ -561,6 +563,7 @@ const ReactDOM = window.ReactDOM;
           if (dragState || e.button !== 0) return;
           const isTile = e.target.closest?.('[data-hex-tile]');
           if (isTile) return;
+          setClickMove(null);
           panRef.current = { active: true, last: { x: e.clientX, y: e.clientY } };
         },
         [dragState],
@@ -595,13 +598,20 @@ const ReactDOM = window.ReactDOM;
             setSelectedKey(targetKey);
           }
           setDragState(null);
+          ignoreNextClickRef.current = true;
+        };
+
+        const handleKey = (e) => {
+          if (e.key === 'Escape') setClickMove(null);
         };
 
         window.addEventListener('mousemove', handleMove);
         window.addEventListener('mouseup', handleUp);
+        window.addEventListener('keydown', handleKey);
         return () => {
           window.removeEventListener('mousemove', handleMove);
           window.removeEventListener('mouseup', handleUp);
+          window.removeEventListener('keydown', handleKey);
         };
       }, [VIEW_H, VIEW_W, computeKeyFromWorld, dragState, swapTiles, worldPointFromClient]);
 
@@ -610,6 +620,7 @@ const ReactDOM = window.ReactDOM;
           if (e.button !== 0) return;
           e.stopPropagation();
           e.preventDefault();
+          setClickMove(null);
           const worldPoint = worldPointFromClient(e.clientX, e.clientY);
           setDragState({
             source: 'board',
@@ -647,6 +658,36 @@ const ReactDOM = window.ReactDOM;
           pushAgent(`Selected ${keyLabel(key)}. What are we building here?`);
         },
         [keyLabel, pushAgent],
+      );
+
+      const onHexClick = React.useCallback(
+        (key, hasTile) => {
+          if (ignoreNextClickRef.current) {
+            ignoreNextClickRef.current = false;
+            return;
+          }
+
+          if (clickMove?.sourceKey) {
+            const sourceKey = clickMove.sourceKey;
+            if (sourceKey === key) {
+              setClickMove(null);
+              return;
+            }
+            swapTiles(sourceKey, key);
+            setSelectedKey(key);
+            setClickMove(null);
+            return;
+          }
+
+          if (hasTile) {
+            setSelectedKey(key);
+            setClickMove({ sourceKey: key });
+            return;
+          }
+
+          onSelectKey(key);
+        },
+        [clickMove?.sourceKey, onSelectKey, swapTiles],
       );
 
       const onSend = React.useCallback(() => {
@@ -694,13 +735,15 @@ const ReactDOM = window.ReactDOM;
                           const tile = placedTiles[h.key];
                           const tileDef = tile ? TILE_LIBRARY[tile.type] : null;
                           const isSelected = selectedKey === h.key;
+                          const isMovingSource = clickMove?.sourceKey === h.key;
                           return (
                             <g key={h.key} data-hex-tile={tile ? 'true' : undefined}>
                               <polygon
                                 className="lifemap-hex"
                                 data-selected={isSelected ? 'true' : 'false'}
+                                data-moving={isMovingSource ? 'true' : 'false'}
                                 points={hexPoints(h.cx, h.cy, HEX_SIZE)}
-                                onClick={() => onSelectKey(h.key)}
+                                onClick={() => onHexClick(h.key, !!tile)}
                                 onMouseDown={tile ? startBoardDrag(h.key) : undefined}
                                 style={{
                                   fill: tileDef ? tileDef.glow : undefined,
@@ -762,7 +805,11 @@ const ReactDOM = window.ReactDOM;
                   </svg>
                   <div className="lifemap-board-hud">
                     <div className="lifemap-hud-pill">{keyLabel(selectedKey)}</div>
-                    <div className="lifemap-hud-hint">Scroll to zoom · drag background to pan · drag tiles to move.</div>
+                    <div className="lifemap-hud-hint">
+                      {clickMove?.sourceKey
+                        ? `Click destination to move · Esc to cancel (${keyLabel(clickMove.sourceKey)})`
+                        : 'Scroll to zoom · drag background to pan · click tile to move · drag tiles to move.'}
+                    </div>
                   </div>
                 </div>
               </div>
