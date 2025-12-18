@@ -32,7 +32,7 @@
       color: var(--ink);
       line-height: 1.6;
       min-height: 100vh;
-      padding-bottom: 140px; /* room for table bar */
+      padding-bottom: 0;
     }
     body::before {
       content: '';
@@ -178,11 +178,10 @@
     .lifemap-board-inner {
       position: relative;
       width: 100%;
-      height: auto;
+      height: 100%;
       min-height: 560px;
       border-radius: 1.1rem;
       background: transparent;
-      aspect-ratio: 1024 / 905;
     }
     .lifemap-board-inner::before {
       content: '';
@@ -276,6 +275,7 @@
       grid-template-rows: auto 1fr auto;
       overflow: hidden;
       min-height: 560px;
+      height: 100%;
     }
     .lifemap-paper {
       height: 100%;
@@ -582,10 +582,7 @@
     }
     .project .bar { height: 100%; border-radius: 999px; }
     .table-bar {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      position: relative;
       background: transparent;
       border-top: 1px solid rgba(0, 0, 0, 0.18);
       box-shadow:
@@ -593,6 +590,7 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.14);
       padding: 0.9rem 1.5rem;
       z-index: 9;
+      margin-top: 1rem;
     }
     .table-grid {
       display: grid;
