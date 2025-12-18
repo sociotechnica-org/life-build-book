@@ -376,6 +376,17 @@ const ReactDOM = window.ReactDOM;
       const VIEW_H = 905;
       const HEX_SIZE = 70;
       const MAP_ORIGIN = React.useMemo(() => ({ x: VIEW_W / 2, y: VIEW_H / 2 }), []);
+      const BASE_SCALE = 1.35;
+      const BASE_C = React.useMemo(() => ({ x: VIEW_W / 2, y: VIEW_H / 2 }), []);
+      const MAP_CLIP = React.useMemo(
+        () => ({
+          x: 95,
+          y: 85,
+          w: VIEW_W - 190,
+          h: VIEW_H - 170,
+        }),
+        [VIEW_H, VIEW_W],
+      );
 
       const [selectedKey, setSelectedKey] = React.useState(null);
       const [messages, setMessages] = React.useState(() => [
@@ -458,8 +469,7 @@ const ReactDOM = window.ReactDOM;
         return `Tile · Q${q} R${r}`;
       }, []);
 
-      const [camera, setCamera] = React.useState(() => ({ x: 0, y: 0, scale: 1 }));
-      const panRef = React.useRef({ active: false, last: { x: 0, y: 0 } });
+      const cameraScale = 1;
       const [dragState, setDragState] = React.useState(null);
       const [clickMove, setClickMove] = React.useState(null); // { sourceKey }
       const ignoreNextClickRef = React.useRef(false);
@@ -515,12 +525,15 @@ const ReactDOM = window.ReactDOM;
       const worldPointFromClient = React.useCallback(
         (clientX, clientY) => {
           const pt = svgPointFromClient(clientX, clientY);
+          // Invert camera zoom first...
+          const zoomed = { x: pt.x / cameraScale, y: pt.y / cameraScale };
+          // ...then invert the base scale around center so interaction math stays stable.
           return {
-            x: (pt.x - camera.x) / camera.scale,
-            y: (pt.y - camera.y) / camera.scale,
+            x: BASE_C.x + (zoomed.x - BASE_C.x) / BASE_SCALE,
+            y: BASE_C.y + (zoomed.y - BASE_C.y) / BASE_SCALE,
           };
         },
-        [camera, svgPointFromClient],
+        [BASE_C.x, BASE_C.y, BASE_SCALE, cameraScale, svgPointFromClient],
       );
 
       const hexPoints = React.useCallback((cx, cy, r) => {
@@ -562,49 +575,18 @@ const ReactDOM = window.ReactDOM;
         });
       }, []);
 
-      const handleWheel = React.useCallback(
-        (e) => {
-          e.preventDefault();
-          const delta = e.deltaY;
-          const zoomFactor = delta < 0 ? 1.1 : 0.9;
-          const svgPt = svgPointFromClient(e.clientX, e.clientY);
-          const world = worldPointFromClient(e.clientX, e.clientY);
-          setCamera((prev) => {
-            const nextScale = Math.min(2.5, Math.max(0.55, prev.scale * zoomFactor));
-            return {
-              scale: nextScale,
-              x: svgPt.x - world.x * nextScale,
-              y: svgPt.y - world.y * nextScale,
-            };
-          });
-        },
-        [svgPointFromClient, worldPointFromClient],
-      );
-
       const handleMouseDown = React.useCallback(
         (e) => {
           if (dragState || e.button !== 0) return;
           const isTile = e.target.closest?.('[data-hex-tile]');
           if (isTile) return;
           setClickMove(null);
-          panRef.current = { active: true, last: { x: e.clientX, y: e.clientY } };
         },
         [dragState],
       );
 
       React.useEffect(() => {
         const handleMove = (e) => {
-          if (panRef.current.active) {
-            const svg = svgRef.current;
-            if (svg) {
-              const rect = svg.getBoundingClientRect();
-              const dx = ((e.clientX - panRef.current.last.x) / rect.width) * VIEW_W;
-              const dy = ((e.clientY - panRef.current.last.y) / rect.height) * VIEW_H;
-              panRef.current.last = { x: e.clientX, y: e.clientY };
-              setCamera((prev) => ({ ...prev, x: prev.x + dx, y: prev.y + dy }));
-            }
-          }
-
           if (dragState) {
             const world = worldPointFromClient(e.clientX, e.clientY);
             setDragState((prev) => (prev ? { ...prev, pointerWorld: world } : prev));
@@ -612,7 +594,6 @@ const ReactDOM = window.ReactDOM;
         };
 
         const handleUp = (e) => {
-          if (panRef.current.active) panRef.current.active = false;
           if (!dragState) return;
           const world = worldPointFromClient(e.clientX, e.clientY);
           const targetKey = computeKeyFromWorld(world);
@@ -636,7 +617,7 @@ const ReactDOM = window.ReactDOM;
           window.removeEventListener('mouseup', handleUp);
           window.removeEventListener('keydown', handleKey);
         };
-      }, [VIEW_H, VIEW_W, computeKeyFromWorld, dragState, swapTiles, worldPointFromClient]);
+      }, [computeKeyFromWorld, dragState, swapTiles, worldPointFromClient]);
 
       const startBoardDrag = React.useCallback(
         (key) => (e) => {
@@ -662,13 +643,17 @@ const ReactDOM = window.ReactDOM;
             const p = hexToPixel(q, r, HEX_SIZE);
             const cx = MAP_ORIGIN.x + p.x;
             const cy = MAP_ORIGIN.y + p.y;
-            if (cx < 120 || cx > VIEW_W - 120) continue;
-            if (cy < 120 || cy > VIEW_H - 120) continue;
+            const xMin = MAP_CLIP.x + HEX_SIZE * 0.85;
+            const xMax = MAP_CLIP.x + MAP_CLIP.w - HEX_SIZE * 0.85;
+            const yMin = MAP_CLIP.y + HEX_SIZE * 0.85;
+            const yMax = MAP_CLIP.y + MAP_CLIP.h - HEX_SIZE * 0.85;
+            if (cx < xMin || cx > xMax) continue;
+            if (cy < yMin || cy > yMax) continue;
             items.push({ q, r, cx, cy, key: `${q},${r}` });
           }
         }
         return items;
-      }, [HEX_SIZE, MAP_ORIGIN.x, MAP_ORIGIN.y, VIEW_H, VIEW_W, hexToPixel]);
+      }, [HEX_SIZE, MAP_CLIP.h, MAP_CLIP.w, MAP_CLIP.x, MAP_CLIP.y, MAP_ORIGIN.x, MAP_ORIGIN.y, hexToPixel]);
 
       const allowedKeys = React.useMemo(() => new Set(boardHexes.map((h) => h.key)), [boardHexes]);
 
@@ -823,11 +808,17 @@ const ReactDOM = window.ReactDOM;
                     className="lifemap-map-svg"
                     viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
                     role="presentation"
-                    onWheel={handleWheel}
                     onMouseDown={handleMouseDown}
                   >
-                    <g transform={`translate(${camera.x}, ${camera.y})`}>
-                      <g transform={`scale(${camera.scale})`}>
+                    <defs>
+                      <clipPath id="lifemapParchmentClip">
+                        <rect x={MAP_CLIP.x} y={MAP_CLIP.y} width={MAP_CLIP.w} height={MAP_CLIP.h} />
+                      </clipPath>
+                    </defs>
+                    <g transform={`scale(${cameraScale})`}>
+                      <g
+                        transform={`translate(${BASE_C.x}, ${BASE_C.y}) scale(${BASE_SCALE}) translate(${-BASE_C.x}, ${-BASE_C.y})`}
+                      >
                         <image
                           href="assets/lifemap/lifemap-parchment.png"
                           x="0"
@@ -838,140 +829,141 @@ const ReactDOM = window.ReactDOM;
                           pointerEvents="none"
                         />
 
-                        {boardHexes.map((h) => {
-                          const tile = placedTiles[h.key];
-                          const isSelected = selectedKey === h.key;
-                          const isMovingSource = clickMove?.sourceKey === h.key;
-                          return (
-                            <g key={h.key} data-hex-tile={tile ? 'true' : undefined}>
-                              <polygon
-                                className="lifemap-hex"
-                                data-selected={isSelected ? 'true' : 'false'}
-                                data-moving={isMovingSource ? 'true' : 'false'}
-                                data-new={tile?.isNew ? 'true' : 'false'}
-                                data-lane={tile?.lane || ''}
-                                points={hexPoints(h.cx, h.cy, HEX_SIZE)}
-                                onClick={() => onHexClick(h.key, !!tile)}
-                                onMouseDown={tile ? startBoardDrag(h.key) : undefined}
-                              />
-                              {tile ? (
-                                <>
-                                  <clipPath id={`tile-mask-${h.q}-${h.r}`}>
-                                    <polygon points={hexPoints(h.cx, h.cy, HEX_SIZE * 0.92)} />
-                                  </clipPath>
-                                  <image
-                                    href={tile.dioramaUrl}
-                                    x={h.cx - HEX_SIZE}
-                                    y={h.cy - HEX_SIZE}
-                                    width={HEX_SIZE * 2}
-                                    height={HEX_SIZE * 2}
-                                    clipPath={`url(#tile-mask-${h.q}-${h.r})`}
-                                    preserveAspectRatio="xMidYMid slice"
-                                    pointerEvents="none"
-                                  />
-                                  <text
-                                    x={h.cx}
-                                    y={h.cy + HEX_SIZE * 0.78}
-                                    textAnchor="middle"
-                                    fill="#faf9f7"
-                                    fontSize={12}
-                                    style={{ textShadow: '0 2px 6px rgba(0,0,0,0.55)', fontWeight: 700 }}
-                                  >
-                                    {tile.title.length > 16 ? `${tile.title.slice(0, 15)}…` : tile.title}
-                                  </text>
-                                </>
-                              ) : null}
-                            </g>
-                          );
-                        })}
+                        <g clipPath="url(#lifemapParchmentClip)">
+                          {boardHexes.map((h) => {
+                            const tile = placedTiles[h.key];
+                            const isSelected = selectedKey === h.key;
+                            const isMovingSource = clickMove?.sourceKey === h.key;
+                            return (
+                              <g key={h.key} data-hex-tile={tile ? 'true' : undefined}>
+                                <polygon
+                                  className="lifemap-hex"
+                                  data-selected={isSelected ? 'true' : 'false'}
+                                  data-moving={isMovingSource ? 'true' : 'false'}
+                                  data-new={tile?.isNew ? 'true' : 'false'}
+                                  data-lane={tile?.lane || ''}
+                                  points={hexPoints(h.cx, h.cy, HEX_SIZE)}
+                                  onClick={() => onHexClick(h.key, !!tile)}
+                                  onMouseDown={tile ? startBoardDrag(h.key) : undefined}
+                                />
+                                {tile ? (
+                                  <>
+                                    <clipPath id={`tile-mask-${h.q}-${h.r}`}>
+                                      <polygon points={hexPoints(h.cx, h.cy, HEX_SIZE * 0.92)} />
+                                    </clipPath>
+                                    <image
+                                      href={tile.dioramaUrl}
+                                      x={h.cx - HEX_SIZE}
+                                      y={h.cy - HEX_SIZE}
+                                      width={HEX_SIZE * 2}
+                                      height={HEX_SIZE * 2}
+                                      clipPath={`url(#tile-mask-${h.q}-${h.r})`}
+                                      preserveAspectRatio="xMidYMid slice"
+                                      pointerEvents="none"
+                                    />
+                                    <text
+                                      x={h.cx}
+                                      y={h.cy + HEX_SIZE * 0.78}
+                                      textAnchor="middle"
+                                      fill="#faf9f7"
+                                      fontSize={12}
+                                      style={{ textShadow: '0 2px 6px rgba(0,0,0,0.55)', fontWeight: 700 }}
+                                    >
+                                      {tile.title.length > 16 ? `${tile.title.slice(0, 15)}…` : tile.title}
+                                    </text>
+                                  </>
+                                ) : null}
+                              </g>
+                            );
+                          })}
 
-                        {dragState?.tile ? (
-                          <g pointerEvents="none">
-                            {(() => {
-                              const world = dragState.pointerWorld;
-                              const def = TILE_LIBRARY[dragState.tile.type];
-                              return (
-                                <g opacity={0.92}>
-                                  <polygon
-                                    points={hexPoints(world.x, world.y, HEX_SIZE)}
-                                    fill="rgba(255,255,255,0.06)"
-                                    stroke={def.border}
-                                    strokeWidth={3}
-                                  />
-                                  <clipPath id="drag-mask">
-                                    <polygon points={hexPoints(world.x, world.y, HEX_SIZE * 0.92)} />
-                                  </clipPath>
-                                  <image
-                                    href={dragState.tile.dioramaUrl}
-                                    x={world.x - HEX_SIZE}
-                                    y={world.y - HEX_SIZE}
-                                    width={HEX_SIZE * 2}
-                                    height={HEX_SIZE * 2}
-                                    clipPath="url(#drag-mask)"
-                                    preserveAspectRatio="xMidYMid slice"
-                                    pointerEvents="none"
-                                  />
-                                </g>
-                              );
-                            })()}
-                          </g>
-                        ) : null}
+                          {dragState?.tile ? (
+                            <g pointerEvents="none">
+                              {(() => {
+                                const world = dragState.pointerWorld;
+                                const def = TILE_LIBRARY[dragState.tile.type];
+                                return (
+                                  <g opacity={0.92}>
+                                    <polygon
+                                      points={hexPoints(world.x, world.y, HEX_SIZE)}
+                                      fill="rgba(255,255,255,0.06)"
+                                      stroke={def.border}
+                                      strokeWidth={3}
+                                    />
+                                    <clipPath id="drag-mask">
+                                      <polygon points={hexPoints(world.x, world.y, HEX_SIZE * 0.92)} />
+                                    </clipPath>
+                                    <image
+                                      href={dragState.tile.dioramaUrl}
+                                      x={world.x - HEX_SIZE}
+                                      y={world.y - HEX_SIZE}
+                                      width={HEX_SIZE * 2}
+                                      height={HEX_SIZE * 2}
+                                      clipPath="url(#drag-mask)"
+                                      preserveAspectRatio="xMidYMid slice"
+                                      pointerEvents="none"
+                                    />
+                                  </g>
+                                );
+                              })()}
+                            </g>
+                          ) : null}
+                        </g>
                       </g>
                     </g>
                   </svg>
-                  <div className="lifemap-board-hud">
-                    <div className="lifemap-hud-pill">{keyLabel(selectedKey)}</div>
-                    <div className="lifemap-hud-hint">
-                      {clickMove?.sourceKey
-                        ? `Click destination to move · Esc to cancel (${keyLabel(clickMove.sourceKey)})`
-                        : 'Scroll to zoom · drag background to pan · click tile to move · drag tiles to move.'}
-                    </div>
-                  </div>
                 </div>
               </div>
 
               <div className="lifemap-chat" aria-label="Agent chat">
-                <div className="lifemap-chat-head">
-                  <div>
-                    <div className="lifemap-chat-title">Agent</div>
-                    <div className="lifemap-chat-sub">Plan, place, and refine projects from the map.</div>
+                <div className="lifemap-paper">
+                  <div className="mesa-alley" aria-hidden="true">
+                    <img className="mesa-figure" src="assets/lifemap/mesa-cutout.webp" alt="" draggable={false} />
                   </div>
-                  <button
-                    className="lifemap-chat-clear"
-                    onClick={() =>
-                      setMessages([
-                        {
-                          role: 'agent',
-                          text:
-                            'Chat cleared. Click a hex on the map to pick a territory, then tell me what you want to build there.',
-                        },
-                      ])
-                    }
-                  >
-                    Clear
-                  </button>
-                </div>
-                <div className="lifemap-chat-body">
-                  {messages.map((m, i) => (
-                    <div key={i} className={`lifemap-msg ${m.role}`}>
-                      <div className="lifemap-msg-bubble">{m.text}</div>
+                  <div className="lifemap-chat-col">
+                    <div className="lifemap-chat-head">
+                      <div>
+                        <div className="lifemap-chat-title">MESA</div>
+                        <div className="lifemap-chat-sub">Ink on paper. Let’s map your life.</div>
+                      </div>
+                      <button
+                        className="lifemap-chat-clear"
+                        onClick={() =>
+                          setMessages([
+                            {
+                              role: 'agent',
+                              text:
+                                'Chat cleared. Click a hex on the map to pick a territory, then tell me what you want to build there.',
+                            },
+                          ])
+                        }
+                      >
+                        Clear
+                      </button>
                     </div>
-                  ))}
-                  <div ref={endRef} />
-                </div>
-                <div className="lifemap-chat-input">
-                  <input
-                    className="lifemap-chat-field"
-                    value={draft}
-                    onChange={(e) => setDraft(e.target.value)}
-                    placeholder={selectedKey ? 'Message the agent…' : 'Select a hex first…'}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') onSend();
-                    }}
-                  />
-                  <button className="lifemap-chat-send" onClick={onSend} disabled={!draft.trim()}>
-                    Send
-                  </button>
+                    <div className="lifemap-chat-body">
+                      {messages.map((m, i) => (
+                        <div key={i} className={`lifemap-msg ${m.role}`}>
+                          <div className="lifemap-msg-bubble">{m.text}</div>
+                        </div>
+                      ))}
+                      <div ref={endRef} />
+                    </div>
+                    <div className="lifemap-chat-input">
+                      <input
+                        className="lifemap-chat-field"
+                        value={draft}
+                        onChange={(e) => setDraft(e.target.value)}
+                        placeholder={selectedKey ? 'Ask MESA…' : 'Select a hex first…'}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') onSend();
+                        }}
+                      />
+                      <button className="lifemap-chat-send" onClick={onSend} disabled={!draft.trim()}>
+                        Send
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

@@ -28,19 +28,26 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Inter', system-ui, sans-serif;
-      background: radial-gradient(circle at 15% 20%, rgba(255,255,255,0.8), transparent 40%), #f5f3f0;
+      background: #0f0d0b;
       color: var(--ink);
       line-height: 1.6;
       min-height: 100vh;
-      padding-bottom: 140px; /* room for table bar */
+      padding-bottom: 0;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: url("assets/lifemap/table-wood.webp") center / cover no-repeat;
+      transform: scale(1.02);
     }
     .nav {
       position: sticky;
       top: 0;
       z-index: 8;
-      backdrop-filter: blur(10px);
-      background: rgba(250,249,247,0.88);
-      border-bottom: 1px solid var(--border);
+      background: transparent;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.18);
       padding: 0.9rem 1.5rem;
       display: flex;
       align-items: center;
@@ -51,29 +58,64 @@
       gap: 1rem;
       align-items: center;
       font-weight: 600;
+      position: relative;
+      z-index: 1;
     }
     .nav a {
+      position: relative;
       text-decoration: none;
-      color: var(--muted);
-      padding: 0.5rem 0.75rem;
-      border-radius: 0.75rem;
-      transition: color 160ms ease, background 160ms ease;
+      color: rgba(47, 43, 39, 0.82);
+      padding: 0.55rem 0.9rem;
+      border-radius: 0.1rem;
+      background:
+        linear-gradient(180deg, #fffaf0, #f2e7d2),
+        repeating-linear-gradient(0deg, rgba(47, 43, 39, 0.03), rgba(47, 43, 39, 0.03) 1px, transparent 1px, transparent 6px);
+      border: 1px solid rgba(47, 43, 39, 0.14);
+      box-shadow: 0 10px 18px rgba(0, 0, 0, 0.10);
+      transition: transform 140ms ease, box-shadow 140ms ease, color 140ms ease;
+      transform: rotate(-0.8deg);
+      clip-path: polygon(1% 6%, 8% 1%, 94% 2%, 99% 10%, 98% 90%, 92% 99%, 6% 98%, 1% 92%);
     }
-    .nav a.active { color: var(--ink); background: rgba(0,0,0,0.04); }
-    .nav a:hover { color: var(--ink); }
+    .nav a::after {
+      content: '';
+      position: absolute;
+      inset: -3px -3px -3px -3px;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(47, 43, 39, 0.10), transparent 35%),
+        radial-gradient(circle at 82% 74%, rgba(47, 43, 39, 0.08), transparent 40%);
+      opacity: 0.22;
+      pointer-events: none;
+      clip-path: inherit;
+      mix-blend-mode: multiply;
+    }
+    .nav a:nth-child(2) { transform: rotate(0.6deg); }
+    .nav a:nth-child(3) { transform: rotate(-0.2deg); }
+    .nav a:nth-child(4) { transform: rotate(0.9deg); }
+    .nav a:hover { color: var(--ink); transform: translateY(-1px) rotate(-0.4deg); box-shadow: 0 14px 26px rgba(0, 0, 0, 0.12); }
+    .nav a.active {
+      color: rgba(47, 43, 39, 0.96);
+      border-color: rgba(47, 43, 39, 0.22);
+      box-shadow: 0 16px 30px rgba(0, 0, 0, 0.14);
+    }
     .pill {
-      background: #2f2b27;
-      color: #faf9f7;
-      padding: 0.45rem 0.75rem;
-      border-radius: 999px;
-      font-weight: 600;
+      position: relative;
+      z-index: 1;
+      background:
+        linear-gradient(180deg, #3a2d22, #231d18),
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.06) 1px, transparent 1px, transparent 7px);
+      color: rgba(250, 249, 247, 0.96);
+      padding: 0.5rem 0.85rem;
+      border-radius: 0.15rem;
+      font-weight: 700;
       font-size: 0.9rem;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+      border: 1px solid rgba(0, 0, 0, 0.28);
+      box-shadow: 0 14px 26px rgba(0, 0, 0, 0.22);
+      clip-path: polygon(2% 10%, 9% 2%, 92% 3%, 98% 14%, 97% 88%, 90% 97%, 8% 96%, 2% 86%);
     }
     .shell {
-      max-width: 1200px;
+      max-width: 1440px;
       margin: 0 auto;
-      padding: 1.5rem;
+      padding: 1.1rem;
     }
     .card {
       background: #fff;
@@ -105,13 +147,7 @@
     .lifemap-surface {
       border-radius: 1.25rem;
       border: 1px solid rgba(47, 43, 39, 0.14);
-      background:
-        radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.22), transparent 45%),
-        radial-gradient(circle at 82% 18%, rgba(255, 255, 255, 0.16), transparent 52%),
-        linear-gradient(rgba(255, 255, 255, 0.10), rgba(255, 255, 255, 0.10)),
-        url("assets/lifemap/table-wood.webp");
-      background-size: cover;
-      background-position: center;
+      background: transparent;
       box-shadow: 0 22px 50px rgba(0, 0, 0, 0.14);
       padding: 1rem;
     }
@@ -122,6 +158,17 @@
       min-height: 560px;
       align-items: stretch;
     }
+    @media (min-width: 1200px) {
+      .lifemap-surface-grid {
+        min-height: 620px;
+      }
+      .lifemap-board-inner {
+        min-height: 620px;
+      }
+      .lifemap-chat {
+        min-height: 620px;
+      }
+    }
     .lifemap-board {
       border-radius: 1.1rem;
       background: transparent;
@@ -131,11 +178,10 @@
     .lifemap-board-inner {
       position: relative;
       width: 100%;
-      height: auto;
+      height: 100%;
       min-height: 560px;
       border-radius: 1.1rem;
       background: transparent;
-      aspect-ratio: 1024 / 905;
     }
     .lifemap-board-inner::before {
       content: '';
@@ -222,14 +268,75 @@
     }
     .lifemap-chat {
       border-radius: 1.1rem;
-      border: 1px solid rgba(47, 43, 39, 0.12);
-      background: rgba(250, 249, 247, 0.86);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(47, 43, 39, 0.10);
+      background: transparent;
+      box-shadow: 0 18px 34px rgba(0, 0, 0, 0.10);
       display: grid;
       grid-template-rows: auto 1fr auto;
       overflow: hidden;
       min-height: 560px;
+      height: 100%;
+    }
+    .lifemap-paper {
+      height: 100%;
+      border-radius: 0.35rem;
+      border: 1px solid rgba(47, 43, 39, 0.14);
+      background:
+        linear-gradient(180deg, #fffaf0, #f2e7d2),
+        repeating-linear-gradient(0deg, rgba(47, 43, 39, 0.018), rgba(47, 43, 39, 0.018) 1px, transparent 1px, transparent 7px);
+      box-shadow:
+        0 22px 44px rgba(0, 0, 0, 0.12),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+      display: grid;
+      grid-template-columns: 1fr 3fr;
+      overflow: hidden;
+      position: relative;
+      clip-path: polygon(1% 2%, 6% 0.5%, 94% 1%, 99% 6%, 98.5% 95%, 93% 99%, 7% 98.5%, 1% 92%);
+    }
+    .lifemap-paper::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(0, 0, 0, 0.045), transparent 55%),
+        radial-gradient(circle at 90% 78%, rgba(0, 0, 0, 0.035), transparent 48%);
+      opacity: 0.55;
+      pointer-events: none;
+      mix-blend-mode: multiply;
+    }
+    .mesa-alley {
+      position: relative;
+      border-right: 1px solid rgba(47, 43, 39, 0.10);
+      background: #f2e7d2;
+      overflow: hidden;
+    }
+    .mesa-alley::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 40% 20%, rgba(0, 0, 0, 0.03), transparent 52%),
+        radial-gradient(circle at 70% 80%, rgba(0, 0, 0, 0.02), transparent 58%);
+      opacity: 0.65;
+      pointer-events: none;
+    }
+    .mesa-figure {
+      position: absolute;
+      left: 50%;
+      bottom: 0.65rem;
+      transform: translateX(-50%);
+      width: min(210px, 90%);
+      height: auto;
+      opacity: 0.92;
+      filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.18));
+      pointer-events: none;
+      user-select: none;
+    }
+    .lifemap-chat-col {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      position: relative;
+      z-index: 1;
     }
     .lifemap-chat-head {
       padding: 0.9rem 1rem;
@@ -243,24 +350,24 @@
       font-family: 'Source Serif 4', Georgia, serif;
       font-size: 1.1rem;
       font-weight: 600;
-      color: var(--ink);
+      color: rgba(35, 29, 24, 0.92);
       margin-bottom: 0.1rem;
     }
     .lifemap-chat-sub {
       font-size: 0.86rem;
-      color: var(--muted);
+      color: rgba(47, 43, 39, 0.62);
     }
     .lifemap-chat-clear {
-      background: transparent;
+      background: rgba(255, 255, 255, 0.35);
       border: 1px solid rgba(47, 43, 39, 0.14);
-      color: var(--ink);
-      border-radius: 0.8rem;
+      color: rgba(47, 43, 39, 0.88);
+      border-radius: 0.75rem;
       padding: 0.45rem 0.65rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
     }
     .lifemap-chat-clear:hover {
-      background: rgba(0, 0, 0, 0.03);
+      background: rgba(255, 255, 255, 0.52);
     }
     .lifemap-chat-body {
       padding: 0.9rem 1rem;
@@ -280,16 +387,17 @@
       padding: 0.65rem 0.75rem;
       border-radius: 0.9rem;
       border: 1px solid rgba(47, 43, 39, 0.12);
-      background: rgba(255, 255, 255, 0.92);
-      color: var(--ink);
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+      background: #fffaf0;
+      color: rgba(35, 29, 24, 0.92);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);
       font-size: 0.93rem;
       line-height: 1.45;
+      font-family: 'Source Serif 4', Georgia, serif;
     }
     .lifemap-msg.user .lifemap-msg-bubble {
-      background: rgba(47, 43, 39, 0.92);
-      color: #faf9f7;
-      border-color: rgba(255, 255, 255, 0.12);
+      background: #efe4cf;
+      color: rgba(35, 29, 24, 0.92);
+      border-color: rgba(47, 43, 39, 0.16);
     }
     .lifemap-chat-input {
       padding: 0.85rem 1rem;
@@ -298,25 +406,27 @@
       grid-template-columns: 1fr auto;
       gap: 0.6rem;
       align-items: center;
-      background: rgba(250, 249, 247, 0.92);
+      background: #f3e8d3;
     }
     .lifemap-chat-field {
       width: 100%;
-      border-radius: 0.85rem;
-      border: 1px solid rgba(47, 43, 39, 0.14);
-      padding: 0.7rem 0.8rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(47, 43, 39, 0.10);
+      border-bottom: 2px solid rgba(47, 43, 39, 0.18);
+      padding: 0.65rem 0.75rem;
       font-size: 0.95rem;
-      background: rgba(255, 255, 255, 0.92);
-      color: var(--ink);
+      background: #fffaf0;
+      color: rgba(35, 29, 24, 0.92);
       outline: none;
+      font-family: 'Source Serif 4', Georgia, serif;
     }
     .lifemap-chat-field:focus {
       border-color: rgba(123, 158, 168, 0.65);
       box-shadow: 0 0 0 4px rgba(123, 158, 168, 0.18);
     }
     .lifemap-chat-send {
-      background: #2f2b27;
-      color: #faf9f7;
+      background: rgba(47, 43, 39, 0.88);
+      color: rgba(250, 249, 247, 0.98);
       border: none;
       border-radius: 0.85rem;
       padding: 0.7rem 0.95rem;
@@ -342,6 +452,8 @@
       .lifemap-chat {
         min-height: 520px;
       }
+      .lifemap-paper { grid-template-columns: 1fr; }
+      .mesa-alley { display: none; }
     }
     .cat {
       border: 1px solid var(--border);
@@ -470,30 +582,52 @@
     }
     .project .bar { height: 100%; border-radius: 999px; }
     .table-bar {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255,255,255,0.96);
-      border-top: 1px solid var(--border);
-      box-shadow: 0 -12px 24px rgba(0,0,0,0.06);
+      position: relative;
+      background: transparent;
+      border-top: 1px solid rgba(0, 0, 0, 0.18);
+      box-shadow:
+        0 -18px 32px rgba(0, 0, 0, 0.20),
+        inset 0 1px 0 rgba(255, 255, 255, 0.14);
       padding: 0.9rem 1.5rem;
       z-index: 9;
+      margin-top: 1rem;
     }
     .table-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 0.75rem;
       align-items: center;
+      position: relative;
+      z-index: 1;
     }
     .slot {
       border: 1px solid var(--border);
-      border-radius: 0.9rem;
+      border-radius: 0.15rem;
       padding: 0.75rem;
-      background: #fff;
+      background:
+        linear-gradient(180deg, #fffaf0, #f2e7d2),
+        repeating-linear-gradient(0deg, rgba(47, 43, 39, 0.018), rgba(47, 43, 39, 0.018) 1px, transparent 1px, transparent 7px);
       min-height: 110px;
       position: relative;
       overflow: hidden;
+      clip-path: polygon(1% 6%, 8% 1%, 94% 2%, 99% 10%, 98% 90%, 92% 99%, 6% 98%, 1% 92%);
+      box-shadow: 0 16px 28px rgba(0, 0, 0, 0.18);
+    }
+    .slot::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(47, 43, 39, 0.10), transparent 38%),
+        radial-gradient(circle at 86% 78%, rgba(47, 43, 39, 0.08), transparent 42%);
+      opacity: 0.22;
+      mix-blend-mode: multiply;
+      z-index: 0;
+    }
+    .slot > * {
+      position: relative;
+      z-index: 1;
     }
     .slot h4 {
       font-family: 'Source Serif 4', Georgia, serif;
@@ -503,8 +637,17 @@
       align-items: center;
       gap: 0.4rem;
     }
-    .slot .body { font-weight: 700; color: var(--ink); }
-    .slot .meta { color: var(--muted); font-size: 0.9rem; }
+    .slot h4::before {
+      content: '';
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 999px;
+      background: currentColor;
+      opacity: 0.9;
+      box-shadow: 0 8px 14px rgba(0, 0, 0, 0.16);
+    }
+    .slot .body { font-weight: 800; color: rgba(35, 29, 24, 0.94); }
+    .slot .meta { color: rgba(47, 43, 39, 0.62); font-size: 0.9rem; }
     .actions {
       margin-top: 1rem;
       display: flex;
