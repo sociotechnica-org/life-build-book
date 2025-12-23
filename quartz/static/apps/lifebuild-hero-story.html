@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeBuild — Resume Your Reign</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=Special+Elite&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #f4ece0;
+            --color-bg-warm: rgba(244, 236, 224, 0.9);
+            --color-bg-card: rgba(255, 249, 240, 0.95);
+            --color-paper: #f4ece0;
+            --color-paper-dark: #e8dcc8;
+            --color-ink: #2c2416;
+            --color-ink-light: #4a3f2f;
+            --color-cream: #2c2416;
+            --color-cream-muted: #5b5143;
+            --color-amber: #d4a052;
+            --color-amber-glow: #e8b86d;
+            --color-amber-deep: #b8863a;
+            --color-red-deep: #8b3a3a;
+            --color-gold: #c9a227;
+            --color-teal: #4a7c7c;
+            --font-hand: 'Special Elite', monospace;
+            --font-typewriter: 'Special Elite', monospace;
+            --font-serif: 'Source Serif 4', Georgia, serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 18px;
+        }
+
+        body {
+            font-family: var(--font-serif);
+            background-color: #f1e6d3;
+            background-image: url("assets/lifemap/canvas-primary.png");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            color: var(--color-cream);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .site-logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: min(280px, 45vw);
+            max-width: 100%;
+        }
+
+        .site-logo img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
+        }
+
+        @media (max-width: 768px) {
+            .site-logo {
+                width: min(200px, 55vw);
+            }
+        }
+
+        .ambient-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(150px);
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .glow-1 {
+            top: -200px;
+            right: -100px;
+            background: var(--color-amber);
+        }
+
+        .glow-2 {
+            bottom: 20%;
+            left: -200px;
+            background: var(--color-amber-deep);
+            opacity: 0.06;
+        }
+
+        .hand-underline {
+            position: relative;
+            display: inline;
+        }
+
+        .hand-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--color-amber);
+            transform: rotate(-0.5deg) scaleX(1.02);
+            border-radius: 2px;
+            opacity: 0.8;
+        }
+
+        h1 {
+            font-family: var(--font-hand);
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 400;
+            line-height: 1.2;
+            letter-spacing: 0.01em;
+        }
+
+        h2 {
+            font-family: var(--font-hand);
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            font-weight: 400;
+            line-height: 1.3;
+            color: var(--color-cream);
+        }
+
+        h3 {
+            font-family: var(--font-hand);
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--color-amber);
+        }
+
+        p {
+            font-size: 1.1rem;
+            color: var(--color-cream-muted);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 5rem 0;
+        }
+
+        .top-nav {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: rgba(244, 236, 224, 0.92);
+            backdrop-filter: blur(6px);
+            border-bottom: 1px solid rgba(44, 36, 22, 0.15);
+        }
+
+        .top-nav-inner {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            font-family: var(--font-hand);
+            font-size: 1.1rem;
+        }
+
+        .nav-links a {
+            color: var(--color-ink);
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-amber-deep);
+            border-bottom-color: var(--color-amber);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            padding: 6rem 0 2rem;
+        }
+
+        .hero-video-container {
+            width: 100%;
+            max-width: 980px;
+            margin: 0 auto 2.5rem;
+            position: relative;
+        }
+
+        .hero-video-frame {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow:
+                0 4px 20px rgba(0,0,0,0.4),
+                0 0 60px rgba(212, 160, 82, 0.1);
+        }
+
+        .hero-video-frame::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border: 3px solid var(--color-amber);
+            border-radius: 12px;
+            opacity: 0.3;
+            transform: rotate(-0.3deg);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .hero-video-frame::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border: 2px solid var(--color-amber);
+            border-radius: 14px;
+            opacity: 0.15;
+            transform: rotate(0.5deg);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .hero-story {
+            position: relative;
+            background: #f4ece0;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .hero-story-frame {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #f4ece0;
+            transition: opacity 0.6s ease;
+        }
+
+        .hero-story-frame.is-fading {
+            opacity: 0.75;
+        }
+
+        .hero-story-overlay {
+            position: absolute;
+            inset: auto 0 0 0;
+            padding: 1.5rem 1.75rem;
+            background: linear-gradient(180deg, rgba(244, 236, 224, 0) 0%, rgba(244, 236, 224, 0.92) 100%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .story-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .story-btn {
+            font-family: var(--font-hand);
+            font-size: 1.05rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 6px;
+            border: 2px solid rgba(44, 36, 22, 0.3);
+            background: rgba(255, 249, 240, 0.85);
+            color: var(--color-ink);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .story-btn:hover {
+            border-color: var(--color-amber);
+            color: var(--color-amber);
+            transform: translateY(-1px);
+        }
+
+        .story-progress {
+            flex: 1;
+            min-width: 180px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .story-progress input[type="range"] {
+            flex: 1;
+            appearance: none;
+            height: 6px;
+            border-radius: 999px;
+            background: rgba(44, 36, 22, 0.2);
+            outline: none;
+        }
+
+        .story-progress input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--color-amber);
+            border: 2px solid var(--color-ink);
+            cursor: pointer;
+        }
+
+        .story-progress input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--color-amber);
+            border: 2px solid var(--color-ink);
+            cursor: pointer;
+        }
+
+        .story-meta {
+            font-family: var(--font-typewriter);
+            font-size: 0.95rem;
+            color: var(--color-ink-light);
+            min-width: 72px;
+            text-align: right;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .hero-subhead {
+            font-family: var(--font-serif);
+            font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+            font-weight: 400;
+            font-style: italic;
+            color: var(--color-ink-light);
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .hero-subhead em {
+            color: var(--color-amber);
+            font-style: normal;
+            font-weight: 400;
+        }
+
+        .btn {
+            font-family: var(--font-hand);
+            font-size: 1.3rem;
+            padding: 0.9rem 2.2rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .btn-primary {
+            background: var(--color-amber);
+            color: var(--color-ink);
+            box-shadow:
+                3px 3px 0 var(--color-amber-deep),
+                0 4px 15px rgba(212, 160, 82, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translate(-2px, -2px);
+            box-shadow:
+                5px 5px 0 var(--color-amber-deep),
+                0 6px 20px rgba(212, 160, 82, 0.4);
+        }
+
+        .ink-splat {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--color-amber);
+            border-radius: 50% 40% 50% 40%;
+            opacity: 0.2;
+        }
+
+        .section-divider {
+            height: 40px;
+            background-image: url("data:image/svg+xml,%3Csvg width='200' height='20' viewBox='0 0 200 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,10 Q50,5 100,10 T200,10' stroke='%23d4a052' stroke-width='1' fill='none' opacity='0.3'/%3E%3C/svg%3E");
+            background-repeat: repeat-x;
+            background-position: center;
+            opacity: 0.5;
+        }
+
+        .how-it-works {
+            background: transparent;
+            border-top: 1px solid rgba(44, 36, 22, 0.08);
+            position: relative;
+        }
+
+        .how-it-works h2 {
+            text-align: left;
+            margin-bottom: 0.5rem;
+        }
+
+        .how-subtitle {
+            text-align: left;
+            font-family: var(--font-typewriter);
+            font-size: 0.95rem;
+            color: var(--color-cream-muted);
+            margin-bottom: 3rem;
+            letter-spacing: 0.05em;
+        }
+
+        .how-it-works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .how-card {
+            background: var(--color-bg-card);
+            border: 2px solid rgba(44, 36, 22, 0.12);
+            border-radius: 6px;
+            padding: 1.8rem;
+            position: relative;
+            transition: all 0.3s ease;
+            transform: rotate(var(--rotation, 0deg));
+        }
+
+        .how-card:nth-child(1) { --rotation: -0.5deg; }
+        .how-card:nth-child(2) { --rotation: 0.3deg; }
+        .how-card:nth-child(3) { --rotation: -0.3deg; }
+        .how-card:nth-child(4) { --rotation: 0.5deg; }
+
+        .how-card:hover {
+            border-color: rgba(212, 160, 82, 0.4);
+            transform: rotate(0deg) translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .how-card h3 {
+            margin-bottom: 0.8rem;
+            font-size: 1.4rem;
+        }
+
+        .how-card p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .how-icon {
+            width: 86px;
+            height: 86px;
+            margin-bottom: 1rem;
+            display: block;
+            object-fit: contain;
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.15));
+        }
+
+        .honest-alpha {
+            background: transparent;
+            border-top: 1px solid rgba(44, 36, 22, 0.08);
+        }
+
+        .honest-alpha h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .honest-intro {
+            max-width: 700px;
+            margin-bottom: 2.5rem;
+        }
+
+        .honest-intro > p {
+            font-family: var(--font-typewriter);
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .security-note {
+            background: rgba(139, 58, 58, 0.08);
+            border-left: 4px solid var(--color-red-deep);
+            padding: 1rem 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 4px 4px 0;
+            transform: rotate(-0.3deg);
+        }
+
+        .security-note p {
+            font-family: var(--font-typewriter);
+            font-size: 0.9rem;
+        }
+
+        .security-note strong {
+            color: var(--color-cream);
+        }
+
+        .alpha-table-wrapper {
+            background: rgba(255, 249, 240, 0.95);
+            border-radius: 4px;
+            padding: 2rem;
+            transform: rotate(-0.3deg);
+            box-shadow:
+                4px 4px 0 var(--color-paper-dark),
+                8px 8px 20px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alpha-table-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: repeating-linear-gradient(
+                transparent,
+                transparent 31px,
+                rgba(44, 36, 22, 0.08) 31px,
+                rgba(44, 36, 22, 0.08) 32px
+            );
+            pointer-events: none;
+        }
+
+        .alpha-table-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 60px;
+            width: 2px;
+            background: rgba(139, 58, 58, 0.2);
+            pointer-events: none;
+        }
+
+        .alpha-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .alpha-table th {
+            font-family: var(--font-hand);
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-ink);
+            text-align: left;
+            padding: 0.8rem 0.6rem;
+            border-bottom: 2px solid var(--color-ink-light);
+        }
+
+        .alpha-table td {
+            font-family: var(--font-typewriter);
+            font-size: 0.9rem;
+            padding: 1rem 0.6rem;
+            border-bottom: 1px dashed rgba(44, 36, 22, 0.2);
+            vertical-align: top;
+            color: var(--color-ink);
+            line-height: 1.6;
+        }
+
+        .alpha-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .stage-name {
+            font-family: var(--font-hand);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--color-ink);
+            white-space: nowrap;
+            display: block;
+            margin-bottom: 0.35rem;
+        }
+
+        .btn-sketch {
+            font-family: var(--font-hand);
+            font-size: 0.9rem;
+            padding: 0.35rem 0.75rem;
+            border-radius: 3px;
+            border: 2px solid var(--color-ink);
+            background: transparent;
+            color: var(--color-ink);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            transform: rotate(-1deg);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .btn-sketch:hover {
+            background: var(--color-ink);
+            color: var(--color-paper);
+            transform: rotate(0deg);
+        }
+
+        .updates-link {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .updates-link a {
+            font-family: var(--font-hand);
+            font-size: 1.2rem;
+            color: var(--color-cream-muted);
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .updates-link a:hover {
+            color: var(--color-amber);
+            border-bottom-color: var(--color-amber);
+        }
+
+        .updates {
+            background: transparent;
+            border-top: 1px solid rgba(44, 36, 22, 0.08);
+        }
+
+        .updates-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .updates-header a {
+            font-family: var(--font-hand);
+            font-size: 1.1rem;
+            color: var(--color-amber);
+            text-decoration: none;
+        }
+
+        .updates-header a:hover {
+            text-decoration: underline;
+        }
+
+        .update-card {
+            background: var(--color-bg-card);
+            border: 2px solid rgba(44, 36, 22, 0.12);
+            border-radius: 6px;
+            padding: 2rem;
+            transform: rotate(0.2deg);
+        }
+
+        .update-date {
+            font-family: var(--font-typewriter);
+            font-size: 0.95rem;
+            color: var(--color-cream-muted);
+            margin-bottom: 1rem;
+        }
+
+        .update-content {
+            font-family: var(--font-typewriter);
+            color: var(--color-cream-muted);
+            font-size: 0.95rem;
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .about {
+            background: transparent;
+            border-top: 1px solid rgba(44, 36, 22, 0.08);
+        }
+
+        .about-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .about-panel {
+            background: rgba(255, 249, 240, 0.75);
+            border: 2px solid rgba(44, 36, 22, 0.12);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+
+        .about h3 {
+            color: var(--color-ink);
+        }
+
+        .about p,
+        .about .about-note,
+        .about .about-sidebar p,
+        .about .bets-list span {
+            color: var(--color-ink-light);
+        }
+
+        .bets-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .bets-list li {
+            margin-bottom: 1.5rem;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .bets-list li::before {
+            content: '→';
+            font-family: var(--font-hand);
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: var(--color-amber);
+            font-size: 1.2rem;
+        }
+
+        .bets-list strong {
+            font-family: var(--font-hand);
+            font-size: 1.2rem;
+            color: var(--color-cream);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .bets-list span {
+            font-family: var(--font-typewriter);
+            font-size: 0.9rem;
+            color: var(--color-cream-muted);
+        }
+
+        .about-note {
+            font-family: var(--font-typewriter);
+            font-size: 0.9rem;
+            color: var(--color-cream-muted);
+            margin-top: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .about-sidebar {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .about-sidebar a {
+            font-family: var(--font-hand);
+            font-size: 1.1rem;
+            color: var(--color-amber-deep);
+            text-decoration: none;
+        }
+
+        .about-sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            border-top: 1px solid rgba(44, 36, 22, 0.08);
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        footer p {
+            font-family: var(--font-typewriter);
+            font-size: 0.95rem;
+            color: var(--color-cream-muted);
+        }
+
+        footer a {
+            font-family: var(--font-hand);
+            color: var(--color-cream-muted);
+            text-decoration: none;
+            margin: 0 1rem;
+            font-size: 1.15rem;
+        }
+
+        footer a:hover {
+            color: var(--color-amber);
+        }
+
+        .footer-links {
+            display: inline-flex;
+            align-items: center;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .github-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 3.5rem 0;
+            }
+
+            .hero-video-container {
+                margin-bottom: 2rem;
+            }
+
+            .hero-story-overlay {
+                padding: 1rem;
+            }
+
+            .story-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .story-meta {
+                text-align: left;
+            }
+
+            .alpha-table-wrapper {
+                padding: 1rem;
+                transform: none;
+            }
+
+            .alpha-table-wrapper::after {
+                display: none;
+            }
+
+            .alpha-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .how-card {
+                transform: none !important;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes gentleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .hero-video-container {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-content {
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .how-card {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .how-card:nth-child(1) { animation-delay: 0.1s; }
+        .how-card:nth-child(2) { animation-delay: 0.2s; }
+        .how-card:nth-child(3) { animation-delay: 0.3s; }
+        .how-card:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <nav class="top-nav" aria-label="Primary">
+        <div class="top-nav-inner">
+            <a class="site-logo" href="#hero" aria-label="LifeBuild home">
+                <img src="./lifebuild-hero-story/logo.png" alt="LifeBuild logo">
+            </a>
+            <div class="nav-links">
+                <a href="#hero">Intro</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#honest-alpha">Honest Alpha</a>
+                <a href="#about">About</a>
+                <a href="#updates">Updates</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" id="hero">
+        <div class="container">
+            <div class="hero-video-container">
+                <div class="hero-video-frame">
+                    <div class="hero-story">
+                        <img id="heroStoryFrame" src="./lifebuild-hero-story/hero-story-1.png" alt="Saturday morning at the desk, building a kingdom" class="hero-story-frame">
+                        <div class="hero-story-overlay">
+                            <div class="story-controls">
+                                <button class="story-btn" id="heroStoryToggle" type="button" aria-pressed="false">Play</button>
+                                <button class="story-btn" id="heroStoryPrev" type="button">Prev</button>
+                                <div class="story-progress">
+                                    <input type="range" id="heroStorySlider" min="1" max="8" step="1" value="1" aria-label="Story frame selector">
+                                    <div class="story-meta"><span id="heroStoryIndex">1</span> / <span id="heroStoryTotal">8</span></div>
+                                </div>
+                                <button class="story-btn" id="heroStoryNext" type="button">Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-content"></div>
+        </div>
+    </section>
+
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2>Resume Your Reign</h2>
+            <p class="how-subtitle">a living map of your world, an AI corps at your command.</p>
+            <div class="how-it-works-grid">
+                <div class="how-card">
+                    <img class="how-icon" src="./lifebuild-hero-story/how-it-works/map.png" alt="Map icon">
+                    <h3>Map your world</h3>
+                    <p>Your whole life—eight domains, every project, all in one view. Zoom from the big picture to a single task. See everything, focus anywhere.</p>
+                </div>
+                <div class="how-card">
+                    <img class="how-icon" src="./lifebuild-hero-story/how-it-works/owl.png" alt="Owl icon">
+                    <h3>Get wise counsel</h3>
+                    <p>AI advisors who know their domains. They spot blind spots, ask the right questions, and help you think strategically about what matters.</p>
+                </div>
+                <div class="how-card">
+                    <img class="how-icon" src="./lifebuild-hero-story/how-it-works/crown.png" alt="Crown icon">
+                    <h3>Delegate the doing</h3>
+                    <p>AI workers handle the details. They capture, research, draft, and execute—with infinite patience and no ego.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="honest-alpha" id="honest-alpha">
+        <div class="container">
+            <h2>The Honest Alpha</h2>
+            <div class="honest-intro">
+                <p>We're building LifeBuild in public. Rough edges, broken things, occasional catastrophic data loss. Also: you'll shape what this becomes.</p>
+                <div class="security-note">
+                    <p><strong>On security:</strong> Early-stage AI software is an even less secure place for personal information than big AI products—and that's a low bar. If that gives you pause, wait for Public Beta.</p>
+                </div>
+            </div>
+
+            <div class="alpha-table-wrapper">
+                <table class="alpha-table">
+                    <thead>
+                        <tr>
+                            <th>Stage</th>
+                            <th>What You Get</th>
+                            <th>What's Rough</th>
+                            <th>What We're Proving</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="stage-name">Founding Alpha</span>
+                                <button class="btn-sketch">I'm in now</button>
+                            </td>
+                            <td>AI team for capturing and managing personal projects. Advisors in your areas of interest. Basic life overview.</td>
+                            <td>Ugly—mostly tables. Chatbot-feeling agents. Buggy. Frequent data loss.</td>
+                            <td>Can an AI team make life management feel like commanding instead of drowning?</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="stage-name">Builder Alpha</span>
+                                <button class="btn-sketch">Notify me</button>
+                            </td>
+                            <td>Visual map. Worker AI that tasks at your command. On-brand interface. Agents with character and proactivity.</td>
+                            <td>Still crashing. We're pushing human-AI and AI-AI boundaries—which means breaking everything.</td>
+                            <td>Can the AI corps execute real work? Does the map create mastery?</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="stage-name">Public Beta</span>
+                                <button class="btn-sketch">Notify me</button>
+                            </td>
+                            <td>Stable. Secure. Full functionality. Real onboarding.</td>
+                            <td>Less to shape—foundation is set.</td>
+                            <td>Can this scale beyond the people who watched us build it?</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="stage-name">Post-Beta</span>
+                                <button class="btn-sketch">Notify me</button>
+                            </td>
+                            <td>The real thing, if it proves out.</td>
+                            <td>You missed the messy years.</td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="updates-link">
+                <a href="#updates">Just watching? → Get updates only</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="container">
+            <h2>About</h2>
+            <div class="about-grid">
+                <div class="about-panel">
+                    <h3>What we're betting on</h3>
+                    <p>We're using retro strategy games as a translational layer between humans and machines.</p>
+                    <ul class="bets-list">
+                        <li>
+                            <strong>AI-native foundation</strong>
+                            <span>Built for AI first, not bolted on.</span>
+                        </li>
+                        <li>
+                            <strong>Extremely visual</strong>
+                            <span>Give humans familiar visual tools to work with AI.</span>
+                        </li>
+                        <li>
+                            <strong>Collaborative authority</strong>
+                            <span>Agents who act, not just chat.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="about-panel about-sidebar">
+                    <h3>Who's building this</h3>
+                    <p>Danvers & Jess.</p>
+                    <a href="https://sociotechnica.org/notebook/" target="_blank" rel="noopener noreferrer">Follow the build →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="updates" id="updates">
+        <div class="container">
+            <div class="updates-header">
+                <h2>From the Workshop</h2>
+                <a href="https://sociotechnica.org/notebook/" target="_blank" rel="noopener noreferrer">Full labnotes →</a>
+            </div>
+            <div class="update-card">
+                <div class="update-date">Week of Dec 23, 2024</div>
+                <div class="update-content">
+                    Our AI agent summarizes what we shipped this week. This area auto-populates from GitHub activity.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>LifeBuild © 2025</p>
+            <p>
+                <span class="footer-links">
+                    <a href="https://sociotechnica.org/notebook/" target="_blank" rel="noopener noreferrer">Labnotes</a>
+                    <a href="https://github.com/sociotechnica-org/lifebuild" target="_blank" rel="noopener noreferrer">
+                        <svg class="github-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path fill="currentColor" d="M12 2C6.48 2 2 6.58 2 12.26c0 4.54 2.87 8.39 6.84 9.75.5.1.68-.22.68-.48 0-.24-.01-.87-.01-1.71-2.78.62-3.37-1.37-3.37-1.37-.45-1.19-1.11-1.51-1.11-1.51-.91-.63.07-.62.07-.62 1 .07 1.53 1.07 1.53 1.07.9 1.58 2.36 1.12 2.94.85.09-.67.35-1.12.64-1.38-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.72 0 0 .84-.28 2.75 1.05.8-.23 1.66-.34 2.52-.34.86 0 1.72.12 2.52.34 1.9-1.33 2.74-1.05 2.74-1.05.55 1.42.2 2.46.1 2.72.64.72 1.02 1.63 1.02 2.75 0 3.94-2.35 4.8-4.58 5.06.36.32.69.94.69 1.9 0 1.37-.01 2.48-.01 2.81 0 .26.18.59.69.48 3.96-1.36 6.82-5.22 6.82-9.75C22 6.58 17.52 2 12 2z"/>
+                        </svg>
+                        GitHub
+                    </a>
+                </span>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        const frames = [
+            {
+                src: "./lifebuild-hero-story/hero-story-1.png",
+                alt: "Saturday morning at the desk, building a kingdom",
+                caption: "Saturday morning. An empire rises on the screen."
+            },
+            {
+                src: "./lifebuild-hero-story/hero-story-2.png",
+                alt: "Dusk settles over the desk and the kingdom",
+                caption: "Afternoon turns to dusk. The glow fades, the map still waits."
+            },
+            {
+                src: "./lifebuild-hero-story/hero-story-3.png",
+                alt: "Night settles in with the same map open",
+                caption: "Night arrives. The game stays open, but life keeps stacking up."
+            },
+            {
+                src: "./lifebuild-hero-story/hero-story-4.png",
+                alt: "Bills and paperwork crowd the desk",
+                caption: "Paperwork spreads. The corkboard starts to shout."
+            },
+            {
+                src: "./lifebuild-hero-story/hero-story-5.png",
+                alt: "Sticky notes and reminders crowd the screen",
+                caption: "Reminders pile on: calls, deadlines, repairs, appointments."
+            },
+            {
+                src: "./lifebuild-hero-story/hero-story-6.png",
+                alt: "The screen shrinks as the tasks grow",
+                caption: "The kingdom shrinks. The tasks take the table."
+            },
+            {
+                src: "./lifebuild-hero-story/hero-story-7.png",
+                alt: "A busy calendar replaces the game",
+                caption: "Your map becomes a calendar grid. Everything is urgent."
+            },
+            {
+                src: "./lifebuild-hero-story/hero-story-8.png",
+                alt: "A calendar view fills the screen",
+                caption: "Schedule packed. The reign feels out of reach."
+            }
+        ];
+
+        const frameImage = document.getElementById("heroStoryFrame");
+        const toggleButton = document.getElementById("heroStoryToggle");
+        const prevButton = document.getElementById("heroStoryPrev");
+        const nextButton = document.getElementById("heroStoryNext");
+        const slider = document.getElementById("heroStorySlider");
+        const indexLabel = document.getElementById("heroStoryIndex");
+        const totalLabel = document.getElementById("heroStoryTotal");
+
+        let currentIndex = 0;
+        let isPlaying = false;
+        let timer = null;
+        const frameDuration = 1400;
+
+        totalLabel.textContent = frames.length.toString();
+
+        const updateFrame = (index) => {
+            const safeIndex = (index + frames.length) % frames.length;
+            const frame = frames[safeIndex];
+
+            frameImage.classList.add("is-fading");
+            window.setTimeout(() => {
+                frameImage.src = frame.src;
+                frameImage.alt = frame.alt;
+                frameImage.addEventListener("load", () => {
+                    frameImage.classList.remove("is-fading");
+                }, { once: true });
+            }, 80);
+
+            currentIndex = safeIndex;
+            slider.value = (safeIndex + 1).toString();
+            indexLabel.textContent = (safeIndex + 1).toString();
+            nextButton.textContent = currentIndex === frames.length - 1 ? "Replay" : "Next";
+        };
+
+        const stopPlayback = () => {
+            if (timer) {
+                clearInterval(timer);
+                timer = null;
+            }
+            isPlaying = false;
+            toggleButton.textContent = "Play";
+            toggleButton.setAttribute("aria-pressed", "false");
+        };
+
+        const startPlayback = () => {
+            if (timer) {
+                clearInterval(timer);
+            }
+            isPlaying = true;
+            toggleButton.textContent = "Pause";
+            toggleButton.setAttribute("aria-pressed", "true");
+            timer = window.setInterval(() => {
+                if (currentIndex >= frames.length - 1) {
+                    stopPlayback();
+                    return;
+                }
+                updateFrame(currentIndex + 1);
+            }, frameDuration);
+        };
+
+        toggleButton.addEventListener("click", () => {
+            if (isPlaying) {
+                stopPlayback();
+            } else {
+                startPlayback();
+            }
+        });
+
+        prevButton.addEventListener("click", () => {
+            stopPlayback();
+            updateFrame(currentIndex - 1);
+        });
+
+        nextButton.addEventListener("click", () => {
+            stopPlayback();
+            if (currentIndex >= frames.length - 1) {
+                updateFrame(0);
+                startPlayback();
+            } else {
+                updateFrame(currentIndex + 1);
+            }
+        });
+
+        slider.addEventListener("input", (event) => {
+            stopPlayback();
+            const value = parseInt(event.target.value, 10);
+            updateFrame(value - 1);
+        });
+
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+        if (prefersReducedMotion.matches) {
+            stopPlayback();
+        }
+    </script>
+</body>
+</html>
