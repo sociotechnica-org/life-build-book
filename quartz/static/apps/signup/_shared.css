@@ -1,0 +1,189 @@
+:root {
+  --color-bg: #f4ece0;
+  --color-bg-warm: rgba(244, 236, 224, 0.9);
+  --color-bg-card: rgba(255, 249, 240, 0.96);
+  --color-paper: #f4ece0;
+  --color-paper-dark: #e8dcc8;
+  --color-ink: #2c2416;
+  --color-ink-light: #4a3f2f;
+  --color-cream-muted: #5b5143;
+  --color-amber: #d4a052;
+  --color-amber-deep: #b8863a;
+  --color-red-deep: #8b3a3a;
+  --font-hand: 'Special Elite', monospace;
+  --font-serif: 'Source Serif 4', Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-serif);
+  background-color: #f1e6d3;
+  background-image: url("/apps/assets/lifemap/canvas-primary.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  color: var(--color-ink);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  line-height: 1.6;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.signup-container {
+  width: min(560px, 100%);
+  position: relative;
+  z-index: 1;
+}
+
+.signup-card {
+  background: var(--color-bg-card);
+  border: 2px solid rgba(44, 36, 22, 0.15);
+  border-radius: 10px;
+  padding: 2.5rem;
+  box-shadow: 6px 6px 0 var(--color-paper-dark), 12px 12px 30px rgba(0, 0, 0, 0.18);
+  transform: rotate(-0.2deg);
+}
+
+.tier-badge {
+  font-family: var(--font-hand);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-amber-deep);
+  margin-bottom: 0.75rem;
+}
+
+h1 {
+  font-family: var(--font-hand);
+  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+  font-weight: 400;
+  margin-bottom: 0.75rem;
+  color: var(--color-ink);
+}
+
+.welcome-text {
+  color: var(--color-ink-light);
+  font-size: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.signup-form {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.form-group {
+  display: grid;
+  gap: 0.4rem;
+}
+
+label {
+  font-family: var(--font-hand);
+  font-size: 0.85rem;
+  color: var(--color-ink-light);
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 6px;
+  border: 2px solid rgba(44, 36, 22, 0.2);
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--color-ink);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-amber);
+  box-shadow: 0 0 0 3px rgba(212, 160, 82, 0.25);
+}
+
+.optional {
+  font-weight: 400;
+  opacity: 0.7;
+  font-size: 0.8rem;
+}
+
+.submit-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+button[type="submit"] {
+  font-family: var(--font-hand);
+  font-size: 1rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 6px;
+  border: 2px solid var(--color-ink);
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  transform: rotate(-0.6deg);
+}
+
+button[type="submit"]:hover {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  transform: rotate(0deg) translateY(-1px);
+}
+
+.helper-text {
+  color: var(--color-ink-light);
+  font-size: 0.85rem;
+}
+
+.back-link {
+  display: inline-flex;
+  margin-top: 1.5rem;
+  font-family: var(--font-hand);
+  font-size: 0.9rem;
+  color: var(--color-ink-light);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.back-link:hover {
+  color: var(--color-amber-deep);
+  border-bottom-color: var(--color-amber);
+}
+
+@media (max-width: 600px) {
+  .signup-card {
+    padding: 2rem 1.6rem;
+  }
+}
