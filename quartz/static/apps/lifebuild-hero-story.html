@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LifeBuild — Resume Your Reign</title>
+    <title>LifeBuild — Reclaim Your Sovereignty</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,400&family=Special+Elite&display=swap" rel="stylesheet">
@@ -218,14 +218,14 @@
 
         .hero-video-container {
             width: 100%;
-            max-width: 980px;
+            max-width: 1180px;
             margin: 0 auto 2.5rem;
             position: relative;
         }
 
         .hero-video-frame {
             position: relative;
-            border-radius: 10px;
+            border-radius: 8px;
             overflow: hidden;
             box-shadow:
                 0 4px 20px rgba(0,0,0,0.4),
@@ -268,15 +268,30 @@
         }
 
         .hero-story-frame {
+            position: relative;
             width: 100%;
             height: auto;
             display: block;
             background: #f4ece0;
-            transition: opacity 0.6s ease;
+            transition: opacity 0.9s ease;
         }
 
-        .hero-story-frame.is-fading {
-            opacity: 0.75;
+        .hero-story-frame.is-overlay {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .hero-story-frame.is-overlay.is-active {
+            opacity: 1;
+        }
+
+        .hero-story-frame.is-overlay.is-resetting {
+            transition: none;
         }
 
         .hero-story-overlay {
@@ -287,6 +302,20 @@
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
+        }
+
+        .story-replay {
+            align-self: flex-start;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(6px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .story-replay.is-visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
         }
 
         .story-controls {
@@ -956,7 +985,19 @@
             }
 
             .hero-video-container {
-                margin-bottom: 2rem;
+                width: 100vw;
+                margin: 0 calc(50% - 50vw) 2rem;
+                max-width: none;
+            }
+
+            .hero-video-frame {
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            .hero-video-frame::before,
+            .hero-video-frame::after {
+                display: none;
             }
 
             .hero-story-overlay {
@@ -1047,20 +1088,14 @@
 
     <section class="hero" id="hero">
         <div class="container">
+            <h2>You Used to Command Realms</h2>
             <div class="hero-video-container">
                 <div class="hero-video-frame">
                     <div class="hero-story">
                         <img id="heroStoryFrame" src="./lifebuild-hero-story/hero-story-1.png" alt="Saturday morning at the desk, building a kingdom" class="hero-story-frame">
+                        <img id="heroStoryOverlayFrame" src="./lifebuild-hero-story/hero-story-1.png" alt="" class="hero-story-frame is-overlay" aria-hidden="true">
                         <div class="hero-story-overlay">
-                            <div class="story-controls">
-                                <button class="story-btn" id="heroStoryToggle" type="button" aria-pressed="false">Play</button>
-                                <button class="story-btn" id="heroStoryPrev" type="button">Prev</button>
-                                <div class="story-progress">
-                                    <input type="range" id="heroStorySlider" min="1" max="8" step="1" value="1" aria-label="Story frame selector">
-                                    <div class="story-meta"><span id="heroStoryIndex">1</span> / <span id="heroStoryTotal">8</span></div>
-                                </div>
-                                <button class="story-btn" id="heroStoryNext" type="button">Next</button>
-                            </div>
+                            <button class="story-btn story-replay" id="heroStoryReplay" type="button">Replay</button>
                         </div>
                     </div>
                 </div>
@@ -1071,7 +1106,7 @@
 
     <section class="how-it-works" id="how-it-works">
         <div class="container">
-            <h2>Resume Your Reign</h2>
+            <h2>Reclaim Your Sovereignty</h2>
             <p class="how-subtitle">a living map of your world, an AI corps at your command.</p>
             <div class="how-it-works-grid">
                 <div class="how-card">
@@ -1334,37 +1369,54 @@
         ];
 
         const frameImage = document.getElementById("heroStoryFrame");
-        const toggleButton = document.getElementById("heroStoryToggle");
-        const prevButton = document.getElementById("heroStoryPrev");
-        const nextButton = document.getElementById("heroStoryNext");
-        const slider = document.getElementById("heroStorySlider");
-        const indexLabel = document.getElementById("heroStoryIndex");
-        const totalLabel = document.getElementById("heroStoryTotal");
+        const overlayImage = document.getElementById("heroStoryOverlayFrame");
+        const replayButton = document.getElementById("heroStoryReplay");
 
         let currentIndex = 0;
         let isPlaying = false;
         let timer = null;
-        const frameDuration = 1400;
-
-        totalLabel.textContent = frames.length.toString();
+        const frameDuration = 2800;
+        const autoStartDelay = 2000;
 
         const updateFrame = (index) => {
             const safeIndex = (index + frames.length) % frames.length;
             const frame = frames[safeIndex];
 
-            frameImage.classList.add("is-fading");
-            window.setTimeout(() => {
+            if (!overlayImage) {
                 frameImage.src = frame.src;
                 frameImage.alt = frame.alt;
-                frameImage.addEventListener("load", () => {
-                    frameImage.classList.remove("is-fading");
+            } else {
+                if (overlayImage.classList.contains("is-active")) {
+                    overlayImage.classList.add("is-resetting");
+                    overlayImage.classList.remove("is-active");
+                    overlayImage.offsetHeight;
+                    overlayImage.classList.remove("is-resetting");
+                }
+
+                const onTransitionEnd = () => {
+                    frameImage.src = frame.src;
+                    frameImage.alt = frame.alt;
+                    overlayImage.classList.add("is-resetting");
+                    overlayImage.classList.remove("is-active");
+                    overlayImage.offsetHeight;
+                    overlayImage.classList.remove("is-resetting");
+                    overlayImage.removeEventListener("transitionend", onTransitionEnd);
+                };
+
+                overlayImage.addEventListener("transitionend", onTransitionEnd);
+                overlayImage.src = frame.src;
+                overlayImage.alt = frame.alt;
+                overlayImage.addEventListener("load", () => {
+                    window.requestAnimationFrame(() => {
+                        overlayImage.classList.add("is-active");
+                    });
                 }, { once: true });
-            }, 80);
+            }
 
             currentIndex = safeIndex;
-            slider.value = (safeIndex + 1).toString();
-            indexLabel.textContent = (safeIndex + 1).toString();
-            nextButton.textContent = currentIndex === frames.length - 1 ? "Replay" : "Next";
+            if (replayButton && currentIndex < frames.length - 1) {
+                replayButton.classList.remove("is-visible");
+            }
         };
 
         const stopPlayback = () => {
@@ -1373,8 +1425,9 @@
                 timer = null;
             }
             isPlaying = false;
-            toggleButton.textContent = "Play";
-            toggleButton.setAttribute("aria-pressed", "false");
+            if (replayButton) {
+                replayButton.classList.add("is-visible");
+            }
         };
 
         const startPlayback = () => {
@@ -1382,8 +1435,9 @@
                 clearInterval(timer);
             }
             isPlaying = true;
-            toggleButton.textContent = "Pause";
-            toggleButton.setAttribute("aria-pressed", "true");
+            if (replayButton) {
+                replayButton.classList.remove("is-visible");
+            }
             timer = window.setInterval(() => {
                 if (currentIndex >= frames.length - 1) {
                     stopPlayback();
@@ -1393,37 +1447,20 @@
             }, frameDuration);
         };
 
-        toggleButton.addEventListener("click", () => {
-            if (isPlaying) {
-                stopPlayback();
-            } else {
-                startPlayback();
-            }
-        });
-
-        prevButton.addEventListener("click", () => {
-            stopPlayback();
-            updateFrame(currentIndex - 1);
-        });
-
-        nextButton.addEventListener("click", () => {
-            stopPlayback();
-            if (currentIndex >= frames.length - 1) {
+        if (replayButton) {
+            replayButton.addEventListener("click", () => {
+                currentIndex = 0;
                 updateFrame(0);
                 startPlayback();
-            } else {
-                updateFrame(currentIndex + 1);
-            }
-        });
-
-        slider.addEventListener("input", (event) => {
-            stopPlayback();
-            const value = parseInt(event.target.value, 10);
-            updateFrame(value - 1);
-        });
+            });
+        }
 
         const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-        if (prefersReducedMotion.matches) {
+        if (!prefersReducedMotion.matches) {
+            window.setTimeout(() => {
+                startPlayback();
+            }, autoStartDelay);
+        } else {
             stopPlayback();
         }
 
