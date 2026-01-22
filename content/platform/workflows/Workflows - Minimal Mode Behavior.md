@@ -1,3 +1,0 @@
-# Workflows - Minimal Mode Behavior
-
-Minimal mode populates Bronze stack with only system-driven necessities: tasks with approaching due dates, planted tasks from Maintenance Loops that are due, and small Critical Response items requiring immediate attention. Stack size varies naturally (0-50+ tasks) based on life circumstances. Appropriate for high-energy weeks focused elsewhere or chaotic weeks where necessities are substantial.
