@@ -8,7 +8,7 @@ import * as Plugin from "./quartz/plugins"
  */
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "The Life Build Book",
+    pageTitle: "LifeBuild Context Library",
     pageTitleSuffix: "",
     enableSPA: true,
     enablePopovers: true,
