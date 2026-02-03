@@ -40,15 +40,42 @@ export const defaultContentPageLayout: PageLayout = {
     }),
     Component.Explorer({
       sortFn: (a, b) => {
-        // Custom sort to place 'platform' above 'features'
         const aName = a.displayName.toLowerCase()
         const bName = b.displayName.toLowerCase()
 
-        // Both are folders
+        // Define custom ordering for specific folder hierarchies
+        const productOrder = ["zones", "primitives", "systems", "agents", "components"]
+        const rationaleOrder = ["foundation", "needs", "strategies", "principles"]
+        const zonesOrder = ["life map", "strategy studio", "archives"]
+
+        // Both are folders - apply custom ordering
         if (a.isFolder && b.isFolder) {
-          // Platform comes first
-          if (aName === "platform" && bName === "features") return -1
-          if (aName === "features" && bName === "platform") return 1
+          // Check Product children
+          const aProductIdx = productOrder.indexOf(aName)
+          const bProductIdx = productOrder.indexOf(bName)
+          if (aProductIdx !== -1 && bProductIdx !== -1) {
+            return aProductIdx - bProductIdx
+          }
+          if (aProductIdx !== -1) return -1
+          if (bProductIdx !== -1) return 1
+
+          // Check Rationale children
+          const aRationaleIdx = rationaleOrder.indexOf(aName)
+          const bRationaleIdx = rationaleOrder.indexOf(bName)
+          if (aRationaleIdx !== -1 && bRationaleIdx !== -1) {
+            return aRationaleIdx - bRationaleIdx
+          }
+          if (aRationaleIdx !== -1) return -1
+          if (bRationaleIdx !== -1) return 1
+
+          // Check Zones children
+          const aZonesIdx = zonesOrder.indexOf(aName)
+          const bZonesIdx = zonesOrder.indexOf(bName)
+          if (aZonesIdx !== -1 && bZonesIdx !== -1) {
+            return aZonesIdx - bZonesIdx
+          }
+          if (aZonesIdx !== -1) return -1
+          if (bZonesIdx !== -1) return 1
 
           // Otherwise alphabetical
           return a.displayName.localeCompare(b.displayName, undefined, {
@@ -97,15 +124,42 @@ export const defaultListPageLayout: PageLayout = {
     }),
     Component.Explorer({
       sortFn: (a, b) => {
-        // Custom sort to place 'platform' above 'features'
         const aName = a.displayName.toLowerCase()
         const bName = b.displayName.toLowerCase()
 
-        // Both are folders
+        // Define custom ordering for specific folder hierarchies
+        const productOrder = ["zones", "primitives", "systems", "agents", "components"]
+        const rationaleOrder = ["foundation", "needs", "strategies", "principles"]
+        const zonesOrder = ["life map", "strategy studio", "archives"]
+
+        // Both are folders - apply custom ordering
         if (a.isFolder && b.isFolder) {
-          // Platform comes first
-          if (aName === "platform" && bName === "features") return -1
-          if (aName === "features" && bName === "platform") return 1
+          // Check Product children
+          const aProductIdx = productOrder.indexOf(aName)
+          const bProductIdx = productOrder.indexOf(bName)
+          if (aProductIdx !== -1 && bProductIdx !== -1) {
+            return aProductIdx - bProductIdx
+          }
+          if (aProductIdx !== -1) return -1
+          if (bProductIdx !== -1) return 1
+
+          // Check Rationale children
+          const aRationaleIdx = rationaleOrder.indexOf(aName)
+          const bRationaleIdx = rationaleOrder.indexOf(bName)
+          if (aRationaleIdx !== -1 && bRationaleIdx !== -1) {
+            return aRationaleIdx - bRationaleIdx
+          }
+          if (aRationaleIdx !== -1) return -1
+          if (bRationaleIdx !== -1) return 1
+
+          // Check Zones children
+          const aZonesIdx = zonesOrder.indexOf(aName)
+          const bZonesIdx = zonesOrder.indexOf(bName)
+          if (aZonesIdx !== -1 && bZonesIdx !== -1) {
+            return aZonesIdx - bZonesIdx
+          }
+          if (aZonesIdx !== -1) return -1
+          if (bZonesIdx !== -1) return 1
 
           // Otherwise alphabetical
           return a.displayName.localeCompare(b.displayName, undefined, {
