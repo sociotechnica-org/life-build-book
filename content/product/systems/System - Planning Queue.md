@@ -32,11 +32,6 @@ Core system. Planning Queue distinguishes "in development" from "ready to priori
 **Not included:**
 - Projects in Prioritized state (Stage 4) — those live in [[System - Priority Queue Architecture]]
 
-**Visibility:**
-- Accessible from Strategy Studio
-- Shows development stage for each project
-- Click to open in Drafting Room for continued work
-
 **Flow:**
 ```
 New idea → Identified (Stage 1) → Scoped (Stage 2) → Drafted (Stage 3) → Prioritized (Stage 4)

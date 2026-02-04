@@ -45,5 +45,10 @@ Core support space. Drafting Room process refined as four-stage creation matured
 - "Create project" from anywhere
 - Quick capture (Stage 1 only, return later)
 - Triggered by life event or advisor suggestion
+- Click item in Planning Queue to continue work
+
+**Planning Queue visibility:**
+- Shows development stage for each project (Identified, Scoped, Drafted)
+- Click any project to open in Drafting Room for continued work
 
 **Output:** Completed project in Planning state, ready for Priority Queue.

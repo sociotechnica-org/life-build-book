@@ -7,7 +7,7 @@ The spatial grouping behavior where directors place related hex tiles adjacent t
 ## WHERE: Ecosystem
 
 - Parent: [[Feature - Hex Grid]]
-- Implements: [[System - Bidirectional Loop]] — arrangement reflects and shapes understanding
+- Implements: [[Principle - Bidirectional Loop]] — arrangement reflects and shapes understanding
 - Implements: [[Strategy - Spatial Visibility]] — spatial proximity carries meaning
 - Implements: [[Principle - Visual Recognition]] — "my health stuff is upper-left"
 - Related: [[Hex Grid - Campfire]] — first clusters form around origin
