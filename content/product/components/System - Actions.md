@@ -10,7 +10,7 @@ The three operations available for planted systems: Hibernate (pause temporarily
 - Available in: [[Feature - System Board]] — action buttons in system interface
 - Upgrade spawns: [[Feature - Project]] — Silver project for improvement
 - Uproot moves to: [[Feature - Archives]] — full history preserved
-- Affects: [[Feature - Smoke Signals]] — hibernating systems don't trigger missed-cycle signals
+- Affects: [[System - Smoke Signals]] — hibernating systems don't trigger missed-cycle signals
 
 ## WHY: Rationale
 

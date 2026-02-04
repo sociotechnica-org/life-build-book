@@ -13,7 +13,8 @@ Agents with defined jobs, permissions, and coordination capabilities provide lev
 - Core team: [[Agent - Jarvis]], [[Agent - Mesa]], [[Agent - Marvin]], [[Agent - Cameron]], [[Agent - Devin]], [[Agent - Conan]]
 - Category advisors: [[Agent - Category Advisor (Concept)]], [[Agent - Maya]], [[Agent - Atlas]], [[Agent - Brooks]], [[Agent - Grace]], [[Agent - Reed]], [[Agent - Finn]], [[Agent - Indie]], [[Agent - Sage]]
 - Systems: [[System - Service Levels]], [[System - Knowledge Framework]], [[System - Processing Layer]]
-- Features: [[Feature - Elicitation]], [[Feature - Smoke Signals]], [[Feature - The Charter]], [[Feature - The Agenda]]
+- Systems: [[System - Progressive Knowledge Capture]], [[System - Smoke Signals]]
+- Features: [[Feature - The Charter]], [[Feature - The Agenda]]
 
 ## WHY: Belief
 

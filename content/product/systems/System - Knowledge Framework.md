@@ -9,8 +9,8 @@ The structured organization of everything the AI team learns about a director, o
 - Zone: Cross-zone — knowledge informs all agents
 - Implements: [[Principle - Earn Don't Interrogate]] — acquisition philosophy
 - Advances: [[Strategy - AI as Teammates]] — knowledge enables relationship depth
-- Depends on: [[Feature - Elicitation]] — how knowledge is acquired
-- Depends on: [[Feature - Smoke Signals]] — pattern detection
+- Depends on: [[System - Progressive Knowledge Capture]] — how knowledge is acquired
+- Depends on: [[System - Smoke Signals]] — pattern detection
 - Feeds: [[System - Service Levels]] — knowledge depth determines service quality
 - Used by: [[Agent - Jarvis]] — orchestrates knowledge gathering
 

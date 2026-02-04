@@ -2,38 +2,50 @@
 
 ## WHAT: Definition
 
-The mechanism by which projects become Work at Hand — the items currently on The Table receiving the director's active focus. Selection happens through the Strategy Studio flow; activation places items on The Table.
+The mechanism that produces and maintains a director's active weekly commitment — selecting up to one Gold project, up to one Silver project, and a Bronze task stack that together represent "what matters this week." The output appears on The Table.
 
 ## WHERE: Ecosystem
 
-- Zone: [[Feature - Strategy Studio]] — selection flow happens here
-- Implements: [[Principle - Protect Transformation]] — 1 Gold + 1 Silver maximum
-- Implements: [[Principle - Empty Slots Strategic]] — empty slots are valid choices
-- Depends on: [[System - Priority Queue Architecture]] — source of candidates
-- Governs: [[Feature - Work at Hand]] — the result of selection
-- Governs: [[Feature - The Table]] — displays selected items
-- Governs: [[Feature - Mid-Week Adaptation]] — changing selections mid-week
+- Displayed on: [[Feature - The Table]] — the UI for weekly commitment
+- Selected via: [[Feature - Weekly Planning]] in [[Feature - Sorting Room]]
+- Agent: [[Agent - Cameron]] — guides selection
+- Sources from: [[System - Priority Queue Architecture]] — candidate pool
+- Modified by: [[System - Adaptation]] — mid-cycle changes
+- Implements: [[System - Three-Stream Portfolio]] — three-stream structure
+- Implements: [[Principle - Protect Transformation]] — Gold/Silver protected from Bronze overflow
 
 ## WHY: Rationale
 
-- Strategy: [[Strategy - Superior Process]] — structured weekly commitment
-- Principle: [[Principle - Plans Are Hypotheses]] — weekly plan is a bet, not a contract
-- Decision: Weekly cadence balances planning overhead against adaptation flexibility. Longer cycles reduce planning cost but delay adaptation; shorter cycles increase overhead.
+- Strategy: [[Strategy - Superior Process]] — weekly commitment creates focus
+- Principle: [[Principle - Protect Transformation]] — stream constraints enforced
+- Principle: [[Principle - Empty Slots Strategic]] — empty positions are valid choices
+- Driver: Directors need clarity on "what am I working on this week?" Weekly Priority answers that question.
 
 ## WHEN: Timeline
 
-Core rhythm. The weekly selection flow is how directors engage with LifeBuild's planning infrastructure.
+Core system. The weekly commitment cycle is LifeBuild's fundamental rhythm.
 
 ## HOW: Implementation
 
-**Selection flow:**
+**Composition:**
+- Gold position: 0-1 expansion projects (Purpose = "Moving forward")
+- Silver position: 0-1 capacity projects (Purpose = "Building leverage")
+- Bronze position: Variable task stack (controlled by [[System - Bronze Operations]])
 
-1. Council Chamber: Jarvis facilitates strategic conversation
-2. Sorting Room: Cameron presents Priority Queue through stream filters
-3. Director selects: Up to 1 Gold, up to 1 Silver, Bronze mode setting
-4. Roster Room: Assign Workers, confirm plan
-5. Activation: Selected items → Work at Hand, appear on The Table
+**Selection timing:**
+- Selected during Weekly Planning (typically Friday or Sunday)
+- Valid for one week
+- Reselected each planning cycle
 
-**System load as baseline:** Before project selection, planted systems are already generating Bronze work. The question isn't "what should I work on?" but "given what my systems already need, what else can I take on?"
+**Constraints:**
+- Maximum 1 Gold, 1 Silver (hard limit)
+- Bronze has no maximum (mode-controlled)
+- Cross-stream placement blocked
 
-**Mid-week flexibility:** Plans aren't locked. Directors can pause, adjust Bronze mode, or create emergency projects when circumstances change.
+**State transitions:**
+- Project selected → appears on The Table → enhanced treatment on Life Map
+- Project completed → leaves The Table → position opens
+- Project paused → returns to Priority Queue top → position opens
+
+**The central question:**
+Weekly Priority answers "what matters this week?" Everything else is candidate, context, or history.

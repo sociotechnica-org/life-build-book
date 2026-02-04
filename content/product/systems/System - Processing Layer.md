@@ -8,7 +8,7 @@ The deterministic computation engine that transforms raw director data into Stat
 
 - Zone: Backend — invisible to directors
 - Implements: [[System - Knowledge Framework]] — processes knowledge into summaries
-- Implements: [[Feature - Smoke Signals]] — detects signal conditions
+- Implements: [[System - Smoke Signals]] — detects signal conditions
 - Feeds: All agents — they receive summaries, not raw data
 - Related: [[System - Service Levels]] — processing enables service quality
 

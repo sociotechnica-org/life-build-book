@@ -2,7 +2,7 @@
 
 ## WHAT: Definition
 
-The visible progression system that tracks and displays a director's journey through Service Levels 0-5 — showing current level, progress toward next level, and unlocked capabilities. Service Level Progression motivates continued engagement by making growth visible.
+The display showing a director's current Service Level, progress toward the next level, and capabilities unlocked at each stage — making the deepening relationship with LifeBuild visible and motivating continued engagement.
 
 ## WHERE: Ecosystem
 

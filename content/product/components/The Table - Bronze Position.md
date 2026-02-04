@@ -13,7 +13,7 @@ The rightmost position on The Table, displaying a stack of operational tasks —
 - Sources: [[Feature - Project]] (maintenance), [[Feature - System]] (generated tasks)
 - Configured in: [[Feature - Sorting Room]] — mode selection with [[Agent - Cameron]]
 - Visual: [[System - Visual Language]] — warm bronze/copper color accent
-- Related: [[Feature - Bronze Operations]] — full operational workflow
+- Related: [[System - Bronze Operations]] — full operational workflow
 
 ## WHY: Rationale
 

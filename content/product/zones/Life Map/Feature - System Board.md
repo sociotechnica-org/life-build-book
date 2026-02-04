@@ -47,4 +47,4 @@ Core to Life Map design. System Board parallels Project Board for the other tool
 - Yellow: Attention — some misses, declining completion
 - Red: Struggling — frequent misses, system may need adjustment
 
-**Smoke Signals:** If system health degrades, [[Feature - Smoke Signals]] triggers alerts visible from Life Map.
+**Smoke Signals:** If system health degrades, [[System - Smoke Signals]] triggers alerts visible from Life Map.

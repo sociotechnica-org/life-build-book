@@ -2,15 +2,15 @@
 
 ## WHAT: Definition
 
-Eight specialized rooms in the Strategy Studio, one for each Life Category — where directors engage in domain-specific strategic planning with their Category Advisor. Each studio focuses on one area of life: Health, Purpose, Finances, Relationships, Home, Community, Leisure, Personal Growth.
+Domain-specific planning spaces within the Strategy Studio — one studio for each Life Category where directors engage their Category Advisor for specialized strategic conversation. All studios share identical structure; differentiation is domain expertise and advisor personality.
 
 ## WHERE: Ecosystem
 
 - Parent: [[Feature - Strategy Studio]]
-- Agents: [[Agent - Maya]] (Health), [[Agent - Atlas]] (Purpose), [[Agent - Brooks]] (Finances), [[Agent - Grace]] (Relationships), [[Agent - Reed]] (Home), [[Agent - Finn]] (Community), [[Agent - Indie]] (Leisure), [[Agent - Sage]] (Personal Growth)
 - Implements: [[Strategy - AI as Teammates]] — domain specialists
 - Implements: [[System - Knowledge Framework]] — category-specific knowledge
-- Related: [[Feature - Project Board]] — in-context advisor access
+- Implements: [[System - Progressive Knowledge Capture]] — advisors learn domain context
+- Related: [[Feature - Project Board]] — in-context advisor access available
 
 ## WHY: Rationale
 
@@ -24,23 +24,25 @@ Core to Strategy Studio design. Individual advisor personalities develop as syst
 
 ## HOW: Implementation
 
-**Eight rooms:**
-
-1. Health & Well-Being Studio (Maya)
-2. Purpose & Spirituality Studio (Atlas)
-3. Financial Resources Studio (Brooks)
-4. Relationships Studio (Grace)
-5. Home & Environment Studio (Reed)
-6. Community & Contributions Studio (Finn)
-7. Leisure & Lifestyle Studio (Indie)
-8. Personal Growth & Learning Studio (Sage)
-
-**Per-studio contents:**
-
+**Studio structure (identical across all eight):**
 - Conversation thread with category advisor
 - Category-level overview (projects, systems in this category)
 - Strategic notes and decisions
+- History preserved across sessions
 
-**Dual access:** Directors reach advisors here OR in-context on Project Boards. History syncs regardless of where conversation originated.
+**The eight studios:**
 
-**Customization note:** If director renames/replaces default categories, associated studio pauses until system evolves to support custom coverage.
+| Category | Studio | Advisor |
+|----------|--------|---------|
+| Health & Well-Being | Health Studio | [[Agent - Maya]] |
+| Purpose & Spirituality | Purpose Studio | [[Agent - Atlas]] |
+| Financial Resources | Finances Studio | [[Agent - Brooks]] |
+| Relationships | Relationships Studio | [[Agent - Grace]] |
+| Home & Environment | Home Studio | [[Agent - Reed]] |
+| Community & Contributions | Community Studio | [[Agent - Finn]] |
+| Leisure & Lifestyle | Leisure Studio | [[Agent - Indie]] |
+| Personal Growth & Learning | Growth Studio | [[Agent - Sage]] |
+
+**Dual access:** Directors reach advisors here OR in-context on Project Boards. History syncs regardless of entry point.
+
+**Customization note:** If director renames or replaces default categories, associated studio pauses until system evolves to support custom coverage.
