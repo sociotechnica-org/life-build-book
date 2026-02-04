@@ -44,4 +44,3 @@ Foundational architecture. The queue structure enables the entire prioritization
 - Silver: Leverage-weighted priority score
 - Bronze: Urgency-weighted priority score
 
-Directors can manually reorder within streams. The score suggests; the director decides.

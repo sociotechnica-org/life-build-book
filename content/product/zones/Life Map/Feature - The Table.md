@@ -13,6 +13,7 @@ A persistent priority spotlight that sits at the top of the Life Map, displaying
 - Implements: [[Principle - Visibility Creates Agency]] — priorities always visible
 - Implements: [[Principle - Protect Transformation]] — structural separation of streams
 - Depends on: [[Feature - Sorting Room]] — where selections are made
+- Modified by: [[Feature - Adaptation]] — mid-week changes
 - Depends on: [[Feature - Project]] — Gold/Silver positions display projects
 - Depends on: [[Feature - Task]] — Bronze position displays task stack
 - Components: [[The Table - Gold Position]], [[The Table - Silver Position]], [[The Table - Bronze Position]]

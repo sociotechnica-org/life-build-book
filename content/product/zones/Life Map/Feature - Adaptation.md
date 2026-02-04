@@ -1,13 +1,13 @@
-# System - Adaptation
+# Feature - Adaptation
 
 ## WHAT: Definition
 
-The mechanics for modifying commitments after planning — pausing active projects, promoting replacements, adjusting Bronze mode, or inserting emergency work. Adaptation allows plans to flex without abandoning structure.
+The interface for modifying weekly commitments after planning — pausing active projects, promoting replacements, adjusting Bronze mode, or inserting emergency work. Directors interact with The Table and Project Boards to adapt their plans as circumstances change.
 
 ## WHERE: Ecosystem
 
 - Modifies: [[Feature - The Table]] — changes what's displayed
-- Triggered via: [[Feature - The Table]] (position interactions), [[Feature - Project Board]] (pause action)
+- Accessed via: [[Feature - The Table]] (position interactions), [[Feature - Project Board]] (pause action)
 - Agent: [[Agent - Marvin]] — supports transitions
 - Returns to: [[System - Priority Queue Architecture]] — paused items requeue
 - Implements: [[Principle - Plans Are Hypotheses]] — adaptation is expected
@@ -21,37 +21,32 @@ The mechanics for modifying commitments after planning — pausing active projec
 
 ## WHEN: Timeline
 
-Core system. Adaptation mechanics designed to feel supportive, not punitive.
+Core feature. Adaptation mechanics designed to feel supportive, not punitive.
 
 ## HOW: Implementation
 
 **Pause-and-Replace (Gold/Silver positions):**
-- Any active project can be paused
+- Click project on The Table → Open Project Board
+- Click Pause button
 - Paused project returns to Priority Queue (top position)
-- Slot opens for replacement or intentional empty
-- Replacement options:
+- Slot opens; director chooses:
   1. Promote from queue — select different project
   2. Create emergency — new project jumps to position
   3. Leave empty — intentional gap for remainder of week
 
 **Mode Change (Bronze position):**
-- Gear icon on Bronze position
-- Mode change takes effect immediately
-- Stack adjusts to new mode rules
-- No penalty or friction
+- Click gear icon on Bronze position
+- Select new mode (Minimal/Target/Maximal)
+- If Target, adjust number
+- Stack updates immediately
 
 **Emergency Insertion:**
 - Created via Drafting Room with "urgent" flag
 - Skips normal queue positioning
-- Can go directly to Work at Hand position
+- Can go directly to The Table
 - Jarvis notes for pattern tracking
 
 **Tone throughout:**
 - Never "you failed to complete"
 - Always "circumstances changed"
 - Adaptation framed as responsive leadership
-
-**Pattern awareness:**
-- Jarvis notes adaptations for Week-in-Review
-- Frequent adaptation patterns may surface for discussion
-- Patterns are observations, not judgments

@@ -10,7 +10,7 @@ A weekly plan is a bet, not a commitment — adapting mid-week is engaged leader
 - Serves: [[Need - Autonomy]] — adaptation is leadership, not failure
 - Serves: [[Need - Competence]] — calibration improves over time
 - Advances: [[Strategy - Superior Process]]
-- Governs: [[System - Adaptation]], [[System - Weekly Priority]], [[Feature - Sorting Room]], [[Feature - Council Chamber]]
+- Governs: [[Feature - Adaptation]], [[System - Weekly Priority]], [[Feature - Sorting Room]], [[Feature - Council Chamber]]
 - Agents: [[Agent - Jarvis]] (tone in reviews), [[Agent - Cameron]] (priority adjustments)
 - Metrics: Calibration accuracy over time, not completion rate
 - Related: [[Principle - Empty Slots Strategic]] — both reject rigid planning

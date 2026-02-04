@@ -9,7 +9,7 @@ The spatial organization canvas that fills most of the Life Map — a tessellate
 - Zone: [[Feature - Life Map]] — the Hex Grid exists only in Life Map
 - Parent: [[Feature - Life Map]]
 - Implements: [[Strategy - Spatial Visibility]] — work has spatial position
-- Implements: [[System - Bidirectional Loop]] — arrangement reflects and shapes understanding
+- Implements: [[Principle - Bidirectional Loop]] — arrangement reflects and shapes understanding
 - Implements: [[Principle - Visual Recognition]] — spatial memory for navigation
 - Contains: [[Hex Grid - Hex Tile]] — individual project/system representations
 - Uses: [[System - Visual Language]] — colors, states, indicators

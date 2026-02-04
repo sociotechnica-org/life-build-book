@@ -46,4 +46,9 @@ Core to Strategy Studio design. Sorting Room mechanics refined as priority math 
 - Silver filter: Purpose = "Building leverage"
 - Bronze sources: Maintenance projects, system tasks, due-date items
 
+**Manual reordering:**
+- Directors can manually reorder projects within each stream
+- The score suggests; the director decides
+- Drag-and-drop to adjust position
+
 **Output:** Selections populate The Table. Director leaves Sorting Room with Work at Hand set.
