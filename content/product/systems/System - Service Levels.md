@@ -39,7 +39,7 @@ Architectural target. Current implementation targets Levels 1-2. Full ladder rep
 **Progression mechanism:**
 
 - Every conversation is an opportunity to learn
-- Knowledge acquired through [[Feature - Elicitation]] strategies
+- Knowledge acquired through [[System - Progressive Knowledge Capture]] strategies
 - Behavioral patterns emerge over time
 - Integration sourcing unlocks at higher trust levels
 

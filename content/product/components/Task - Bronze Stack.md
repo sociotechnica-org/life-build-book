@@ -10,7 +10,7 @@ The collection of operational tasks populating the Bronze position on The Table.
 - Displays in: [[The Table - Bronze Position]] — rightmost position on The Table
 - Sources: [[Feature - Project]] (maintenance projects), [[Feature - System]] (generated tasks)
 - Implements: [[System - Three-Stream Portfolio]] — Bronze stream mechanics
-- Related: [[Feature - Bronze Operations]] — full operational workflow
+- Related: [[System - Bronze Operations]] — full operational workflow
 
 ## WHY: Rationale
 

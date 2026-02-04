@@ -12,7 +12,7 @@ The ordered repository of all fully-planned work ready for activation, organized
 - Depends on: [[System - Pipeline Architecture]] — receives projects completing Stage 4
 - Governs: [[Feature - Three-Stream Filtering]] — how directors view the queue
 - Governs: [[Feature - Sorting Room]] — where selection from queue happens
-- Related: [[Feature - Planning Queue]] — upstream source of projects
+- Related: [[System - Planning Queue]] — upstream source of projects
 
 ## WHY: Rationale
 
