@@ -10,7 +10,7 @@ The Knowledge Manager who maintains the Archives — the repository where comple
 - Implements: [[Strategy - AI as Teammates]] — institutional memory
 - Implements: [[Principle - Compound Capability]] — knowledge compounds over time
 - Maintains: Completed projects, uprooted systems, historical data
-- Feeds: [[System - Knowledge Framework]] — historical patterns
+- Feeds: [[Standard - Knowledge Framework]] — historical patterns
 - Feeds: [[Agent - Jarvis]] — pattern analysis for strategic conversations
 
 ## WHY: Rationale

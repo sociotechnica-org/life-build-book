@@ -10,7 +10,7 @@ The director's Strategic Advisor and Chief of Staff. Jarvis facilitates strategi
 - Implements: [[Strategy - AI as Teammates]] — primary relationship agent
 - Implements: [[Principle - Earn Don't Interrogate]] — elicitation over interrogation
 - Implements: [[Principle - First 72 Hours]] — conducts onboarding
-- Orchestrates: [[System - Knowledge Framework]] — synthesizes patterns across agents
+- Orchestrates: [[Standard - Knowledge Framework]] — synthesizes patterns across agents
 - Maintains: [[Feature - The Charter]] — living strategic document
 - Uses: [[Feature - The Agenda]] — drives session structure
 - Coordinates: All other agents — receives reports, identifies gaps
@@ -23,7 +23,7 @@ The director's Strategic Advisor and Chief of Staff. Jarvis facilitates strategi
 
 ## WHEN: Timeline
 
-Core agent from initial design. Jarvis's role expands as [[System - Service Levels]] progress — from basic strategic facilitation at Level 1 to genuine partnership at Level 4+.
+Core agent from initial design. Jarvis's role expands as [[Standard - Service Levels]] progress — from basic strategic facilitation at Level 1 to genuine partnership at Level 4+.
 
 ## HOW: Implementation
 

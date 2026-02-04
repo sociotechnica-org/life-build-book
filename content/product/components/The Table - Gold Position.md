@@ -11,7 +11,7 @@ The leftmost position on The Table, displaying a single expansion project — wo
 - Implements: [[Principle - Protect Transformation]] — reserved slot for expansion work
 - Implements: [[Principle - Empty Slots Strategic]] — empty Gold is valid choice
 - Selected in: [[Feature - Sorting Room]] with [[Agent - Cameron]]
-- Visual: [[System - Visual Language]] — deep amber/gold color accent
+- Visual: [[Standard - Visual Language]] — deep amber/gold color accent
 
 ## WHY: Rationale
 

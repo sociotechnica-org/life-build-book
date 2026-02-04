@@ -8,11 +8,11 @@ The rightmost position on The Table, displaying a stack of operational tasks —
 
 - Parent: [[Feature - The Table]]
 - Displays: [[Task - Bronze Stack]] — collection of operational tasks
-- Implements: [[System - Three-Stream Portfolio]] — Bronze stream mechanics
+- Implements: [[Standard - Three-Stream Portfolio]] — Bronze stream mechanics
 - Implements: [[Principle - Protect Transformation]] — Bronze contained to its own position
 - Sources: [[Feature - Project]] (maintenance), [[Feature - System]] (generated tasks)
 - Configured in: [[Feature - Sorting Room]] — mode selection with [[Agent - Cameron]]
-- Visual: [[System - Visual Language]] — warm bronze/copper color accent
+- Visual: [[Standard - Visual Language]] — warm bronze/copper color accent
 - Related: [[System - Bronze Operations]] — full operational workflow
 
 ## WHY: Rationale

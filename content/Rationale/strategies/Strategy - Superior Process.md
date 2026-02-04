@@ -10,7 +10,7 @@ Applying structured frameworks — from basic organization through sophisticated
 - Serves: [[Need - Competence]] — directors complete what they commit to
 - Serves: [[Need - Autonomy]] (secondary) — structured process increases control
 - Implementing principles: [[Principle - Protect Transformation]], [[Principle - Plans Are Hypotheses]], [[Principle - Empty Slots Strategic]]
-- Governs: [[System - Three-Stream Portfolio]], [[System - Priority Queue Architecture]], [[System - Pipeline Architecture]], [[System - Four-Stage Creation]], [[System - Weekly Priority]], [[System - Priority Score Calculation]]
+- Governs: [[Standard - Three-Stream Portfolio]], [[System - Priority Queue Architecture]], [[System - Pipeline Architecture]], [[System - Four-Stage Creation]], [[System - Weekly Priority]], [[Standard - Priority Score]]
 - Systems: [[System - Bronze Operations]], [[Feature - Adaptation]]
 - Features: [[Feature - The Table]], [[Feature - Three-Stream Filtering]]
 - Rooms: [[Feature - Council Chamber]], [[Feature - Drafting Room]], [[Feature - Sorting Room]], [[Feature - Roster Room]]

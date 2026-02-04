@@ -10,7 +10,7 @@ The mechanism that implements the First 72 Hours principle — guiding new direc
 - Entry point: [[Hex Grid - Campfire]] — where onboarding begins
 - Agents: [[Agent - Mesa]] (first contact), [[Agent - Jarvis]] (Charter creation), [[Agent - Marvin]] (first projects)
 - Creates: [[Feature - The Charter]] — initial version during onboarding
-- Feeds: [[System - Service Levels]] — Level 0 to Level 1 progression
+- Feeds: [[Standard - Service Levels]] — Level 0 to Level 1 progression
 
 ## WHY: Rationale
 

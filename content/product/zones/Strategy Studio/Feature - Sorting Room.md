@@ -9,7 +9,7 @@ Cameron's dedicated space in the Strategy Studio — where directors make priori
 - Parent: [[Feature - Strategy Studio]]
 - Agent: [[Agent - Cameron]] — priority coordinator
 - Uses: [[System - Priority Queue Architecture]] — source of candidates
-- Uses: [[System - Priority Score Calculation]] — ranking logic
+- Uses: [[Standard - Priority Score]] — ranking logic
 - Uses: [[Feature - Three-Stream Filtering]] — filtered views
 - Selects: [[Feature - The Table]] positions — Gold, Silver, Bronze mode
 - Implements: [[Strategy - Superior Process]] — structured prioritization

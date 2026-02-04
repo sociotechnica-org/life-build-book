@@ -6,7 +6,7 @@ The display showing a director's current Service Level, progress toward the next
 
 ## WHERE: Ecosystem
 
-- Implements: [[System - Service Levels]] — UI for the progression system
+- Implements: [[Standard - Service Levels]] — UI for the progression system
 - Implements: [[Principle - Compound Capability]] — visible compounding
 - Implements: [[Strategy - AI as Teammates]] — agents improve with levels
 - Visible in: [[Feature - Council Chamber]] — Jarvis discusses progression
@@ -14,7 +14,7 @@ The display showing a director's current Service Level, progress toward the next
 
 ## WHY: Rationale
 
-- System: [[System - Service Levels]] — levels need visibility to motivate
+- System: [[Standard - Service Levels]] — levels need visibility to motivate
 - Principle: [[Principle - Compound Capability]] — seeing progress reinforces investment
 - Driver: Directors should see their relationship with LifeBuild deepening. Progression makes the invisible visible.
 

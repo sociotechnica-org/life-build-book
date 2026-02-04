@@ -11,7 +11,7 @@ The structured end-of-week reflection where directors review what happened again
 - Uses: [[Feature - The Agenda]] — review follows agenda structure
 - Updates: [[Feature - The Charter]] — insights may trigger updates
 - Feeds: [[Feature - Archives]] — learnings preserved
-- Feeds: [[System - Knowledge Framework]] — patterns captured
+- Feeds: [[Standard - Knowledge Framework]] — patterns captured
 - Paired with: [[Feature - Weekly Planning]] — bookends the week
 
 ## WHY: Rationale

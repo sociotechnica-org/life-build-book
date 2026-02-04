@@ -13,7 +13,7 @@ The learning workspace — where completed projects, uprooted systems, and histo
 - Contains: Historical performance data
 - Implements: [[Strategy - AI as Teammates]] — institutional memory
 - Implements: [[Principle - Compound Capability]] — accumulated wisdom
-- Feeds: [[System - Knowledge Framework]] — historical patterns
+- Feeds: [[Standard - Knowledge Framework]] — historical patterns
 - Sibling: [[Feature - Life Map]] — execution workspace
 - Sibling: [[Feature - Strategy Studio]] — planning workspace
 

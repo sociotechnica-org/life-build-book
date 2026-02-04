@@ -10,7 +10,7 @@ The ambient notification mechanism that surfaces items needing attention through
 - Displayed on: [[Hex Grid - Hex Tile]] — visual treatments applied to tiles
 - Sources: [[Feature - System]] (health data), [[Feature - Project]] (staleness data), [[System - Priority Queue Architecture]] (due dates)
 - Monitored by: [[Agent - Mesa]] — can explain any signal
-- Components: [[Component - Health Warning Signal]], [[Component - Staleness Signal]], [[Component - Due Date Signal]], [[Component - Pattern Concern Signal]]
+- Implements: [[Standard - Smoke Signal Thresholds]] — threshold and treatment specifications
 
 ## WHY: Rationale
 

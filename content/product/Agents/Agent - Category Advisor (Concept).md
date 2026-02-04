@@ -9,7 +9,7 @@ The hub concept explaining Category Advisors — domain-specialist AI agents, on
 - Home: [[Feature - Category Studios]] — eight dedicated rooms in Strategy Studio
 - Implements: [[Strategy - AI as Teammates]] — specialized expertise
 - Implements: [[Principle - Guide When Helpful]] — available when relevant
-- Implements: [[System - Knowledge Framework]] — domain-specific knowledge capture
+- Implements: [[Standard - Knowledge Framework]] — domain-specific knowledge capture
 - Available in: [[Feature - Project Board]] — in-context consultation
 - Instances: [[Agent - Maya]], [[Agent - Atlas]], [[Agent - Brooks]], [[Agent - Grace]], [[Agent - Reed]], [[Agent - Finn]], [[Agent - Indie]], [[Agent - Sage]]
 

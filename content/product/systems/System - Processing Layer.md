@@ -7,10 +7,10 @@ The deterministic computation engine that transforms raw director data into Stat
 ## WHERE: Ecosystem
 
 - Zone: Backend — invisible to directors
-- Implements: [[System - Knowledge Framework]] — processes knowledge into summaries
+- Implements: [[Standard - Knowledge Framework]] — processes knowledge into summaries
 - Implements: [[System - Smoke Signals]] — detects signal conditions
 - Feeds: All agents — they receive summaries, not raw data
-- Related: [[System - Service Levels]] — processing enables service quality
+- Related: [[Standard - Service Levels]] — processing enables service quality
 
 ## WHY: Rationale
 

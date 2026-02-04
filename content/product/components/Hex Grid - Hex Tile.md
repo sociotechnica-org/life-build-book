@@ -8,10 +8,10 @@ An individual hexagonal tile on the grid representing a single project or system
 
 - Parent: [[Feature - Hex Grid]]
 - Displays: [[Feature - Project]] or [[Feature - System]]
-- Uses: [[System - Visual Language]] — colors, indicators, treatments
-- Uses: [[Project - Image Evolution]] — Urushi images show on tiles
+- Uses: [[Standard - Visual Language]] — colors, indicators, treatments
+- Uses: [[Standard - Image Evolution]] — Urushi images show on tiles
 - Opens: [[Feature - Project Board]] — click to see detail
-- Enhanced by: [[System - Dual Presence]] — Work at Hand tiles get special treatment
+- Enhanced by: [[Standard - Dual Presence]] — Work at Hand tiles get special treatment
 
 ## WHY: Rationale
 

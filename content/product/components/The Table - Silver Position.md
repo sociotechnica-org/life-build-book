@@ -11,7 +11,7 @@ The center position on The Table, displaying a single capacity-building project 
 - Implements: [[Principle - Compound Capability]] — Silver work compounds over time
 - Implements: [[Principle - Empty Slots Strategic]] — empty Silver is valid choice
 - Selected in: [[Feature - Sorting Room]] with [[Agent - Cameron]]
-- Visual: [[System - Visual Language]] — cool silver/platinum color accent
+- Visual: [[Standard - Visual Language]] — cool silver/platinum color accent
 - Creates: [[Feature - System]] — system-building Silver projects plant systems on completion
 
 ## WHY: Rationale

@@ -11,7 +11,7 @@ The mechanism that produces and maintains a director's active weekly commitment 
 - Agent: [[Agent - Cameron]] — guides selection
 - Sources from: [[System - Priority Queue Architecture]] — candidate pool
 - Modified by: [[Feature - Adaptation]] — mid-cycle changes
-- Implements: [[System - Three-Stream Portfolio]] — three-stream structure
+- Implements: [[Standard - Three-Stream Portfolio]] — three-stream structure
 - Implements: [[Principle - Protect Transformation]] — Gold/Silver protected from Bronze overflow
 
 ## WHY: Rationale
