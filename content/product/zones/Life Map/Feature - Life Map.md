@@ -8,7 +8,7 @@ The primary execution workspace — a spatial canvas where directors see their e
 
 - Zone: Primary workspace (execution focus)
 - Implements: [[Strategy - Spatial Visibility]] — work exists in space
-- Implements: [[System - Dual Presence]] — Work at Hand appears on both Table and grid
+- Implements: [[Standard - Dual Presence]] — Work at Hand appears on both Table and grid
 - Implements: [[Principle - Visibility Creates Agency]] — everything visible at once
 - Contains: [[Feature - The Table]] — persistent priority display
 - Contains: [[Feature - Hex Grid]] — spatial organization canvas

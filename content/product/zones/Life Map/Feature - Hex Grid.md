@@ -12,7 +12,7 @@ The spatial organization canvas that fills most of the Life Map — a tessellate
 - Implements: [[Principle - Bidirectional Loop]] — arrangement reflects and shapes understanding
 - Implements: [[Principle - Visual Recognition]] — spatial memory for navigation
 - Contains: [[Hex Grid - Hex Tile]] — individual project/system representations
-- Uses: [[System - Visual Language]] — colors, states, indicators
+- Uses: [[Standard - Visual Language]] — colors, states, indicators
 - Uses: [[Feature - Zoom Navigation]] — scale changes what's visible
 
 ## WHY: Rationale

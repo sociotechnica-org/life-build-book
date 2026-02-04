@@ -7,13 +7,13 @@ A discrete initiative with a finish line — bounded work that completes and mov
 ## WHERE: Ecosystem
 
 - Zone: Cross-zone — projects live on [[Feature - Life Map]], created in [[Feature - Drafting Room]]
-- Implements: [[System - Three-Stream Portfolio]] — every project has a Purpose determining stream
+- Implements: [[Standard - Three-Stream Portfolio]] — every project has a Purpose determining stream
 - Implements: [[System - Four-Stage Creation]] — projects develop through four stages
 - Implements: [[System - Pipeline Architecture]] — projects flow through queues
 - Depends on: [[Feature - Task]] — projects contain tasks
 - Governs: [[Feature - Project Board]] — execution interface for projects
 - Governs: [[Feature - Kanban Board]] — task flow within projects
-- Components: [[Project - States]], [[Project - Purpose Assignment]], [[Project - Image Evolution]]
+- Components: [[Standard - Project States]], [[Project - Purpose Assignment]], [[Standard - Image Evolution]]
 - Contrast: [[Feature - System]] — systems are continuous, projects are bounded
 
 ## WHY: Rationale

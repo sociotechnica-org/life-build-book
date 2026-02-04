@@ -9,7 +9,7 @@ The knowledge acquisition mechanism agents use to learn about directors over tim
 - Used by: All agents, especially [[Agent - Jarvis]], [[Agent - Mesa]]
 - Implements: [[Principle - Earn Don't Interrogate]]
 - Implements: [[Strategy - AI as Teammates]]
-- Feeds: [[System - Knowledge Framework]] — where captured knowledge lives
+- Feeds: [[Standard - Knowledge Framework]] — where captured knowledge lives
 - Feeds: [[Feature - The Charter]] — strategic knowledge captured here
 
 ## WHY: Rationale

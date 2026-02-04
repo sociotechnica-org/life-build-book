@@ -7,15 +7,15 @@ The filtered views in the Sorting Room that separate Priority Queue candidates b
 ## WHERE: Ecosystem
 
 - Parent: [[Feature - Sorting Room]]
-- Implements: [[System - Three-Stream Portfolio]] — stream separation in UI
+- Implements: [[Standard - Three-Stream Portfolio]] — stream separation in UI
 - Implements: [[Principle - Protect Transformation]] — filters enforce stream boundaries
 - Uses: [[System - Priority Queue Architecture]] — source of candidates
-- Uses: [[System - Priority Score Calculation]] — rankings within filters
+- Uses: [[Standard - Priority Score]] — rankings within filters
 - Used by: [[Agent - Cameron]] — presents filtered views
 
 ## WHY: Rationale
 
-- System: [[System - Three-Stream Portfolio]] — streams need separate views
+- System: [[Standard - Three-Stream Portfolio]] — streams need separate views
 - Principle: [[Principle - Protect Transformation]] — can't accidentally put Bronze in Gold slot
 - Driver: Showing all candidates together would be overwhelming. Filtering by stream makes selection tractable.
 

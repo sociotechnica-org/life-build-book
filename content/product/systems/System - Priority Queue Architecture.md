@@ -7,8 +7,8 @@ The ordered repository of all fully-planned work ready for activation, organized
 ## WHERE: Ecosystem
 
 - Zone: [[Feature - Drafting Room]] — visible in Strategy Studio
-- Implements: [[System - Three-Stream Portfolio]] — organized by Gold/Silver/Bronze
-- Implements: [[System - Priority Score Calculation]] — items ordered by score within streams
+- Implements: [[Standard - Three-Stream Portfolio]] — organized by Gold/Silver/Bronze
+- Implements: [[Standard - Priority Score]] — items ordered by score within streams
 - Depends on: [[System - Pipeline Architecture]] — receives projects completing Stage 4
 - Governs: [[Feature - Three-Stream Filtering]] — how directors view the queue
 - Governs: [[Feature - Sorting Room]] — where selection from queue happens

@@ -11,7 +11,7 @@ The Delegation Specialist who manages the Roster Room, helping directors assign 
 - Implements: [[Principle - Compound Capability]] — delegation patterns improve over time
 - Assigns: Workers — AI agents for task execution
 - Configures: Human delegation — family, colleagues, contractors
-- Captures: [[System - Knowledge Framework]] — delegation patterns and preferences
+- Captures: [[Standard - Knowledge Framework]] — delegation patterns and preferences
 
 ## WHY: Rationale
 

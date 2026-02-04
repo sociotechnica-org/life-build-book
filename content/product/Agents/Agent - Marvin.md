@@ -22,7 +22,7 @@ The Operational Manager who handles tactical execution and project management. M
 
 ## WHEN: Timeline
 
-Core agent. Marvin's guidance quality improves with [[System - Service Levels]] — better task suggestions as patterns emerge.
+Core agent. Marvin's guidance quality improves with [[Standard - Service Levels]] — better task suggestions as patterns emerge.
 
 ## HOW: Implementation
 

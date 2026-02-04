@@ -7,9 +7,9 @@ A persistent priority spotlight that sits at the top of the Life Map, displaying
 ## WHERE: Ecosystem
 
 - Zone: [[Feature - Life Map]] — persistent element above hex grid
-- Implements: [[System - Three-Stream Portfolio]] — three positions map to three streams
+- Implements: [[Standard - Three-Stream Portfolio]] — three positions map to three streams
 - Implements: [[System - Weekly Priority]] — displays selected Work at Hand
-- Implements: [[System - Dual Presence]] — projects appear here AND on hex grid
+- Implements: [[Standard - Dual Presence]] — projects appear here AND on hex grid
 - Implements: [[Principle - Visibility Creates Agency]] — priorities always visible
 - Implements: [[Principle - Protect Transformation]] — structural separation of streams
 - Depends on: [[Feature - Sorting Room]] — where selections are made

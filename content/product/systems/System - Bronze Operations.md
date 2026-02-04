@@ -9,13 +9,13 @@ The operational workflow governing Bronze stream tasks — mode selection, stack
 - Displayed in: [[The Table - Bronze Position]]
 - Configured via: [[Feature - Sorting Room]] during [[Feature - Weekly Planning]]
 - Agent: [[Agent - Cameron]] — guides mode decisions
-- Implements: [[System - Three-Stream Portfolio]] — Bronze stream mechanics
+- Implements: [[Standard - Three-Stream Portfolio]] — Bronze stream mechanics
 - Sources: [[Feature - Project]] (maintenance tasks), [[Feature - System]] (generated tasks)
-- Components: [[Component - Minimal Mode]], [[Component - Target Mode]], [[Component - Maximal Mode]]
+- Implements: [[Standard - Bronze Mode Behaviors]] — mode specifications
 
 ## WHY: Rationale
 
-- System: [[System - Three-Stream Portfolio]] — Bronze requires unique mechanics
+- System: [[Standard - Three-Stream Portfolio]] — Bronze requires unique mechanics
 - Principle: [[Principle - Protect Transformation]] — Bronze stays contained
 - Driver: Operational work behaves differently than transformational work. Bronze Operations codifies that difference.
 

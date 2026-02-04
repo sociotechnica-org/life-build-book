@@ -10,8 +10,8 @@ The detail overlay that opens when a director clicks any project tile — a focu
 - Displays: [[Feature - Project]] — all project details
 - Displays: [[Feature - Task]] — task list within project
 - Agent: [[Agent - Category Advisor (Concept)]] — in-context consultation available
-- Uses: [[Project - States]] — shows current state, enables transitions
-- Uses: [[Project - Image Evolution]] — shows current Urushi stage
+- Uses: [[Standard - Project States]] — shows current state, enables transitions
+- Uses: [[Standard - Image Evolution]] — shows current Urushi stage
 - Enables: Task completion, objective tracking, project pausing
 
 ## WHY: Rationale

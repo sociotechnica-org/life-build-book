@@ -10,7 +10,7 @@ The detail overlay that opens when a director clicks any system tile — a focus
 - Displays: [[Feature - System]] — all system details
 - Displays: Generated tasks — what the system produces
 - Uses: [[System - Actions]] — Hibernate, Upgrade, Uproot available here
-- Uses: [[System - Visual Language]] — health indicators, state treatments
+- Uses: [[Standard - Visual Language]] — health indicators, state treatments
 - Agent: [[Agent - Category Advisor (Concept)]] — in-context consultation available
 - Parallel: [[Feature - Project Board]] — same pattern for projects
 

@@ -8,7 +8,7 @@ Domain-specific planning spaces within the Strategy Studio — one studio for ea
 
 - Parent: [[Feature - Strategy Studio]]
 - Implements: [[Strategy - AI as Teammates]] — domain specialists
-- Implements: [[System - Knowledge Framework]] — category-specific knowledge
+- Implements: [[Standard - Knowledge Framework]] — category-specific knowledge
 - Implements: [[System - Progressive Knowledge Capture]] — advisors learn domain context
 - Related: [[Feature - Project Board]] — in-context advisor access available
 

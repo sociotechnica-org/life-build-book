@@ -10,7 +10,7 @@ The Priority Coordinator who manages the Sorting Room, helping directors make pr
 - Implements: [[Strategy - Superior Process]] — structured prioritization
 - Implements: [[Principle - Familiarity Over Function]] — score suggests, director decides
 - Implements: [[Principle - Protect Transformation]] — guides stream selection
-- Uses: [[System - Priority Score Calculation]] — computes and presents scores
+- Uses: [[Standard - Priority Score]] — computes and presents scores
 - Uses: [[System - Priority Queue Architecture]] — source of candidates
 - Manages: [[Feature - Three-Stream Filtering]] — presents filtered views
 
