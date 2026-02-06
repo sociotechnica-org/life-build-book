@@ -29,6 +29,12 @@ Design all visual elements for instant recognition. Use content-depicting illust
 
 **Test:** Can the director identify this element in under two seconds, at a glance?
 
+## Anti-Patterns
+
+- **Using abstract patterns instead of content-depicting illustrations** — A beautiful geometric design that requires reading the label to identify the project fails the two-second test. Content-depicting illustrations (kitchen elements for kitchen project, running imagery for marathon training) are what enable instant recognition.
+- **Requiring hover or click to identify an element** — If the director must inspect a tile to understand what it represents, the Life Map has become a puzzle. Recognition must happen at glance distance, not inspection distance.
+- **Prioritizing aesthetic consistency over visual distinctiveness** — Uniform styling across all tiles looks polished but prevents recognition. Each project should be visually distinct — category colors, content illustrations, and progress markers all serve identification, not decoration.
+
 ## Tensions
 
 - With contemplative pacing — recognition requires quick parsing, contemplation requires slow absorption; resolution is spatial layout (scannable) with depth on focus (contemplative)

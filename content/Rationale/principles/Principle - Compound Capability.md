@@ -34,6 +34,12 @@ Design features that become more valuable over time. Prefer deep-and-rich over s
 
 **Test:** Does this design make the product feel disposable, or increasingly indispensable?
 
+## Anti-Patterns
+
+- **Optimizing for week-1 convenience over month-12 capability** — Design A is easier to learn but plateaus; Design B has a steeper curve but compounds. Choosing A because it demos well sacrifices the compound return that creates lasting value.
+- **Building disposable features** — The disposability test: if a director switches to a competitor after 6 months without losing significant value, compound capability isn't working. Features should accumulate intelligence and infrastructure the director values.
+- **Automating what should be taught** — When compound learning is possible, teaching builds director skill that compounds. Automating it away creates dependency without growth. The director who learns to plan well gains a skill; the one whose plans are auto-generated gains nothing.
+
 ## Tensions
 
 - With [[Principle - First 72 Hours]] — resolved through sequencing: quick wins that also establish compound foundations

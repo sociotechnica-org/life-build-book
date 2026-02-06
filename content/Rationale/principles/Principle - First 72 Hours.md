@@ -49,3 +49,9 @@ The first 72 hours define the relationship. A new director's initial experience 
 - Feature unlock sequencing
 - Default project templates for new directors
 - Campfire design and first-contact experience
+
+## Anti-Patterns
+
+- **Overwhelming on Day 1 with full feature tour** — The first day is about one thing: spatial metaphor + first project + sense of "I made something." Showing The Table, the Sorting Room, and agent capabilities on Day 1 creates cognitive overload and abandonment.
+- **Requiring extensive profile completion before first action** — A new director should create their first project within minutes. Every field between arrival and that first "I made something" moment is friction that kills momentum.
+- **Empty-feeling onboarding with no quick win** — If Day 1 ends without the director having created something tangible, the tool feels hollow. The first project (low stakes, quick win) establishes that LifeBuild produces, not just organizes.

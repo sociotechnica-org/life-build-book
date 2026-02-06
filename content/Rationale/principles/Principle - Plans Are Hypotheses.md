@@ -31,6 +31,12 @@ Design all planning interfaces to feel like strategy adjustment, not commitment 
 
 **Test:** Would this design make a director feel guilty for adapting their plan to reality?
 
+## Anti-Patterns
+
+- **Guilt-inducing language when plans change** — Jarvis saying "you didn't complete your Gold this week" frames adaptation as failure. The correct framing: "your Gold hypothesis was tested — what did you learn?" Language shapes whether directors avoid planning or embrace it.
+- **Measuring completion rate as the primary metric** — Completion rate rewards rigid adherence. Calibration accuracy — how well plans predict reality — is the metric that improves planning over time. A director who adapts every week but calibrates better each time is succeeding.
+- **Making plan modification feel like editing a failure report** — If changing Work at Hand mid-week requires justification dialogs or is logged as "deviation," the UI treats adaptation as shameful. The pause-and-replace pattern should feel like adjusting a strategy.
+
 ## Tensions
 
 - Contradicts most productivity tool assumptions — traditional tools reward completion, not calibration

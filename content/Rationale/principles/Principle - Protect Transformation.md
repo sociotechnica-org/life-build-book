@@ -30,6 +30,12 @@ The Table enforces 1 Gold + 1 Silver maximum. Bronze has its own position that c
 
 **Test:** Does this design let Bronze overflow into Gold or Silver capacity?
 
+## Anti-Patterns
+
+- **A single ranked priority list mixing all streams** — This is the core failure the principle prevents. Urgency has a neurological head start (amygdala responds faster than prefrontal cortex). A combined list lets "pay electric bill" perpetually displace "train for marathon" because the brain processes urgency before importance.
+- **Allowing Bronze volume to crowd Gold/Silver slots** — Bronze has no maximum on The Table, but it cannot expand into the 1 Gold + 1 Silver reserved slots. If Bronze overflow can consume transformation capacity, the structural protection is gone.
+- **Judging all-Bronze crisis periods as failures** — Sometimes life demands maintenance-only weeks. The system supports these without guilt. The violation is treating those weeks as evidence the director isn't committed to transformation.
+
 ## Tensions
 
 - With all-Bronze crisis periods — resolution: system supports them without guilt, tracks duration, signals when crisis has passed

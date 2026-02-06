@@ -29,6 +29,12 @@ When designing any feature that displays work, prefer spatial organization over 
 
 **Test:** Can the director see and find this without hovering, clicking through menus, or remembering it exists?
 
+## Anti-Patterns
+
+- **Hiding work behind menus or click-through navigation** — The corollary is explicit: hiding work removes agency. If the director must click into a submenu, hover over an icon, or remember where something lives, the work has become invisible. Defaults should show, not hide.
+- **Using temporal feeds instead of spatial organization** — Timelines, activity feeds, and inboxes sort by when, not where. The director should answer "where is my stuff?" at a glance — not "what happened recently?"
+- **Opt-out filters as default** — Filters that hide work by default and require the director to turn them off violate the principle. Filters should be opt-in: the director chooses to narrow, not to reveal.
+
 ## Tensions
 
 - With [[Principle - Protect Transformation]] — showing everything risks overwhelm; resolution is spatial organization, not suppression

@@ -41,6 +41,12 @@ The bet: if directors have AI agents with defined jobs, appropriate permissions,
 
 **Current state:** Level 1. Specialized agents in rooms, reactive help. No proactive behavior or agent-to-agent coordination yet.
 
+## Anti-Patterns
+
+- **Treating agents as generic chat interfaces** — Level 0 is "no AI or generic chat." An agent without a defined job, domain, and permissions is just a chatbot. The teammate model requires specialization: Jarvis orchestrates, Mesa navigates, Cameron prioritizes. Generic "ask me anything" violates the entire ladder.
+- **Skipping to autonomous behavior without earning trust** — Jumping from Level 1 (specialized, reactive) to Level 5+ (tiered authority) without progressing through jobs-and-permissions and coordination. Trust is earned progressively, not declared.
+- **Agents replacing director judgment instead of empowering it** — Agents that make decisions the director should make — choosing Gold projects, reclassifying streams, archiving work — violate sovereignty. The strategy is teammates, not replacement managers.
+
 ## Tensions
 
 - With director sovereignty — agents must empower, not replace, director judgment

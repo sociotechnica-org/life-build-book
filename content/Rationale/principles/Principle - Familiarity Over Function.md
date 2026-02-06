@@ -30,6 +30,12 @@ Design purpose assignment as a subjective question about meaning, not an objecti
 
 **Test:** Does this design assume it knows better than the director what their work means to them?
 
+## Anti-Patterns
+
+- **Classifying work by objective criteria** — Duration, complexity, or domain tell you nothing about what the work means to this director. A system that auto-classifies "garage cleanout" as Bronze based on task type overrides the director's relationship to the work.
+- **Agents correcting stream classification** — An agent that says "this looks like Bronze to me" and reclassifies is violating director sovereignty. Agents may notice patterns and ask curious questions, but never correct or suggest reclassification beyond a gentle one-time error check.
+- **Priority scores that mandate rather than suggest** — The score is a hypothesis, not a verdict. A design that prevents override or makes override feel like going against the system's judgment undermines the director's authority over their own work.
+
 ## Tensions
 
 - With objective priority math — resolution: the score is a suggestion, the director always has final say

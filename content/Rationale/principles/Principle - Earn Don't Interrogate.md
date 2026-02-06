@@ -37,6 +37,12 @@ Never require information before providing value. Capture during natural workflo
 
 **Test:** Would the director think "why are you asking me this?" or "that's a helpful question"?
 
+## Anti-Patterns
+
+- **Blocking progress until profile is complete** — Knowledge acquisition must never block progress. An onboarding flow that requires 20 fields before the director can create their first project turns earning into interrogation.
+- **Asking questions out of context** — "What's your energy level?" during project creation is a non-sequitur. The same question during a Council Chamber check-in is natural. Context makes questions helpful; absence of context makes them invasive.
+- **Treating behavioral inferences as confirmed facts** — A director who consistently underestimates effort has a behavioral pattern. Acting on it silently ("I adjusted your estimate because you always underestimate") violates Confirm Don't Assume. Surface the inference, let the director validate.
+
 ## Tensions
 
 - With comprehensive knowledge — full understanding requires data; resolution is earning it incrementally
