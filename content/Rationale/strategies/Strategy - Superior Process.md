@@ -14,7 +14,7 @@ Applying structured frameworks — from basic organization through sophisticated
 - Systems: [[System - Bronze Operations]], [[Feature - Adaptation]]
 - Features: [[Feature - The Table]], [[Feature - Three-Stream Filtering]]
 - Rooms: [[Feature - Council Chamber]], [[Feature - Drafting Room]], [[Feature - Sorting Room]], [[Feature - Roster Room]]
-- Serves: Competence (from [[Strategy - Self-Determination Theory]])
+- Serves: Competence (from [[Self-Determination Theory]])
 
 ## WHY: Belief
 

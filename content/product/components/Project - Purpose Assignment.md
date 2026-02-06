@@ -6,7 +6,7 @@ The moment during project creation (Stage 2) when a director declares what the t
 
 ## WHERE: Ecosystem
 
-- Parent: [[Feature - Project]]
+- Parent: [[Primitive - Project]]
 - Implements: [[Standard - Three-Stream Portfolio]] — purpose determines stream
 - Implements: [[Principle - Familiarity Over Function]] — director's relationship to work is what matters
 - Happens in: [[System - Four-Stage Creation]] — Stage 2 (Scoped)

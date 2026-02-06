@@ -7,7 +7,7 @@ The detail overlay that opens when a director clicks any system tile — a focus
 ## WHERE: Ecosystem
 
 - Parent: [[Feature - Life Map]] — opens as overlay
-- Displays: [[Feature - System]] — all system details
+- Displays: [[Primitive - System]] — all system details
 - Displays: Generated tasks — what the system produces
 - Uses: [[System - Actions]] — Hibernate, Upgrade, Uproot available here
 - Uses: [[Standard - Visual Language]] — health indicators, state treatments

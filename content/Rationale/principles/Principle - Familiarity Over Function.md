@@ -9,9 +9,8 @@ Directors classify work by how it feels to them, not by objective criteria — t
 - Type: Design Principle
 - Serves: [[Need - Autonomy]] — director's classification is final
 - Advances: [[Strategy - Superior Process]], [[Strategy - AI as Teammates]]
-- Governs: [[Feature - Project - Purpose Assignment]], [[Standard - Priority Score]], [[Feature - Sorting Room]], [[System - Weekly Priority]]
+- Governs: [[Project - Purpose Assignment]], [[Standard - Priority Score]], [[Feature - Sorting Room]], [[System - Weekly Priority]]
 - Agents: [[Agent - Cameron]] (priority recommendations), [[Agent - Marvin]] (purpose capture during creation)
-- Decisions: [[Decision - Subjective Purpose Classification]]
 - Related: [[Principle - Earn Don't Interrogate]] — both respect director sovereignty
 
 ## WHY: Belief

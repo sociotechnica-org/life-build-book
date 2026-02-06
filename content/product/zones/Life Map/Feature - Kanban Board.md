@@ -7,7 +7,7 @@ The task flow interface within a Project Board — a visual representation of ta
 ## WHERE: Ecosystem
 
 - Parent: [[Feature - Project Board]] — embedded within project detail
-- Displays: [[Feature - Task]] — task cards in columns
+- Displays: [[Primitive - Task]] — task cards in columns
 - Implements: [[Strategy - Spatial Visibility]] — progress has spatial form
 - Implements: [[Principle - Visual Recognition]] — task state instantly visible
 - Related: [[Task - Bronze Stack]] — Bronze tasks may show here

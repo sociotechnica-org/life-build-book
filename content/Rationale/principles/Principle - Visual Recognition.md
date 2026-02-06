@@ -9,13 +9,13 @@ A director must immediately recognize what each visual element represents withou
 - Type: Design Principle
 - Serves: [[Need - Autonomy]] — instant recognition enables control
 - Advances: [[Strategy - Spatial Visibility]]
-- Governs: [[Feature - Project]], [[Feature - System]], [[Feature - Hex Grid]], [[Hex Grid - Hex Tile]]
+- Governs: [[Primitive - Project]], [[Primitive - System]], [[Feature - Hex Grid]], [[Hex Grid - Hex Tile]]
 - Companion detail: Brand Standards v2
 - Related: [[Principle - Visibility Creates Agency]] — visibility must also be instantly legible
 
 ## WHY: Belief
 
-The two-second test: if a director can't identify a project tile in under two seconds at normal viewing distance, the visual representation has failed. This drove the pivot from abstract urushi-inspired visual evolution to content-depicting diorama-style illustrations. Abstract beauty is worth less than instant recognition.
+The two-second test: if a director can't identify a project tile in under two seconds at normal viewing distance, the visual representation has failed. This drove the pivot from abstract lacquer-inspired visual evolution to content-depicting diorama-style illustrations. Abstract beauty is worth less than instant recognition.
 
 Project illustrations depict recognizable content, not abstract patterns. Category cards are visually distinct at a glance. Stream colors are immediately legible. If the director has to inspect an element to understand it, the Life Map has become a puzzle instead of a landscape.
 

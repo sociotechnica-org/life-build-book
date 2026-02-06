@@ -68,7 +68,7 @@ Every note has a temporal status:
 
 | Status    | Meaning                                           | Example                            |
 | --------- | ------------------------------------------------- | ---------------------------------- |
-| `past`    | Historical—was tried, deprecated, or learned from | Urushi image evolution (cancelled) |
+| `past`    | Historical—was tried, deprecated, or learned from | Abstract visual patterns (replaced by content-depicting illustrations) |
 | `present` | Current—exists in codebase today                  | The Table, Drafting Room           |
 | `planned` | Committed—has timeline, will be built soon        | Roster Room (Q1)                   |
 | `future`  | Vision—in docs but no committed timeline          | Council Chamber, Archives          |

@@ -10,7 +10,7 @@ The rightmost position on The Table, displaying a stack of operational tasks —
 - Displays: [[Task - Bronze Stack]] — collection of operational tasks
 - Implements: [[Standard - Three-Stream Portfolio]] — Bronze stream mechanics
 - Implements: [[Principle - Protect Transformation]] — Bronze contained to its own position
-- Sources: [[Feature - Project]] (maintenance), [[Feature - System]] (generated tasks)
+- Sources: [[Primitive - Project]] (maintenance), [[Primitive - System]] (generated tasks)
 - Configured in: [[Feature - Sorting Room]] — mode selection with [[Agent - Cameron]]
 - Visual: [[Standard - Visual Language]] — warm bronze/copper color accent
 - Related: [[System - Bronze Operations]] — full operational workflow

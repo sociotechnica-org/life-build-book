@@ -7,7 +7,7 @@ The leftmost position on The Table, displaying a single expansion project — wo
 ## WHERE: Ecosystem
 
 - Parent: [[Feature - The Table]]
-- Displays: [[Feature - Project]] with Purpose = "Moving forward"
+- Displays: [[Primitive - Project]] with Purpose = "Moving forward"
 - Implements: [[Principle - Protect Transformation]] — reserved slot for expansion work
 - Implements: [[Principle - Empty Slots Strategic]] — empty Gold is valid choice
 - Selected in: [[Feature - Sorting Room]] with [[Agent - Cameron]]

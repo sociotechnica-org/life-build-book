@@ -11,8 +11,8 @@ The Operational Manager who handles tactical execution and project management. M
 - Implements: [[Principle - Earn Don't Interrogate]] — progressive capture, not upfront interrogation
 - Guides: [[System - Four-Stage Creation]] — walks directors through stages
 - Guides: [[Project - Purpose Assignment]] — asks the purpose question
-- Configures: [[Feature - System]] — system setup for Silver projects
-- Generates: [[Feature - Task]] — creates task lists from objectives
+- Configures: [[Primitive - System]] — system setup for Silver projects
+- Generates: [[Primitive - Task]] — creates task lists from objectives
 
 ## WHY: Rationale
 

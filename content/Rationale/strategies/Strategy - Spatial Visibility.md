@@ -13,7 +13,7 @@ Making work visual, placed, and traversable creates comprehension and agency tha
 - Governs: [[Feature - Life Map]], [[Feature - Hex Grid]], [[Feature - The Table]], [[Feature - Zoom Navigation]], [[Feature - Project Board]], [[Feature - System Board]]
 - Zoom tiers: [[Zoom Navigation - Horizon View]], [[Zoom Navigation - Working View]], [[Zoom Navigation - Detail View]]
 - Visual elements: [[Hex Grid - Hex Tile]], [[Hex Grid - Campfire]], [[Hex Grid - Clustering]]
-- Serves: Autonomy (from [[Strategy - Self-Determination Theory]])
+- Serves: Autonomy (from [[Self-Determination Theory]])
 
 ## WHY: Belief
 

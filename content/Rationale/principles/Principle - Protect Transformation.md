@@ -11,7 +11,6 @@ A single ranked priority list lets urgent maintenance perpetually displace impor
 - Advances: [[Strategy - Superior Process]]
 - Governs: [[Feature - Three-Stream Filtering]], [[Feature - The Table]], [[System - Bronze Operations]], [[Feature - Sorting Room]], [[System - Weekly Priority]]
 - Table positions: [[The Table - Gold Position]], [[The Table - Silver Position]], [[The Table - Bronze Position]]
-- Decisions: [[Decision - Three Streams Not Ranked List]], [[Decision - One Gold One Silver]]
 - Related: [[Principle - Empty Slots Strategic]] — protection includes permission to rest
 
 ## WHY: Belief

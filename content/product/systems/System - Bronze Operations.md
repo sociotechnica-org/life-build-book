@@ -10,7 +10,7 @@ The operational workflow governing Bronze stream tasks — mode selection, stack
 - Configured via: [[Feature - Sorting Room]] during [[Feature - Weekly Planning]]
 - Agent: [[Agent - Cameron]] — guides mode decisions
 - Implements: [[Standard - Three-Stream Portfolio]] — Bronze stream mechanics
-- Sources: [[Feature - Project]] (maintenance tasks), [[Feature - System]] (generated tasks)
+- Sources: [[Primitive - Project]] (maintenance tasks), [[Primitive - System]] (generated tasks)
 - Implements: [[Standard - Bronze Mode Behaviors]] — mode specifications
 
 ## WHY: Rationale

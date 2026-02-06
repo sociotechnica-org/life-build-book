@@ -8,8 +8,8 @@ A single, completable action that contributes to a project's objectives or fulfi
 
 - Zone: Cross-zone — tasks appear in [[Feature - Project Board]], [[Feature - System Board]], [[The Table - Bronze Position]]
 - Implements: [[Standard - Three-Stream Portfolio]] — Bronze tasks flow to stack
-- Used by: [[Feature - Project]] — projects contain tasks on kanban boards
-- Used by: [[Feature - System]] — systems generate tasks according to patterns
+- Used by: [[Primitive - Project]] — projects contain tasks on kanban boards
+- Used by: [[Primitive - System]] — systems generate tasks according to patterns
 - Governs: [[Feature - Kanban Board]] — task flow interface
 - Components: [[Task - Bronze Stack]]
 
