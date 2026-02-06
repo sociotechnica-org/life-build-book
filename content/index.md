@@ -50,8 +50,7 @@ This library exists so that context doesn't live in people's heads or get repeat
 │   ├── /principles/    # Judgment-based design guidance
 │   ├── /strategies/    # Strategic bets (Spatial Visibility, AI as Teammates)
 │   ├── /Primitives/    # Core entities (Project, System, Task)
-│   ├── /Agents/        # AI agent profiles
-│   └── /zones/         # Zone-level organization (empty — features moved to /features/)
+│   └── /Agents/        # AI agent profiles
 │
 ├── /Rationale/         # Strategic context (WHY)
 │   ├── /foundation/    # Foundational frameworks (Self-Determination Theory)
