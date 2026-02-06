@@ -19,6 +19,13 @@ The task flow interface within a Project Board — a visual representation of ta
 - Principle: [[Principle - Familiarity Over Function]] — Kanban is widely understood
 - Driver: Directors need to see and manage task flow within projects. Kanban provides that at-a-glance view.
 
+**Why the WIP limit of 3:**
+
+- **Research basis:** Sjøberg et al. (2018) studied 8,000+ work items across five teams over four years. Key finding: lower WIP correlates with shorter lead times, aligning with Little's Law (Average lead time = Average WIP / Average throughput).
+- **Cognitive basis:** Mark et al. (2005) found approximately 23 minutes to return to full engagement after a task switch. With 3 in-progress items, a director might switch twice per session. With 6, they never reach deep engagement.
+- **Honest caveat:** The kanban research notes "indicating an optimal WIP limit is difficult." Three is a principled starting point, not a proven optimum. Different directors may need different limits, and the system should accommodate that learning.
+- **Relationship to The Table:** The Table's 1 Gold + 1 Silver + Bronze stack is a project-level WIP limit. The task-level WIP limit of 3 operates within individual project kanban boards — a two-tier WIP system.
+
 ## WHEN: Timeline
 
 Core to Project Board design. Kanban familiar pattern chosen for immediate usability.

@@ -12,6 +12,7 @@ The specification for visual vocabulary across all LifeBuild interfaces — cate
 - Implements: [[Principle - Visibility Creates Agency]] — state visible at a glance
 - Advances: [[Strategy - Spatial Visibility]] — spatial organization requires visual clarity
 - Related: [[Standard - Image Evolution]] — project illustration progression
+- Related: [[Standard - Life Categories]] — category-to-color mapping
 
 ## WHY: Rationale
 

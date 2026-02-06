@@ -42,19 +42,25 @@ This library exists so that context doesn't live in people's heads or get repeat
 ├── CONTRIBUTING.md     # How to add/edit notes (humans & AI)
 ├── CONVENTIONS.md      # Code patterns, naming, gotchas
 │
-├── /product/           # The thing itself
+├── /rationale/         # WHY we build and what constraints exist
+│   ├── Self-Determination Theory.md
+│   ├── Need - Autonomy.md
+│   ├── Need - Competence.md
+│   ├── Need - Relatedness.md
+│   ├── /strategies/    # Strategic bets (Spatial Visibility, AI as Teammates)
+│   ├── /principles/    # Judgment-based design guidance
+│   └── /standards/     # Specifications constraining implementations
+│
+├── /product/           # WHAT gets built
 │   ├── /features/      # User-facing mechanics (The Table, Drafting Room)
 │   ├── /systems/       # Cross-cutting mechanisms (Pipeline, Weekly Priority)
-│   ├── /standards/     # Specifications constraining implementations
 │   ├── /components/    # Technical implementation details
-│   ├── /principles/    # Judgment-based design guidance
-│   ├── /strategies/    # Strategic bets (Spatial Visibility, AI as Teammates)
 │   ├── /Primitives/    # Core entities (Project, System, Task)
 │   └── /Agents/        # AI agent profiles
 │
-├── /Rationale/         # Strategic context (WHY)
-│   ├── /foundation/    # Foundational frameworks (Self-Determination Theory)
-│   └── /needs/         # Core needs (Autonomy, Competence, Relatedness)
+├── /skills/            # Operational agent definitions
+│   ├── /conan/         # Conan the Librarian skill files
+│   └── /bob/           # Bob the Builder skill files
 │
 ├── /timeline/          # How it got here, where it's going (WHEN)
 │   ├── /past/          # Learnings, deprecated approaches

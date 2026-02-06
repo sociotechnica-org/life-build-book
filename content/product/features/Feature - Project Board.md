@@ -9,7 +9,7 @@ The detail overlay that opens when a director clicks any project tile — a focu
 - Parent: [[Feature - Life Map]] — opens as overlay
 - Displays: [[Primitive - Project]] — all project details
 - Displays: [[Primitive - Task]] — task list within project
-- Agent: [[Agent - Category Advisor (Concept)]] — in-context consultation available
+- Agent: [[Feature - Category Advisors]] — in-context consultation available
 - Uses: [[Standard - Project States]] — shows current state, enables transitions
 - Uses: [[Standard - Image Evolution]] — shows current illustration stage
 - Enables: Task completion, objective tracking, project pausing

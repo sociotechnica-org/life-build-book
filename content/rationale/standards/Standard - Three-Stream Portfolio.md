@@ -19,6 +19,13 @@ The specification for classifying all director work into three purpose-based str
 - Driver: Neurological reality — the brain's threat-detection system responds to urgent/concrete faster than prefrontal cortex evaluates important/abstract. A single ranked list lets urgency always win.
 - Decision: Three streams aren't three lists — they're three separate competitions. Gold competes with Gold on importance. Bronze competes with Bronze on urgency. Cross-type competition is structurally prevented.
 
+**Why exactly one Gold, one Silver:**
+
+- **The focus case:** Research on goal pursuit (Fishbach & Dhar, 2005) shows single-goal commitment produces better outcomes than pursuing multiple goals simultaneously. Two Gold projects create a daily decision — "which transformation today?" — that consumes the executive function meant for the work itself.
+- **The momentum case:** A single Gold project accumulates momentum through consistent attention. Transformation work (learning a language, writing a book, training for a marathon) requires sustained, compounding effort that divided attention prevents.
+- **The honesty case:** If a director considers two things Gold, the system forces them to choose: "which one matters more this week?" That's a genuinely useful strategic question a two-slot system would let them avoid.
+- **Exception consideration:** Directors with genuinely parallel transformations should sequence them — one Gold this month, the other next — or reframe one as Silver (capacity-building toward a future Gold).
+
 ## WHEN: Timeline
 
 Core architecture from initial design. The three-stream model is foundational — changing it requires redesigning The Table, Priority Queue, and all prioritization interfaces.

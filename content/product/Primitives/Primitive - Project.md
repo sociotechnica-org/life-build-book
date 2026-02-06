@@ -14,6 +14,7 @@ A discrete initiative with a finish line — bounded work that completes and mov
 - Governs: [[Feature - Project Board]] — execution interface for projects
 - Governs: [[Feature - Kanban Board]] — task flow within projects
 - Components: [[Standard - Project States]], [[Project - Purpose Assignment]], [[Standard - Image Evolution]]
+- Conforms to: [[Standard - Life Categories]] — every project requires a Life Category
 - Contrast: [[Primitive - System]] — systems are continuous, projects are bounded
 
 ## WHY: Rationale

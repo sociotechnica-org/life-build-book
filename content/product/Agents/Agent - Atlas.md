@@ -6,7 +6,7 @@ The Purpose & Spirituality Category Advisor. Atlas specializes in life direction
 
 ## WHERE: Ecosystem
 
-- Parent: [[Agent - Category Advisor (Concept)]]
+- Feature: [[Feature - Category Advisors]] — one of eight domain specialists
 - Home: Purpose & Spirituality Studio in [[Feature - Category Studios]]
 - Domain: Purpose category projects and systems
 - Available in: Any project tagged Purpose

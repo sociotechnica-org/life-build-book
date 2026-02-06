@@ -6,7 +6,7 @@ The Leisure & Lifestyle Category Advisor. Indie specializes in hobbies, recreati
 
 ## WHERE: Ecosystem
 
-- Parent: [[Agent - Category Advisor (Concept)]]
+- Feature: [[Feature - Category Advisors]] — one of eight domain specialists
 - Home: Leisure & Lifestyle Studio in [[Feature - Category Studios]]
 - Domain: Leisure category projects and systems
 - Available in: Any project tagged Leisure
