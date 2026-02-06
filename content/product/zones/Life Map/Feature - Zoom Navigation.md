@@ -9,6 +9,7 @@ The scale control system for the Life Map, allowing directors to smoothly transi
 - Parent: [[Feature - Life Map]]
 - Implements: [[Strategy - Spatial Visibility]] — multiple scales of the same space
 - Implements: [[Principle - Visibility Creates Agency]] — see everything or focus on one thing
+- Conforms to: [[Standard - Visual Language]] — semantic zoom changes visual density per level
 - Affects: [[Feature - Hex Grid]] — zoom changes tile rendering
 - Affects: [[Feature - The Table]] — always visible regardless of zoom
 

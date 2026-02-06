@@ -10,6 +10,8 @@ The interface for modifying weekly commitments after planning — pausing active
 - Accessed via: [[Feature - The Table]] (position interactions), [[Feature - Project Board]] (pause action)
 - Agent: [[Agent - Marvin]] — supports transitions
 - Returns to: [[System - Priority Queue Architecture]] — paused items requeue
+- Conforms to: [[Standard - Visual Language]] — state transitions update visual treatments
+- Conforms to: [[Standard - Project States]] — pause/promote follow state transition rules
 - Implements: [[Principle - Plans Are Hypotheses]] — adaptation is expected
 - Implements: [[Strategy - Superior Process]] — structured flexibility
 

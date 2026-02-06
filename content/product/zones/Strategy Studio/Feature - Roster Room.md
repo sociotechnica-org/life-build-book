@@ -21,28 +21,30 @@ Devin's dedicated space — where directors assign AI Workers to delegatable tas
 
 ## WHEN: Timeline
 
-Support space developing as Worker architecture matures. Delegation patterns are a growth area.
+Future feature. Worker architecture and delegation framework are in design phase. Roster Room depends on mature Agent coordination (Level 4+ on AI as Teammates ladder) and standing job/permission definitions (Level 3).
 
 ## HOW: Implementation
 
-**Worker assignment:**
+**Worker assignment flow:**
 
-- View available AI Workers
-- Match Workers to delegatable tasks
-- Set expectations and check-in points
-- Review Worker performance history
+1. Director opens Roster Room from Strategy Studio
+2. Devin presents delegatable tasks from the week's Work at Hand and Bronze stack
+3. Director reviews available AI Workers and their capability profiles
+4. Director assigns Workers to tasks, sets expectations and check-in cadence
+5. Devin tracks execution and surfaces results
 
 **Human delegation:**
 
-- Configure recurring delegation relationships
-- Track who does what
-- Set accountability and follow-up
+- Configure recurring delegation relationships (family members, colleagues, contractors)
+- Track who does what and follow-up status
+- Set accountability expectations and reminder cadence
+- Historical delegation patterns inform future recommendations
 
 **Devin's role:**
 
-- Recommend Worker matches
-- Surface delegation opportunities
-- Track delegation patterns
-- Improve recommendations over time
+- Recommend Worker-to-task matches based on capability and past performance
+- Surface delegation opportunities directors might miss ("this task looks similar to one you delegated last month")
+- Track delegation patterns and improve recommendations over time
+- Escalate when delegated work stalls or needs attention
 
-**Output:** Tasks assigned to Workers or humans, with accountability configured.
+**Output:** Tasks assigned to Workers or humans, with accountability configured and check-in schedule set.
