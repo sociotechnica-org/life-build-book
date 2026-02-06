@@ -111,6 +111,34 @@ Lookup tables for building and auditing Context Library cards.
 [Implementation details.]
 ```
 
+### Primitive
+
+```markdown
+# Primitive - [Name]
+
+## WHAT: Definition
+[What foundational data entity. What it represents in the director's world.]
+
+## WHERE: Ecosystem
+- Zone: [Cross-zone or specific zone]
+- Implements: [[Standard]] — [what spec constrains this]
+- Depends on: [[Primitive]] — [relationship to other primitives]
+- Governs: [[Feature]] — [what features serve this primitive]
+- Components: [[Component]] — [what implements aspects of it]
+- Contrast: [[Primitive]] — [how it differs from related primitives]
+
+## WHY: Rationale
+- Strategy: [[Strategy]] — [how this implements it]
+- Principle: [[Principle]] — [what guidance it follows]
+- Driver: [Why directors need this entity]
+
+## WHEN: Timeline
+[Core entity status. Origin.]
+
+## HOW: Implementation
+[Defining characteristics. Required properties. Lifecycle states. Visual representation.]
+```
+
 ### Zone
 
 ```markdown
@@ -282,20 +310,36 @@ Part of: [[Initiative]]
 
 ## Folder Structure
 
+The library is organized into two primary layers: **rationale** (why we build, what constraints exist) and **product** (what gets built).
+
 | Type | Folder |
 |------|--------|
-| Zone | `/product/zones/` |
+| Foundation / Need | `/rationale/` (flat) |
+| Strategy | `/rationale/strategies/` |
+| Principle | `/rationale/principles/` |
+| Standard | `/rationale/standards/` |
+| Primitive | `/product/Primitives/` |
 | Feature | `/product/features/` |
 | Component | `/product/components/` |
 | System | `/product/systems/` |
-| Standard | `/product/standards/` |
-| Principle | `/product/principles/` |
-| Strategy | `/product/strategies/` |
+| Agent | `/product/Agents/` |
+| Zone | `/product/zones/` |
 | Decision | `/product/` (flat) |
 | Learning | `/product/` (flat) |
 | Initiative | `/product/` (flat) |
 | Release | `/releases/` |
 | Future | `/product/` (flat) |
+
+**Meta / operational files** (not cards):
+
+| Content | Location |
+|---------|----------|
+| Library Reference | `/reference.md` |
+| Contributing guide | `/CONTRIBUTING.md` |
+| Code conventions | `/CONVENTIONS.md` |
+| Conan skill files | `/skills/conan/` |
+| Bob skill files | `/skills/bob/` |
+| Card templates | `/templates/` |
 
 ---
 
@@ -311,6 +355,8 @@ Part of: [[Initiative]]
 | Standard | `Standard - [Name]` | `Standard - Visual Language` |
 | Principle | `Principle - [Name]` | `Principle - Visual Recognition` |
 | Strategy | `Strategy - [Name]` | `Strategy - Spatial Visibility` |
+| Primitive | `Primitive - [Name]` | `Primitive - Project` |
+| Agent | `Agent - [Name]` | `Agent - Maya` |
 | Decision | `Decision - [Choice]` | `Decision - Three Slot Limit` |
 | Learning | `Learning - [Insight]` | `Learning - Queue Overwhelm` |
 | Initiative | `Initiative - [Name]` | `Initiative - AI Prioritization` |
@@ -335,6 +381,7 @@ Features/Components touching governed domains must link to constraining Standard
 | Has Bronze mode behavior | Standard - Bronze Mode Behaviors |
 | Involves service level awareness | Standard - Service Levels |
 | Renders Work at Hand in multiple locations | Standard - Dual Presence |
+| Involves category assignment or category-based organization | Standard - Life Categories |
 
 **When creating a Standard:**
 - Must implement ≥1 Principle

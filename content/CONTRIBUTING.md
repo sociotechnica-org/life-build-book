@@ -45,10 +45,10 @@ Context that helps with one task will help with future tasks. Don't repeat yours
 | ------------------------ | --------------- | ----------------------- |
 | User-facing feature      | `_feature.md`   | `/product/features/`    |
 | Cross-cutting mechanism  | `_system.md`    | `/product/systems/`     |
-| Specification/standard   | `_standard.md`  | `/product/standards/`   |
-| Technical implementation | `_component.md` | `/product/components/`  |
-| Design principle         | `_principle.md` | `/product/principles/`  |
-| Strategic bet            | `_strategy.md`  | `/product/strategies/`  |
+| Specification/standard   | `_standard.md`  | `/rationale/standards/`  |
+| Technical implementation | `_component.md` | `/product/components/`   |
+| Design principle         | `_principle.md` | `/rationale/principles/` |
+| Strategic bet            | `_strategy.md`  | `/rationale/strategies/` |
 | Past approach/lesson     | `_learning.md`  | `/timeline/past/`       |
 | Future plan              | `_vision.md`    | `/timeline/future/`     |
 

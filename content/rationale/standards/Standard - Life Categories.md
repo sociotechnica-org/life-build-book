@@ -1,0 +1,64 @@
+# Standard - Life Categories
+
+## WHAT: Definition
+
+The specification for the eight default life-domain categories that organize all director work. Categories determine spatial grouping on the Life Map, advisor assignment, visual color mapping, and Studio structure. Categories are the primary organizing dimension — every project and system belongs to exactly one.
+
+## WHERE: Ecosystem
+
+- Conforming features: [[Feature - Life Map]], [[Feature - Category Studios]], [[Feature - Hex Grid]], [[Feature - Drafting Room]]
+- Conforming components: [[Hex Grid - Hex Tile]], [[Hex Grid - Clustering]]
+- Implements: [[Principle - Familiarity Over Function]] — categories should feel immediately recognizable
+- Implements: [[Principle - Visual Recognition]] — category colors enable spatial scanning
+- Related: [[Standard - Visual Language]] — each category has a specific color
+- Related: [[Feature - Category Advisors]] — one advisor per default category
+- Used by: [[Primitive - Project]] — every project requires a Life Category
+- Used by: [[Primitive - System]] — systems belong to a category
+
+## WHY: Rationale
+
+- Strategy: [[Strategy - Spatial Visibility]] — categories are the primary spatial organizing dimension
+- Principle: [[Principle - Familiarity Over Function]] — this standard makes "categories should feel immediately recognizable" testable
+- Driver: Directors need a familiar framework for sorting life's work. Derived from a comparative survey of established frameworks (Wheel of Life, Robbins' categories) selecting the most consistently-appearing domains across frameworks. Familiarity over novelty — directors should recognize categories immediately, not learn a new taxonomy.
+- Decision: Eight defaults, not immutable. Defaults serve two functions: (1) anchor the Life Map's visual structure, and (2) enable pre-built Category Advisors tuned to each domain. Customization is permitted because the director's mental model takes priority over system convenience.
+
+## WHEN: Timeline
+
+Core architecture. Categories are foundational to spatial organization, visual language, and the advisor system. Customization policy may evolve based on alpha usage data.
+
+## HOW: Specification
+
+### Default Categories
+
+| LifeBuild Default | Wheel of Life Equivalent | Robbins Equivalent |
+|---|---|---|
+| Health | Health | Physical Body |
+| Relationships | Relationships / Romance | Relationships |
+| Finances | Money / Finances | Finances |
+| Learning | Personal Growth | Intellectual |
+| Leisure | Fun & Recreation | Emotions |
+| Purpose | Career / Business | Career/Mission |
+| Home | Physical Environment | — |
+| Service | Contribution | Contribution |
+
+### Customization Policy
+
+- Directors CAN rename or replace any category
+- Projects follow the category, not the label (renaming "Home" to "Nest" doesn't break existing projects)
+- When a category changes, its pre-built Category Advisor pauses
+- Current resolution: **Pause and observe.** Launch with defaults. Observe customization frequency. Let data inform advisor coverage for custom categories.
+
+### Considered Resolutions for Custom Category Advisors
+
+| Option | Approach | Risk |
+|--------|----------|------|
+| 1 | Auto-generate advisor | Generic quality |
+| 2 | Advisor-less custom categories | Reduced value in most-cared-about domains |
+| 3 | Director-configured advisor | Configuration burden, violates [[Principle - Earn Don't Interrogate]] |
+| 4 (chosen) | Pause and observe | Honest choice when data doesn't exist yet |
+
+## Anti-Examples
+
+- **Treating categories as immutable taxonomy imposed on directors** — Categories are defaults, not mandates. The director's mental model takes priority. If "Home" doesn't resonate, they rename it.
+- **Using objective criteria to assign categories** — The director decides which category a project belongs to based on their mental model. There is no algorithm that determines "this is a Health project" — that's a subjective judgment.
+- **Blocking advisor functionality entirely when a category is customized** — Current plan is pause, not permanent disable. The system acknowledges the gap honestly rather than pretending custom categories don't need advisor support.
