@@ -13,6 +13,8 @@ The center position on The Table, displaying a single capacity-building project 
 - Selected in: [[Feature - Sorting Room]] with [[Agent - Cameron]]
 - Visual: [[Standard - Visual Language]] — cool silver/platinum color accent
 - Creates: [[Primitive - System]] — system-building Silver projects plant systems on completion
+- Conforms to: [[Standard - Three-Stream Portfolio]] — Silver stream slot constraints
+- Conforms to: [[Standard - Table Slot Behaviors]] — empty Silver visual treatment per spec
 
 ## WHY: Rationale
 

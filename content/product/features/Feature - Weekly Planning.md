@@ -14,6 +14,7 @@ The structured beginning-of-week ritual where directors select their Work at Han
 - Uses: [[Feature - Three-Stream Filtering]] — filtered views
 - Populates: [[Feature - The Table]] — result of planning
 - Paired with: [[Feature - Week-in-Review]] — bookends the week
+- Conforms to: [[Standard - Table Slot Behaviors]] — slot selection includes intentional-empty option
 
 ## WHY: Rationale
 
@@ -21,6 +22,7 @@ The structured beginning-of-week ritual where directors select their Work at Han
 - Principle: [[Principle - Protect Transformation]] — selection enforces stream constraints
 - Principle: [[Principle - Empty Slots Strategic]] — intentional emptiness is valid choice
 - Driver: Directors need a moment to decide what matters this week. Weekly Planning creates that moment.
+- Constraints: Weekly Planning is a director decision, not an optimization routine. Cameron presents and respects, never pushes. Intentional emptiness is always available.
 
 ## WHEN: Timeline
 
@@ -52,3 +54,13 @@ Core rhythm feature. Weekly Planning establishes the week's focus.
 - Jarvis may remind if planning is overdue
 
 **Duration:** Typically 10-20 minutes. Can be faster once patterns establish.
+
+### Examples
+
+- Cameron shows three Gold candidates: "Home Renovation" (priority: 87), "Career Course" (72), "Novel Draft" (65) → director asks "why is Home Renovation highest?" → Cameron explains recency and momentum factors → director selects Career Course instead → Cameron accepts without pushback → moves to Silver selection.
+- Cameron presents Gold candidates → director says "I need a rest week" → confirms intentional-empty for Gold → Cameron: "Got it — lighter week" → moves to Silver → director selects one Silver project → Bronze set to Minimal → a lighter week is planned without friction.
+
+### Anti-Examples
+
+- **Auto-selecting the highest priority score project without director choice** — the score suggests, the director decides. Planning is a decision ritual, not an optimization algorithm.
+- **Blocking planning completion until both Gold and Silver slots are filled** — intentional emptiness is a valid outcome of planning. The ritual completes when the director says it's complete, not when all positions are occupied.

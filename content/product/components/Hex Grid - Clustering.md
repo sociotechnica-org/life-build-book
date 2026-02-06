@@ -11,6 +11,9 @@ The spatial grouping behavior where directors place related hex tiles adjacent t
 - Implements: [[Strategy - Spatial Visibility]] — spatial proximity carries meaning
 - Implements: [[Principle - Visual Recognition]] — "my health stuff is upper-left"
 - Related: [[Hex Grid - Campfire]] — first clusters form around origin
+- Conforms to: [[Standard - Visual Language]] — category color reinforcement per spec
+- Conforms to: [[Standard - Life Categories]] — clusters organize by life category
+- Conforms to: [[Standard - Spatial Interaction Rules]] — clustering reflects director-assigned meaning
 
 ## WHY: Rationale
 

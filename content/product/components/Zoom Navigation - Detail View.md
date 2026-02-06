@@ -11,6 +11,7 @@ The closest zoom level on the Life Map — where individual tiles fill significa
 - Implements: [[Principle - Visibility Creates Agency]] — full information access
 - Related: [[Zoom Navigation - Horizon View]], [[Zoom Navigation - Working View]]
 - Leads to: [[Feature - Project Board]] — click for even more detail
+- Conforms to: [[Standard - Visual Language]] — maximum visual language detail at this zoom level
 
 ## WHY: Rationale
 

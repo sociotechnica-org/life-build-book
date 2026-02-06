@@ -10,6 +10,8 @@ The primary execution workspace — a spatial canvas where directors see their e
 - Implements: [[Strategy - Spatial Visibility]] — work exists in space
 - Implements: [[Standard - Dual Presence]] — Work at Hand appears on both Table and grid
 - Implements: [[Principle - Visibility Creates Agency]] — everything visible at once
+- Conforms to: [[Standard - Visual Language]] — hex tiles, state indicators, category colors render per spec
+- Conforms to: [[Standard - Spatial Interaction Rules]] — director controls spatial arrangement
 - Contains: [[Feature - The Table]] — persistent priority display
 - Contains: [[Feature - Hex Grid]] — spatial organization canvas
 - Contains: [[Feature - Zoom Navigation]] — scale traversal
@@ -24,6 +26,7 @@ The primary execution workspace — a spatial canvas where directors see their e
 - Principle: [[Principle - Visibility Creates Agency]] — directors see everything, decide what to focus on
 - Principle: [[Principle - Visual Recognition]] — spatial memory aids finding and understanding
 - Driver: Directors need a home base where all their work is visible and organized. The Life Map is that home.
+- Constraints: Life Map is an execution workspace, not a dashboard. It shows spatial reality, not summarized metrics. Every element the director sees has a spatial position they chose.
 
 ## WHEN: Timeline
 
@@ -52,3 +55,13 @@ Core workspace from initial design. The Life Map is LifeBuild's primary interfac
 - Get help (summon Mesa)
 
 **Entry point:** Life Map is the default view when directors open LifeBuild.
+
+### Examples
+
+- Director opens LifeBuild → Life Map loads at last zoom level and scroll position → The Table shows current priorities → Hex Grid shows project landscape → director orients in under 3 seconds without clicking anything.
+- Director notices a red smoke signal on a system tile at Neighborhood zoom → zooms in to Detail level → reads health warning "cycle completion 45%" → clicks tile → System Board opens as overlay → director diagnoses the issue while Life Map stays visible behind.
+
+### Anti-Examples
+
+- **Opening to a dashboard or activity feed instead of the spatial Life Map** — Life Map is home base because spatial context orients faster than a list of updates. Directors need to see their landscape, not read about it.
+- **Removing completed projects immediately from the grid, leaving visible gaps** — completed projects archive gracefully. Sudden spatial holes would disorient directors who navigate by spatial memory ("my health projects are upper-left").

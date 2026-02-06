@@ -10,6 +10,7 @@ The farthest zoom level on the Life Map — where the entire life landscape is v
 - Implements: [[Strategy - Spatial Visibility]] — see everything at once
 - Implements: [[Principle - Visibility Creates Agency]] — big picture awareness
 - Related: [[Zoom Navigation - Working View]], [[Zoom Navigation - Detail View]]
+- Conforms to: [[Standard - Visual Language]] — state colors and stream accents visible at overview
 
 ## WHY: Rationale
 

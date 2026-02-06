@@ -12,6 +12,8 @@ An individual hexagonal tile on the grid representing a single project or system
 - Uses: [[Standard - Image Evolution]] — project illustrations show on tiles
 - Opens: [[Feature - Project Board]] — click to see detail
 - Enhanced by: [[Standard - Dual Presence]] — Work at Hand tiles get special treatment
+- Conforms to: [[Standard - Project States]] — tile visual treatment follows state transitions
+- Conforms to: [[Standard - Smoke Signal Thresholds]] — signal displays follow threshold spec
 
 ## WHY: Rationale
 

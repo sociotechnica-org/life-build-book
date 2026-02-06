@@ -8,6 +8,7 @@ The display showing a director's current Service Level, progress toward the next
 
 - Implements: [[Standard - Service Levels]] — UI for the progression system
 - Implements: [[Principle - Compound Capability]] — visible compounding
+- Conforms to: [[Standard - Visual Language]] — level indicators, progress display render per spec
 - Implements: [[Strategy - AI as Teammates]] — agents improve with levels
 - Visible in: [[Feature - Council Chamber]] — Jarvis discusses progression
 - Tracked by: [[Agent - Conan]] — historical data feeds level calculation
@@ -17,6 +18,7 @@ The display showing a director's current Service Level, progress toward the next
 - System: [[Standard - Service Levels]] — levels need visibility to motivate
 - Principle: [[Principle - Compound Capability]] — seeing progress reinforces investment
 - Driver: Directors should see their relationship with LifeBuild deepening. Progression makes the invisible visible.
+- Constraints: Progression reflects system capability growth, not director achievement scores. No badges, no leaderboards, no feature locks. Levels are honest about what the system can and cannot yet do.
 
 ## WHEN: Timeline
 
@@ -50,3 +52,13 @@ Supporting feature. Progression display develops as Service Level mechanics matu
 - Visible connection between engagement and service quality
 
 **Not gamification:** Levels reflect genuine capability growth, not arbitrary points. No badges, no leaderboards — just honest representation of system capability.
+
+### Examples
+
+- New director at Level 0 (Newcomer) → completes first week of planning and review → advances to Level 1 (Establishing) → Jarvis notes: "With a week of history, I can start noticing basic patterns in your preferences" → capability connection made visible.
+- Director at Level 3 (Developing) for three months → Jarvis: "I've seen 12 weeks of your planning now. Your calibration is improving — estimates are 20% closer to reality than month one" → the relationship depth is tangible.
+
+### Anti-Examples
+
+- **Awarding badges for arbitrary engagement metrics** — "You viewed your Life Map 10 times!" is gamification. Progression reflects genuine system capability growth (better predictions, deeper pattern recognition), not click counts.
+- **Gatekeeping features behind level requirements** — levels describe what the system can do for the director, not what the director is allowed to do. All features are available from Day 1. Higher levels unlock better quality, not access.

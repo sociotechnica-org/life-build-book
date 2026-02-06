@@ -11,6 +11,8 @@ The origin hex at the center of every new director's Life Map — a warm, inviti
 - Implements: [[Strategy - Spatial Visibility]] — gives the infinite canvas a home
 - Agent: [[Agent - Mesa]] — meets directors here during onboarding
 - Related: [[Hex Grid - Clustering]] — first clusters form around Campfire
+- Conforms to: [[Standard - Visual Language]] — warm glow, visual aesthetic per spec
+- Conforms to: [[Standard - Onboarding Sequence]] — Day 1 warm greeting and spatial orientation
 
 ## WHY: Rationale
 

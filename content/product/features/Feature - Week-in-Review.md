@@ -13,6 +13,7 @@ The structured end-of-week reflection where directors review what happened again
 - Feeds: [[Feature - Archives]] — learnings preserved
 - Feeds: [[Standard - Knowledge Framework]] — patterns captured
 - Paired with: [[Feature - Weekly Planning]] — bookends the week
+- Conforms to: [[Standard - Planning Calibration]] — review measures calibration accuracy, not completion
 
 ## WHY: Rationale
 
@@ -20,6 +21,7 @@ The structured end-of-week reflection where directors review what happened again
 - Principle: [[Principle - Plans Are Hypotheses]] — review tests hypotheses
 - Principle: [[Principle - Compound Capability]] — learnings compound
 - Driver: Directors need to process what happened, not just move to next week. Week-in-Review creates that processing.
+- Constraints: Week-in-Review is reflection, not performance review. Jarvis never scores, ranks, or grades the director's week. Calibration accuracy is data, not judgment.
 
 ## WHEN: Timeline
 
@@ -51,3 +53,13 @@ Core rhythm feature. Week-in-Review closes the weekly loop before planning opens
 - Jarvis may prompt if review is skipped repeatedly
 
 **Duration:** Typically 15-30 minutes. Deeper during quarterly reviews.
+
+### Examples
+
+- Jarvis: "You completed your Silver project and adapted your Gold mid-week. What prompted the change?" → director explains a family situation → Jarvis: "That's happened twice now — Tuesday surprises shifting Gold. Want to note that pattern in your Charter?" → learning captured, no judgment.
+- Director completed nothing from original plan due to emergency → Jarvis: "Intense week. Your calibration data shows this happens about once a quarter — big disruptions that reshape everything. How are you feeling about it?" → framing as data point, not failure.
+
+### Anti-Examples
+
+- **Jarvis presenting a completion scorecard: "3/5 tasks completed, 60% success rate"** — review is learning, not grading. Framing outcomes as a percentage score creates the guilt the system exists to prevent.
+- **Skipping the review because nothing was completed** — non-completion weeks often have the richest learning. The review is more important when plans diverged from reality, not less.

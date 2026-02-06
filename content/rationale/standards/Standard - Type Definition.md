@@ -1,4 +1,4 @@
-# Standard (Type Definition)
+# Standard - Type Definition
 
 ## WHAT: Definition
 
@@ -49,3 +49,9 @@ WHAT exists?
 - **WHY:** Which principles it implements
 - **HOW:** The specification itself (values, rules, constraints)
 - **WHEN:** Stability status, change history
+
+## Anti-Examples
+
+- **Classifying a specification card as a System because it "feels foundational"** — Systems have runtime state and process inputs. A card that defines visual colors, interaction rules, or scoring formulas is a Standard, not a System. The test: does it compute anything? If no, it's a Standard.
+- **Creating a Standard with no conforming Features or Components** — Standards constrain implementations. A Standard that nothing conforms to is either mistyped (should be a Principle or guideline) or missing its conformance wiring. Every Standard should have at least one conforming downstream card.
+- **Writing a Standard's HOW section as behavioral description instead of specification** — Standards specify what implementations must produce, not how they behave at runtime. "The system calculates priority scores" is System language. "Priority scores are computed as: importance × 0.4 + urgency × 0.3 + momentum × 0.3" is Standard language.

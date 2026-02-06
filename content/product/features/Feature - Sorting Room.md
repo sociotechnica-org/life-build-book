@@ -10,6 +10,8 @@ Cameron's dedicated space in the Strategy Studio — where directors make priori
 - Agent: [[Agent - Cameron]] — priority coordinator
 - Uses: [[System - Priority Queue Architecture]] — source of candidates
 - Uses: [[Standard - Priority Score]] — ranking logic
+- Conforms to: [[Standard - Visual Language]] — ranking interface uses stream colors and state treatments
+- Conforms to: [[Standard - Planning Calibration]] — priority rankings as testable predictions
 - Uses: [[Feature - Three-Stream Filtering]] — filtered views
 - Selects: [[Feature - The Table]] positions — Gold, Silver, Bronze mode
 - Implements: [[Strategy - Superior Process]] — structured prioritization
@@ -20,6 +22,7 @@ Cameron's dedicated space in the Strategy Studio — where directors make priori
 - Principle: [[Principle - Familiarity Over Function]] — sorting metaphor is intuitive
 - Principle: [[Principle - Protect Transformation]] — selection process enforces stream constraints
 - Driver: Directors need help seeing options and making choices. The Sorting Room presents candidates and guides selection.
+- Constraints: Cameron advises on priority, never decides it. The director's judgment overrides any score. Selection, not optimization.
 
 ## WHEN: Timeline
 
@@ -52,3 +55,13 @@ Core to Strategy Studio design. Sorting Room mechanics refined as priority math 
 - Drag-and-drop to adjust position
 
 **Output:** Selections populate The Table. Director leaves Sorting Room with Work at Hand set.
+
+### Examples
+
+- Cameron shows Gold candidates: "Home Renovation" (priority: 87), "Career Course" (72), "Novel Draft" (65) → director asks "why is Home Renovation highest?" → Cameron explains: recency boost, upcoming deadline, high momentum score → director selects Career Course anyway → Cameron: "Career Course it is" → no pushback, no re-ask.
+- Director manually drags "Novel Draft" above "Career Course" in Silver candidates → priority score didn't support this order, but director has personal context Cameron doesn't → reorder persists → Cameron notes the override for future learning.
+
+### Anti-Examples
+
+- **Cameron refusing to let a director select a lower-priority project** — the priority score suggests, the director decides. Manual override is a feature, not a bug. The score informs judgment; it doesn't replace it.
+- **Showing all projects in a single unsorted list regardless of stream** — the three-stream filter exists to make selection tractable. A unified list forces the director to mentally sort by purpose, which is Cameron's job.

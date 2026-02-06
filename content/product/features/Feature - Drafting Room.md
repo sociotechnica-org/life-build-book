@@ -13,12 +13,14 @@ Marvin's dedicated space — where directors create new projects, guided through
 - Implements: [[Principle - Earn Don't Interrogate]] — progressive capture
 - Creates: [[Primitive - Project]] — output of drafting process
 - Configures: [[Primitive - System]] — for system-building Silver projects
+- Conforms to: [[Standard - Visual Language]] — creation stage visual treatments
 
 ## WHY: Rationale
 
 - Strategy: [[Strategy - Superior Process]] — creation deserves structure
 - Principle: [[Principle - Earn Don't Interrogate]] — Marvin guides without blocking
 - Driver: Directors need help turning ideas into actionable projects. The Drafting Room provides that translation.
+- Constraints: Drafting Room translates ideas into projects without judging them. Marvin guides structure, not evaluates worth. Quick capture is always available.
 
 ## WHEN: Timeline
 
@@ -52,3 +54,13 @@ Core support space. Drafting Room process refined as four-stage creation matured
 - Click any project to open in Drafting Room for continued work
 
 **Output:** Completed project in Planning state, ready for Priority Queue.
+
+### Examples
+
+- Director has an idea: "Kitchen Renovation" → enters Drafting Room → types title and brief description → Marvin asks: "Is this about changing your life, building infrastructure, or handling something that needs doing?" → director says "changing my life" → project tagged as Gold stream → Marvin guides through scoping objectives and tasks.
+- Director captures "Call dentist" as quick capture → Stage 1 only (title + description) → task sits in Planning Queue as "Identified" → director returns three days later → clicks to continue → Marvin picks up at Stage 2 → low-friction capture didn't block the original thought.
+
+### Anti-Examples
+
+- **Requiring all four stages before a project can exist in the system** — quick capture (Stage 1 only) must be possible. Forcing full scoping on every idea kills spontaneity and makes capture feel heavy.
+- **Marvin auto-classifying projects by analyzing the title** — purpose assignment comes from the director. "Kitchen Renovation" could be Gold (transformative remodel) or Bronze (fix the faucet) depending on the director's intent. Only the director knows.

@@ -14,6 +14,7 @@ The spatial organization canvas that fills most of the Life Map — a tessellate
 - Contains: [[Hex Grid - Hex Tile]] — individual project/system representations
 - Uses: [[Standard - Visual Language]] — colors, states, indicators
 - Uses: [[Feature - Zoom Navigation]] — scale changes what's visible
+- Conforms to: [[Standard - Spatial Interaction Rules]] — director-driven placement, no auto-organization
 
 ## WHY: Rationale
 
@@ -21,6 +22,7 @@ The spatial organization canvas that fills most of the Life Map — a tessellate
 - Principle: [[Principle - Visual Recognition]] — "my health stuff is upper-left" becomes automatic
 - Principle: [[Principle - Familiarity Over Function]] — spatial metaphor feels natural
 - Decision: Hexagons (not squares) because they tessellate without privileged axes. Every hex has six equal neighbors — no "up is better than sideways" bias.
+- Constraints: Hex Grid is a thinking tool, not a filing system. Spatial arrangement carries meaning that only the director assigns. The system observes but never imposes organization.
 
 ## WHEN: Timeline
 
@@ -54,3 +56,13 @@ Core to Life Map design. The hex grid is the foundational spatial metaphor for L
 - Semantic zoom: detail increases with magnification
 
 **Arrangement freedom:** No forced grid positions. Directors place tiles wherever makes sense to them. The system learns from arrangement over time.
+
+### Examples
+
+- Director drags "Learn Piano" hex next to "Music Production" hex → tiles cluster together → spatial proximity now means "these relate" without tags, folders, or metadata — the grid itself carries the relationship.
+- New director places first project near Campfire → drags second project one hex away → a category cluster begins to form → over weeks, the landscape fills with clusters that mirror how the director thinks about their life.
+
+### Anti-Examples
+
+- **Auto-arranging hex tiles into a neat category grid** — spatial arrangement must reflect the director's thinking, not the system's optimization. Even if auto-sort would look cleaner, it would destroy the cognitive value of director-driven placement.
+- **Snap-to-grid behavior that forces tiles into rigid positions** — directors must be able to place tiles anywhere on the infinite canvas. Forcing alignment removes the expressive freedom that makes spatial arrangement meaningful.

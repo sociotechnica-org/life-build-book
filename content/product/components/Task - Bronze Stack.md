@@ -11,6 +11,8 @@ The collection of operational tasks populating the Bronze position on The Table.
 - Sources: [[Primitive - Project]] (maintenance projects), [[Primitive - System]] (generated tasks)
 - Implements: [[Standard - Three-Stream Portfolio]] — Bronze stream mechanics
 - Related: [[System - Bronze Operations]] — full operational workflow
+- Conforms to: [[Standard - Visual Language]] — task display follows visual spec
+- Conforms to: [[Standard - Bronze Mode Behaviors]] — stack behavior follows Bronze mode spec
 
 ## WHY: Rationale
 

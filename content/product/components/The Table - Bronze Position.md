@@ -14,6 +14,7 @@ The rightmost position on The Table, displaying a stack of operational tasks —
 - Configured in: [[Feature - Sorting Room]] — mode selection with [[Agent - Cameron]]
 - Visual: [[Standard - Visual Language]] — warm bronze/copper color accent
 - Related: [[System - Bronze Operations]] — full operational workflow
+- Conforms to: [[Standard - Bronze Mode Behaviors]] — mode behavior follows Bronze spec
 
 ## WHY: Rationale
 

@@ -22,6 +22,7 @@ The learning workspace — where completed projects, uprooted systems, and histo
 - Strategy: [[Strategy - AI as Teammates]] — teammates remember
 - Principle: [[Principle - Compound Capability]] — history creates value
 - Driver: Directors need to learn from experience. The Archives preserve that experience and surface its lessons.
+- Constraints: Archives serve learning, not accountability. Historical data is the director's memory, not a performance record. Always accessible, never gated behind agent interaction, never auto-deleted.
 
 ## WHEN: Timeline
 
@@ -54,3 +55,13 @@ Core workspace, developing as historical data accumulates. Archives become more 
 **Proactive surfacing:** Conan notices when current work resembles past work and surfaces relevant history — "Last time you did a kitchen project, the contractor phase took longer than expected. Want to adjust your estimate?"
 
 **Search and browse:** Directors can explore their history directly, not just through Conan's surfacing. Archives are always accessible, never gated behind agent interaction.
+
+### Examples
+
+- Director starts a new kitchen project → Conan surfaces: "You completed a kitchen renovation in 2024. The contractor phase took 3 weeks longer than estimated. Want to see the full history?" → director reviews past project → adjusts current timeline based on actual historical data.
+- Director browses Archives by category → filters to "Health" → sees completed projects, uprooted systems, calibration trends → notices they consistently underestimate health project scope by 40% → adjusts current health project estimates before planning.
+
+### Anti-Examples
+
+- **Archives accessible only through Conan's proactive surfacing** — directors must be able to browse their own history directly. Agent-mediated access is one path, not the only path. Direct exploration reveals patterns agents might not surface.
+- **Permanently deleting archived projects after a time period** — Archives are permanent record. Historical data becomes more valuable over time as patterns emerge across quarters and years. No auto-expiration.

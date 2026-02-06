@@ -17,6 +17,7 @@ The interface for moving between LifeBuild's three main workspaces — Life Map 
 - Strategy: [[Strategy - Spatial Visibility]] — workspaces are distinct places
 - Principle: [[Principle - Familiarity Over Function]] — movement should feel intuitive
 - Driver: Directors need to move between execution, planning, and learning fluidly. Navigation makes that movement effortless.
+- Constraints: Navigation connects workspaces without disrupting flow. Transitions preserve all state (zoom, scroll, selection). Three workspaces are peers, not a hierarchy.
 
 ## WHEN: Timeline
 
@@ -51,3 +52,13 @@ Core feature. Navigation patterns established early, refined based on usage.
 - Each workspace has distinct visual treatment
 - Current location always clear
 - Breadcrumb awareness for nested spaces
+
+### Examples
+
+- Director presses "S" → navigates from Life Map to Strategy Studio hub → sees all rooms listed → clicks Council Chamber → Jarvis greets them with context → when done, presses "L" → returns to Life Map at exact previous zoom level and scroll position.
+- Jarvis says "Let's look at your priority candidates — shall we go to the Sorting Room?" → director agrees → navigation transitions to Sorting Room → Cameron takes over with candidate list → agent-initiated navigation feels like a colleague suggesting "let's walk to the conference room."
+
+### Anti-Examples
+
+- **Losing zoom level or scroll position when switching workspaces** — context preservation is fundamental. Directors return to exactly where they were. Resetting state on navigation breaks spatial memory and workflow.
+- **Burying Strategy Studio behind multiple menu levels** — all three primary workspaces are one keystroke or one click away. Navigation is flat (three peers), not deep (nested hierarchy).

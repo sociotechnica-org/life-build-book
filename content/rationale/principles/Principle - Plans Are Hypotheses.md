@@ -11,6 +11,7 @@ A weekly plan is a bet, not a commitment — adapting mid-week is engaged leader
 - Serves: [[Need - Competence]] — calibration improves over time
 - Advances: [[Strategy - Superior Process]]
 - Governs: [[Feature - Adaptation]], [[System - Weekly Priority]], [[Feature - Sorting Room]], [[Feature - Council Chamber]]
+- Implemented by: [[Standard - Planning Calibration]] — makes hypothesis framing testable
 - Agents: [[Agent - Jarvis]] (tone in reviews), [[Agent - Cameron]] (priority adjustments)
 - Metrics: Calibration accuracy over time, not completion rate
 - Related: [[Principle - Empty Slots Strategic]] — both reject rigid planning

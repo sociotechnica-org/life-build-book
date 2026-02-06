@@ -12,6 +12,7 @@ The interface for modifying weekly commitments after planning — pausing active
 - Returns to: [[System - Priority Queue Architecture]] — paused items requeue
 - Conforms to: [[Standard - Visual Language]] — state transitions update visual treatments
 - Conforms to: [[Standard - Project States]] — pause/promote follow state transition rules
+- Conforms to: [[Standard - Planning Calibration]] — adaptation follows hypothesis framing
 - Implements: [[Principle - Plans Are Hypotheses]] — adaptation is expected
 - Implements: [[Strategy - Superior Process]] — structured flexibility
 
@@ -20,6 +21,7 @@ The interface for modifying weekly commitments after planning — pausing active
 - Principle: [[Principle - Plans Are Hypotheses]] — plans change; that's leadership, not failure
 - Strategy: [[Strategy - Superior Process]] — adaptation has structure, not chaos
 - Driver: Life doesn't wait for Friday planning. Directors need to respond to change without guilt or friction.
+- Constraints: Adaptation carries no guilt tax. The system never frames mid-week changes as failure. Modification UI feels like adjusting strategy, not editing a failure report.
 
 ## WHEN: Timeline
 
@@ -52,3 +54,13 @@ Core feature. Adaptation mechanics designed to feel supportive, not punitive.
 - Never "you failed to complete"
 - Always "circumstances changed"
 - Adaptation framed as responsive leadership
+
+### Examples
+
+- Director's parent falls ill on Tuesday → director opens The Table → pauses Gold project "Career Course" → slot opens → director selects "Leave empty" → Bronze mode switches to Minimal → the week reshapes around care without guilt or friction.
+- Sprint at work demands unexpected effort → director opens Bronze position → switches from Target +3 to Maximal → operational tasks surface to match the week's intensity → no judgment about the change, just responsive adaptation.
+
+### Anti-Examples
+
+- **Requiring a justification when pausing a Gold project** — adaptation is leadership, not deviation. A "reason for change" dialog treats modification as failure requiring explanation. The system should feel like adjusting strategy, not filing an incident report.
+- **Displaying "Gold project incomplete" in the end-of-week summary after a deliberate pause** — the project was paused (a strategic choice), not failed. Language must distinguish between "didn't finish" and "chose to redirect."

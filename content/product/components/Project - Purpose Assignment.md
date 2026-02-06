@@ -11,6 +11,7 @@ The moment during project creation (Stage 2) when a director declares what the t
 - Implements: [[Principle - Familiarity Over Function]] — director's relationship to work is what matters
 - Happens in: [[System - Four-Stage Creation]] — Stage 2 (Scoped)
 - Agent: [[Agent - Marvin]] — guides purpose selection
+- Conforms to: [[Standard - Three-Stream Portfolio]] — purpose determines stream classification
 
 ## WHY: Rationale
 
