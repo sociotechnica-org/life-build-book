@@ -14,8 +14,8 @@ A persistent priority spotlight that sits at the top of the Life Map, displaying
 - Implements: [[Principle - Protect Transformation]] — structural separation of streams
 - Depends on: [[Feature - Sorting Room]] — where selections are made
 - Modified by: [[Feature - Adaptation]] — mid-week changes
-- Depends on: [[Feature - Project]] — Gold/Silver positions display projects
-- Depends on: [[Feature - Task]] — Bronze position displays task stack
+- Depends on: [[Primitive - Project]] — Gold/Silver positions display projects
+- Depends on: [[Primitive - Task]] — Bronze position displays task stack
 - Components: [[The Table - Gold Position]], [[The Table - Silver Position]], [[The Table - Bronze Position]]
 - Constraint: Maximum 1 Gold + 1 Silver (SOT 5.1)
 

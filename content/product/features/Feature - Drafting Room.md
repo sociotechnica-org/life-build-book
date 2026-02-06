@@ -11,8 +11,8 @@ Marvin's dedicated space — where directors create new projects, guided through
 - Implements: [[System - Four-Stage Creation]] — guided process
 - Implements: [[Strategy - Superior Process]] — structured project development
 - Implements: [[Principle - Earn Don't Interrogate]] — progressive capture
-- Creates: [[Feature - Project]] — output of drafting process
-- Configures: [[Feature - System]] — for system-building Silver projects
+- Creates: [[Primitive - Project]] — output of drafting process
+- Configures: [[Primitive - System]] — for system-building Silver projects
 
 ## WHY: Rationale
 

@@ -9,9 +9,8 @@ Directors classify work by how it feels to them, not by objective criteria — t
 - Type: Design Principle
 - Serves: [[Need - Autonomy]] — director's classification is final
 - Advances: [[Strategy - Superior Process]], [[Strategy - AI as Teammates]]
-- Governs: [[Feature - Project - Purpose Assignment]], [[Standard - Priority Score]], [[Feature - Sorting Room]], [[System - Weekly Priority]]
+- Governs: [[Project - Purpose Assignment]], [[Standard - Priority Score]], [[Feature - Sorting Room]], [[System - Weekly Priority]]
 - Agents: [[Agent - Cameron]] (priority recommendations), [[Agent - Marvin]] (purpose capture during creation)
-- Decisions: [[Decision - Subjective Purpose Classification]]
 - Related: [[Principle - Earn Don't Interrogate]] — both respect director sovereignty
 
 ## WHY: Belief
@@ -29,6 +28,12 @@ The one exception: if a classification seems like an error rather than a choice 
 Design purpose assignment as a subjective question about meaning, not an objective assessment of task characteristics. Priority scores should suggest, never mandate — the director always overrides.
 
 **Test:** Does this design assume it knows better than the director what their work means to them?
+
+## Anti-Patterns
+
+- **Classifying work by objective criteria** — Duration, complexity, or domain tell you nothing about what the work means to this director. A system that auto-classifies "garage cleanout" as Bronze based on task type overrides the director's relationship to the work.
+- **Agents correcting stream classification** — An agent that says "this looks like Bronze to me" and reclassifies is violating director sovereignty. Agents may notice patterns and ask curious questions, but never correct or suggest reclassification beyond a gentle one-time error check.
+- **Priority scores that mandate rather than suggest** — The score is a hypothesis, not a verdict. A design that prevents override or makes override feel like going against the system's judgment undermines the director's authority over their own work.
 
 ## Tensions
 

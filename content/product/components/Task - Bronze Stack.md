@@ -6,9 +6,9 @@ The collection of operational tasks populating the Bronze position on The Table.
 
 ## WHERE: Ecosystem
 
-- Parent: [[Feature - Task]]
+- Parent: [[Primitive - Task]]
 - Displays in: [[The Table - Bronze Position]] — rightmost position on The Table
-- Sources: [[Feature - Project]] (maintenance projects), [[Feature - System]] (generated tasks)
+- Sources: [[Primitive - Project]] (maintenance projects), [[Primitive - System]] (generated tasks)
 - Implements: [[Standard - Three-Stream Portfolio]] — Bronze stream mechanics
 - Related: [[System - Bronze Operations]] — full operational workflow
 

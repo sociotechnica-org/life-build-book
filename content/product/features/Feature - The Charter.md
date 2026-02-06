@@ -10,6 +10,7 @@ The living strategic document maintained in the Council Chamber — a director's
 - Maintained by: [[Agent - Jarvis]] — proposes updates, tracks evolution
 - Implements: [[Strategy - AI as Teammates]] — shared strategic foundation
 - Implements: [[Principle - Plans Are Hypotheses]] — Charter evolves, not fixed
+- Conforms to: [[Standard - Knowledge Framework]] — Charter content maps to knowledge domains
 - Archived in: [[Feature - Archives]] — historical versions preserved
 
 ## WHY: Rationale

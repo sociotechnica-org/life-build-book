@@ -29,6 +29,12 @@ The Table UI should render empty Gold/Silver slots as calm, intentional states �
 
 **Test:** Does this design treat an empty slot as incomplete, or as a valid choice?
 
+## Anti-Patterns
+
+- **Rendering empty slots as warning indicators** — An empty Gold slot styled with red borders or exclamation marks treats emptiness as a problem. "No Gold selected yet" (planning incomplete) and "Gold intentionally empty" (strategic choice) must look different. The latter should be calm, not alarming.
+- **Agents pushing to fill empty slots** — Cameron asking "are you sure you don't want a Gold project?" after the director has already indicated intentional rest violates the principle. Agents check intent once, then accept the choice.
+- **Measuring weeks with empty slots as underperformance** — If metrics treat empty-slot weeks as failures, the system penalizes recovery. Capacity-first philosophy means rest weeks are investment, not absence.
+
 ## Tensions
 
 - With [[Principle - First 72 Hours]] — first 72 hours optimize for wins, not rest; resolution is sequencing (quick wins first, strategic rest later)

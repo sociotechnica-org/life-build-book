@@ -28,6 +28,12 @@ Design for director agency over spatial organization. No auto-organization. Low-
 
 **Test:** Does this design preserve the director's spatial choices, or impose system logic?
 
+## Anti-Patterns
+
+- **Auto-organizing the hex grid** — The system assigning locations destroys the loop. Placement reveals how the director thinks about their life. Auto-organization imposes system logic where director cognition should drive.
+- **Preventing low-friction rearrangement** — If reorganizing requires multiple steps or confirmation dialogs, directors won't iterate. The loop depends on frequent, easy moves. Friction kills the flywheel.
+- **Treating spatial arrangement as filing rather than thinking** — The grid isn't storage — it's an extension of the director's mind. Designs that optimize for "correct" placement over "meaningful" placement miss the point of distributed cognition.
+
 ## Tensions
 
 - With efficiency — auto-organization would be faster; resolution is director agency trumps efficiency

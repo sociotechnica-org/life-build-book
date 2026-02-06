@@ -51,3 +51,9 @@ Priority Score = (Urgency × Importance) / Effort
 ### Override Policy
 
 Director override is sacred. The score is a suggestion, never a mandate. Consistent overrides are data about the formula, not evidence the director is wrong.
+
+## Anti-Examples
+
+- **Applying the same weighting across all streams** — Gold amplifies Importance (×1.5), Bronze amplifies Urgency (×1.5), Silver rewards Leverage. Using a single ranking formula lets urgency dominate across all streams, which is exactly what the three-stream model prevents.
+- **Treating score as a mandate and blocking director override** — The score suggests; the director decides. Preventing or discouraging override treats the formula as truth rather than hypothesis. Consistent overrides are signal to tune the formula.
+- **Omitting Effort from the calculation** — Without dividing by Effort, a high-urgency, high-importance task that takes 40 hours ranks the same as one that takes 30 minutes. Effort keeps the score grounded in feasibility.

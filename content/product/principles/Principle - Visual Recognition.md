@@ -9,13 +9,13 @@ A director must immediately recognize what each visual element represents withou
 - Type: Design Principle
 - Serves: [[Need - Autonomy]] — instant recognition enables control
 - Advances: [[Strategy - Spatial Visibility]]
-- Governs: [[Feature - Project]], [[Feature - System]], [[Feature - Hex Grid]], [[Hex Grid - Hex Tile]]
+- Governs: [[Primitive - Project]], [[Primitive - System]], [[Feature - Hex Grid]], [[Hex Grid - Hex Tile]]
 - Companion detail: Brand Standards v2
 - Related: [[Principle - Visibility Creates Agency]] — visibility must also be instantly legible
 
 ## WHY: Belief
 
-The two-second test: if a director can't identify a project tile in under two seconds at normal viewing distance, the visual representation has failed. This drove the pivot from abstract urushi-inspired visual evolution to content-depicting diorama-style illustrations. Abstract beauty is worth less than instant recognition.
+The two-second test: if a director can't identify a project tile in under two seconds at normal viewing distance, the visual representation has failed. This drove the pivot from abstract lacquer-inspired visual evolution to content-depicting diorama-style illustrations. Abstract beauty is worth less than instant recognition.
 
 Project illustrations depict recognizable content, not abstract patterns. Category cards are visually distinct at a glance. Stream colors are immediately legible. If the director has to inspect an element to understand it, the Life Map has become a puzzle instead of a landscape.
 
@@ -28,6 +28,12 @@ Brand Standards v2 specifies the implementation: Source Serif for readability, w
 Design all visual elements for instant recognition. Use content-depicting illustrations, not abstract patterns. Test with the two-second rule: can a director identify this element at a glance?
 
 **Test:** Can the director identify this element in under two seconds, at a glance?
+
+## Anti-Patterns
+
+- **Using abstract patterns instead of content-depicting illustrations** — A beautiful geometric design that requires reading the label to identify the project fails the two-second test. Content-depicting illustrations (kitchen elements for kitchen project, running imagery for marathon training) are what enable instant recognition.
+- **Requiring hover or click to identify an element** — If the director must inspect a tile to understand what it represents, the Life Map has become a puzzle. Recognition must happen at glance distance, not inspection distance.
+- **Prioritizing aesthetic consistency over visual distinctiveness** — Uniform styling across all tiles looks polished but prevents recognition. Each project should be visually distinct — category colors, content illustrations, and progress markers all serve identification, not decoration.
 
 ## Tensions
 

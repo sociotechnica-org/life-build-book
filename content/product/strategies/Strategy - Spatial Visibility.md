@@ -13,7 +13,7 @@ Making work visual, placed, and traversable creates comprehension and agency tha
 - Governs: [[Feature - Life Map]], [[Feature - Hex Grid]], [[Feature - The Table]], [[Feature - Zoom Navigation]], [[Feature - Project Board]], [[Feature - System Board]]
 - Zoom tiers: [[Zoom Navigation - Horizon View]], [[Zoom Navigation - Working View]], [[Zoom Navigation - Detail View]]
 - Visual elements: [[Hex Grid - Hex Tile]], [[Hex Grid - Campfire]], [[Hex Grid - Clustering]]
-- Serves: Autonomy (from [[Strategy - Self-Determination Theory]])
+- Serves: Autonomy (from [[Self-Determination Theory]])
 
 ## WHY: Belief
 
@@ -36,6 +36,12 @@ Research supports this: the brain's spatial processing and memory systems share 
 | 4     | Hybrid Physical/Digital | AR integration, work in physical space                  |
 
 **Current state:** Level 1-2. Hexmap with flat illustrations in development.
+
+## Anti-Patterns
+
+- **Defaulting to list or feed views** — Lists and inboxes are Level 0. If the primary view of work is a scrollable list, the spatial bet has failed. Directors should browse a landscape, not parse a feed.
+- **Hiding work behind menus or hover states** — Spatial visibility means work has a persistent, visible place. Requiring clicks to reveal status or hover to see details moves work back into abstraction. Default to showing.
+- **Flat spatial layout without zoom levels** — A hex grid with no zoom tiers dumps all information at the same density. Horizon View, Working View, and Detail View exist because information needs vary by intent. No zoom means no information hierarchy.
 
 ## Tensions
 

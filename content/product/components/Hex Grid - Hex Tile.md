@@ -7,9 +7,9 @@ An individual hexagonal tile on the grid representing a single project or system
 ## WHERE: Ecosystem
 
 - Parent: [[Feature - Hex Grid]]
-- Displays: [[Feature - Project]] or [[Feature - System]]
+- Displays: [[Primitive - Project]] or [[Primitive - System]]
 - Uses: [[Standard - Visual Language]] — colors, indicators, treatments
-- Uses: [[Standard - Image Evolution]] — Urushi images show on tiles
+- Uses: [[Standard - Image Evolution]] — project illustrations show on tiles
 - Opens: [[Feature - Project Board]] — click to see detail
 - Enhanced by: [[Standard - Dual Presence]] — Work at Hand tiles get special treatment
 
@@ -27,7 +27,7 @@ Core to Hex Grid design. Tile visual treatment evolves as the design system matu
 
 **Tile contents:**
 
-- Urushi image (project illustration)
+- Project illustration
 - Title (truncated if long)
 - Category color border
 - Progress indicator (for projects)

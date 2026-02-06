@@ -11,7 +11,6 @@ A single ranked priority list lets urgent maintenance perpetually displace impor
 - Advances: [[Strategy - Superior Process]]
 - Governs: [[Feature - Three-Stream Filtering]], [[Feature - The Table]], [[System - Bronze Operations]], [[Feature - Sorting Room]], [[System - Weekly Priority]]
 - Table positions: [[The Table - Gold Position]], [[The Table - Silver Position]], [[The Table - Bronze Position]]
-- Decisions: [[Decision - Three Streams Not Ranked List]], [[Decision - One Gold One Silver]]
 - Related: [[Principle - Empty Slots Strategic]] — protection includes permission to rest
 
 ## WHY: Belief
@@ -29,6 +28,12 @@ We're not saying maintenance doesn't matter. Bronze is essential. The claim is t
 The Table enforces 1 Gold + 1 Silver maximum. Bronze has its own position that cannot expand into the transformation slots. When designing any prioritization interface, ensure Bronze cannot crowd out Gold/Silver through sheer volume.
 
 **Test:** Does this design let Bronze overflow into Gold or Silver capacity?
+
+## Anti-Patterns
+
+- **A single ranked priority list mixing all streams** — This is the core failure the principle prevents. Urgency has a neurological head start (amygdala responds faster than prefrontal cortex). A combined list lets "pay electric bill" perpetually displace "train for marathon" because the brain processes urgency before importance.
+- **Allowing Bronze volume to crowd Gold/Silver slots** — Bronze has no maximum on The Table, but it cannot expand into the 1 Gold + 1 Silver reserved slots. If Bronze overflow can consume transformation capacity, the structural protection is gone.
+- **Displaying Bronze and Gold projects in a unified priority ranking** — Any UI that renders a single sorted list mixing streams re-introduces the urgency-vs-importance competition the three-stream model structurally prevents. Bronze items with high urgency scores will visually dominate Gold items with high importance scores, undermining the reserved slots.
 
 ## Tensions
 

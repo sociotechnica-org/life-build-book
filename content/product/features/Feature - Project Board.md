@@ -7,11 +7,11 @@ The detail overlay that opens when a director clicks any project tile — a focu
 ## WHERE: Ecosystem
 
 - Parent: [[Feature - Life Map]] — opens as overlay
-- Displays: [[Feature - Project]] — all project details
-- Displays: [[Feature - Task]] — task list within project
+- Displays: [[Primitive - Project]] — all project details
+- Displays: [[Primitive - Task]] — task list within project
 - Agent: [[Agent - Category Advisor (Concept)]] — in-context consultation available
 - Uses: [[Standard - Project States]] — shows current state, enables transitions
-- Uses: [[Standard - Image Evolution]] — shows current Urushi stage
+- Uses: [[Standard - Image Evolution]] — shows current illustration stage
 - Enables: Task completion, objective tracking, project pausing
 
 ## WHY: Rationale
@@ -28,7 +28,7 @@ Core to Life Map design. Project Board is where most execution work happens.
 
 **Contents:**
 
-- Header: Title, Urushi image, state indicator, category
+- Header: Title, project illustration, state indicator, category
 - Description: What this project is
 - Objectives: What success looks like
 - Tasks: The work to be done (checkable)

@@ -40,10 +40,10 @@ Core to Strategy Studio design. Sorting Room mechanics refined as priority math 
 - Detect patterns ("this keeps slipping")
 - Ask calibrating questions
 
-**Filters:**
+**Filters** (per [[Standard - Three-Stream Portfolio]]):
 
-- Gold filter: Purpose = "Moving forward"
-- Silver filter: Purpose = "Building leverage"
+- Gold filter: Purpose = expansion ("What changes my life?")
+- Silver filter: Purpose = capacity ("What creates leverage?")
 - Bronze sources: Maintenance projects, system tasks, due-date items
 
 **Manual reordering:**

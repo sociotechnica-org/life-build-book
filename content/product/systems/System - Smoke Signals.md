@@ -8,12 +8,13 @@ The ambient notification mechanism that surfaces items needing attention through
 
 - Zone: [[Feature - Life Map]] — signals visible on grid
 - Displayed on: [[Hex Grid - Hex Tile]] — visual treatments applied to tiles
-- Sources: [[Feature - System]] (health data), [[Feature - Project]] (staleness data), [[System - Priority Queue Architecture]] (due dates)
+- Sources: [[Primitive - System]] (health data), [[Primitive - Project]] (staleness data), [[System - Priority Queue Architecture]] (due dates)
 - Monitored by: [[Agent - Mesa]] — can explain any signal
 - Implements: [[Standard - Smoke Signal Thresholds]] — threshold and treatment specifications
 
 ## WHY: Rationale
 
+- Strategy: [[Strategy - Spatial Visibility]] — ambient signals leverage spatial awareness
 - Principle: [[Principle - Visibility Creates Agency]] — directors see problems early
 - Principle: [[Principle - Guide When Helpful]] — helpful signals, not nagging alerts
 - Driver: Directors need awareness without bombardment. Smoke Signals make problems visible without demanding immediate action.

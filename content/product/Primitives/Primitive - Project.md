@@ -10,11 +10,11 @@ A discrete initiative with a finish line — bounded work that completes and mov
 - Implements: [[Standard - Three-Stream Portfolio]] — every project has a Purpose determining stream
 - Implements: [[System - Four-Stage Creation]] — projects develop through four stages
 - Implements: [[System - Pipeline Architecture]] — projects flow through queues
-- Depends on: [[Feature - Task]] — projects contain tasks
+- Depends on: [[Primitive - Task]] — projects contain tasks
 - Governs: [[Feature - Project Board]] — execution interface for projects
 - Governs: [[Feature - Kanban Board]] — task flow within projects
 - Components: [[Standard - Project States]], [[Project - Purpose Assignment]], [[Standard - Image Evolution]]
-- Contrast: [[Feature - System]] — systems are continuous, projects are bounded
+- Contrast: [[Primitive - System]] — systems are continuous, projects are bounded
 
 ## WHY: Rationale
 
@@ -45,6 +45,6 @@ Core entity from initial design. Projects are one of two initiative types (along
 Identified → Scoped → Drafted → Prioritized → Live → Work at Hand → Completed
 ```
 
-**Visual representation:** Hex tile with Urushi image, progress ring, category color accent, state indicators. Image evolves through five stages as project progresses.
+**Visual representation:** Hex tile with project illustration, progress ring, category color accent, state indicators. Illustration evolves through five stages as project progresses.
 
 **Projects that create Systems:** Silver projects marked as "system-building" plant a new System on completion. The project archives; the system persists.

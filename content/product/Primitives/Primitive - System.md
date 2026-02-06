@@ -9,11 +9,11 @@ Planted infrastructure that generates work indefinitely. Unlike projects, system
 - Zone: [[Feature - Life Map]] — systems occupy hex tiles
 - Implements: [[Standard - Three-Stream Portfolio]] — systems generate Bronze tasks
 - Implements: [[Principle - Compound Capability]] — systems compound leverage over time
-- Created by: [[Feature - Project]] — Silver projects plant systems on completion
-- Depends on: [[Feature - Task]] — systems generate tasks
+- Created by: [[Primitive - Project]] — Silver projects plant systems on completion
+- Depends on: [[Primitive - Task]] — systems generate tasks
 - Governs: [[Feature - System Board]] — monitoring interface for systems
 - Components: [[System - Actions]]
-- Contrast: [[Feature - Project]] — projects are bounded, systems are continuous
+- Contrast: [[Primitive - Project]] — projects are bounded, systems are continuous
 
 ## WHY: Rationale
 

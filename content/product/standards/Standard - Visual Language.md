@@ -61,3 +61,9 @@ Established in Brand Standards v2. Visual language is stable — changes require
 |--------|--------|
 | Projects | Progress ring (% complete) |
 | Systems | Health dots (●●●●○) |
+
+## Anti-Examples
+
+- **Using arbitrary colors not mapped to life categories** — Each category has a specific color (Health = vibrant green, Finances = gold/amber, etc.). Introducing unmapped colors breaks the visual vocabulary and forces directors to re-learn associations.
+- **Rendering a Planned project at full saturation** — Planned projects render at ~60% saturation (dimmed). Showing them at full saturation makes them visually identical to Live projects, destroying the state-at-a-glance signal.
+- **Using progress rings on systems or health dots on projects** — Entity type markers are distinct: projects get progress rings (% complete), systems get health dots (●●●●○). Mixing markers creates confusion about what kind of entity the director is looking at.

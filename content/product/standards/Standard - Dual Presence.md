@@ -45,3 +45,9 @@ Core architecture. Dual presence enables the Life Map to show both spatial conte
 |--------|--------|
 | Click either | Opens Project Board overlay |
 | Changes in overlay | Reflected in both views |
+
+## Anti-Examples
+
+- **Syncing two separate objects instead of rendering one object twice** — If hex tile and Table position are different objects, state can drift. Same object, two views is the architecture.
+- **Updating Table position but not hex tile on progress change** — Both views must respond to every state change. A completion reflected only on The Table breaks the spatial context the grid provides.
+- **Opening different overlays from each location** — Click on hex tile and click on Table position must both open the same Project Board overlay. Two entry points, one destination.

@@ -10,7 +10,7 @@ The two-queue system that separates work in development (Planning Queue) from wo
 - Implements: [[System - Four-Stage Creation]] — stages determine which queue
 - Feeds: [[System - Priority Queue Architecture]] — projects completing Stage 4 enter Priority Queue
 - Governs: [[System - Planning Queue]] — Stages 1-3 projects
-- Related: [[Feature - Project]] — projects move through the pipeline
+- Related: [[Primitive - Project]] — projects move through the pipeline
 
 ## WHY: Rationale
 

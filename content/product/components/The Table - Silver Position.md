@@ -7,12 +7,12 @@ The center position on The Table, displaying a single capacity-building project 
 ## WHERE: Ecosystem
 
 - Parent: [[Feature - The Table]]
-- Displays: [[Feature - Project]] with Purpose = "Building leverage"
+- Displays: [[Primitive - Project]] with Purpose = "Building leverage"
 - Implements: [[Principle - Compound Capability]] — Silver work compounds over time
 - Implements: [[Principle - Empty Slots Strategic]] — empty Silver is valid choice
 - Selected in: [[Feature - Sorting Room]] with [[Agent - Cameron]]
 - Visual: [[Standard - Visual Language]] — cool silver/platinum color accent
-- Creates: [[Feature - System]] — system-building Silver projects plant systems on completion
+- Creates: [[Primitive - System]] — system-building Silver projects plant systems on completion
 
 ## WHY: Rationale
 
