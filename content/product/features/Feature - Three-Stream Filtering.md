@@ -11,6 +11,7 @@ The filtered views in the Sorting Room that separate Priority Queue candidates b
 - Implements: [[Principle - Protect Transformation]] — filters enforce stream boundaries
 - Uses: [[System - Priority Queue Architecture]] — source of candidates
 - Uses: [[Standard - Priority Score]] — rankings within filters
+- Conforms to: [[Standard - Visual Language]] — filtered views render stream-specific color treatments
 - Used by: [[Agent - Cameron]] — presents filtered views
 
 ## WHY: Rationale
@@ -18,6 +19,7 @@ The filtered views in the Sorting Room that separate Priority Queue candidates b
 - System: [[Standard - Three-Stream Portfolio]] — streams need separate views
 - Principle: [[Principle - Protect Transformation]] — can't accidentally put Bronze in Gold slot
 - Driver: Showing all candidates together would be overwhelming. Filtering by stream makes selection tractable.
+- Constraints: Filters enforce stream boundaries by design, not convention. Cross-selection is structurally prevented. Only one filter active at a time during selection.
 
 ## WHEN: Timeline
 
@@ -52,3 +54,13 @@ Core to Sorting Room design. Filters embody the three-stream philosophy in inter
 - Cannot cross-select (Gold filter → Gold position only)
 
 **Empty filters:** If Gold filter is empty, Cameron notes it and asks about new project creation or pausing existing work.
+
+### Examples
+
+- Director activates Gold filter in Sorting Room → only expansion projects appear: "Home Renovation," "Career Course," "Novel Draft" → ranked by importance-weighted priority score → Cameron explains the top candidate → director selects one for the Gold position.
+- Gold filter shows zero candidates → Cameron: "No expansion projects in your queue right now. Want to create one in the Drafting Room, or take a lighter week with Gold intentionally empty?" → director chooses intentional-empty → valid outcome.
+
+### Anti-Examples
+
+- **Allowing a Bronze maintenance project to appear in the Gold filter** — streams don't mix. A project categorized as operational maintenance cannot be selected for the Gold (expansion) position regardless of its priority score.
+- **Showing all projects in a single ranked list with colored stream tags** — filtering exists to reduce cognitive load during selection. A unified list with tags forces the director to mentally filter, which is the system's job.

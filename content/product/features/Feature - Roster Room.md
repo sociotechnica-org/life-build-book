@@ -18,6 +18,7 @@ Devin's dedicated space — where directors assign AI Workers to delegatable tas
 - Strategy: [[Strategy - AI as Teammates]] — directors have a team
 - Principle: [[Principle - Compound Capability]] — team effectiveness compounds over time
 - Driver: Directors shouldn't do everything alone. The Roster Room is where delegation happens.
+- Constraints: Delegation is always director-initiated or director-approved. Devin recommends, the director assigns. No autonomous task handoff. Human delegation tracking is reminder-based, not enforcement-based.
 
 ## WHEN: Timeline
 
@@ -48,3 +49,13 @@ Future feature. Worker architecture and delegation framework are in design phase
 - Escalate when delegated work stalls or needs attention
 
 **Output:** Tasks assigned to Workers or humans, with accountability configured and check-in schedule set.
+
+### Examples
+
+- Devin identifies 3 Bronze tasks that match past delegation patterns → presents: "These look like tasks you've delegated before — want to assign them?" → director assigns 2 to AI Workers, keeps 1 → sets Wednesday check-in → Devin tracks execution and surfaces results on schedule.
+- Director configures recurring human delegation: "My assistant handles invoicing every Friday" → Devin tracks this relationship → Friday passes without completion flag → Devin surfaces follow-up: "Invoice task from Friday — want to check in?" → accountability without micromanagement.
+
+### Anti-Examples
+
+- **Auto-delegating tasks without director approval** — delegation is a director decision, not an AI optimization. Devin suggests candidates and matches, but the director assigns. Autonomous task delegation violates director agency.
+- **Presenting a catalog of all AI Worker capabilities unprompted** — delegation opportunities should be surfaced in context (tasks that match worker skills), not as a capabilities brochure. Show what's relevant, not everything that's possible.

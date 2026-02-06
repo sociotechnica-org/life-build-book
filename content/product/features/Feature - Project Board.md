@@ -12,6 +12,7 @@ The detail overlay that opens when a director clicks any project tile — a focu
 - Agent: [[Feature - Category Advisors]] — in-context consultation available
 - Uses: [[Standard - Project States]] — shows current state, enables transitions
 - Uses: [[Standard - Image Evolution]] — shows current illustration stage
+- Conforms to: [[Standard - Visual Language]] — project state indicators, category colors
 - Enables: Task completion, objective tracking, project pausing
 
 ## WHY: Rationale
@@ -19,6 +20,7 @@ The detail overlay that opens when a director clicks any project tile — a focu
 - Strategy: [[Strategy - Superior Process]] — detailed work needs detailed view
 - Principle: [[Principle - Familiarity Over Function]] — board metaphor feels natural for project management
 - Driver: Directors need to work on projects, not just see them. The Project Board is the workspace within the workspace.
+- Constraints: Project Board is for working within a single project. Cross-project decisions happen on The Table and in the Sorting Room, not here. Overlay behavior preserves spatial context.
 
 ## WHEN: Timeline
 
@@ -54,3 +56,13 @@ Core to Life Map design. Project Board is where most execution work happens.
 - Check off completed
 - Reorder
 - Delegate (opens Roster Room context)
+
+### Examples
+
+- Director clicks "Home Renovation" tile on Hex Grid → Project Board opens as overlay (Life Map dimmed behind) → shows title, illustration, state indicator, 8 tasks, 3 completed → director checks off "Get contractor quotes" → progress updates → director closes overlay → returns to Life Map at exact same position and zoom.
+- Director sees Maya's indicator on a Health project board → clicks → asks about exercise frequency for their recovery plan → Maya responds drawing on past Health Studio conversations → consultation logged to Health Studio thread → unified history regardless of entry point.
+
+### Anti-Examples
+
+- **Project Board replacing Life Map entirely when opened** — it's an overlay, not a navigation event. The Life Map stays visible (dimmed) behind, maintaining spatial context. The director should feel like they opened a drawer, not left the room.
+- **Showing identical detail density for all project states** — a Planning-state project shows objectives and scope questions. A Live project shows tasks and progress. A Completed project shows outcomes and learnings. Detail matches lifecycle state.

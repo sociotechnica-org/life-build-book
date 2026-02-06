@@ -10,6 +10,7 @@ An empty Gold or Silver slot can be a deliberate choice — to recover, catch up
 - Serves: [[Need - Autonomy]] — permission to choose restraint
 - Advances: [[Strategy - Superior Process]]
 - Governs: [[Feature - The Table]] (visual treatment of empty slots), [[The Table - Gold Position]], [[The Table - Silver Position]]
+- Implemented by: [[Standard - Table Slot Behaviors]] — makes intentional emptiness testable
 - Agents: [[Agent - Cameron]] (respects empty choices), [[Agent - Jarvis]] (strategic framing)
 - Related: [[Principle - Plans Are Hypotheses]], [[Principle - Protect Transformation]]
 

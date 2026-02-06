@@ -11,6 +11,7 @@ The living strategic document maintained in the Council Chamber — a director's
 - Implements: [[Strategy - AI as Teammates]] — shared strategic foundation
 - Implements: [[Principle - Plans Are Hypotheses]] — Charter evolves, not fixed
 - Conforms to: [[Standard - Knowledge Framework]] — Charter content maps to knowledge domains
+- Conforms to: [[Standard - Onboarding Sequence]] — initial Charter created during Day 2
 - Archived in: [[Feature - Archives]] — historical versions preserved
 
 ## WHY: Rationale
@@ -18,6 +19,7 @@ The living strategic document maintained in the Council Chamber — a director's
 - Strategy: [[Strategy - AI as Teammates]] — teammates need shared context
 - Principle: [[Principle - Plans Are Hypotheses]] — strategic documents adapt
 - Driver: Jarvis needs to know what matters to the director. The Charter captures that — not as rigid doctrine but as living understanding.
+- Constraints: The Charter belongs to the director, not the system. Jarvis proposes updates, the director decides. The Charter describes current understanding, never binding commitments.
 
 ## WHEN: Timeline
 
@@ -41,3 +43,13 @@ Core strategic artifact. The Charter develops during onboarding and evolves thro
 - Historical versions archived
 
 **Not a contract:** The Charter describes current understanding, not binding commitments. Changing it is leadership, not failure.
+
+### Examples
+
+- After a major life discussion, Jarvis proposes: "Based on our conversation, I'd suggest adding 'career transition' as a current theme. Here's how I'd phrase it..." → director reviews, edits the wording, approves → Charter updates → all agents now reference this context in their recommendations.
+- Director reviews Charter quarterly → notices "financial stability" theme no longer feels urgent → removes it → Jarvis: "Got it — that priority has shifted. I'll adjust how I frame financial projects going forward."
+
+### Anti-Examples
+
+- **Pre-populating the Charter with default values during onboarding** — the Charter captures the director's own articulation of what matters. Default values would be someone else's words in the director's mouth.
+- **Requiring justification for Charter updates** — asking "why are you changing your priorities?" treats evolution as deviation. The Charter changes because the director changes. That's the entire point.

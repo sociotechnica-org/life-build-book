@@ -4,7 +4,7 @@
 
 The first 72 hours define the relationship. A new director's initial experience with LifeBuild must establish the spatial metaphor, introduce the agent team, capture initial context, and create momentum — all without overwhelming. Get this right and directors understand what LifeBuild is; get it wrong and they never return.
 
-## WHERE: Scope
+## WHERE: Ecosystem
 
 - Type: Design Principle
 - Advances: [[Strategy - AI as Teammates]] — first impressions of the team matter
@@ -13,6 +13,7 @@ The first 72 hours define the relationship. A new director's initial experience 
 - Governs: [[System - Onboarding]] — the mechanism serving this principle
 - Governs: [[Hex Grid - Campfire]] — the warm origin and first-contact point
 - Creates: [[Feature - The Charter]] — initial version during onboarding
+- Implemented by: [[Standard - Onboarding Sequence]] — makes day-by-day sequence testable
 
 ## WHY: Belief
 

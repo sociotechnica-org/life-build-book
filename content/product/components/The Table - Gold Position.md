@@ -12,6 +12,9 @@ The leftmost position on The Table, displaying a single expansion project — wo
 - Implements: [[Principle - Empty Slots Strategic]] — empty Gold is valid choice
 - Selected in: [[Feature - Sorting Room]] with [[Agent - Cameron]]
 - Visual: [[Standard - Visual Language]] — deep amber/gold color accent
+- Conforms to: [[Standard - Three-Stream Portfolio]] — Gold stream slot constraints
+- Conforms to: [[Standard - Dual Presence]] — Gold project appears on Life Map and Table
+- Conforms to: [[Standard - Table Slot Behaviors]] — empty Gold visual treatment per spec
 
 ## WHY: Rationale
 

@@ -18,6 +18,7 @@ Domain-specific planning spaces within the Strategy Studio — one studio for ea
 - Strategy: [[Strategy - AI as Teammates]] — specialized advisors for specialized domains
 - Principle: [[Principle - Compound Capability]] — advisors learn director's domain context over time
 - Driver: Life categories have different challenges requiring different expertise. Category Studios provide focused strategic support.
+- Constraints: Category Studios are domain-specific. Each advisor stays in their lane — cross-category synthesis comes from Jarvis, not from individual advisors. Customization limited to supported category structures.
 
 ## WHEN: Timeline
 
@@ -47,3 +48,13 @@ Core to Strategy Studio design. Individual advisor personalities develop as syst
 **Dual access:** Directors reach advisors here OR in-context on Project Boards. History syncs regardless of entry point.
 
 **Customization note:** If director renames or replaces default categories, associated studio pauses until system evolves to support custom coverage.
+
+### Examples
+
+- Director enters Health Studio → Maya: "Last time we talked about your running routine falling off after that knee issue. How's recovery going?" → conversation picks up with full context from their last session two weeks ago → Maya has domain-specific memory.
+- Director works on a financial project in Project Board → Brooks's indicator appears (subtle, non-intrusive) → director clicks → asks about budgeting approach for a home renovation → Brooks responds with financial framing → conversation logs to Finances Studio thread → continuity preserved regardless of entry point.
+
+### Anti-Examples
+
+- **Studios losing conversation history when the director hasn't visited in weeks** — advisor value grows with memory. An advisor that forgets past conversations is just another chatbot. History persists indefinitely.
+- **An advisor from one studio commenting on another category's domain** — Maya (Health) doesn't weigh in on financial decisions. Domain boundaries matter. Cross-category insights come from Jarvis (the generalist), not from domain advisors.

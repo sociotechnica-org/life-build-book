@@ -10,6 +10,7 @@ The middle zoom level on the Life Map — where a category cluster is comfortabl
 - Implements: [[Strategy - Spatial Visibility]] — practical working scale
 - Implements: [[Principle - Visual Recognition]] — tiles recognizable
 - Related: [[Zoom Navigation - Horizon View]], [[Zoom Navigation - Detail View]]
+- Conforms to: [[Standard - Visual Language]] — full visual language applies at working scale
 
 ## WHY: Rationale
 

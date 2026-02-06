@@ -19,6 +19,7 @@ The detail overlay that opens when a director clicks any system tile — a focus
 - Strategy: [[Strategy - Superior Process]] — systems need monitoring interface
 - Principle: [[Principle - Visibility Creates Agency]] — system health visible, not hidden
 - Driver: Directors need to see how their infrastructure is performing. The System Board answers "is this system healthy?"
+- Constraints: System Board monitors infrastructure health, not director productivity. System health reflects cycle adherence and task generation, not how much the director accomplished. Yellow is attention, Red is concern — neither is judgment.
 
 ## WHEN: Timeline
 
@@ -48,3 +49,13 @@ Core to Life Map design. System Board parallels Project Board for the other tool
 - Red: Struggling — frequent misses, system may need adjustment
 
 **Smoke Signals:** If system health degrades, [[System - Smoke Signals]] triggers alerts visible from Life Map.
+
+### Examples
+
+- Director opens "Morning Routine" system tile → System Board shows: health Green, 12/14 cycles completed this month, 3 Bronze tasks generated this week, next cycle tomorrow → director sees the system is healthy and producing expected work.
+- System Board shows health Yellow for "Weekly Meal Prep" → detail: cycle completion dropped to 70% over past 2 weeks (down from 95%) → director clicks "Edit" → adjusts frequency from daily to 3x/week → system reconfigures → health tracking baseline resets for new cadence.
+
+### Anti-Examples
+
+- **System Board showing only a health color dot without supporting data** — Green/Yellow/Red must include the data behind the assessment. "Yellow" means nothing without "cycle completion 70%, down from 95% two weeks ago." Color without context is useless.
+- **Treating Yellow health status as an emergency requiring immediate action** — Yellow is attention, not alarm. The smoke signal surfaces awareness; the director decides when and whether to investigate. No popup, no forced action.
