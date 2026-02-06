@@ -57,3 +57,9 @@ Architectural foundation for the AI team's intelligence layer. Enables progressi
 |----------|---------|
 | What should they work on? | Priority Score (see [[Standard - Priority Score]]) |
 | Can they actually do it? | Feasibility = Capacity / Commitments |
+
+## Anti-Examples
+
+- **Storing all knowledge in a single flat profile** — The two-dimension, two-scale structure exists because per-project psychology (Micro Inside) is categorically different from stable characteristics (Identity & Profile). Flattening loses the distinction.
+- **Treating Behavioral Patterns as director-stated preferences** — Behavioral Patterns are derived from observation, not self-report. A director who says they prefer morning work but consistently ships at midnight has a behavioral pattern that overrides the stated preference.
+- **Ignoring the Macro/Micro distinction when computing feasibility** — A director with high macro capacity but overwhelming micro commitments on a specific project will fail. Both scales must factor into recommendations.

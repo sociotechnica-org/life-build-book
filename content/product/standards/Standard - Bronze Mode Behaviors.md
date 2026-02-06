@@ -44,3 +44,9 @@ Core to Bronze Operations. Mode selection is part of weekly planning.
 - Initial selection during Weekly Planning
 - Can change mid-week via gear icon on Bronze position
 - Mode change takes effect immediately
+
+## Anti-Examples
+
+- **Replenishing in Minimal mode** — Minimal stack shrinks as tasks complete. Auto-filling new tasks defeats the purpose of constraining Bronze during high Gold/Silver weeks.
+- **Ignoring stack source priority** — Surfacing discretionary tasks before due-date items or critical responses. Due dates and critical responses always come first regardless of mode.
+- **Preventing mid-week mode changes** — Directors must be able to switch modes when the week's shape changes. Locking mode to planning time removes flexibility the spec exists to provide.

@@ -74,3 +74,9 @@ Core specification. Thresholds refined based on director feedback.
 - Signals don't block interaction
 - No sounds, no badges, no push notifications
 - Directors see signals when they look at Life Map
+
+## Anti-Examples
+
+- **Using push notifications or badge counts for smoke signals** — Signals are ambient, not interruptive. No sounds, no badges, no push notifications. Directors see signals when they look at Life Map, not when signals demand attention.
+- **Showing individual signals at Horizon View** — Horizon View shows aggregate only (cluster has signals). Rendering individual signal details at that zoom level creates visual noise where the director needs landscape-level awareness.
+- **Firing a Staleness signal after 1 week of inactivity on an active project** — Default active threshold is 3 weeks. Triggering too early turns awareness into nagging, violating the Guide When Helpful principle.

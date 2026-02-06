@@ -46,3 +46,9 @@ Architectural target. Current implementation targets Levels 1-2. Full ladder rep
 ### Goal
 
 Move every director up the ladder through thoughtful observation and well-timed questions, not interrogation.
+
+## Anti-Examples
+
+- **Giving personalized recommendations at Level 1** — Level 1 (Minimally Known) supports priority math and basic recommendations only. Personalized recommendations require Level 3 (Profiled), where explicit preferences and support network are known. Jumping ahead produces overconfident advice from insufficient data.
+- **Acquiring knowledge through upfront questionnaires** — Knowledge is earned through relationship, not demanded. An onboarding form asking 50 questions violates the Earn Don't Interrogate principle the ladder is built on.
+- **Treating all levels as achievable in the same timeframe** — Behavioral Patterns (Level 2) emerge over time through observation. Integration sourcing (Level 5) requires high trust. The ladder is progressive — rushing it produces hollow knowledge.

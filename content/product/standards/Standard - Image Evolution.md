@@ -43,3 +43,9 @@ Design decision from Brand Standards v2. Image evolution serves both aesthetic p
 ### Recognition Function
 
 A kitchen renovation shows kitchen elements; a marathon training shows running.
+
+## Anti-Examples
+
+- **Using abstract patterns instead of content-depicting illustrations** — A generic geometric shape for a kitchen renovation fails the recognition function. Director should see kitchen elements and know "that's my kitchen project" from across the room.
+- **Advancing illustration based on creation stage instead of project state** — A project selected straight to Work at Hand should skip to Colored. Illustration tracks meaningful state, not administrative steps.
+- **Showing the same visual detail at Sketch and Inked stages** — Each stage must add visible detail. If Sketch and Inked look the same, the progression signal is lost and directors can't read project maturity at a glance.

@@ -55,3 +55,9 @@ Core to project entity. States enable the pipeline flow and visual feedback syst
 | Work at Hand | Completed | All objectives met |
 | Any | Paused | Director choice |
 | Paused | Planned | Returns to Priority Queue top |
+
+## Anti-Examples
+
+- **Rendering a Paused project at full saturation** — Paused projects render at 50% saturation. Showing them at full visual weight makes them indistinguishable from Live projects and undermines the state-at-a-glance principle.
+- **Allowing direct transition from Planning to Work at Hand** — A project must complete Stage 4 (reach Planned) before it can be selected as Work at Hand. Skipping the Planned gate means selecting unfinished projects for weekly focus.
+- **Keeping Work at Hand status after the week ends** — Work at Hand reverts to Live when the week ends. Persisting the status without re-selection defeats the weekly cadence and clutters The Table with stale priorities.

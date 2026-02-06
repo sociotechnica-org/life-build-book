@@ -55,3 +55,9 @@ Work often matures through streams:
 | Gold | 1 |
 | Silver | 1 |
 | Bronze | No maximum (mode-controlled) |
+
+## Anti-Examples
+
+- **Ranking Gold and Bronze projects in the same list** — Streams are separate competitions. Gold competes with Gold on importance; Bronze competes with Bronze on urgency. A combined list lets urgent Bronze tasks crowd out transformational Gold work, which is the core problem the three-stream model solves.
+- **Classifying work by objective criteria instead of director relationship** — The same task (learning Spanish) is Gold for one person and Bronze for another. Purpose is subjective — determined by the director's relationship to the work, not external taxonomy.
+- **Allowing more than 1 Gold or 1 Silver project on The Table** — Slot constraints (1 Gold, 1 Silver) are structural protection. Expanding slots dilutes focus and recreates the overloaded priority list the model replaces.
