@@ -41,17 +41,16 @@ Context that helps with one task will help with future tasks. Don't repeat yours
 
 ### 1. Choose the right template
 
-| Documenting...           | Template        | Folder                 |
-| ------------------------ | --------------- | ---------------------- |
-| Major product area       | `_zone.md`      | `/product/zones/`      |
-| Cross-cutting mechanism  | `_system.md`    | `/product/systems/`    |
-| User-facing feature      | `_feature.md`   | `/product/features/`   |
-| Technical implementation | `_component.md` | `/product/components/` |
-| Strategic principle      | `_strategy.md`  | `/context/strategy/`   |
-| External force           | `_pressure.md`  | `/context/pressures/`  |
-| Metric/observation       | `_signal.md`    | `/context/signals/`    |
-| Past approach/lesson     | `_learning.md`  | `/timeline/past/`      |
-| Future plan              | `_vision.md`    | `/timeline/future/`    |
+| Documenting...           | Template        | Folder                  |
+| ------------------------ | --------------- | ----------------------- |
+| User-facing feature      | `_feature.md`   | `/product/features/`    |
+| Cross-cutting mechanism  | `_system.md`    | `/product/systems/`     |
+| Specification/standard   | `_standard.md`  | `/product/standards/`   |
+| Technical implementation | `_component.md` | `/product/components/`  |
+| Design principle         | `_principle.md` | `/product/principles/`  |
+| Strategic bet            | `_strategy.md`  | `/product/strategies/`  |
+| Past approach/lesson     | `_learning.md`  | `/timeline/past/`       |
+| Future plan              | `_vision.md`    | `/timeline/future/`     |
 
 ### 2. Copy and rename
 
