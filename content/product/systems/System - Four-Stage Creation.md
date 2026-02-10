@@ -6,11 +6,11 @@ The progressive project development process that separates four cognitive modes:
 
 ## WHERE: Ecosystem
 
-- Zone: [[Feature - Drafting Room]] — creation happens here with [[Agent - Marvin]]
+- Zone: [[Room - Drafting Room]] — creation happens here with [[Agent - Marvin]]
 - Implements: [[Principle - Earn Don't Interrogate]] — progressive investment
 - Implements: [[Principle - Plans Are Hypotheses]] — stages allow iteration
 - Feeds: [[System - Pipeline Architecture]] — stages determine queue placement
-- Governs: [[Project - Purpose Assignment]] — happens in Stage 2
+- Governs: [[Capability - Purpose Assignment]] — happens in Stage 2
 - Governs: [[Standard - Image Evolution]] — visual stages map to creation stages
 
 ## WHY: Rationale

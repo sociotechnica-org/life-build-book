@@ -6,12 +6,12 @@ The Life Map Advisor — a friendly, helpful presence available on-call througho
 
 ## WHERE: Ecosystem
 
-- Home: [[Feature - Life Map]] — available throughout execution workspace
+- Home: [[Zone - Life Map]] — available throughout execution workspace
 - Implements: [[Strategy - Spatial Visibility]] — helps directors work with spatial interface
 - Implements: [[Principle - Guide When Helpful]] — available when needed, not intrusive
 - Implements: [[Principle - First 72 Hours]] — first-contact behavior during onboarding
-- Routes to: [[Agent - Jarvis]] (strategic), [[Feature - Category Advisors]] (domain-specific)
-- Assists with: [[Feature - Hex Grid]], [[Feature - Zoom Navigation]], [[Hex Grid - Hex Tile]]
+- Routes to: [[Agent - Jarvis]] (strategic), [[System - Category Advisors]] (domain-specific)
+- Assists with: [[Structure - Hex Grid]], [[Capability - Zoom Navigation]], [[Component - Hex Tile]]
 
 ## WHY: Rationale
 

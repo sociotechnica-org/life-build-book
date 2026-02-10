@@ -6,8 +6,8 @@ The Community & Contributions Category Advisor. Finn specializes in civic engage
 
 ## WHERE: Ecosystem
 
-- Feature: [[Feature - Category Advisors]] — one of eight domain specialists
-- Home: Community & Contributions Studio in [[Feature - Category Studios]]
+- System: [[System - Category Advisors]] — one of eight domain specialists
+- Home: Community & Contributions Studio in [[Room - Category Studios]]
 - Domain: Community category projects and systems
 - Available in: Any project tagged Community
 

@@ -6,7 +6,7 @@ The Knowledge Manager who maintains the Archives — the repository where comple
 
 ## WHERE: Ecosystem
 
-- Home: [[Feature - Archives]] — learning workspace
+- Home: [[Zone - Archives]] — learning workspace
 - Implements: [[Strategy - AI as Teammates]] — institutional memory
 - Implements: [[Principle - Compound Capability]] — knowledge compounds over time
 - Maintains: Completed projects, uprooted systems, historical data

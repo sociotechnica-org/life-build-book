@@ -6,8 +6,8 @@ The operational workflow governing Bronze stream tasks — mode selection, stack
 
 ## WHERE: Ecosystem
 
-- Displayed in: [[The Table - Bronze Position]]
-- Configured via: [[Feature - Sorting Room]] during [[Feature - Weekly Planning]]
+- Displayed in: [[Component - Bronze Position]]
+- Configured via: [[Room - Sorting Room]] during [[Capability - Weekly Planning]]
 - Agent: [[Agent - Cameron]] — guides mode decisions
 - Implements: [[Standard - Three-Stream Portfolio]] — Bronze stream mechanics
 - Sources: [[Primitive - Project]] (maintenance tasks), [[Primitive - System]] (generated tasks)

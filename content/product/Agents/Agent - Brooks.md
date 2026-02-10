@@ -6,8 +6,8 @@ The Financial Resources Category Advisor. Brooks specializes in personal finance
 
 ## WHERE: Ecosystem
 
-- Feature: [[Feature - Category Advisors]] — one of eight domain specialists
-- Home: Financial Resources Studio in [[Feature - Category Studios]]
+- System: [[System - Category Advisors]] — one of eight domain specialists
+- Home: Financial Resources Studio in [[Room - Category Studios]]
 - Domain: Finances category projects and systems
 - Available in: Any project tagged Finances
 

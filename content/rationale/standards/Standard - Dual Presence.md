@@ -6,8 +6,8 @@ The specification for how Work at Hand projects appear in two places simultaneou
 
 ## WHERE: Ecosystem
 
-- Conforming features: [[Feature - Life Map]], [[Feature - The Table]]
-- Conforming components: [[Hex Grid - Hex Tile]], [[The Table - Gold Position]], [[The Table - Silver Position]]
+- Conforming: [[Zone - Life Map]], [[Overlay - The Table]]
+- Conforming components: [[Component - Hex Tile]], [[Component - Gold Position]], [[Component - Silver Position]]
 - Implements: [[Principle - Visibility Creates Agency]] — priority always visible
 - Uses: [[Standard - Visual Language]] — enhanced treatment for Work at Hand
 - Depends on: [[System - Weekly Priority]] — creates Work at Hand status

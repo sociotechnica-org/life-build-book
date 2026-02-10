@@ -7,9 +7,9 @@ The mechanism that implements the First 72 Hours principle — guiding new direc
 ## WHERE: Ecosystem
 
 - Implements: [[Principle - First 72 Hours]] — this system serves that principle
-- Entry point: [[Hex Grid - Campfire]] — where onboarding begins
+- Entry point: [[Component - Campfire]] — where onboarding begins
 - Agents: [[Agent - Mesa]] (first contact), [[Agent - Jarvis]] (Charter creation), [[Agent - Marvin]] (first projects)
-- Creates: [[Feature - The Charter]] — initial version during onboarding
+- Creates: [[Artifact - The Charter]] — initial version during onboarding
 - Feeds: [[Standard - Service Levels]] — Level 0 to Level 1 progression
 
 ## WHY: Rationale

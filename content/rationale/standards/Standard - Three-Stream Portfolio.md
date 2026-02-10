@@ -6,12 +6,12 @@ The specification for classifying all director work into three purpose-based str
 
 ## WHERE: Ecosystem
 
-- Conforming features: [[Feature - The Table]], [[Feature - Sorting Room]], [[Feature - Three-Stream Filtering]]
-- Conforming components: [[The Table - Gold Position]], [[The Table - Silver Position]], [[The Table - Bronze Position]]
+- Conforming: [[Overlay - The Table]], [[Room - Sorting Room]], [[Capability - Three-Stream Filtering]]
+- Conforming components: [[Component - Gold Position]], [[Component - Silver Position]], [[Component - Bronze Position]]
 - Implements: [[Principle - Protect Transformation]] — structural protection for transformation work
 - Implements: [[Principle - Familiarity Over Function]] — director chooses stream based on their relationship to work
 - Related: [[Standard - Priority Score]] — uses stream for weighting
-- Related: [[Project - Purpose Assignment]] — where stream is assigned
+- Related: [[Capability - Purpose Assignment]] — where stream is assigned
 
 ## WHY: Rationale
 

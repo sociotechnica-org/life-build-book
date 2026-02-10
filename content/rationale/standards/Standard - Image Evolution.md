@@ -7,7 +7,7 @@ The specification for the five-stage visual progression of a project's illustrat
 ## WHERE: Ecosystem
 
 - Conforming entity: [[Primitive - Project]]
-- Conforming component: [[Hex Grid - Hex Tile]] — where images appear
+- Conforming component: [[Component - Hex Tile]] — where images appear
 - Implements: [[Principle - Visual Recognition]] — recognition improves as detail increases
 - Uses: [[Standard - Visual Language]] — part of consistent visual vocabulary
 - Maps to: [[System - Four-Stage Creation]] — visual stages roughly align with creation stages

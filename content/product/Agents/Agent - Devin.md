@@ -6,7 +6,7 @@ The Delegation Specialist who manages the Roster Room, helping directors assign 
 
 ## WHERE: Ecosystem
 
-- Home: [[Feature - Roster Room]] — team assignment space
+- Home: [[Room - Roster Room]] — team assignment space
 - Implements: [[Strategy - AI as Teammates]] — team coordination
 - Implements: [[Principle - Compound Capability]] — delegation patterns improve over time
 - Assigns: Workers — AI agents for task execution

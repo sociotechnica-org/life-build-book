@@ -6,8 +6,8 @@ The holding area for projects still in development — work in stages 1-3 of the
 
 ## WHERE: Ecosystem
 
-- Zone: [[Feature - Strategy Studio]] — visible during planning work
-- Fed by: [[Feature - Drafting Room]] — where projects are created
+- Zone: [[Zone - Strategy Studio]] — visible during planning work
+- Fed by: [[Room - Drafting Room]] — where projects are created
 - Flows to: [[System - Priority Queue Architecture]] — on Stage 4 completion
 - Implements: [[System - Four-Stage Creation]] — stages 1-3 live here
 - Agent: [[Agent - Marvin]] — can surface stalled items

@@ -6,9 +6,9 @@ The specification for director agency over hex grid spatial organization: direct
 
 ## WHERE: Ecosystem
 
-- Conforming features: [[Feature - Hex Grid]] — core spatial interaction surface
-- Conforming features: [[Feature - Life Map]] — spatial organization at map level
-- Conforming components: [[Hex Grid - Clustering]] — cluster meaning from director placement
+- Conforming structures: [[Structure - Hex Grid]] — core spatial interaction surface
+- Conforming zones: [[Zone - Life Map]] — spatial organization at map level
+- Conforming systems: [[System - Clustering]] — cluster meaning from director placement
 - Implements: [[Principle - Bidirectional Loop]] — makes director spatial agency testable
 
 ## WHY: Rationale

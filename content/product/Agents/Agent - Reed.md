@@ -6,8 +6,8 @@ The Home & Environment Category Advisor. Reed specializes in living space, home 
 
 ## WHERE: Ecosystem
 
-- Feature: [[Feature - Category Advisors]] — one of eight domain specialists
-- Home: Home & Environment Studio in [[Feature - Category Studios]]
+- System: [[System - Category Advisors]] — one of eight domain specialists
+- Home: Home & Environment Studio in [[Room - Category Studios]]
 - Domain: Home category projects and systems
 - Available in: Any project tagged Home
 

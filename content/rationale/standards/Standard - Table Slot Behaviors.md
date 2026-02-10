@@ -6,10 +6,10 @@ The specification for visual treatment and interaction behavior of empty Gold an
 
 ## WHERE: Ecosystem
 
-- Conforming features: [[Feature - The Table]] — renders empty slot visual states
-- Conforming features: [[Feature - Weekly Planning]] — slot selection includes intentional-empty option
-- Conforming components: [[The Table - Gold Position]] — Gold empty state behavior
-- Conforming components: [[The Table - Silver Position]] — Silver empty state behavior
+- Conforming overlay: [[Overlay - The Table]] — renders empty slot visual states
+- Conforming capabilities: [[Capability - Weekly Planning]] — slot selection includes intentional-empty option
+- Conforming components: [[Component - Gold Position]] — Gold empty state behavior
+- Conforming components: [[Component - Silver Position]] — Silver empty state behavior
 - Implements: [[Principle - Empty Slots Strategic]] — makes intentional emptiness testable
 
 ## WHY: Rationale

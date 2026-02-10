@@ -9,7 +9,7 @@ When facing tradeoffs, optimize for month-12 capability, not week-1 convenience 
 - Type: Design Principle
 - Serves: [[Need - Competence]] — each week easier than last
 - Advances: [[Strategy - Spatial Visibility]], [[Strategy - Superior Process]], [[Strategy - AI as Teammates]]
-- Governs: [[Primitive - System]], [[Feature - The Charter]], [[Standard - Service Levels]], [[Standard - Knowledge Framework]]
+- Governs: [[Primitive - System]], [[Artifact - The Charter]], [[Standard - Service Levels]], [[Standard - Knowledge Framework]]
 - Systems infrastructure: [[System - Priority Queue Architecture]], [[System - Pipeline Architecture]], [[System - Four-Stage Creation]]
 - Related: [[Principle - First 72 Hours]] — tension resolved through sequencing
 

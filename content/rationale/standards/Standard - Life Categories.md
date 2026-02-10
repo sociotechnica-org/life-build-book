@@ -6,12 +6,12 @@ The specification for the eight default life-domain categories that organize all
 
 ## WHERE: Ecosystem
 
-- Conforming features: [[Feature - Life Map]], [[Feature - Category Studios]], [[Feature - Hex Grid]], [[Feature - Drafting Room]]
-- Conforming components: [[Hex Grid - Hex Tile]], [[Hex Grid - Clustering]]
+- Conforming: [[Zone - Life Map]], [[Room - Category Studios]], [[Structure - Hex Grid]], [[Room - Drafting Room]]
+- Conforming components: [[Component - Hex Tile]], [[System - Clustering]]
 - Implements: [[Principle - Familiarity Over Function]] — categories should feel immediately recognizable
 - Implements: [[Principle - Visual Recognition]] — category colors enable spatial scanning
 - Related: [[Standard - Visual Language]] — each category has a specific color
-- Related: [[Feature - Category Advisors]] — one advisor per default category
+- Related: [[System - Category Advisors]] — one advisor per default category
 - Used by: [[Primitive - Project]] — every project requires a Life Category
 - Used by: [[Primitive - System]] — systems belong to a category
 

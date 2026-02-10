@@ -11,8 +11,8 @@ The first 72 hours define the relationship. A new director's initial experience 
 - Related: [[Principle - Earn Don't Interrogate]] — progressive capture, not forms
 - Related: [[Principle - Compound Capability]] — tension resolved through sequencing
 - Governs: [[System - Onboarding]] — the mechanism serving this principle
-- Governs: [[Hex Grid - Campfire]] — the warm origin and first-contact point
-- Creates: [[Feature - The Charter]] — initial version during onboarding
+- Governs: [[Component - Campfire]] — the warm origin and first-contact point
+- Creates: [[Artifact - The Charter]] — initial version during onboarding
 - Implemented by: [[Standard - Onboarding Sequence]] — makes day-by-day sequence testable
 
 ## WHY: Belief

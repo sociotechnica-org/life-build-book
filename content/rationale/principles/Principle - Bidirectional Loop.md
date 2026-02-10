@@ -10,7 +10,7 @@ External representation and internal understanding strengthen each other through
 - Serves: [[Need - Autonomy]] — director controls their map
 - Serves: [[Need - Competence]] — clarity improves over time
 - Advances: [[Strategy - Spatial Visibility]] — spatial organization enables the loop
-- Governs: [[Feature - Hex Grid]], [[Hex Grid - Clustering]], [[Feature - Life Map]]
+- Governs: [[Structure - Hex Grid]], [[System - Clustering]], [[Zone - Life Map]]
 - Implemented by: [[Standard - Spatial Interaction Rules]] — makes director spatial agency testable
 - Related: [[Principle - Visibility Creates Agency]] — seeing enables understanding
 - Informed by: Zhang & Norman (1994) — distributed cognition research

@@ -10,9 +10,9 @@ Making work visual, placed, and traversable creates comprehension and agency tha
 - Serves: [[Need - Autonomy]] — directors see and control their work
 - Serves: [[Need - Competence]] (secondary) — visibility enables progress tracking
 - Implementing principles: [[Principle - Visibility Creates Agency]], [[Principle - Visual Recognition]]
-- Governs: [[Feature - Life Map]], [[Feature - Hex Grid]], [[Feature - The Table]], [[Feature - Zoom Navigation]], [[Feature - Project Board]], [[Feature - System Board]]
-- Zoom tiers: [[Zoom Navigation - Horizon View]], [[Zoom Navigation - Working View]], [[Zoom Navigation - Detail View]]
-- Visual elements: [[Hex Grid - Hex Tile]], [[Hex Grid - Campfire]], [[Hex Grid - Clustering]]
+- Governs: [[Zone - Life Map]], [[Structure - Hex Grid]], [[Overlay - The Table]], [[Capability - Zoom Navigation]], [[Room - Project Board]], [[Room - System Board]]
+- Zoom tiers: [[Capability - Zoom Navigation]]
+- Visual elements: [[Component - Hex Tile]], [[Component - Campfire]], [[System - Clustering]]
 - Serves: Autonomy (from [[Self-Determination Theory]])
 
 ## WHY: Belief

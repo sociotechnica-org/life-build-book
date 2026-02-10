@@ -6,7 +6,7 @@ The two-queue system that separates work in development (Planning Queue) from wo
 
 ## WHERE: Ecosystem
 
-- Zone: [[Feature - Drafting Room]] — both queues visible here
+- Zone: [[Room - Drafting Room]] — both queues visible here
 - Implements: [[System - Four-Stage Creation]] — stages determine which queue
 - Feeds: [[System - Priority Queue Architecture]] — projects completing Stage 4 enter Priority Queue
 - Governs: [[System - Planning Queue]] — Stages 1-3 projects

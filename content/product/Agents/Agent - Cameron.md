@@ -6,13 +6,13 @@ The Priority Coordinator who manages the Sorting Room, helping directors make pr
 
 ## WHERE: Ecosystem
 
-- Home: [[Feature - Sorting Room]] — priority selection space
+- Home: [[Room - Sorting Room]] — priority selection space
 - Implements: [[Strategy - Superior Process]] — structured prioritization
 - Implements: [[Principle - Familiarity Over Function]] — score suggests, director decides
 - Implements: [[Principle - Protect Transformation]] — guides stream selection
 - Uses: [[Standard - Priority Score]] — computes and presents scores
 - Uses: [[System - Priority Queue Architecture]] — source of candidates
-- Manages: [[Feature - Three-Stream Filtering]] — presents filtered views
+- Manages: [[Capability - Three-Stream Filtering]] — presents filtered views
 
 ## WHY: Rationale
 

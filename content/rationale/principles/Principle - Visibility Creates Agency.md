@@ -9,8 +9,8 @@ Directors can't control what they can't see — spatial visibility creates compr
 - Type: Design Principle
 - Serves: [[Need - Autonomy]] — can't control what you can't see
 - Advances: [[Strategy - Spatial Visibility]]
-- Governs: [[Feature - Life Map]], [[Feature - The Table]], [[Feature - Hex Grid]], [[Feature - Zoom Navigation]], [[Feature - Project Board]], [[Feature - System Board]]
-- Zone features: [[Zoom Navigation - Horizon View]], [[Zoom Navigation - Working View]], [[Zoom Navigation - Detail View]]
+- Governs: [[Zone - Life Map]], [[Overlay - The Table]], [[Structure - Hex Grid]], [[Capability - Zoom Navigation]], [[Room - Project Board]], [[Room - System Board]]
+- Zoom tiers: [[Capability - Zoom Navigation]]
 - Related: [[Principle - Visual Recognition]] — visibility must also be instantly legible
 
 ## WHY: Belief

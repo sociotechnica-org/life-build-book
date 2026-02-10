@@ -6,13 +6,13 @@ The director's Strategic Advisor and Chief of Staff. Jarvis facilitates strategi
 
 ## WHERE: Ecosystem
 
-- Home: [[Feature - Council Chamber]] — strategic conversation space
+- Home: [[Room - Council Chamber]] — strategic conversation space
 - Implements: [[Strategy - AI as Teammates]] — primary relationship agent
 - Implements: [[Principle - Earn Don't Interrogate]] — elicitation over interrogation
 - Implements: [[Principle - First 72 Hours]] — conducts onboarding
 - Orchestrates: [[Standard - Knowledge Framework]] — synthesizes patterns across agents
-- Maintains: [[Feature - The Charter]] — living strategic document
-- Uses: [[Feature - The Agenda]] — drives session structure
+- Maintains: [[Artifact - The Charter]] — living strategic document
+- Uses: [[Artifact - The Agenda]] — drives session structure
 - Coordinates: All other agents — receives reports, identifies gaps
 
 ## WHY: Rationale

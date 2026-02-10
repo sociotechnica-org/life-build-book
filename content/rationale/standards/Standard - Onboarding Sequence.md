@@ -6,8 +6,8 @@ The specification for the day-by-day first 72 hours experience: what happens eac
 
 ## WHERE: Ecosystem
 
-- Conforming features: [[Feature - The Charter]] — initial version created during Day 2
-- Conforming components: [[Hex Grid - Campfire]] — Day 1 first-contact point
+- Conforming: [[Artifact - The Charter]] — initial version created during Day 2
+- Conforming components: [[Component - Campfire]] — Day 1 first-contact point
 - Implemented by: [[System - Onboarding]] — executes the sequence
 - Implements: [[Principle - First 72 Hours]] — makes onboarding sequence testable
 
