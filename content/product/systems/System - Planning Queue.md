@@ -4,7 +4,7 @@
 
 The holding area for projects still in development — work in stages 1-3 of the four-stage creation process, not yet ready for prioritization. The Planning Queue holds ideas becoming plans.
 
-## WHERE: Ecosystem
+## WHERE: Scope
 
 - Zone: [[Zone - Strategy Studio]] — visible during planning work
 - Fed by: [[Room - Drafting Room]] — where projects are created
@@ -19,10 +19,29 @@ The holding area for projects still in development — work in stages 1-3 of the
 - Driver: Not all projects are ready for prioritization. The Planning Queue holds work-in-progress until it's ready.
 
 ## WHEN: Timeline
+- Status: core
+- Since: v1.0
 
-Core system. Planning Queue distinguishes "in development" from "ready to prioritize."
+## HOW: Mechanics
 
-## HOW: Implementation
+### State
+
+- **Queue contents**: Ordered list of projects in Stages 1-3
+- **Per-project stage**: Identified (1), Scoped (2), or Drafted (3)
+- **Staleness tracking**: Time since last interaction with each project
+
+### Transitions
+
+| From | Trigger | To | Side Effects |
+|------|---------|-----|--------------|
+| Empty queue | Director captures new idea with Marvin | Queue contains Stage 1 project | Project appears in Planning Queue list |
+| Project at Stage 1 | Director resumes with Marvin, completes scoping | Project advances to Stage 2 | Purpose, objectives, priority attributes recorded |
+| Project at Stage 2 | Director resumes with Marvin, completes drafting | Project advances to Stage 3 | Task list or system configuration attached |
+| Project at Stage 3 | Director completes Stage 4 prioritization | Project exits Planning Queue | Project moves to Priority Queue with priority score |
+| Project stalled | Marvin detects no interaction for extended period | Stall surfaced | Marvin asks: "Want to continue, or archive this?" |
+| Project in any stage | Director abandons | Project archived | Removed from Planning Queue |
+
+### Processing Logic
 
 **Contents:**
 - Projects in Identified state (Stage 1)
@@ -34,10 +53,20 @@ Core system. Planning Queue distinguishes "in development" from "ready to priori
 
 **Flow:**
 ```
-New idea → Identified (Stage 1) → Scoped (Stage 2) → Drafted (Stage 3) → Prioritized (Stage 4)
+New idea -> Identified (Stage 1) -> Scoped (Stage 2) -> Drafted (Stage 3) -> Prioritized (Stage 4)
            |<-------- Planning Queue -------->|        |<-- Priority Queue -->|
 ```
 
 **Stall detection:**
 - Marvin can surface items that haven't progressed
 - "This has been in Scoped for three weeks — want to work on it or archive it?"
+
+### Examples
+
+- A director captures "Build a reading nook" as a quick idea on Monday morning. It sits in the Planning Queue at Stage 1: Identified. On Wednesday, they open the Drafting Room and Marvin says "You have 3 projects in development — want to pick one up?" The director chooses the reading nook, works through scoping (Stage 2), and leaves it there. The Planning Queue now shows it at Stage 2: Scoped, waiting for the director to return for task planning.
+- Three weeks pass and a Stage 2 project "Organize photos" hasn't been touched. Marvin surfaces it during a Drafting Room visit: "This has been in Scoped for three weeks — want to work on it or archive it?" The director realizes they've lost interest and archives it. The Planning Queue shrinks by one, keeping only active intentions visible.
+
+### Anti-Examples
+
+- **Auto-promoting a Stage 3 project to the Priority Queue without director confirmation** — Stage 4 (prioritization) requires the director to consciously decide where a project ranks relative to others. The system should never auto-complete this decision, even if a project has a full task list.
+- **Hiding stalled projects to keep the queue looking "clean"** — stalled projects represent real decisions the director hasn't made yet. Hiding them removes visibility. Instead, Marvin surfaces them gently for the director to continue or consciously archive.
