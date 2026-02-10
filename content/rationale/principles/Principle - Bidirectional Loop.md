@@ -23,19 +23,27 @@ When directors place a project, they're making their internal understanding expl
 
 This flywheel justifies a critical design decision: directors place their own projects. The system does not assign locations. Placement reveals how the director actually thinks about their life, which is itself valuable data for the AI team.
 
+## WHEN: Timeline
+- Status: stable
+- Since: v1.0
+
 ## HOW: Application
 
 Design for director agency over spatial organization. No auto-organization. Low-friction rearrangement (drag-and-drop). Treat clustering as meaningful — adjacent hexes carry director-assigned meaning.
 
-**Test:** Does this design preserve the director's spatial choices, or impose system logic?
+### What Following This Looks Like
+- A director drags a fitness project next to a nutrition project, realizes they think of health holistically, and creates a new category cluster — the spatial act revealed an internal mental model they hadn't articulated.
+- After a major life change, a director spends ten minutes reorganizing their hex grid, moving work projects away from a completed cluster and pulling creative projects closer to center — the rearrangement itself processes the transition.
+- A director notices two projects sitting adjacent for weeks and realizes they should be merged — proximity on the map surfaced a redundancy that a list view would never have revealed.
 
-## Anti-Patterns
-
+### What Violating This Looks Like
 - **Auto-organizing the hex grid** — The system assigning locations destroys the loop. Placement reveals how the director thinks about their life. Auto-organization imposes system logic where director cognition should drive.
 - **Preventing low-friction rearrangement** — If reorganizing requires multiple steps or confirmation dialogs, directors won't iterate. The loop depends on frequent, easy moves. Friction kills the flywheel.
 - **Treating spatial arrangement as filing rather than thinking** — The grid isn't storage — it's an extension of the director's mind. Designs that optimize for "correct" placement over "meaningful" placement miss the point of distributed cognition.
 
-## Tensions
-
+### Tensions
 - With efficiency — auto-organization would be faster; resolution is director agency trumps efficiency
 - With AI assistance — agents can observe patterns but not reorganize without permission
+
+### Test
+Does this design preserve the director's spatial choices, or impose system logic?

@@ -20,6 +20,10 @@ The first 72 hours define the relationship. A new director's initial experience 
 - Strategy: [[Strategy - AI as Teammates]] — first impressions of the team matter
 - Driver: New users abandon tools that feel overwhelming or empty. The first 72 hours must create momentum and understanding simultaneously.
 
+## WHEN: Timeline
+- Status: stable
+- Since: v1.0
+
 ## HOW: Application
 
 **Day 1 Goals: Welcome & Orient**
@@ -53,14 +57,20 @@ The first 72 hours define the relationship. A new director's initial experience 
 - Default project templates for new directors
 - Campfire design and first-contact experience
 
-## Anti-Patterns
+### What Following This Looks Like
+- A new director arrives, Mesa greets them warmly at the Campfire, and within 15 minutes they've placed their first project on the hex grid — they leave Day 1 with a tangible artifact and the spatial metaphor clicked.
+- On Day 2, Jarvis introduces himself in the Council Chamber with a short, warm conversation about the director's current focus. The director creates a second project with Marvin and feels "I have a team helping me" — not "I have a tool to learn."
+- By end of Day 3, the director has visited the Sorting Room, selected their first Work at Hand, and sees The Table populated. The rhythm is established without any feature having been forced or rushed.
 
+### What Violating This Looks Like
 - **Overwhelming on Day 1 with full feature tour** — The first day is about one thing: spatial metaphor + first project + sense of "I made something." Showing The Table, the Sorting Room, and agent capabilities on Day 1 creates cognitive overload and abandonment.
 - **Requiring extensive profile completion before first action** — A new director should create their first project within minutes. Every field between arrival and that first "I made something" moment is friction that kills momentum.
 - **Empty-feeling onboarding with no quick win** — If Day 1 ends without the director having created something tangible, the tool feels hollow. The first project (low stakes, quick win) establishes that LifeBuild produces, not just organizes.
 
-## Tensions
-
+### Tensions
 - With [[Principle - Compound Capability]] — compound features need time to reveal value; resolution is sequencing: quick wins that also establish compound foundations
 - With [[Principle - Empty Slots Strategic]] — first 72 hours optimize for wins, not rest; resolution is sequencing (quick wins first, strategic rest later)
 - With feature depth — showing enough to orient without overwhelming; resolution is progressive guidance, not progressive disclosure
+
+### Test
+Does this design create momentum and understanding in the first 72 hours without overwhelming the new director?

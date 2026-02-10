@@ -23,12 +23,17 @@ The specification for the eight default life-domain categories that organize all
 - Decision: Eight defaults, not immutable. Defaults serve two functions: (1) anchor the Life Map's visual structure, and (2) enable pre-built Category Advisors tuned to each domain. Customization is permitted because the director's mental model takes priority over system convenience.
 
 ## WHEN: Timeline
+- Status: active
+- Since: v1.0
+- Last updated: v1.0
 
 Core architecture. Categories are foundational to spatial organization, visual language, and the advisor system. Customization policy may evolve based on alpha usage data.
 
 ## HOW: Specification
 
-### Default Categories
+### Rules
+
+#### Default Categories
 
 | LifeBuild Default | Wheel of Life Equivalent | Robbins Equivalent |
 |---|---|---|
@@ -41,14 +46,14 @@ Core architecture. Categories are foundational to spatial organization, visual l
 | Home | Physical Environment | — |
 | Service | Contribution | Contribution |
 
-### Customization Policy
+#### Customization Policy
 
 - Directors CAN rename or replace any category
 - Projects follow the category, not the label (renaming "Home" to "Nest" doesn't break existing projects)
 - When a category changes, its pre-built Category Advisor pauses
 - Current resolution: **Pause and observe.** Launch with defaults. Observe customization frequency. Let data inform advisor coverage for custom categories.
 
-### Considered Resolutions for Custom Category Advisors
+#### Considered Resolutions for Custom Category Advisors
 
 | Option | Approach | Risk |
 |--------|----------|------|
@@ -57,8 +62,26 @@ Core architecture. Categories are foundational to spatial organization, visual l
 | 3 | Director-configured advisor | Configuration burden, violates [[Principle - Earn Don't Interrogate]] |
 | 4 (chosen) | Pause and observe | Honest choice when data doesn't exist yet |
 
-## Anti-Examples
+### Examples
+
+**Example 1: Director assigns a project to the correct default category**
+- Scenario: Director creates a "Run a 5K" project.
+- Input: Director is asked to assign a Life Category during project creation.
+- Correct output: Director chooses "Health" based on their mental model. The project inherits Health's vibrant green color on the hex tile, clusters near other Health projects on the Life Map, and falls under the Health Category Advisor's domain.
+
+**Example 2: Director customizes a category name**
+- Scenario: Director renames "Service" to "Volunteering" because that label resonates more with their mental model.
+- Input: Director changes the category label from "Service" to "Volunteering."
+- Correct output: All existing projects assigned to Service now display under "Volunteering." The visual color remains the same. The pre-built Service Category Advisor pauses (per customization policy). Projects are not broken or reassigned — they follow the category slot, not the label.
+
+### Anti-Examples
 
 - **Treating categories as immutable taxonomy imposed on directors** — Categories are defaults, not mandates. The director's mental model takes priority. If "Home" doesn't resonate, they rename it.
 - **Using objective criteria to assign categories** — The director decides which category a project belongs to based on their mental model. There is no algorithm that determines "this is a Health project" — that's a subjective judgment.
 - **Blocking advisor functionality entirely when a category is customized** — Current plan is pause, not permanent disable. The system acknowledges the gap honestly rather than pretending custom categories don't need advisor support.
+
+### Conformance Test
+
+1. Verify every project and system in the library is assigned to exactly one of the eight default categories (or a director-customized category occupying one of the eight slots).
+2. Rename a category and confirm all existing projects under that category retain their assignment and visual color — no projects are orphaned or reassigned.
+3. Confirm category assignment is driven by director choice (subjective), not algorithmic classification — the UI must present it as a director decision, not a system suggestion.

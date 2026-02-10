@@ -27,12 +27,17 @@ The specification for classifying all director work into three purpose-based str
 - **Exception consideration:** Directors with genuinely parallel transformations should sequence them — one Gold this month, the other next — or reframe one as Silver (capacity-building toward a future Gold).
 
 ## WHEN: Timeline
+- Status: active
+- Since: v1.0
+- Last updated: v1.0
 
 Core architecture from initial design. The three-stream model is foundational — changing it requires redesigning The Table, Priority Queue, and all prioritization interfaces.
 
 ## HOW: Specification
 
-### Stream Definitions
+### Rules
+
+#### Stream Definitions
 
 | Stream | Purpose | Question | Example |
 |--------|---------|----------|---------|
@@ -40,22 +45,22 @@ Core architecture from initial design. The three-stream model is foundational �
 | Silver | Capacity | What creates leverage? | Set up automated bill pay |
 | Bronze | Maintenance | What prevents decay? | Pay the electric bill |
 
-### Behavioral Intent
+#### Behavioral Intent
 
-Invest in Silver → drown less in Bronze → have room for Gold.
+Invest in Silver -> drown less in Bronze -> have room for Gold.
 
-### Classification Rule
+#### Classification Rule
 
 Purpose is determined by the director's relationship to the work, not objective criteria. The same task is Gold for one person and Bronze for another.
 
-### Stream Flow Pattern
+#### Stream Flow Pattern
 
 Work often matures through streams:
 - Learning Spanish starts as **Gold** (expansion)
 - Becomes **Silver** (building practice system)
 - Then **Bronze** (maintaining the routine)
 
-### Slot Constraints
+#### Slot Constraints
 
 | Stream | Maximum on Table |
 |--------|------------------|
@@ -63,8 +68,26 @@ Work often matures through streams:
 | Silver | 1 |
 | Bronze | No maximum (mode-controlled) |
 
-## Anti-Examples
+### Examples
+
+**Example 1: Same task classified differently by two directors**
+- Scenario: Two directors both have "Cook dinner" as a recurring task.
+- Input: Director A is a professional chef learning new cuisines at home. Director B is a busy parent keeping the family fed.
+- Correct output: Director A classifies "Cook dinner" as Gold (expansion — exploring new culinary territory changes their creative life). Director B classifies it as Bronze (maintenance — preventing the family from going hungry). Both are correct because classification depends on the director's relationship to the work, not objective criteria.
+
+**Example 2: Work maturing through streams over time**
+- Scenario: Director starts a "Morning Exercise" project.
+- Input: Month 1: Director is building a new habit from scratch (transformational). Month 4: Director is setting up a structured routine with gym schedule. Month 8: Director maintains the established routine.
+- Correct output: Month 1: Classified as Gold (expansion — "this changes my life"). Month 4: Reclassified as Silver (capacity — "building the system"). Month 8: Reclassified as Bronze (maintenance — "keeping the routine alive"). The stream flow pattern reflects the natural lifecycle of work.
+
+### Anti-Examples
 
 - **Ranking Gold and Bronze projects in the same list** — Streams are separate competitions. Gold competes with Gold on importance; Bronze competes with Bronze on urgency. A combined list lets urgent Bronze tasks crowd out transformational Gold work, which is the core problem the three-stream model solves.
 - **Classifying work by objective criteria instead of director relationship** — The same task (learning Spanish) is Gold for one person and Bronze for another. Purpose is subjective — determined by the director's relationship to the work, not external taxonomy.
 - **Allowing more than 1 Gold or 1 Silver project on The Table** — Slot constraints (1 Gold, 1 Silver) are structural protection. Expanding slots dilutes focus and recreates the overloaded priority list the model replaces.
+
+### Conformance Test
+
+1. Verify the Sorting Room presents Gold, Silver, and Bronze as separate competitions — projects in one stream should never be ranked against projects in a different stream.
+2. Check that The Table enforces slot constraints: maximum 1 Gold, maximum 1 Silver, and Bronze controlled by mode (not by a fixed slot limit).
+3. Confirm that stream assignment is presented as a director choice (subjective) with no algorithmic override — the UI asks "what is this work for you?" not "this task is classified as Bronze."

@@ -22,18 +22,23 @@ The specification for computing priority ranking within streams: base formula pl
 - Decision: Formula is hypothesis, not validated algorithm. Expect tuning based on override frequency and director feedback.
 
 ## WHEN: Timeline
+- Status: active
+- Since: v1.0
+- Last updated: v1.0
 
 Initial specification. Weights are tunable — architecture supports evolution as we learn.
 
 ## HOW: Specification
 
-### Base Formula
+### Rules
+
+#### Base Formula
 
 ```
 Priority Score = (Urgency × Importance) / Effort
 ```
 
-### Required Inputs
+#### Required Inputs
 
 | Input | Range | Description |
 |-------|-------|-------------|
@@ -42,7 +47,7 @@ Priority Score = (Urgency × Importance) / Effort
 | Effort | 1-10 | What it costs |
 | Deadline | Date (optional) | External constraint |
 
-### Stream Weightings
+#### Stream Weightings
 
 | Stream | Adjustment | Rationale |
 |--------|------------|-----------|
@@ -50,12 +55,30 @@ Priority Score = (Urgency × Importance) / Effort
 | Silver | Score × Leverage Factor | Infrastructure evaluated by future return |
 | Bronze | Urgency × 1.5 | Maintenance surfaces time-sensitive first |
 
-### Override Policy
+#### Override Policy
 
 Director override is sacred. The score is a suggestion, never a mandate. Consistent overrides are data about the formula, not evidence the director is wrong.
 
-## Anti-Examples
+### Examples
 
-- **Applying the same weighting across all streams** — Gold amplifies Importance (×1.5), Bronze amplifies Urgency (×1.5), Silver rewards Leverage. Using a single ranking formula lets urgency dominate across all streams, which is exactly what the three-stream model prevents.
+**Example 1: Gold stream weighting amplifies Importance**
+- Scenario: Two Gold project candidates in the Sorting Room — "Write Novel" (Urgency 3, Importance 9, Effort 5) and "Fix Fence" (Urgency 7, Importance 4, Effort 3).
+- Input: Base formula applied with Gold stream weighting (Importance x 1.5).
+- Correct output: "Write Novel" score = (3 x (9 x 1.5)) / 5 = (3 x 13.5) / 5 = 8.1. "Fix Fence" score = (7 x (4 x 1.5)) / 3 = (7 x 6) / 3 = 14.0. Even with Gold weighting, "Fix Fence" scores higher due to urgency and low effort — but the director can override because the score is a suggestion. If the director consistently overrides toward high-Importance projects, that is calibration data for the formula.
+
+**Example 2: Director override treated as calibration data**
+- Scenario: Cameron recommends "Automate Invoicing" as the Silver pick based on score. Director chooses "Build Morning Routine" instead.
+- Input: Director overrides the score-based recommendation.
+- Correct output: The system accepts the override without friction or justification. The override is logged as calibration data. After 5 similar overrides, the system notes the pattern: "You consistently prioritize habit-building Silver projects over automation — should we adjust the Leverage Factor for routine-type work?"
+
+### Anti-Examples
+
+- **Applying the same weighting across all streams** — Gold amplifies Importance (x1.5), Bronze amplifies Urgency (x1.5), Silver rewards Leverage. Using a single ranking formula lets urgency dominate across all streams, which is exactly what the three-stream model prevents.
 - **Treating score as a mandate and blocking director override** — The score suggests; the director decides. Preventing or discouraging override treats the formula as truth rather than hypothesis. Consistent overrides are signal to tune the formula.
 - **Omitting Effort from the calculation** — Without dividing by Effort, a high-urgency, high-importance task that takes 40 hours ranks the same as one that takes 30 minutes. Effort keeps the score grounded in feasibility.
+
+### Conformance Test
+
+1. Compute the Priority Score for a project in each stream (Gold, Silver, Bronze) and verify the correct stream-specific weighting is applied (Gold: Importance x 1.5, Silver: Score x Leverage Factor, Bronze: Urgency x 1.5).
+2. Override a score-based recommendation and verify no justification dialog appears, the override is accepted immediately, and the override is logged as calibration data.
+3. Compare two projects with identical Urgency and Importance but different Effort values — verify the lower-effort project scores higher, confirming Effort is correctly used as a divisor.

@@ -1,6 +1,6 @@
 # Strategy - Spatial Visibility
 
-## WHAT: The Principle
+## WHAT: The Strategy
 
 Making work visual, placed, and traversable creates comprehension and agency that lists and abstractions cannot. This is Strategic Plank 1 — the first of three independent bets LifeBuild is built on.
 
@@ -25,7 +25,13 @@ The bet: if work is represented spatially, visually, and traversably — like a 
 
 Research supports this: the brain's spatial processing and memory systems share neural infrastructure. When you organize information spatially and navigate that space, you engage hippocampal circuits that consolidate long-term memory. Navigable environments outperform static spatial organization because movement through space activates the full spatial memory system. The brain's own coordinate system is hexagonal — grid cells in the entorhinal cortex fire in hex patterns.
 
-## HOW: The Ladder
+## WHEN: Timeline
+- Status: stable
+- Since: v1.0
+
+## HOW: Application
+
+### Maturity Ladder
 
 | Level | Name                    | What It Is                                              |
 | ----- | ----------------------- | ------------------------------------------------------- |
@@ -37,11 +43,21 @@ Research supports this: the brain's spatial processing and memory systems share 
 
 **Current state:** Level 1-2. Hexmap with flat illustrations in development.
 
-## Anti-Patterns
+### What Following This Looks Like
+
+- A director opens the Life Map and immediately sees the state of all their projects as hex tiles with visual status indicators — no clicking, no parsing, no mental translation required.
+- Zoom levels match intent: Horizon View for big-picture scanning, Working View for current priorities, Detail View for deep focus on a single project. Information density scales with attention.
+- Work has a persistent, visible place on the map. A director can point to where a project lives, remember it by location, and notice when something looks different — the same way you'd notice a change in a familiar room.
+
+### What Violating This Looks Like
 
 - **Defaulting to list or feed views** — Lists and inboxes are Level 0. If the primary view of work is a scrollable list, the spatial bet has failed. Directors should browse a landscape, not parse a feed.
 - **Hiding work behind menus or hover states** — Spatial visibility means work has a persistent, visible place. Requiring clicks to reveal status or hover to see details moves work back into abstraction. Default to showing.
 - **Flat spatial layout without zoom levels** — A hex grid with no zoom tiers dumps all information at the same density. Horizon View, Working View, and Detail View exist because information needs vary by intent. No zoom means no information hierarchy.
+
+### Decision Heuristic
+
+When choosing between abstract representation and spatial/visual representation, always choose spatial — comprehension through seeing and navigating beats comprehension through reading and thinking.
 
 ## Tensions
 
