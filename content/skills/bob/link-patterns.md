@@ -4,7 +4,7 @@ Standard phrases for relationship context. No naked links — every `[[Note]]` g
 
 ---
 
-## Conformance (Features/Components → Standards)
+## Conformance (Product-Layer Cards → Standards)
 
 ```markdown
 - [[Standard - X]] — constrains [what aspect]
@@ -22,19 +22,21 @@ Standard phrases for relationship context. No naked links — every `[[Note]]` g
 
 ---
 
-## Conforming Elements (Standards → Features/Components)
+## Conforming Elements (Standards → Product-Layer Cards)
 
 ```markdown
-- [[Feature - X]] — must conform to this spec
+- [[Room - X]] — must conform to this spec
+- [[Structure - X]] — renders according to this standard
 - [[Component - X]] — implements this specification
-- [[Feature - X]] — renders according to this standard
+- [[Overlay - X]] — must conform to this spec
+- [[Agent - X]] — must conform to this spec
 ```
 
 **Examples:**
 ```markdown
-- [[Feature - The Table]] — must conform to this spec
+- [[Structure - The Table]] — must conform to this spec
 - [[Component - State Indicator]] — implements this specification
-- [[Feature - Work at Hand]] — renders according to this standard
+- [[Overlay - Work at Hand]] — renders according to this standard
 ```
 
 ---
@@ -91,21 +93,87 @@ Standard phrases for relationship context. No naked links — every `[[Note]]` g
 
 ---
 
-## Zones (Product Areas)
+## Containment (Parent → Child)
+
+Every card with a containment relationship must link to its parent.
 
 ```markdown
-- [[X]] — zone where this feature lives
-- [[X]] — product area containing [related features]
+# Room → Zone
+- [[Zone - X]] — parent workspace
+
+# Structure → Room
+- [[Room - X]] — where this structure lives
+
+# Component → Structure/Room/Overlay
+- [[Structure - X]] — parent element
+
+# Artifact → Room
+- [[Room - X]] — where this is created/edited
+
+# Capability → Room(s)
+- [[Room - X]] — where this is performed
+
+# Prompt → Agent
+- [[Agent - X]] — the agent this implements
+
+# Overlay → Zone(s)
+- [[Zone - X]] — where this is visible
 ```
 
 ---
 
-## Components (Implementation Details)
+## Zones and Rooms
 
 ```markdown
-- [[X]] — UI element handling [interaction]
-- [[X]] — algorithm computing [calculation]
-- [[X]] — data structure storing [state]
+- [[Zone - X]] — parent workspace
+- [[Room - X]] — [what you do there]
+- [[Room - X]] — adjacent room for [navigation flow]
+```
+
+---
+
+## Structures (Spatial Fabric)
+
+```markdown
+- [[Structure - X]] — spatial canvas for [what it provides]
+- [[Structure - X]] — layout handling [arrangement]
+```
+
+---
+
+## Components (UI Widgets)
+
+```markdown
+- [[Component - X]] — UI element handling [interaction]
+- [[Component - X]] — widget providing [function]
+```
+
+---
+
+## Artifacts (Content Objects)
+
+```markdown
+- [[Artifact - X]] — content object for [what it captures]
+- [[Artifact - X]] — created during [workflow]
+```
+
+---
+
+## Capabilities (Actions/Workflows)
+
+```markdown
+- [[Capability - X]] — action enabling [what directors do]
+- [[Capability - X]] — workflow for [process]
+```
+
+---
+
+## Agents and Prompts
+
+```markdown
+- [[Agent - X]] — AI team member handling [responsibility]
+- [[Agent - X]] — coordinates with this agent on [handoff]
+- [[Prompt - X]] — implementation of [[Agent - X]]
 ```
 
 ---
@@ -114,7 +182,7 @@ Standard phrases for relationship context. No naked links — every `[[Note]]` g
 
 ```markdown
 - [[Strategy - X]] — this implements [principle] by [how]
-- [[Principle - X]] — guidance driving [aspect] of this feature
+- [[Principle - X]] — guidance driving [aspect] of this card
 - [[Strategy - X]] — philosophy behind [design choice]
 ```
 
@@ -143,7 +211,7 @@ Standard phrases for relationship context. No naked links — every `[[Note]]` g
 ## Decision Links (WHY Section)
 
 ```markdown
-- [[Decision - X]] — key choice that [shaped/constrained] this feature
+- [[Decision - X]] — key choice that [shaped/constrained] this card
 - [[Decision - X]] — decision determining [specific aspect]
 ```
 
@@ -173,7 +241,7 @@ Blocked by: [[X]] — can't proceed until [dependency resolved]
 ```markdown
 - [[X]] — complements this by [how they work together]
 - [[X]] — alternative approach to [same problem]
-- [[X]] — sibling feature sharing [common parent/system]
+- [[X]] — sibling card sharing [common parent/system]
 ```
 
 ---
@@ -184,10 +252,16 @@ Blocked by: [[X]] — can't proceed until [dependency resolved]
 |--------------|---------------|
 | Conforms to | "constrains", "specifies", "defines [values]" |
 | Conforming | "must conform", "implements this spec" |
+| Containment | "parent workspace", "where this lives", "where this is performed" |
+| Zone/Room | "parent workspace", "what you do there" |
+| Structure | "spatial canvas", "layout handling" |
+| Component | "UI element", "widget providing" |
+| Artifact | "content object", "created during" |
+| Capability | "action enabling", "workflow for" |
+| Agent/Prompt | "AI team member", "implementation of" |
 | Depends on | "provides", "must exist", "supplies" |
 | Depended on by | "uses this to", "displays", "built on" |
 | System | "foundational mechanism", "cross-cutting" |
-| Component | "UI element", "algorithm", "data structure" |
 | Strategy | "implements [principle] by" |
 | Principle | "guidance driving", "makes testable" |
 | Decision | "key choice that", "decision determining" |

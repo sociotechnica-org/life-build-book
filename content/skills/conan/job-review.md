@@ -7,7 +7,7 @@
 ## Procedure
 
 1. **Re-grade affected cards** — Same rubrics, same standards. No adjustment for "improvement."
-   - Include conformance check for Features/Components
+   - Include conformance check for product-layer cards (Rooms, Overlays, Structures, Components, Artifacts, Capabilities, Agents)
 
 2. **Compute deltas**
    ```

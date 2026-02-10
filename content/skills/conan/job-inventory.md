@@ -14,7 +14,7 @@
 
 4. **Identify Standards** — Source has specification content?
    - Tables of values (colors, thresholds, formulas) → Standard
-   - Rules multiple features must follow → Standard
+   - Rules multiple cards must follow → Standard
    - Testable constraints → Standard
 
 5. **Check enumerations** — Source lists types/modes/kinds with distinct behaviors?
@@ -30,10 +30,12 @@
 
 9. **Determine build order** — Sequence for Bob to build:
    - Standards first (they constrain everything)
-   - Strategy/Principles next (WHY upstream for features)
+   - Strategy/Principles next (WHY upstream)
    - Systems next (cross-cutting mechanisms)
-   - Features by dependency (most-depended-on first)
+   - Zones/Rooms (most-depended-on first)
+   - Overlays, Structures, Artifacts, Capabilities
    - Components last (implementation details)
+   - Agents + Prompts
 
 ## Output
 
@@ -45,7 +47,11 @@ Date: [date]
 
 ## Expected Cards
 
-### Features ([count])
+### Standards ([count])
+| Card | Source | Status | Classification Rationale |
+|------|--------|--------|-------------------------|
+
+### Strategy/Principles ([count])
 | Card | Source | Status | Classification Rationale |
 |------|--------|--------|-------------------------|
 
@@ -53,13 +59,41 @@ Date: [date]
 | Card | Source | Status | Classification Rationale |
 |------|--------|--------|-------------------------|
 
-### Standards ([count])
+### Zones ([count])
+| Card | Source | Status | Classification Rationale |
+|------|--------|--------|-------------------------|
+
+### Rooms ([count])
+| Card | Source | Status | Classification Rationale |
+|------|--------|--------|-------------------------|
+
+### Overlays ([count])
+| Card | Source | Status | Classification Rationale |
+|------|--------|--------|-------------------------|
+
+### Structures ([count])
 | Card | Source | Status | Classification Rationale |
 |------|--------|--------|-------------------------|
 
 ### Components ([count])
 | Card | Parent | Status | Classification Rationale |
 |------|--------|--------|-------------------------|
+
+### Artifacts ([count])
+| Card | Source | Status | Classification Rationale |
+|------|--------|--------|-------------------------|
+
+### Capabilities ([count])
+| Card | Source | Status | Classification Rationale |
+|------|--------|--------|-------------------------|
+
+### Agents ([count])
+| Card | Source | Status | Classification Rationale |
+|------|--------|--------|-------------------------|
+
+### Prompts ([count])
+| Card | Agent | Status | Classification Rationale |
+|------|-------|--------|-------------------------|
 
 ## Enumeration Decisions
 | Entity | Types Found | Decision | Rationale |
@@ -85,13 +119,21 @@ Build in this sequence (most-depended-on first):
 | Order | Card | Rationale |
 |-------|------|-----------|
 
-### Phase 4: Features (by dependency)
+### Phase 4: Zones/Rooms (by dependency)
 | Order | Card | Depends On | Rationale |
 |-------|------|------------|-----------|
 
-### Phase 5: Components
+### Phase 5: Overlays/Structures/Artifacts/Capabilities
+| Order | Card | Depends On | Rationale |
+|-------|------|------------|-----------|
+
+### Phase 6: Components
 | Order | Card | Parent |
 |-------|------|--------|
+
+### Phase 7: Agents/Prompts
+| Order | Card | Depends On | Rationale |
+|-------|------|------------|-----------|
 
 ## Summary
 - Expected: [n]

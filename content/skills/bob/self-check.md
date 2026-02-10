@@ -20,7 +20,7 @@ Run before handing cards to Conan. Catches obvious issues.
 
 - [ ] At least 3 links?
 - [ ] **Every link has context?** (No naked `[[Note]]`)
-- [ ] Zone identified?
+- [ ] **Containment parent linked?** (see below)
 - [ ] At least one dependency?
 - [ ] At least one dependent? (or noted as leaf)
 - [ ] **Conformance links present?** (see below)
@@ -29,23 +29,41 @@ Run before handing cards to Conan. Catches obvious issues.
 
 Does this card touch a governed domain?
 
-| Domain | Required Link |
-|--------|---------------|
-| Visual rendering, state indicators | Standard - Visual Language |
-| Priority ordering, scoring | Standard - Priority Score |
-| Stream classification (Gold/Silver/Bronze) | Standard - Three-Stream Portfolio |
-| Project lifecycle states | Standard - Project States |
-| Project illustrations | Standard - Image Evolution |
-| Category assignment or category-based organization | Standard - Life Categories |
+| If the card… | Must link to… |
+|--------------|---------------|
+| Renders visually | Standard - Visual Language |
+| Has state indicators (saturation, glow, dimming) | Standard - Visual Language |
+| Displays project illustrations | Standard - Image Evolution |
+| Involves priority ordering or scoring | Standard - Priority Score |
+| Involves stream classification (Gold/Silver/Bronze) | Standard - Three-Stream Portfolio |
+| Has project lifecycle states | Standard - Project States |
+| Shows smoke signal indicators | Standard - Smoke Signal Thresholds |
+| Has Bronze mode behavior | Standard - Bronze Mode Behaviors |
+| Involves service level awareness | Standard - Service Levels |
+| Renders Work at Hand in multiple locations | Standard - Dual Presence |
+| Involves category assignment | Standard - Life Categories |
+| Is an Agent or Prompt | Standard - Agent Voice (if exists) |
 
 If yes → conformance link must be in WHERE.
 If Standard doesn't exist yet → flag for creation.
+
+### Containment Check
+
+| Type | Must Link To |
+|------|--------------|
+| Room | Zone (parent workspace) |
+| Structure | Room (where it lives) |
+| Component | Structure or Room or Overlay (parent element) |
+| Artifact | Room (where it's edited) |
+| Capability | Room(s) (where it's performed) |
+| Prompt | Agent (what it implements) |
+| Overlay | Zone(s) (where it's visible) |
 
 ### Folder Placement Check
 
 - [ ] **Card in correct layer?**
   - Strategy, Principle, Standard → `/rationale/` subtree
-  - Feature, Component, System, Primitive, Agent → `/product/` subtree
+  - Zone, Room, Overlay, Structure, Component, Artifact, Capability, Primitive, System, Agent, Prompt → `/product/` subtree
 
 ### WHY Section (1 minute)
 
@@ -77,10 +95,10 @@ If Standard doesn't exist yet → flag for creation.
 
 ## Standard Card Checklist
 
-Different structure than Features.
+Different structure than product-layer cards.
 
 - [ ] WHAT describes what it specifies, not what it does?
-- [ ] WHERE has "Conforming features/components" not "Dependencies"?
+- [ ] WHERE has "Conforming" section listing product-layer cards?
 - [ ] WHY links to Principle? (Standards implement Principles)
 - [ ] HOW contains actual spec? (values, rules, thresholds)
 - [ ] **Has ≥1 anti-example?** (what violation looks like)
@@ -122,13 +140,13 @@ After finishing a zone's cards:
 ### Cross-Card Consistency
 
 - [ ] Same terms used consistently?
-- [ ] Related features link to each other?
+- [ ] Related cards link to each other?
 - [ ] Shared dependencies point to same note?
 
 ### Conformance Coverage
 
 - [ ] All Standards have conforming cards linked?
-- [ ] All Features touching governed domains have conformance links?
+- [ ] All product-layer cards touching governed domains have conformance links?
 
 ### Strategy/Principle Coverage
 
@@ -139,8 +157,8 @@ After finishing a zone's cards:
 
 ### Examples & Anti-Patterns Coverage
 
-- [ ] All Feature HOW sections have ≥2 examples?
-- [ ] All Feature HOW sections have ≥1 anti-example?
+- [ ] All product-layer card HOW sections have ≥2 examples?
+- [ ] All product-layer card HOW sections have ≥1 anti-example?
 - [ ] All Standards have anti-examples?
 - [ ] Missing examples flagged for human input?
 
@@ -174,7 +192,7 @@ appear in their Bronze queue each week..."
 
 **WHY links to stub:**
 ```markdown
-# The feature card says:
+# The card says:
 Strategy: [[Strategy - Visual Work]] — implements visibility
 
 # But the strategy note is just:
@@ -205,7 +223,7 @@ Future enhancement (WHEN)
 **Missing examples in HOW:**
 ```markdown
 # Bad
-"The feature displays priority scores for tasks."
+"The component displays priority scores for tasks."
 
 # Good
 "### Examples

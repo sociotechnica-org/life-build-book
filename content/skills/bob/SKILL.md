@@ -37,7 +37,7 @@ Bob does NOT grade cards or decide priorities. That's Conan and the human librar
 The library is organized into two primary layers:
 
 - **Rationale** (`/rationale/`) — WHY we build and what constraints exist. Contains foundational frameworks (SDT, Needs), Strategies, Principles, and Standards.
-- **Product** (`/product/`) — WHAT gets built. Contains Primitives, Features, Components, Systems, and Agents.
+- **Product** (`/product/`) — WHAT gets built. Contains Zones, Rooms, Overlays, Structures, Components, Artifacts, Capabilities, Primitives, Systems, Agents, and Prompts.
 
 **Where cards go:**
 
@@ -47,11 +47,17 @@ The library is organized into two primary layers:
 | Strategy | `/rationale/strategies/` |
 | Principle | `/rationale/principles/` |
 | Standard | `/rationale/standards/` |
-| Primitive | `/product/Primitives/` |
-| Feature | `/product/features/` |
+| Zone | `/product/zones/` |
+| Room | `/product/rooms/` |
+| Overlay | `/product/overlays/` |
+| Structure | `/product/structures/` |
 | Component | `/product/components/` |
+| Artifact | `/product/artifacts/` |
+| Capability | `/product/capabilities/` |
+| Primitive | `/product/primitives/` |
 | System | `/product/systems/` |
-| Agent | `/product/Agents/` |
+| Agent | `/product/agents/` |
+| Prompt | `/product/prompts/` |
 
 ---
 
@@ -130,7 +136,7 @@ Hand off to Conan
 ## Reference Files
 
 - [card-creation.md](card-creation.md) — Step-by-step for building cards
-- [decomposition.md](decomposition.md) — Extracting features from source material
+- [decomposition.md](decomposition.md) — Extracting cards from source material
 - [link-patterns.md](link-patterns.md) — Standard phrases for relationships
 - [self-check.md](self-check.md) — Pre-Conan validation
 
@@ -150,9 +156,9 @@ Hand off to Conan
 
 2. **Every link gets context.** No naked `[[links]]`. Use patterns from link-patterns.md.
 
-3. **Check conformance.** Feature touches governed domain → must link to Standard. See Library Reference.
+3. **Check conformance.** Product-layer card touches governed domain → must link to Standard. See Library Reference.
 
-4. **Strategy notes are real work.** Stubs hurt every feature linking to them.
+4. **Strategy notes are real work.** Stubs hurt every card linking to them.
 
 5. **Flag, don't guess.** Unclear type? Flag for human judgment.
 
@@ -160,4 +166,4 @@ Hand off to Conan
 
 7. **Keep it brief.** "Done: 5 cards. Flagged: 2. Ready for Conan."
 
-8. **Respect the two-layer split.** Strategies, Principles, and Standards go in `/rationale/`. Product cards (Features, Components, Systems, Primitives, Agents) go in `/product/`.
+8. **Respect the two-layer split.** Strategies, Principles, and Standards go in `/rationale/`. Product cards (Zones, Rooms, Overlays, Structures, Components, Artifacts, Capabilities, Primitives, Systems, Agents, Prompts) go in `/product/`.

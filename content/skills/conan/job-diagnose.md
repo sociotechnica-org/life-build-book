@@ -15,7 +15,7 @@
 2. **Trace backward through links**
    - WHY weakness → Check linked strategy/principle notes. Substantive or stubs?
    - WHERE weakness → Naked links? Missing links? Missing conformance?
-   - HOW weakness → Component notes missing? Source material thin?
+   - HOW weakness → Downstream card notes missing? Source material thin?
    - WHAT weakness → Usually per-card, but check for shared unclear terminology
 
 3. **Identify root causes**
@@ -27,7 +27,7 @@
    | Disconnected Note | Exists, substantive, but not linked |
    | Quality Gap | Per-card issue, no upstream cause |
    | Structural Gap | Cluster of missing cards |
-   | Conformance Gap | Standard exists, features don't link to it |
+   | Conformance Gap | Standard exists, product-layer cards don't link to it |
    | Source Gap | Source material doesn't contain needed info |
 
 4. **Calculate blast radius** — How many cards improve if this root cause is fixed?

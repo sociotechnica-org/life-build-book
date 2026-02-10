@@ -4,42 +4,51 @@ How to extract cards from source material. Use when Conan's inventory is sparse 
 
 ## What Becomes a Card
 
-### Feature
-- Named mechanic users interact with ("The Table", "Bronze Mode Settings")
-- Has behavioral specification
-- SOT devotes a subsection or multiple paragraphs
-- Users would recognize it as "a thing"
+### Step 1: Is this about WHY we build?
+- Guiding philosophy (a bet) → **Strategy**
+- Judgment guidance (a rule of thumb) → **Principle**
+- Testable spec (concrete rules, values, thresholds) → **Standard**
 
-### System
-- Infrastructure multiple features depend on
-- Cross-cutting mechanism spanning zones
-- Has runtime state, processes inputs
-- Features reference it but users don't interact directly
+### Step 2: Is this about WHAT exists that directors interact with?
 
-### Standard
-- Specification that constrains implementations
-- Tables of values (colors, thresholds, formulas)
-- Rules multiple features must follow
-- No runtime state — things conform to it
-- Builder reads this to know what to produce
+**Navigate TO it?**
+- Top-level workspace (header nav) → **Zone**
+- Nested space within a zone → **Room**
 
-### Component
-- Implementation detail inside one feature
-- UI element, algorithm, data structure
-- Wouldn't make sense standalone
-- Only referenced from parent feature
+**Persistent across zones?**
+- Always-visible layer → **Overlay**
 
-### Principle
-- Judgment-based guidance
-- "Directors should recognize elements instantly"
-- Testable through evaluation, not measurement
-- Standards make Principles concrete
+**Interact WITHIN a zone/room?**
+- Spatial canvas/visual fabric → **Structure**
+- Specific UI widget → **Component**
+- Content object directors create/edit → **Artifact**
+- Action/workflow directors perform → **Capability**
 
-### Could Go Either Way
+**Core data entity?**
+- Foundational data type → **Primitive**
 
-Flag for human judgment:
-- Mechanisms both user-facing AND infrastructure
-- Concepts spanning zones with direct user interaction
+### Step 3: Is this invisible infrastructure?
+- Mechanism with state, processes inputs → **System**
+
+### Step 4: Is this an AI team member?
+- The agent itself → **Agent**
+- The agent's implementation → **Prompt**
+
+### Step 5: Is this temporal?
+- Past insight → **Learning**
+- Past choice → **Decision**
+- Future vision → **Future**
+
+### Common Confusions
+
+| Question | Answer A | Answer B |
+|----------|----------|----------|
+| Navigate TO it, or interact WITHIN it? | Zone/Room | Structure/Component |
+| Directors say "I'm in X" or "I'm using X"? | Zone/Room | Structure/Component |
+| Has runtime state? Processes inputs? | System | Standard |
+| Content directors create, or spatial fabric? | Artifact | Structure |
+| Core data entity, or content object? | Primitive | Artifact |
+| Action/workflow, or spatial canvas? | Capability | Structure |
 
 **When unsure:** Create the card, flag it, keep moving.
 
@@ -55,6 +64,7 @@ Most common confusion. Ask:
 | Processes inputs? | Yes | No |
 | Things conform to it? | Sometimes | Always |
 | Builder reads to implement? | Rarely | Always |
+| Changes require code? | Yes | No |
 
 Examples:
 - Processing Layer (computes calibration) → System
@@ -70,21 +80,28 @@ Examples:
 
 | SOT Pattern | Likely Card Type |
 |-------------|------------------|
-| Section heading with behavior description | Feature |
-| Subsection under a feature | Spoke or Component |
+| Top-level workspace/area | Zone |
+| Named space within a workspace | Room |
+| Always-visible, cross-zone element | Overlay |
+| Spatial canvas, grid, board layout | Structure |
+| Specific UI widget, button, indicator | Component |
+| Content object directors create/edit | Artifact |
+| Action, workflow, process directors perform | Capability |
+| Core data entity (project, task) | Primitive |
 | "The X System" or "X Architecture" | System |
-| Mentioned in multiple feature sections | System |
+| Mentioned across multiple sections | System |
 | Table of values, thresholds, rules | Standard |
 | "Must conform to" or "follows spec" | Standard reference |
-| UI element with specific behavior | Feature or Component |
+| AI personality, team member | Agent |
 
 ### Extraction Pass
 
 1. **First read:** Note every named thing. Don't judge.
-2. **Second read:** Mark what has behavior (feature candidates).
-3. **Third read:** Mark what's referenced by multiple features (system candidates).
-4. **Fourth read:** Mark specification content (standard candidates).
-5. **Compare to inventory:** Reconcile with Conan's list.
+2. **Second read:** Mark spaces directors navigate to (zone/room candidates).
+3. **Third read:** Mark things within spaces (structure/component/artifact/capability candidates).
+4. **Fourth read:** Mark cross-cutting mechanisms (system candidates).
+5. **Fifth read:** Mark specification content (standard candidates).
+6. **Compare to inventory:** Reconcile with Conan's list.
 
 ### Standard Extraction Signals
 
@@ -95,7 +112,7 @@ Source material contains:
 - Rules with testable criteria
 - "Must be" / "should always" language
 
-→ Extract as Standard, don't embed in Features.
+→ Extract as Standard, don't embed in product-layer cards.
 
 ---
 
@@ -115,7 +132,7 @@ One card answers ONE complete question.
 ### Hub/Spoke vs Separate Cards
 
 **Hub/Spoke:** One concept, multiple aspects.
-- "Feature - Bronze Mode" with spokes for specific workflows
+- "Room - Bronze Mode" with spokes for specific workflows
 - Hub links to spokes, spokes link back
 
 **Separate cards:** Distinct concepts that happen to relate.
@@ -146,7 +163,7 @@ Found something inventory missed?
 
 **Do:**
 - Create the card
-- Note as discovered: "Added: Feature - X (not in inventory, found in SOT 2.3)"
+- Note as discovered: "Added: Room - X (not in inventory, found in SOT 2.3)"
 - Flag for human to confirm
 
 **Don't:**

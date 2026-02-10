@@ -28,7 +28,7 @@ Criteria: Strategy linked (with explanation), Rationale present, Driver traced
 | D | Vague strategy reference, no real rationale. |
 | F | Empty or no strategic connection. |
 
-**Trace Test:** Follow strategy links. If upstream is stub → penalize feature.
+**Trace Test:** Follow strategy links. If upstream is stub → penalize downstream card.
 
 Failure example: "Strategy: [[Visual Work]]" → D (naked link)
 
@@ -85,26 +85,78 @@ Flag during grading, don't halt. Complete grade + note AUDIT SIGNAL.
 
 | Signal | Suggests |
 |--------|----------|
-| Feature WHAT says "mechanism" | System |
-| Feature WHAT says "specification" or "defines values" | Standard |
-| Feature WHAT says "principle" or "guides" | Principle |
-| Feature fails Interaction Test | System |
+| WHAT says "mechanism," "manages state," "processes" | System |
+| WHAT says "specification," "defines values," "must conform" | Standard |
+| WHAT says "principle," "guides," "judgment-based" | Principle |
+| Card typed as Room but directors don't navigate TO it | Structure or Component |
+| Card typed as Structure but directors navigate TO it | Room |
+| Card typed as Room but is top-level workspace | Zone |
 | Card has no state but constrains other cards | Standard |
+| Card typed as Component but is a content object | Artifact |
+| Card typed as Room but describes an action/workflow | Capability |
+| Agent card has no Prompt card | Prompt missing |
 | HOW has behavioral types table | Needs decomposition |
+| Missing containment link (Room→Zone, Structure→Room, etc.) | Structural deficiency |
 
 ## Type-Specific Notes
 
 **Standards:**
-- WHERE uses "Conforming features/components" not "Dependencies/Dependents"
+- WHERE uses "Conforming:" to list constrained cards (Rooms, Structures, Components, Overlays, Agents)
 - WHY must link to Principle (Standards implement Principles)
 - HOW contains the specification itself (values, rules, thresholds)
 - Must have Anti-Examples section (what violation looks like)
 
 **Principles:**
-- WHERE uses "Implemented by" to link to Standards
+- WHERE uses "Standards:" to link to implementing Standards
 - WHY focuses on belief/evidence, not driver
-- Must have Anti-Patterns section (what violating this looks like)
+- Must have "What Violating This Looks Like" section
 
 **Strategies:**
-- Must have Anti-Patterns section
+- Must have "What Violating This Looks Like" section
 - WHY must have reasoning, not just assertion
+
+**Zones:**
+- WHERE must list contained Rooms
+- Must describe cognitive mode (planning vs. executing vs. reflecting)
+- Must describe navigation pattern (entry/exit points)
+
+**Rooms:**
+- WHERE must link to parent Zone (containment)
+- WHERE must link to resident Agent (if any)
+- Must describe workflow (entry → steps → exit)
+- Must list contained Structures, Artifacts, Capabilities
+
+**Overlays:**
+- WHERE must specify visibility scope (which zones, or "all")
+- Must describe display states and update triggers
+- Must explain why it needs cross-zone persistence
+
+**Structures:**
+- WHERE must link to parent Room (containment)
+- Must describe layout and interaction model
+- Must list contained Components
+
+**Components:**
+- WHERE must link to parent (Structure, Room, or Overlay)
+- Must describe states, interactions, accessibility
+
+**Artifacts:**
+- WHERE must link to Room where created/edited
+- Must describe lifecycle (created → updated → archived)
+- Must describe ownership/permissions if relevant
+
+**Capabilities:**
+- WHERE must link to Room(s) where performed
+- Must describe trigger → steps → outcome
+- Must list what Primitives/Artifacts it operates on
+
+**Agents:**
+- WHERE must link to home Room
+- Must describe voice/personality, responsibilities, boundaries
+- Must link to Prompt card (implementation)
+- Must specify handoff relationships with other agents
+
+**Prompts:**
+- WHERE must link to parent Agent
+- Must include actual prompt text
+- Must have version and changelog
