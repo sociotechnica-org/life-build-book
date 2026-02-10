@@ -59,7 +59,7 @@ Spot-check ALL Standards.
 | WHY | Links to ≥1 Principle |
 | HOW | Has actual spec (values/rules/thresholds) |
 | Anti-examples | Shows what violation looks like |
-| Conformance | ≥1 Feature/Component links to it |
+| Conformance | ≥1 product-layer card links to it |
 
 **Output:**
 ```
@@ -81,7 +81,7 @@ Spot-check ALL Strategy and Principle notes.
 | WHAT | Clear statement, not placeholder |
 | WHY | Reasoning present ("because..."), not assertion |
 | Anti-patterns | Shows what violating looks like |
-| Downstream | ≥1 Feature links to it |
+| Downstream | ≥1 downstream card links to it |
 
 **Output:**
 ```
@@ -95,9 +95,9 @@ Missing anti-patterns: [list]
 Stub notes (assertion only): [list]
 ```
 
-### Phase 5: Feature Sampling
+### Phase 5: Product Layer Sampling
 
-Full grade on sample of Features (20% or 10 cards, whichever larger).
+Full grade on sample of product-layer cards (20% or 10 cards, whichever larger).
 
 Select sample to include:
 - Highest-linked (most depended on)
@@ -111,10 +111,10 @@ Apply full rubric including:
 
 **Output:**
 ```
-## Feature Sample
+## Product Layer Sample
 
-| Feature | Grade | Top Deficiency |
-|---------|-------|----------------|
+| Card | Grade | Top Deficiency |
+|------|-------|----------------|
 
 Patterns:
 - [n] missing examples
@@ -124,15 +124,15 @@ Patterns:
 
 ### Phase 6: Cascade Analysis
 
-For weak Features, trace upstream:
+For weak product-layer cards, trace upstream:
 
 ```
-Feature weak on WHY?
+Card weak on WHY?
     └─ Check linked Strategy/Principle
         └─ Stub? → Upstream fix
         └─ Substantive? → Card-level fix
 
-Feature weak on HOW?
+Card weak on HOW?
     └─ Check conforming Standard
         └─ Missing? → Standard gap
         └─ Vague? → Standard fix
@@ -167,7 +167,7 @@ Scope: [full library / zone]
 | Source Alignment | [Good/Drift/Gap] | |
 | Standards | [n]/[total] pass | |
 | Strategy/Principles | [n]/[total] pass | |
-| Features (sampled) | [grade] | |
+| Product Layer (sampled) | [grade] | |
 
 Overall: [Healthy / Needs Work / Critical]
 
@@ -183,7 +183,7 @@ Overall: [Healthy / Needs Work / Critical]
 ## Phase 4: Strategy/Principles
 [details]
 
-## Phase 5: Features
+## Phase 5: Product Layer
 [details]
 
 ## Phase 6: Cascade Analysis
@@ -212,14 +212,14 @@ Overall: [Healthy / Needs Work / Critical]
 
 | Level | Definition |
 |-------|------------|
-| Healthy | >80% Standards pass, >80% Strategy/Principles pass, Feature sample averages B+ |
-| Needs Work | 60-80% pass rates, or Feature sample averages B- to C+ |
-| Critical | <60% pass rates, or Feature sample below C |
+| Healthy | >80% Standards pass, >80% Strategy/Principles pass, Product layer sample averages B+ |
+| Needs Work | 60-80% pass rates, or Product layer sample averages B- to C+ |
+| Critical | <60% pass rates, or Product layer sample below C |
 
 ## Principles
 
 - Upstream before downstream — always
 - Distinguish root causes from symptoms
 - Standards and Strategy gaps hurt most — prioritize finding them
-- Sample Features strategically — high-link cards reveal more
+- Sample product-layer cards strategically — high-link cards reveal more
 - Anti-patterns gaps are fixable — flag but don't panic

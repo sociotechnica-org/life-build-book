@@ -13,11 +13,17 @@ Audit ≠ Grading. Card can score A and still fail audit if misclassified.
 2. **Apply decision tree to each card** (see Conan-Skill Type Taxonomy)
    ```
    Card: [Name]
-   - WHY question? → Strategy/Principle/Enterprise/Metric
-   - WHAT + Directors interact? → Feature/Component
-   - WHAT + No interaction + Has state? → System
-   - WHAT + No interaction + No state + Constrains? → Standard
-   - WHEN question? → Learning/Future
+   Step 1: WHY question? → Strategy/Principle/Standard
+   Step 2: WHAT + Directors interact?
+     - Navigate TO it? Top-level → Zone. Nested → Room.
+     - Persistent across zones? → Overlay
+     - Interact WITHIN? Spatial → Structure. Widget → Component.
+       Content object → Artifact. Action/workflow → Capability.
+     - Core data entity → Primitive
+   Step 3: Invisible infrastructure? → System
+   Step 4: AI team member? → Agent (implementation → Prompt)
+   Step 5: Temporal? → Learning/Decision/Future
+   Step 6: Shipping? → Initiative/Release
    Result: [type]
    Claimed: [type]
    Verdict: [PASS/MISCLASSIFIED]
@@ -31,7 +37,7 @@ Audit ≠ Grading. Card can score A and still fail audit if misclassified.
    No state + no processing + things conform → should be Standard
    ```
 
-4. **Check conformance** — For Features and Components:
+4. **Check conformance** — For product-layer cards (Rooms, Overlays, Structures, Components, Artifacts, Capabilities, Agents):
    ```
    Card: [Name]
    Governed domains touched:
@@ -70,7 +76,7 @@ Audit ≠ Grading. Card can score A and still fail audit if misclassified.
 |---------|--------|-----------|
 | Layer Conflation | Wrong-layer language | Decision tree |
 | System/Standard Confusion | Spec in System, or System with no state | System vs Standard test |
-| Conformance Gap | Feature touches governed domain, no Standard link | Conformance check |
+| Conformance Gap | Product-layer card touches governed domain, no Standard link | Conformance check |
 | Enumerated Instances | HOW table with behavioral types | Context needed per type? |
 | Atomicity Violation | Multiple distinct questions | Could sections stand alone? |
 

@@ -58,27 +58,55 @@ Grade WHY harder. Trace WHY deeper. Fix WHY first.
 
 ```
 WHY we build things?
-├─ External pressure → ENTERPRISE CONTEXT
-├─ Internal signal → PLATFORM METRIC
-└─ Guiding philosophy → STRATEGY / PRINCIPLE
+├─ Guiding philosophy → STRATEGY
+├─ Judgment guidance → PRINCIPLE
+└─ Testable specification → STANDARD
 
 WHAT exists?
 ├─ Directors consciously interact?
-│   ├─ YES + implementation detail → COMPONENT
-│   └─ YES + standalone → FEATURE
-├─ NO + foundational mechanism (has state, computes) → SYSTEM
-└─ NO + implementation specification (constrains, no state) → STANDARD
-
-WHAT are the foundational data entities?
-└─ Core objects directors create and manage → PRIMITIVE
-
-WHO operates in the system?
-└─ AI agent with defined role → AGENT
+│   ├─ Navigate TO it?
+│   │   ├─ Top-level workspace → ZONE
+│   │   └─ Nested within a zone → ROOM
+│   ├─ Persistent across all zones? → OVERLAY
+│   ├─ Interact WITHIN a zone/room?
+│   │   ├─ Spatial/visual fabric? → STRUCTURE
+│   │   ├─ Specific UI widget? → COMPONENT
+│   │   ├─ Content object you create/edit? → ARTIFACT
+│   │   └─ Action/workflow you perform? → CAPABILITY
+│   └─ Core data entity? → PRIMITIVE
+├─ NO + governs behavior invisibly → SYSTEM
+└─ AI team member → AGENT
+    └─ Agent implementation → PROMPT
 
 WHEN?
-├─ Historical → LEARNING
+├─ Historical → LEARNING / DECISION
 └─ Future → FUTURE
+
+WHAT ships?
+├─ Shippable unit → INITIATIVE
+└─ Version marker → RELEASE
 ```
+
+### Decision Tree
+
+**Step 1: Is this about WHY we build?**
+- Guiding philosophy (a bet) → Strategy
+- Judgment guidance (a rule of thumb) → Principle
+- Testable spec (concrete rules) → Standard
+
+**Step 2: Is this about WHAT exists that directors interact with?**
+- Navigate TO it? Top-level (header nav) → Zone. Nested within zone → Room.
+- Persistent across zones? → Overlay
+- Interact WITHIN? Spatial canvas → Structure. UI widget → Component. Content object → Artifact. Action/workflow → Capability.
+- Core data entity → Primitive
+
+**Step 3: Is this invisible infrastructure?** Mechanism/rule → System
+
+**Step 4: Is this an AI team member?** The agent → Agent. Its implementation → Prompt.
+
+**Step 5: Is this temporal?** Past insight → Learning. Past choice → Decision. Future vision → Future.
+
+**Step 6: Is this about shipping?** Shippable scope → Initiative. Version marker → Release.
 
 ### Upstream Chain
 
@@ -89,15 +117,31 @@ Principle (judgment-based guidance)
     ↓ implemented by
 Standard (testable specification)
     ↓ constrains
-Feature / Component
+Product layer (Zones, Rooms, Overlays, Structures, Components, Artifacts, Capabilities)
     ↑ powered by
 System (mechanism with state)
     ↑ operates on
 Primitive (foundational data entity)
+    ↑ supported by
+Agent (AI team member) → Prompt (implementation)
 ```
 
 - Principle without Standard → could builder violate unknowingly? → Standard missing
 - Standard without Principle → arbitrary rule? → shouldn't exist in isolation
+
+### Containment Relationships
+
+| Type | Must Link To | Relationship |
+|------|--------------|--------------|
+| Room | Zone | Parent workspace |
+| Structure | Room | Where it lives |
+| Component | Structure or Room or Overlay | Parent element |
+| Artifact | Room | Where it's edited |
+| Capability | Room(s) | Where it's performed |
+| Prompt | Agent | What it implements |
+| Overlay | Zone(s) | Where it's visible |
+
+Missing containment link = structural deficiency.
 
 ### System vs Standard
 
@@ -115,20 +159,28 @@ Examples:
 - Visual Language (defines colors) → Standard
 - Weekly Priority (manages state) → System
 
-### Feature vs System
+### Navigation vs Interaction
 
-| Question | Feature | System |
-|----------|---------|--------|
-| Directors consciously use it? | Yes | No |
-| Directors would say "I'm using X"? | Yes | No |
-| Visible UI to navigate to? | Usually | Rarely |
-| Works behind other things? | No | Yes |
+| Question | Zone/Room | Structure/Component |
+|----------|-----------|---------------------|
+| Directors navigate TO it? | Yes | No |
+| Has its own URL/route? | Usually | No |
+| Is it a space or a thing within a space? | Space | Thing within |
+| Directors say "I'm in X" or "I'm using X"? | "I'm in X" | "I'm using X" |
 
 ### Language Signals
 - "mechanism," "manages state," "processes" → System
 - "specification," "must conform," "defines values" → Standard
 - "principle," "guides," "judgment-based" → Principle
-- "the UI where directors" → Feature
+- "workspace," "navigate to," "top-level" → Zone
+- "room," "nested space," "within the studio" → Room
+- "always visible," "persistent," "across zones" → Overlay
+- "canvas," "spatial fabric," "grid layout" → Structure
+- "widget," "UI element," "button," "indicator" → Component
+- "document," "content directors create/edit" → Artifact
+- "workflow," "action," "directors perform" → Capability
+- "AI agent," "team member," "advisor" → Agent
+- "system prompt," "prompt implementation" → Prompt
 
 ### Enumeration Test
 Table in HOW with distinct behavioral types → separate cards, not one card with table.
@@ -140,7 +192,7 @@ Table in HOW with distinct behavioral types → separate cards, not one card wit
 The library is organized into two primary layers:
 
 - **Rationale** (`/rationale/`) — WHY we build and what constraints exist. Contains foundational frameworks (SDT, Needs), Strategies, Principles, and Standards.
-- **Product** (`/product/`) — WHAT gets built. Contains Primitives, Features, Components, Systems, and Agents.
+- **Product** (`/product/`) — WHAT gets built. Contains Zones, Rooms, Overlays, Structures, Components, Artifacts, Capabilities, Primitives, Systems, Agents, and Prompts.
 
 Standards sit at the bottom of the rationale stack, closest to product — the bridge between abstract thinking and implementation. They constrain the product layer but are not part of it.
 
@@ -160,7 +212,7 @@ See Library Reference for full folder structure and conformance obligations.
 
 ### Conformance
 
-Features/Components touching governed domains must link to constraining Standards. Missing conformance = deficiency.
+Product-layer cards touching governed domains must link to constraining Standards. Missing conformance = deficiency. This applies to Rooms, Overlays, Structures, Components, Artifacts, Capabilities, and Agents.
 
 Full list: Library Reference → Conformance Obligations table.
 
@@ -202,7 +254,7 @@ Current phase: **Vision Capture**
 0. **Source Assessment** — Audit source material quality before inventory
 1. **Inventory** — Manifest of expected cards with types, build order
 2. **Grade** — Section rubrics → card scores → zone scores → system health
-2.5. **Spot-Check** — Verify upstream cards before dependent features built
+2.5. **Spot-Check** — Verify upstream cards before dependent product-layer cards built
 3. **Diagnose** — Trace root causes, calculate blast radius
 4. **Recommend** — Prioritize by cascade potential
 5. **Review** — Re-grade, delta report, teach-back
@@ -210,9 +262,9 @@ Current phase: **Vision Capture**
 7. **Surgery** — 6-phase project plans for builder agents
 8. **Health Check** — Assess existing library quality, upstream before downstream
 
-**Build sequence:** Source Assessment → Inventory → Bob builds Standards → Spot-Check → Bob builds Strategy/Principles → Spot-Check → Bob builds Features → Grade → Fix cycle
+**Build sequence:** Source Assessment → Inventory → Bob builds Standards → Spot-Check → Bob builds Strategy/Principles → Spot-Check → Bob builds product-layer cards (Zones, Rooms, Structures, etc.) → Grade → Fix cycle
 
-**Assessment sequence:** Source Alignment → Inventory Reconciliation → Standards Health → Strategy/Principle Health → Feature Sampling → Cascade Analysis
+**Assessment sequence:** Source Alignment → Inventory Reconciliation → Standards Health → Strategy/Principle Health → Product Layer Sampling → Cascade Analysis
 
 ---
 

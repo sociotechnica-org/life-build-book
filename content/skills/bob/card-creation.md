@@ -12,7 +12,9 @@ Have these open:
 
 ---
 
-## Feature Card Procedure
+## Product-Layer Card Procedure
+
+This procedure applies to all product-layer types: Zones, Rooms, Overlays, Structures, Components, Artifacts, Capabilities, Primitives, Systems, Agents, and Prompts. Use the type-specific template from Library Reference (`reference.md`) for section structure.
 
 ### Step 1: Read (2-3 minutes)
 
@@ -37,17 +39,19 @@ Write 2-4 sentences:
 
 Map the ecosystem.
 
-```markdown
-## WHERE: Ecosystem
-- Zone: [[Zone]] — [context]
-- Conforms to: [[Standard]] — [what spec constrains this]
-- Dependencies:
-  - [[X]] — [what it needs]
-- Dependents:
-  - [[X]] — [what needs it]
-- Components:
-  - [[X]] — [what implements it]
-```
+Use the WHERE template from Library Reference for your card's type. Key patterns:
+
+- **Rooms** → link parent Zone, resident Agent, contained Structures/Artifacts/Capabilities
+- **Structures** → link parent Room, contained Components
+- **Components** → link parent Structure/Room/Overlay
+- **Overlays** → link visibility scope (which Zones)
+- **Artifacts** → link Room where created/edited
+- **Capabilities** → link Room(s) where performed
+- **Agents** → link home Room, coordinating Agents
+- **Prompts** → link parent Agent
+- **Primitives** → link Rooms/Capabilities that serve them
+
+All types: include Conforms to links where obligated (see below).
 
 **Conformance check:** Does this card touch a governed domain?
 - Visual rendering → Standard - Visual Language
@@ -85,7 +89,7 @@ Mark temporal status.
 
 ```markdown
 ## WHEN: Timeline
-New feature — no past. Planned for v1.0.
+New concept — no past. Planned for v1.0.
 ```
 
 Or if predecessor exists:
@@ -134,7 +138,7 @@ Issues? Fix now. Unclear? Flag and move on.
 
 ## Standard Card Procedure
 
-Standards are specifications that constrain Features/Components. No runtime state.
+Standards are specifications that constrain product-layer cards. No runtime state.
 
 **Standards belong in `/rationale/standards/`** — they are part of the rationale layer, not the product layer.
 
@@ -143,7 +147,7 @@ Standards are specifications that constrain Features/Components. No runtime stat
 Identify specification content in source:
 - Tables of values (colors, thresholds, formulas)
 - Rules with testable criteria
-- Constraints multiple features must follow
+- Constraints multiple cards must follow
 
 ### Step 2: WHAT
 
@@ -158,12 +162,19 @@ Standards don't "do" — they define what implementations must match.
 
 ```markdown
 ## WHERE: Ecosystem
-- Conforming features: [[Feature]] — [must follow this]
-- Conforming components: [[Component]] — [must follow this]
-- Implements: [[Principle]] — [what guidance this makes testable]
+- Implements:
+  - [[Principle]] — [what guidance this makes testable]
+- Conforming:
+  - [[Room]] — [must follow this]
+  - [[Structure]] — [must follow this]
+  - [[Component]] — [must follow this]
+  - [[Overlay]] — [must follow this]
+  - [[Agent]] — [must follow this]
+- Related:
+  - [[Standard]] — [complementary or overlapping standards]
 ```
 
-**Audit existing cards:** What Features/Components should conform to this? Add links both directions.
+**Audit existing cards:** What product-layer cards should conform to this? Add links both directions.
 
 ### Step 4: WHY
 
@@ -216,24 +227,31 @@ Don't stub it. Conan traces these.
 # Strategy - [Name]
 
 ## WHAT: The Strategy
-[One sentence]
+[One sentence articulating the bet.]
 
-## WHERE: Scope
-- Governs: [[Feature]], [[Feature]]
-- Generates: [[Principle]], [[Standard]]
+## WHERE: Ecosystem
+- Principles:
+  - [[Principle]] — [what judgment guidance this generates]
+- Standards:
+  - [[Standard]] — [what specifications this generates]
+- Zones:
+  - [[Zone]] — [what product areas embody this]
+- Tensions:
+  - [[Strategy]] — [what other strategies this trades off against]
 
 ## WHY: Belief
 [Why we believe this — reasoning, not just assertion]
 
 ## HOW: Application
-[What it looks like when followed]
 
-## Anti-Patterns
-[What violating this looks like. Concrete examples.]
-- Wrong: [specific violation]
+### What Following This Looks Like
+[2-3 concrete examples.]
 
-## Tensions
-[Tradeoffs with other strategies]
+### What Violating This Looks Like
+[2-3 concrete anti-patterns.]
+
+### Decision Heuristic
+[When facing a tradeoff, how does this strategy guide the choice?]
 ```
 
 **Minimum viable:** 150+ words with real reasoning in WHY. Anti-patterns required.
@@ -248,22 +266,34 @@ Don't stub it. Conan traces these.
 ## WHAT: The Principle
 [One sentence. Judgment-based guidance.]
 
-## WHERE: Scope
-- Governs: [[Feature]], [[Feature]]
-- Implemented by: [[Standard]] — [specs that make this testable]
+## WHERE: Ecosystem
+- Strategy:
+  - [[Strategy]] — [what bet this serves]
+- Standards:
+  - [[Standard]] — [what specifications make this testable]
+- Governs:
+  - [[Zone]] — [what areas this applies to]
+  - [[Room]] — [what rooms this shapes]
+  - [[Capability]] — [what behaviors this constrains]
+- Related:
+  - [[Principle]] — [complementary or contrasting principles]
 
 ## WHY: Belief
 [Why we believe this]
 
 ## HOW: Application
-[What it looks like when followed]
 
-## Anti-Patterns
-[What violating this looks like. Concrete examples.]
-- Wrong: [specific violation]
+### What Following This Looks Like
+[2-3 concrete examples.]
 
-## Tensions
-[Tradeoffs with other principles]
+### What Violating This Looks Like
+[2-3 concrete anti-patterns.]
+
+### Tensions
+[What other principles this trades off against.]
+
+### Test
+[A question to ask when evaluating whether a design follows this principle.]
 ```
 
 ### Decision Note (3-5 minutes)
@@ -274,8 +304,13 @@ Don't stub it. Conan traces these.
 ## WHAT: The Choice
 [What was decided]
 
-## WHERE: Affected
-- [[Feature]] — [how it shapes this]
+## WHERE: Ecosystem
+- Affects:
+  - [[Zone]] — [how it shapes this]
+  - [[Room]] — [how it shapes this]
+  - [[Capability]] — [how it shapes this]
+- Governed by:
+  - [[Principle]] — [what guided the choice]
 
 ## WHY: Rationale
 Options considered:
@@ -308,13 +343,17 @@ Options considered:
 
 ## Batch Workflow
 
-For a zone with 10 features:
+For a zone with 10 cards:
 
 1. Read all source material (15-20 min)
-2. Create cards in order:
-   - Start with most-referenced (others link to them)
-   - Create Standards early (Features will conform to them)
-   - Create supporting notes as encountered
+2. Create cards in build order:
+   - Standards first (they constrain everything)
+   - Strategy/Principles next (WHY upstream)
+   - Systems next (cross-cutting mechanisms)
+   - Zones/Rooms (most-depended-on first)
+   - Overlays, Structures, Artifacts, Capabilities
+   - Components last (implementation details)
+   - Agents + Prompts
 3. After all created, batch self-check (15-20 min)
 4. Fix issues found
 5. Report and hand off
@@ -338,9 +377,9 @@ Done: 4/8 cards. Created Standard - Visual Language along the way.
 After self-check:
 ```
 Self-check complete.
-- 8 feature cards ready
+- 8 product-layer cards ready
 - 2 standards created
-- 1 flag: Priority Queue — feature or system?
+- 1 flag: Priority Queue — structure or system?
 
 Ready for Conan.
 ```
