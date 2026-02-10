@@ -6,8 +6,8 @@ The specification for visual vocabulary across all LifeBuild interfaces — cate
 
 ## WHERE: Ecosystem
 
-- Conforming features: [[Feature - Life Map]], [[Feature - The Table]], [[Feature - Hex Grid]], [[Feature - Project Board]], [[Feature - System Board]]
-- Conforming components: [[Hex Grid - Hex Tile]], [[The Table - Gold Position]], [[The Table - Silver Position]], [[The Table - Bronze Position]]
+- Conforming: [[Zone - Life Map]], [[Overlay - The Table]], [[Structure - Hex Grid]], [[Room - Project Board]], [[Room - System Board]]
+- Conforming components: [[Component - Hex Tile]], [[Component - Gold Position]], [[Component - Silver Position]], [[Component - Bronze Position]]
 - Implements: [[Principle - Visual Recognition]] — instant identification without inspection
 - Implements: [[Principle - Visibility Creates Agency]] — state visible at a glance
 - Advances: [[Strategy - Spatial Visibility]] — spatial organization requires visual clarity

@@ -7,8 +7,8 @@ The specification for three Bronze stack operating modes — Minimal, Target, an
 ## WHERE: Ecosystem
 
 - Implemented by: [[System - Bronze Operations]] — executes mode behavior
-- Selected in: [[Feature - Sorting Room]]
-- Displayed on: [[The Table - Bronze Position]]
+- Selected in: [[Room - Sorting Room]]
+- Displayed on: [[Component - Bronze Position]]
 - Implements: [[Standard - Three-Stream Portfolio]] — Bronze stream mechanics
 
 ## WHY: Rationale

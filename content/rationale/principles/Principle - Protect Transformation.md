@@ -9,8 +9,8 @@ A single ranked priority list lets urgent maintenance perpetually displace impor
 - Type: Design Principle
 - Serves: [[Need - Competence]] — structural protection enables completion
 - Advances: [[Strategy - Superior Process]]
-- Governs: [[Feature - Three-Stream Filtering]], [[Feature - The Table]], [[System - Bronze Operations]], [[Feature - Sorting Room]], [[System - Weekly Priority]]
-- Table positions: [[The Table - Gold Position]], [[The Table - Silver Position]], [[The Table - Bronze Position]]
+- Governs: [[Capability - Three-Stream Filtering]], [[Overlay - The Table]], [[System - Bronze Operations]], [[Room - Sorting Room]], [[System - Weekly Priority]]
+- Table positions: [[Component - Gold Position]], [[Component - Silver Position]], [[Component - Bronze Position]]
 - Related: [[Principle - Empty Slots Strategic]] — protection includes permission to rest
 
 ## WHY: Belief

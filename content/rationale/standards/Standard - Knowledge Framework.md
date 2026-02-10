@@ -12,9 +12,9 @@ The specification for organizing everything the AI team learns about a director 
 - Advances: [[Strategy - AI as Teammates]] — knowledge enables relationship depth
 - Feeds: [[Standard - Service Levels]] — knowledge depth determines service quality
 - Used by: [[Agent - Jarvis]] — orchestrates knowledge gathering
-- Conforming features: [[Feature - The Charter]] — content maps to knowledge domains
-- Conforming features: [[Feature - Category Studios]] — category-specific knowledge capture
-- Conforming features: [[Feature - Category Advisors]] — domain-specific knowledge application
+- Conforming: [[Artifact - The Charter]] — content maps to knowledge domains
+- Conforming rooms: [[Room - Category Studios]] — category-specific knowledge capture
+- Conforming systems: [[System - Category Advisors]] — domain-specific knowledge application
 
 ## WHY: Rationale
 

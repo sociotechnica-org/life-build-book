@@ -6,8 +6,8 @@ The ambient notification mechanism that surfaces items needing attention through
 
 ## WHERE: Ecosystem
 
-- Zone: [[Feature - Life Map]] — signals visible on grid
-- Displayed on: [[Hex Grid - Hex Tile]] — visual treatments applied to tiles
+- Zone: [[Zone - Life Map]] — signals visible on grid
+- Displayed on: [[Component - Hex Tile]] — visual treatments applied to tiles
 - Sources: [[Primitive - System]] (health data), [[Primitive - Project]] (staleness data), [[System - Priority Queue Architecture]] (due dates)
 - Monitored by: [[Agent - Mesa]] — can explain any signal
 - Implements: [[Standard - Smoke Signal Thresholds]] — threshold and treatment specifications

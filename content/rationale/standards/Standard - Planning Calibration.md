@@ -6,10 +6,10 @@ The specification for how planning interfaces frame plans as hypotheses, how age
 
 ## WHERE: Ecosystem
 
-- Conforming features: [[Feature - Adaptation]] — mid-week modification follows hypothesis framing
-- Conforming features: [[Feature - Sorting Room]] — priority rankings treated as testable predictions
-- Conforming features: [[Feature - Council Chamber]] — strategic conversations frame plans as hypotheses
-- Conforming features: [[Feature - Week-in-Review]] — review measures calibration accuracy, not completion
+- Conforming: [[System - Adaptation]] — mid-week modification follows hypothesis framing
+- Conforming rooms: [[Room - Sorting Room]] — priority rankings treated as testable predictions
+- Conforming rooms: [[Room - Council Chamber]] — strategic conversations frame plans as hypotheses
+- Conforming capabilities: [[Capability - Week-in-Review]] — review measures calibration accuracy, not completion
 - Implements: [[Principle - Plans Are Hypotheses]] — makes hypothesis framing testable
 
 ## WHY: Rationale

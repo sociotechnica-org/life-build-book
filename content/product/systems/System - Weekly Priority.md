@@ -6,11 +6,11 @@ The mechanism that produces and maintains a director's active weekly commitment 
 
 ## WHERE: Ecosystem
 
-- Displayed on: [[Feature - The Table]] — the UI for weekly commitment
-- Selected via: [[Feature - Weekly Planning]] in [[Feature - Sorting Room]]
+- Displayed on: [[Overlay - The Table]] — the UI for weekly commitment
+- Selected via: [[Capability - Weekly Planning]] in [[Room - Sorting Room]]
 - Agent: [[Agent - Cameron]] — guides selection
 - Sources from: [[System - Priority Queue Architecture]] — candidate pool
-- Modified by: [[Feature - Adaptation]] — mid-cycle changes
+- Modified by: [[System - Adaptation]] — mid-cycle changes
 - Implements: [[Standard - Three-Stream Portfolio]] — three-stream structure
 - Implements: [[Principle - Protect Transformation]] — Gold/Silver protected from Bronze overflow
 

@@ -11,10 +11,10 @@ Agents with defined jobs, permissions, and coordination capabilities provide lev
 - Serves: [[Need - Competence]] (secondary) — agents enable accomplishment
 - Implementing principles: [[Principle - Earn Don't Interrogate]], [[Principle - Guide When Helpful]]
 - Core team: [[Agent - Jarvis]], [[Agent - Mesa]], [[Agent - Marvin]], [[Agent - Cameron]], [[Agent - Devin]], [[Agent - Conan]]
-- Category advisors: [[Feature - Category Advisors]], [[Agent - Maya]], [[Agent - Atlas]], [[Agent - Brooks]], [[Agent - Grace]], [[Agent - Reed]], [[Agent - Finn]], [[Agent - Indie]], [[Agent - Sage]]
+- Category advisors: [[System - Category Advisors]], [[Agent - Maya]], [[Agent - Atlas]], [[Agent - Brooks]], [[Agent - Grace]], [[Agent - Reed]], [[Agent - Finn]], [[Agent - Indie]], [[Agent - Sage]]
 - Systems: [[Standard - Service Levels]], [[Standard - Knowledge Framework]], [[System - Processing Layer]]
 - Systems: [[System - Progressive Knowledge Capture]], [[System - Smoke Signals]]
-- Features: [[Feature - The Charter]], [[Feature - The Agenda]]
+- Artifacts: [[Artifact - The Charter]], [[Artifact - The Agenda]]
 
 ## WHY: Belief
 

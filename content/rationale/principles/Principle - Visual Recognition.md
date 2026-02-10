@@ -9,7 +9,7 @@ A director must immediately recognize what each visual element represents withou
 - Type: Design Principle
 - Serves: [[Need - Autonomy]] — instant recognition enables control
 - Advances: [[Strategy - Spatial Visibility]]
-- Governs: [[Primitive - Project]], [[Primitive - System]], [[Feature - Hex Grid]], [[Hex Grid - Hex Tile]]
+- Governs: [[Primitive - Project]], [[Primitive - System]], [[Structure - Hex Grid]], [[Component - Hex Tile]]
 - Companion detail: Brand Standards v2
 - Related: [[Principle - Visibility Creates Agency]] — visibility must also be instantly legible
 

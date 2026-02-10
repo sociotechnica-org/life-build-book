@@ -6,8 +6,8 @@ The Relationships Category Advisor. Grace specializes in family relationships, f
 
 ## WHERE: Ecosystem
 
-- Feature: [[Feature - Category Advisors]] — one of eight domain specialists
-- Home: Relationships Studio in [[Feature - Category Studios]]
+- System: [[System - Category Advisors]] — one of eight domain specialists
+- Home: Relationships Studio in [[Room - Category Studios]]
 - Domain: Relationships category projects and systems
 - Available in: Any project tagged Relationships
 

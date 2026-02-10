@@ -11,8 +11,8 @@ The specification for the progressive ladder (Levels 0-5) measuring how well the
 - Implements: [[Principle - Compound Capability]] — service compounds over time
 - Advances: [[Strategy - AI as Teammates]] — relationship depth creates value
 - Used by: [[Agent - Jarvis]] — orchestrates progression
-- Conforming features: [[Feature - Service Level Progression]] — UI for level display and progression
-- Related: [[Feature - The Charter]] — living knowledge store
+- Conforming systems: [[System - Service Level Progression]] — UI for level display and progression
+- Related: [[Artifact - The Charter]] — living knowledge store
 
 ## WHY: Rationale
 

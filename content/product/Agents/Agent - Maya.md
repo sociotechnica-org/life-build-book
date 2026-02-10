@@ -6,8 +6,8 @@ The Health & Well-Being Category Advisor. Maya specializes in physical health, m
 
 ## WHERE: Ecosystem
 
-- Feature: [[Feature - Category Advisors]] — one of eight domain specialists
-- Home: Health & Well-Being Studio in [[Feature - Category Studios]]
+- System: [[System - Category Advisors]] — one of eight domain specialists
+- Home: Health & Well-Being Studio in [[Room - Category Studios]]
 - Domain: Health category projects and systems
 - Available in: Any project tagged Health
 

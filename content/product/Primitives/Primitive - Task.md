@@ -6,12 +6,12 @@ A single, completable action that contributes to a project's objectives or fulfi
 
 ## WHERE: Ecosystem
 
-- Zone: Cross-zone — tasks appear in [[Feature - Project Board]], [[Feature - System Board]], [[The Table - Bronze Position]]
+- Zone: Cross-zone — tasks appear in [[Room - Project Board]], [[Room - System Board]], [[Component - Bronze Position]]
 - Implements: [[Standard - Three-Stream Portfolio]] — Bronze tasks flow to stack
 - Used by: [[Primitive - Project]] — projects contain tasks on kanban boards
 - Used by: [[Primitive - System]] — systems generate tasks according to patterns
-- Governs: [[Feature - Kanban Board]] — task flow interface
-- Components: [[Task - Bronze Stack]]
+- Governs: [[Structure - Kanban Board]] — task flow interface
+- Components: [[System - Bronze Stack]]
 
 ## WHY: Rationale
 
@@ -45,4 +45,4 @@ Core entity. Tasks are the smallest work unit — what directors actually execut
 - **Advance** — Progress-driving actions
 - **Discover** — Research and learning
 
-**Task delegation:** Tasks can be assigned to AI Workers or human delegates via [[Feature - Roster Room]].
+**Task delegation:** Tasks can be assigned to AI Workers or human delegates via [[Room - Roster Room]].

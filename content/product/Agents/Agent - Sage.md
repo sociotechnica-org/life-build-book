@@ -6,8 +6,8 @@ The Personal Growth & Learning Category Advisor. Sage specializes in skill devel
 
 ## WHERE: Ecosystem
 
-- Feature: [[Feature - Category Advisors]] — one of eight domain specialists
-- Home: Personal Growth & Learning Studio in [[Feature - Category Studios]]
+- System: [[System - Category Advisors]] — one of eight domain specialists
+- Home: Personal Growth & Learning Studio in [[Room - Category Studios]]
 - Domain: Personal Growth category projects and systems
 - Available in: Any project tagged Personal Growth
 

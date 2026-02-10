@@ -7,12 +7,12 @@ The specification for computing priority ranking within streams: base formula pl
 ## WHERE: Ecosystem
 
 - Implemented by: [[System - Processing Layer]] — performs the calculation
-- Used in: [[Feature - Sorting Room]] — scores displayed during selection
+- Used in: [[Room - Sorting Room]] — scores displayed during selection
 - Used by: [[Agent - Cameron]] — surfaces recommendations based on scores
-- Conforming features: [[Feature - Sorting Room]] — displays scores, respects formula
-- Conforming features: [[Feature - Three-Stream Filtering]] — rankings within filtered views
+- Conforming rooms: [[Room - Sorting Room]] — displays scores, respects formula
+- Conforming capabilities: [[Capability - Three-Stream Filtering]] — rankings within filtered views
 - Implements: [[Principle - Familiarity Over Function]] — score suggests, director decides
-- Depends on: [[Project - Purpose Assignment]] — determines which weighting applies
+- Depends on: [[Capability - Purpose Assignment]] — determines which weighting applies
 - Related: [[Standard - Three-Stream Portfolio]] — defines the streams
 
 ## WHY: Rationale

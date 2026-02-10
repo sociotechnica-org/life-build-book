@@ -10,8 +10,8 @@ All capabilities are always available to find — active guidance follows the di
 - Serves: [[Need - Autonomy]] — all capabilities available, no forced education
 - Serves: [[Need - Relatedness]] — guidance feels like colleague help
 - Advances: [[Strategy - AI as Teammates]]
-- Governs: Feature discoverability, [[Feature - Workspace Navigation]], [[Agent - Mesa]] (routing behavior)
-- Rooms: [[Feature - Council Chamber]], [[Feature - Drafting Room]], [[Feature - Sorting Room]], [[Feature - Roster Room]]
+- Governs: Feature discoverability, [[Capability - Workspace Navigation]], [[Agent - Mesa]] (routing behavior)
+- Rooms: [[Room - Council Chamber]], [[Room - Drafting Room]], [[Room - Sorting Room]], [[Room - Roster Room]]
 - Related: [[Principle - First 72 Hours]] — first 72 hours need more active guidance than steady state
 - Related: [[Principle - Earn Don't Interrogate]] — guidance method matters as much as timing
 

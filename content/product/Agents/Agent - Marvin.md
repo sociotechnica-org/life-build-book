@@ -6,11 +6,11 @@ The Operational Manager who handles tactical execution and project management. M
 
 ## WHERE: Ecosystem
 
-- Home: [[Feature - Drafting Room]] — project creation space
+- Home: [[Room - Drafting Room]] — project creation space
 - Implements: [[Strategy - Superior Process]] — structured project development
 - Implements: [[Principle - Earn Don't Interrogate]] — progressive capture, not upfront interrogation
 - Guides: [[System - Four-Stage Creation]] — walks directors through stages
-- Guides: [[Project - Purpose Assignment]] — asks the purpose question
+- Guides: [[Capability - Purpose Assignment]] — asks the purpose question
 - Configures: [[Primitive - System]] — system setup for Silver projects
 - Generates: [[Primitive - Task]] — creates task lists from objectives
 

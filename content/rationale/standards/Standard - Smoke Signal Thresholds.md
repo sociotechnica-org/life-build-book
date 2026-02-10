@@ -7,7 +7,7 @@ The specification for trigger conditions, visual treatments, and dismissal rules
 ## WHERE: Ecosystem
 
 - Implemented by: [[System - Smoke Signals]] — detection mechanism
-- Applied to: [[Hex Grid - Hex Tile]]
+- Applied to: [[Component - Hex Tile]]
 - Monitored by: [[Agent - Mesa]] — can explain any signal
 - Implements: [[Principle - Visibility Creates Agency]] — directors see problems early
 - Implements: [[Principle - Guide When Helpful]] — helpful signals, not nagging alerts

@@ -10,7 +10,7 @@ The knowledge acquisition mechanism agents use to learn about directors over tim
 - Implements: [[Principle - Earn Don't Interrogate]]
 - Implements: [[Strategy - AI as Teammates]]
 - Feeds: [[Standard - Knowledge Framework]] — where captured knowledge lives
-- Feeds: [[Feature - The Charter]] — strategic knowledge captured here
+- Feeds: [[Artifact - The Charter]] — strategic knowledge captured here
 
 ## WHY: Rationale
 
