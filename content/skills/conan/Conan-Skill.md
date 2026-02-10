@@ -94,10 +94,13 @@ WHAT ships?
 - Judgment guidance (a rule of thumb) → Principle
 - Testable spec (concrete rules) → Standard
 
-**Step 2: Is this about WHAT exists that directors interact with?**
+**Step 2: Do directors consciously interact with this?**
+*Gate: "Do directors say 'I'm using X'?" If NO → skip to Step 3 (System).*
+*Visible UI effects ≠ Component.*
+
 - Navigate TO it? Top-level (header nav) → Zone. Nested within zone → Room.
-- Persistent across zones? → Overlay
-- Interact WITHIN? Spatial canvas → Structure. UI widget → Component. Content object → Artifact. Action/workflow → Capability.
+- Persistent across ALL zones? → Overlay
+- Interact WITHIN? Spatial canvas → Structure. Specific widget you can point at → Component. Content object → Artifact. Action/workflow → Capability.
 - Core data entity → Primitive
 
 **Step 3: Is this invisible infrastructure?** Mechanism/rule → System
@@ -181,6 +184,33 @@ Examples:
 - "workflow," "action," "directors perform" → Capability
 - "AI agent," "team member," "advisor" → Agent
 - "system prompt," "prompt implementation" → Prompt
+
+### Classification Guardrails
+
+Apply IN ORDER. Each gate catches a common error pattern.
+
+**Gate 1 — Interaction Test (FIRST):** "Do directors say 'I'm using X'?" NO → System.
+- Adaptation → System (directors never invoke it, despite visible UI effects)
+- Service Level Progression → System (invisible mechanism)
+
+**Gate 2 — Component Litmus Test:** Can you point at ONE discrete widget? NO → not Component.
+- Gold Position slot → pointable → Component
+- Zoom Navigation → no single widget → Capability
+- Three-Stream Filtering → no single widget → Capability
+
+**Gate 3 — Overlay = cross-ZONE persistence:** Persistence within one zone ≠ Overlay.
+- The Table (all zones) → Overlay
+- Kanban Board (one room) → Structure
+
+**Gate 4 — Action-words → Capability:** Verbs (zooming, filtering, planning, navigating) → Capability, not Component.
+
+| Often Misclassified As | Actually | Example | Why |
+|------------------------|----------|---------|-----|
+| Component | System | Adaptation, Service Level Progression | Fails Interaction Test |
+| Component | Capability | Zoom Navigation, Three-Stream Filtering | Action/workflow, not widget |
+| Component | System | Clustering, Bronze Stack | Mechanism with state |
+| Structure | Overlay | The Table | Cross-zone persistence |
+| Component | Capability | Purpose Assignment, System Actions | Directors perform it |
 
 ### Enumeration Test
 Table in HOW with distinct behavioral types → separate cards, not one card with table.

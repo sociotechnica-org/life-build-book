@@ -44,16 +44,19 @@ WHAT ships?
 - Judgment guidance (a rule of thumb) → Principle
 - Testable spec (concrete rules) → Standard
 
-**Step 2: Is this about WHAT exists that directors interact with?**
+**Step 2: Do directors consciously interact with this?**
+*Gate: "Do directors say 'I'm using X'?" If NO → skip to Step 3 (System).*
+*Having visible UI effects does not make something a Component.*
+
 - Navigate TO it?
   - Top-level (header nav) → Zone
   - Nested within zone → Room
-- Persistent across zones? → Overlay
+- Persistent across ALL zones? → Overlay
 - Interact WITHIN a zone/room?
   - Spatial canvas/fabric → Structure
-  - Specific UI widget → Component
-  - Content object → Artifact
-  - Action/workflow → Capability
+  - Specific UI widget you can point at → Component
+  - Content object directors create/edit → Artifact
+  - Action/workflow directors perform → Capability
 - Core data entity → Primitive
 
 **Step 3: Is this invisible infrastructure?**
@@ -71,6 +74,39 @@ WHAT ships?
 **Step 6: Is this about shipping?**
 - Shippable scope → Initiative
 - Version marker → Release
+
+### Classification Guardrails
+
+Apply these checks IN ORDER when classifying. Each gate eliminates common errors.
+
+**Gate 1 — Interaction Test (apply FIRST):**
+"Do directors consciously invoke or say 'I'm using X'?" If NO → System, regardless of visible UI effects.
+- Adaptation changes UI progressively → but directors never invoke it → System
+- Service Level Progression adjusts tiers → invisible mechanism → System
+
+**Gate 2 — Component Litmus Test:**
+Can you point at ONE specific, discrete widget on screen? If not, it's NOT a Component.
+- Gold Position slot on The Table → pointable widget → Component
+- Zoom Navigation → no single widget, it's a process → Capability
+- Three-Stream Filtering → no single widget, it's a workflow → Capability
+
+**Gate 3 — Overlay requires cross-ZONE persistence:**
+Overlay = visible across ALL zones simultaneously. Persistence within one zone ≠ Overlay.
+- The Table persists across every zone → Overlay
+- Kanban Board appears only in Project Board room → Structure
+
+**Gate 4 — Action-words signal Capability:**
+Verbs and process-words (zooming, filtering, planning, navigating, reviewing) → Capability, not Component.
+
+#### Common Misclassifications
+
+| Often Misclassified As | Actually | Example | Reasoning |
+|------------------------|----------|---------|-----------|
+| Component | System | Adaptation, Service Level Progression | Directors don't invoke it — fails Interaction Test |
+| Component | Capability | Zoom Navigation, Three-Stream Filtering | Action/workflow, not a pointable widget |
+| Component | System | Clustering, Bronze Stack | Mechanism with state, not a UI widget |
+| Structure | Overlay | The Table | Persists across ALL zones |
+| Component | Capability | Purpose Assignment, System Actions | Workflow directors perform |
 
 ---
 
