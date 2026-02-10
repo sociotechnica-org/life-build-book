@@ -17,12 +17,17 @@ The specification for the day-by-day first 72 hours experience: what happens eac
 - Driver: Without a sequenced spec, features compete for attention during onboarding, creating cognitive overload and abandonment.
 
 ## WHEN: Timeline
+- Status: active
+- Since: v1.0
+- Last updated: v1.0
 
 Core specification. Sequence refined based on onboarding completion and retention data.
 
 ## HOW: Specification
 
-### Day 1: Welcome & Orient
+### Rules
+
+#### Day 1: Welcome & Orient
 
 | Step | Actor | Outcome |
 |------|-------|---------|
@@ -33,7 +38,7 @@ Core specification. Sequence refined based on onboarding completion and retentio
 **Emotional target:** "I made something."
 **Constraint:** Only Campfire, Life Map basics, and project creation are available.
 
-### Day 2: Meet the Team
+#### Day 2: Meet the Team
 
 | Step | Actor | Outcome |
 |------|-------|---------|
@@ -44,7 +49,7 @@ Core specification. Sequence refined based on onboarding completion and retentio
 **Emotional target:** "I have help."
 **Constraint:** Strategy Studio unlocks. Sorting Room not yet available.
 
-### Day 3: Establish Rhythm
+#### Day 3: Establish Rhythm
 
 | Step | Actor | Outcome |
 |------|-------|---------|
@@ -55,7 +60,7 @@ Core specification. Sequence refined based on onboarding completion and retentio
 **Emotional target:** "I know what to do each week."
 **Constraint:** Full feature set now available. Progressive disclosure complete.
 
-### Progressive Disclosure Rules
+#### Progressive Disclosure Rules
 
 | Rule | Requirement |
 |------|-------------|
@@ -66,8 +71,26 @@ Core specification. Sequence refined based on onboarding completion and retentio
 | Framing | "You can explore more later" throughout |
 | Tone | Warm, patient, encouraging |
 
-## Anti-Examples
+### Examples
+
+**Example 1: Successful Day 1 completion**
+- Scenario: New director opens LifeBuild for the first time.
+- Input: Director arrives at the app with no prior context.
+- Correct output: Mesa greets at Campfire. Director sees the Life Map with the spatial metaphor introduction. Director creates a low-stakes first project (e.g., "Organize Desk"). The Table, Sorting Room, and agent capabilities are hidden. Session ends with the director having created a visible artifact on their Life Map. Emotional outcome: "I made something."
+
+**Example 2: Day 2 progressive unlock**
+- Scenario: Director returns for second session.
+- Input: Director has completed Day 1 (first project created).
+- Correct output: Council Chamber unlocks. Jarvis introduces himself and guides a Charter conversation to capture values and current focus. Drafting Room becomes available with Marvin. Director creates a second project with Marvin's help. Sorting Room remains locked. Director leaves feeling "I have help" — the AI team is capable and supportive.
+
+### Anti-Examples
 
 - **Full feature tour on Day 1** — Day 1 has one job: spatial metaphor + first project + "I made something." Showing The Table, Sorting Room, and agent capabilities creates cognitive overload and abandonment.
 - **Requiring profile completion before first project creation** — every field between arrival and first "I made something" moment is friction. Directors should create their first project within minutes.
 - **Day 1 ending without director having created something tangible** — if the first session ends without a visible artifact, the tool feels hollow. The first project (low stakes, quick win) establishes that LifeBuild produces, not just organizes.
+
+### Conformance Test
+
+1. Walk through Day 1 as a new director and verify that only Campfire, Life Map basics, and project creation are available — The Table, Sorting Room, and full agent capabilities must be hidden.
+2. Verify that each day has exactly one primary emotional target and that the UI/agent interactions are designed to produce that outcome ("I made something" / "I have help" / "I know what to do each week").
+3. On Day 2, confirm the Sorting Room remains locked and only unlocks on Day 3 when the director is ready to prioritize.

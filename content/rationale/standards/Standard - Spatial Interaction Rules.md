@@ -17,12 +17,17 @@ The specification for director agency over hex grid spatial organization: direct
 - Driver: Without this spec, systems default to auto-organizing for efficiency, destroying the cognitive value of director-driven placement and breaking the bidirectional loop.
 
 ## WHEN: Timeline
+- Status: active
+- Since: v1.0
+- Last updated: v1.0
 
 Core specification. Interaction patterns defined during Vision Capture.
 
 ## HOW: Specification
 
-### Director Agency Rules
+### Rules
+
+#### Director Agency Rules
 
 | Rule | Requirement |
 |------|-------------|
@@ -31,7 +36,7 @@ Core specification. Interaction patterns defined during Vision Capture.
 | Clustering | Adjacent hexes carry director-assigned meaning. System observes but doesn't impose. |
 | Persistence | Spatial arrangement persists exactly as director left it. |
 
-### Interaction Requirements
+#### Interaction Requirements
 
 | Interaction | Spec |
 |-------------|------|
@@ -40,7 +45,7 @@ Core specification. Interaction patterns defined during Vision Capture.
 | Suggested locations | Prohibited — no auto-place |
 | "Optimize layout" | Prohibited — no system rearrangement |
 
-### AI Observation Rules
+#### AI Observation Rules
 
 | Permission | Rule |
 |------------|------|
@@ -50,8 +55,26 @@ Core specification. Interaction patterns defined during Vision Capture.
 | Reorganize layout | **Never without permission** |
 | Learn from placement | Allowed — observations feed understanding of director's mental model |
 
-## Anti-Examples
+### Examples
+
+**Example 1: Director places projects by personal association**
+- Scenario: Director creates three projects — "Family Reunion," "Call Mom Weekly," and "Anniversary Trip" — and places them in adjacent hexes.
+- Input: Director drags each project's hex tile to a cluster in the upper-left area of the Life Map.
+- Correct output: All three tiles remain exactly where placed. The system does not suggest a different arrangement, does not auto-sort them by category, and does not offer an "optimize layout" option. The Clustering system observes the grouping and may note "these three family-related projects are clustered together" as knowledge about the director's mental model.
+
+**Example 2: AI notices a pattern without imposing changes**
+- Scenario: Director has gradually placed all Finances projects near the bottom-right of the grid over several weeks.
+- Input: Mesa notices the spatial pattern during a conversation.
+- Correct output: Mesa says "I notice you've placed all your financial projects in the lower-right area — is that how you think about that part of your life?" This is curiosity, not correction. Mesa does NOT say "Would you like me to move your remaining Finance projects there too?" or rearrange anything. The director's response feeds understanding of their mental model.
+
+### Anti-Examples
 
 - **System auto-organizing hex grid by category** — destroys the bidirectional loop. Placement reveals how the director thinks about their life. Auto-organization imposes system logic where director cognition should drive.
 - **Confirmation dialog when moving a project to a new hex** — friction kills the flywheel. The loop depends on frequent, easy moves. Every dialog between "grab" and "place" discourages iteration.
 - **"Optimize layout" feature that rearranges projects for visual balance** — treats spatial arrangement as filing rather than thinking. The grid is an extension of the director's mind, not a filing system to be optimized.
+
+### Conformance Test
+
+1. Create a new project and place it on the hex grid — verify no suggested location, auto-place, or "optimal position" prompt appears. The director must freely choose the hex.
+2. Move a project from one hex to another and confirm no confirmation dialog interrupts the drag-and-drop. The move should be a single grab-and-place action.
+3. Review all AI agent interactions referencing spatial arrangement and verify agents only observe and ask ("I notice...") — never suggest moves, offer optimization, or rearrange without explicit director request.

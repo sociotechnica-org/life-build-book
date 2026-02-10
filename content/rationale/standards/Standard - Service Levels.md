@@ -21,12 +21,17 @@ The specification for the progressive ladder (Levels 0-5) measuring how well the
 - Decision: Six levels provide clear progression markers without false precision.
 
 ## WHEN: Timeline
+- Status: active
+- Since: v1.0
+- Last updated: v1.0
 
 Architectural target. Current implementation targets Levels 1-2. Full ladder represents the AI Team maturity vision.
 
 ## HOW: Specification
 
-### The Ladder
+### Rules
+
+#### The Ladder
 
 | Level | Name | What's Known | Service Level |
 |-------|------|--------------|---------------|
@@ -37,19 +42,37 @@ Architectural target. Current implementation targets Levels 1-2. Full ladder rep
 | 4 | Deeply Known | + comprehensive capacity model + health trends | Strategic partnership, predictive guidance |
 | 5 | Fully Mapped | + integrations, continuous awareness | Orchestrated life support |
 
-### Progression Mechanism
+#### Progression Mechanism
 
 - Every conversation is an opportunity to learn
 - Knowledge acquired through Progressive Knowledge Capture strategies
 - Behavioral patterns emerge over time
 - Integration sourcing unlocks at higher trust levels
 
-### Goal
+#### Goal
 
 Move every director up the ladder through thoughtful observation and well-timed questions, not interrogation.
 
-## Anti-Examples
+### Examples
+
+**Example 1: Level 1 service — basic recommendations**
+- Scenario: New director has completed onboarding. System knows their projects, weekly capacity estimate, and planted systems.
+- Input: Director asks "What should I work on this week?"
+- Correct output: Cameron uses Priority Score math to rank projects within each stream and presents top candidates. Recommendations are score-based only — no personalization, no pattern-based insights. Cameron does NOT say "based on your tendency to..." because behavioral patterns are not yet available at Level 1.
+
+**Example 2: Level 2 service — pattern detection**
+- Scenario: Director has been using LifeBuild for 6 weeks. System has observed behavioral patterns: director consistently underestimates Gold project effort by 30%.
+- Input: Director creates a new Gold project and estimates Effort as 4.
+- Correct output: Conan detects the pattern and Cameron adjusts the recommendation: "Your Gold estimates have been running about 30% under actual effort. Consider whether this is closer to Effort 5-6." This insight is only available at Level 2+ because it requires observed behavioral patterns.
+
+### Anti-Examples
 
 - **Giving personalized recommendations at Level 1** — Level 1 (Minimally Known) supports priority math and basic recommendations only. Personalized recommendations require Level 3 (Profiled), where explicit preferences and support network are known. Jumping ahead produces overconfident advice from insufficient data.
 - **Acquiring knowledge through upfront questionnaires** — Knowledge is earned through relationship, not demanded. An onboarding form asking 50 questions violates the Earn Don't Interrogate principle the ladder is built on.
 - **Treating all levels as achievable in the same timeframe** — Behavioral Patterns (Level 2) emerge over time through observation. Integration sourcing (Level 5) requires high trust. The ladder is progressive — rushing it produces hollow knowledge.
+
+### Conformance Test
+
+1. At Level 1, verify agent recommendations use only Priority Score math and project basics — no pattern-based insights or personalized advice should appear.
+2. At Level 2, verify the system surfaces at least one behavioral pattern observation (e.g., estimation accuracy, preferred work times) that was derived from usage data, not self-report.
+3. Confirm that no upfront questionnaire or bulk knowledge-gathering form is presented during onboarding — knowledge acquisition must follow the Progressive Knowledge Capture strategy.

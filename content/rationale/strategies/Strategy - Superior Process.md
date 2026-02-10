@@ -1,6 +1,6 @@
 # Strategy - Superior Process
 
-## WHAT: The Principle
+## WHAT: The Strategy
 
 Applying structured frameworks — from basic organization through sophisticated capacity management — to personal life improves execution and decision-making. This is Strategic Plank 2 — the second of three independent bets LifeBuild is built on.
 
@@ -26,7 +26,13 @@ Almost none of this gets applied to personal life. The modern knowledge worker's
 
 The bet: if we apply structured process to personal life, directors will execute more effectively, avoid overwhelm, and make better decisions about what deserves their time and energy.
 
-## HOW: The Ladder
+## WHEN: Timeline
+- Status: stable
+- Since: v1.0
+
+## HOW: Application
+
+### Maturity Ladder
 
 | Level | Name                  | What It Is                                                   |
 | ----- | --------------------- | ------------------------------------------------------------ |
@@ -41,11 +47,21 @@ The bet: if we apply structured process to personal life, directors will execute
 
 **Current state:** Level 3. Three-stream portfolio and The Table implemented. Capacity tracking planned.
 
-## Anti-Patterns
+### What Following This Looks Like
+
+- A director runs a weekly planning session using The Table to gate work-in-progress, reviews the three-stream portfolio, and consciously decides what gets active attention this week versus what stays queued.
+- When a new commitment arrives mid-week, the director evaluates it against current WIP limits and priority scores rather than reflexively saying yes. Process creates space for intentional decisions.
+- Projects move through defined stages (Four-Stage Creation) with clear transitions, so the director always knows whether something is being explored, committed, in-progress, or complete.
+
+### What Violating This Looks Like
 
 - **Forcing full process on day one** — Level 7 (full orchestrated) on first use overwhelms. The ladder exists because process adoption must be progressive. A new director needs basic capture (Level 1) before bespoke frameworks (Level 3).
 - **Applying corporate process without adapting to personal context** — Professional frameworks like DRI clarity and OODA loops (Level 4) are solutions to organizational problems. Importing them unchanged into personal life adds overhead without value. Adaptation is required.
 - **Treating process as rigid rather than adaptive** — If the weekly plan is a contract (see [[Principle - Plans Are Hypotheses]]), process becomes a cage. Process should enable flexibility, not constrain it. Mid-week adaptation is engaged leadership, not process failure.
+
+### Decision Heuristic
+
+When choosing between ad-hoc response and structured process, choose structure — but only as much structure as the director's current maturity level can absorb without overhead exceeding value.
 
 ## Tensions
 
