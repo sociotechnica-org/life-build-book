@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Context Library of Alexandria</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    @keyframes flowLoop {
+      0% { stroke-dashoffset: 200; }
+      100% { stroke-dashoffset: 0; }
+    }
+    @keyframes flowLoopReverse {
+      0% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 200; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    @keyframes orbitSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes signalPing {
+      0% { r: 4; opacity: 1; }
+      100% { r: 12; opacity: 0; }
+    }
+    .flow-path {
+      stroke-dasharray: 8 4;
+      animation: flowLoop 2s linear infinite;
+    }
+    .flow-path-reverse {
+      stroke-dasharray: 8 4;
+      animation: flowLoop 2s linear infinite reverse;
+    }
+    .flow-path-slow {
+      stroke-dasharray: 8 4;
+      animation: flowLoop 3.5s linear infinite;
+    }
+    .ping-circle {
+      animation: signalPing 1.5s ease-out infinite;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    /* ── colour constants ───────────────────────────────────── */
+    const GOLD   = '#d4b85c';
+    const BLUE   = '#5c8ac9';
+    const GREEN  = '#7a9e7a';
+    const PURPLE = '#9e7a9e';
+    const RED    = '#c95c5c';
+    const MUTED  = '#a89f94';
+    const DIM    = '#6b635a';
+    const CARD_BG = 'rgba(255,255,255,0.03)';
+    const CARD_BORDER = 'rgba(255,255,255,0.1)';
+
+    /* ── section colour by slide ────────────────────────────── */
+    const sectionColor = (n) => {
+      if (n === 0)                        return GOLD;
+      if (n >= 1  && n <= 3)              return GOLD;
+      if (n >= 4  && n <= 7)              return BLUE;
+      if (n >= 8  && n <= 10)             return GREEN;
+      if (n >= 11 && n <= 13)             return PURPLE;
+      if (n >= 14 && n <= 20)             return RED;
+      if (n >= 21 && n <= 23)             return BLUE;
+      if (n === 24)                       return GOLD;
+      return GOLD;
+    };
+
+    /* ═══════════════════════════════════════════════════════════
+       SVG LOOP DIAGRAMS
+    ═══════════════════════════════════════════════════════════ */
+
+    /* Single loop: Library → Factory → Ships → (back) */
+    const SingleLoopSVG = ({ color = BLUE }) => (
+      <svg viewBox="0 0 420 260" width="420" height="260" style={{display:'block',margin:'0 auto'}}>
+        {/* Circular loop path */}
+        <ellipse cx="210" cy="130" rx="170" ry="100" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="40"/>
+        <ellipse cx="210" cy="130" rx="170" ry="100" fill="none" stroke={color} strokeWidth="2" opacity="0.3"/>
+
+        {/* Animated flow on top arc */}
+        <path d="M 40 130 A 170 100 0 0 1 380 130" fill="none" stroke={color} strokeWidth="2.5" className="flow-path" opacity="0.9"/>
+        {/* Animated flow on bottom arc (return) */}
+        <path d="M 380 130 A 170 100 0 0 1 40 130" fill="none" stroke={GOLD} strokeWidth="2.5" className="flow-path-reverse" opacity="0.9"/>
+
+        {/* Arrowhead top-right */}
+        <polygon points="380,130 368,122 368,138" fill={color} opacity="0.9"/>
+        {/* Arrowhead bottom-left */}
+        <polygon points="40,130 52,122 52,138" fill={GOLD} opacity="0.9"/>
+
+        {/* Nodes */}
+        {/* LIBRARY — left */}
+        <circle cx="40" cy="130" r="36" fill="#1a1612" stroke={GOLD} strokeWidth="2"/>
+        <text x="40" y="126" textAnchor="middle" fill={GOLD} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1">LIBRARY</text>
+        <text x="40" y="140" textAnchor="middle" fill={MUTED} fontSize="9" fontFamily="'Source Sans 3',sans-serif">knowledge</text>
+
+        {/* FACTORY — right */}
+        <circle cx="380" cy="130" r="36" fill="#1a1612" stroke={color} strokeWidth="2"/>
+        <text x="380" y="126" textAnchor="middle" fill={color} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1">FACTORY</text>
+        <text x="380" y="140" textAnchor="middle" fill={MUTED} fontSize="9" fontFamily="'Source Sans 3',sans-serif">prints</text>
+
+        {/* Top label */}
+        <text x="210" y="22" textAnchor="middle" fill={color} fontSize="12" fontFamily="'Source Sans 3',sans-serif" opacity="0.8">context flows out</text>
+
+        {/* Bottom label */}
+        <text x="210" y="248" textAnchor="middle" fill={GOLD} fontSize="12" fontFamily="'Source Sans 3',sans-serif" opacity="0.8">signal flows back</text>
+      </svg>
+    );
+
+    /* Complete loop with Marketplace */
+    const CompleteLoopSVG = () => (
+      <svg viewBox="0 0 500 320" width="500" height="320" style={{display:'block',margin:'0 auto'}}>
+        {/* Background ring */}
+        <ellipse cx="250" cy="160" rx="210" ry="130" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="50"/>
+
+        {/* Outbound arc (top): Library → Factory → Ships */}
+        <path d="M 40 160 A 210 130 0 0 1 460 160" fill="none" stroke={BLUE} strokeWidth="2.5" className="flow-path" opacity="0.85"/>
+        {/* Return arc (bottom): Signal → Library */}
+        <path d="M 460 160 A 210 130 0 0 1 40 160" fill="none" stroke={GOLD} strokeWidth="2.5" className="flow-path-reverse" opacity="0.85"/>
+
+        {/* Arrowheads */}
+        <polygon points="460,160 446,151 446,169" fill={BLUE} opacity="0.9"/>
+        <polygon points="40,160 54,151 54,169" fill={GOLD} opacity="0.9"/>
+
+        {/* LIBRARY */}
+        <circle cx="40" cy="160" r="38" fill="#1a1612" stroke={GOLD} strokeWidth="2.5"/>
+        <text x="40" y="156" textAnchor="middle" fill={GOLD} fontSize="9.5" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1">LIBRARY</text>
+        <text x="40" y="170" textAnchor="middle" fill={MUTED} fontSize="8.5" fontFamily="'Source Sans 3',sans-serif">updates</text>
+
+        {/* Top middle node: FACTORY */}
+        <circle cx="250" cy="30" r="34" fill="#1a1612" stroke={BLUE} strokeWidth="2"/>
+        <text x="250" y="26" textAnchor="middle" fill={BLUE} fontSize="9.5" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1">FACTORY</text>
+        <text x="250" y="40" textAnchor="middle" fill={MUTED} fontSize="8.5" fontFamily="'Source Sans 3',sans-serif">prints</text>
+
+        {/* MARKETPLACE */}
+        <circle cx="460" cy="160" r="38" fill="#1a1612" stroke={GREEN} strokeWidth="2.5"/>
+        <text x="460" y="156" textAnchor="middle" fill={GREEN} fontSize="9.5" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1">MARKET</text>
+        <text x="460" y="170" textAnchor="middle" fill={MUTED} fontSize="8.5" fontFamily="'Source Sans 3',sans-serif">responds</text>
+
+        {/* Bottom middle: SIGNAL */}
+        <circle cx="250" cy="290" r="34" fill="#1a1612" stroke={GOLD} strokeWidth="2"/>
+        <text x="250" y="286" textAnchor="middle" fill={GOLD} fontSize="9.5" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1">SIGNAL</text>
+        <text x="250" y="300" textAnchor="middle" fill={MUTED} fontSize="8.5" fontFamily="'Source Sans 3',sans-serif">flows back</text>
+
+        {/* Ping dots on signal node */}
+        <circle cx="250" cy="290" r="4" fill={GOLD} opacity="0.9"/>
+        <circle cx="250" cy="290" r="4" fill={GOLD} className="ping-circle" opacity="0"/>
+      </svg>
+    );
+
+    /* Two loops connected: shared library, two factories */
+    const TwoLoopsSVG = () => (
+      <svg viewBox="0 0 560 300" width="560" height="300" style={{display:'block',margin:'0 auto'}}>
+        {/* Left loop */}
+        <ellipse cx="180" cy="150" rx="140" ry="90" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="35"/>
+        <path d="M 40 150 A 140 90 0 0 1 320 150" fill="none" stroke={BLUE} strokeWidth="2" className="flow-path" opacity="0.8"/>
+        <path d="M 320 150 A 140 90 0 0 1 40 150" fill="none" stroke={GOLD} strokeWidth="2" className="flow-path-reverse" opacity="0.6"/>
+        <polygon points="320,150 308,143 308,157" fill={BLUE} opacity="0.8"/>
+        <polygon points="40,150 52,143 52,157" fill={GOLD} opacity="0.7"/>
+
+        {/* Right loop */}
+        <ellipse cx="380" cy="150" rx="140" ry="90" fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="35"/>
+        <path d="M 240 150 A 140 90 0 0 1 520 150" fill="none" stroke={GREEN} strokeWidth="2" className="flow-path-slow" opacity="0.8"/>
+        <path d="M 520 150 A 140 90 0 0 1 240 150" fill="none" stroke={GOLD} strokeWidth="2" className="flow-path" opacity="0.6"/>
+        <polygon points="520,150 508,143 508,157" fill={GREEN} opacity="0.8"/>
+        <polygon points="240,150 252,143 252,157" fill={GOLD} opacity="0.7"/>
+
+        {/* Shared LIBRARY node (center) */}
+        <circle cx="280" cy="150" r="42" fill="#1a1612" stroke={GOLD} strokeWidth="2.5"/>
+        <text x="280" y="146" textAnchor="middle" fill={GOLD} fontSize="9" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="0.8">SHARED</text>
+        <text x="280" y="158" textAnchor="middle" fill={GOLD} fontSize="9" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="0.8">LIBRARY</text>
+
+        {/* Left FACTORY */}
+        <circle cx="40" cy="150" r="34" fill="#1a1612" stroke={BLUE} strokeWidth="2"/>
+        <text x="40" y="146" textAnchor="middle" fill={BLUE} fontSize="8.5" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">FACTORY</text>
+        <text x="40" y="159" textAnchor="middle" fill={MUTED} fontSize="8" fontFamily="'Source Sans 3',sans-serif">software</text>
+
+        {/* Right FACTORY */}
+        <circle cx="520" cy="150" r="34" fill="#1a1612" stroke={GREEN} strokeWidth="2"/>
+        <text x="520" y="146" textAnchor="middle" fill={GREEN} fontSize="8.5" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">FACTORY</text>
+        <text x="520" y="159" textAnchor="middle" fill={MUTED} fontSize="8" fontFamily="'Source Sans 3',sans-serif">marketing</text>
+
+        {/* Labels */}
+        <text x="145" y="20" textAnchor="middle" fill={BLUE} fontSize="11" fontFamily="'Source Sans 3',sans-serif" opacity="0.7">same context</text>
+        <text x="415" y="20" textAnchor="middle" fill={GREEN} fontSize="11" fontFamily="'Source Sans 3',sans-serif" opacity="0.7">different output</text>
+      </svg>
+    );
+
+    /* Federation: split library */
+    const FederationSVG = () => (
+      <svg viewBox="0 0 580 340" width="580" height="340" style={{display:'block',margin:'0 auto'}}>
+        {/* Corporate library at top */}
+        <rect x="210" y="10" width="160" height="60" rx="12" fill="#1a1612" stroke={GOLD} strokeWidth="2"/>
+        <text x="290" y="36" textAnchor="middle" fill={GOLD} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1">CORPORATE</text>
+        <text x="290" y="52" textAnchor="middle" fill={MUTED} fontSize="9" fontFamily="'Source Sans 3',sans-serif">strategy · identity · bets</text>
+
+        {/* WHY chains down */}
+        <line x1="230" y1="70" x2="150" y2="130" stroke={GOLD} strokeWidth="1.5" strokeDasharray="5 3" opacity="0.6"/>
+        <line x1="350" y1="70" x2="430" y2="130" stroke={GOLD} strokeWidth="1.5" strokeDasharray="5 3" opacity="0.6"/>
+
+        {/* Left specialized library */}
+        <rect x="70" y="130" width="160" height="60" rx="12" fill="#1a1612" stroke={BLUE} strokeWidth="2"/>
+        <text x="150" y="156" textAnchor="middle" fill={BLUE} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1">SOFTWARE</text>
+        <text x="150" y="172" textAnchor="middle" fill={MUTED} fontSize="9" fontFamily="'Source Sans 3',sans-serif">library</text>
+
+        {/* Right specialized library */}
+        <rect x="350" y="130" width="160" height="60" rx="12" fill="#1a1612" stroke={GREEN} strokeWidth="2"/>
+        <text x="430" y="156" textAnchor="middle" fill={GREEN} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1">COMMS</text>
+        <text x="430" y="172" textAnchor="middle" fill={MUTED} fontSize="9" fontFamily="'Source Sans 3',sans-serif">library</text>
+
+        {/* Left loop */}
+        <path d="M 70 160 A 80 55 0 0 0 70 265" fill="none" stroke={BLUE} strokeWidth="1.8" className="flow-path" opacity="0.7"/>
+        <path d="M 70 265 A 80 55 0 0 0 70 160" fill="none" stroke={GOLD} strokeWidth="1.8" className="flow-path-reverse" opacity="0.5"/>
+
+        {/* Left factory */}
+        <circle cx="38" cy="212" r="28" fill="#1a1612" stroke={BLUE} strokeWidth="1.8"/>
+        <text x="38" y="208" textAnchor="middle" fill={BLUE} fontSize="8" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">SOFT</text>
+        <text x="38" y="220" textAnchor="middle" fill={MUTED} fontSize="7.5" fontFamily="'Source Sans 3',sans-serif">factory</text>
+
+        {/* Right loop */}
+        <path d="M 510 160 A 80 55 0 0 1 510 265" fill="none" stroke={GREEN} strokeWidth="1.8" className="flow-path-slow" opacity="0.7"/>
+        <path d="M 510 265 A 80 55 0 0 1 510 160" fill="none" stroke={GOLD} strokeWidth="1.8" className="flow-path-reverse" opacity="0.5"/>
+
+        {/* Right factory */}
+        <circle cx="542" cy="212" r="28" fill="#1a1612" stroke={GREEN} strokeWidth="1.8"/>
+        <text x="542" y="208" textAnchor="middle" fill={GREEN} fontSize="8" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">COMMS</text>
+        <text x="542" y="220" textAnchor="middle" fill={MUTED} fontSize="7.5" fontFamily="'Source Sans 3',sans-serif">factory</text>
+
+        {/* WHY label */}
+        <text x="185" y="105" textAnchor="middle" fill={GOLD} fontSize="9" fontFamily="'Source Sans 3',sans-serif" opacity="0.6">WHY chain</text>
+        <text x="395" y="105" textAnchor="middle" fill={GOLD} fontSize="9" fontFamily="'Source Sans 3',sans-serif" opacity="0.6">WHY chain</text>
+
+        {/* Shared label */}
+        <text x="290" y="118" textAnchor="middle" fill={GOLD} fontSize="10" fontFamily="'Source Sans 3',sans-serif" opacity="0.5">shared bet</text>
+
+        {/* Signal flows back up - dashed lines */}
+        <line x1="150" y1="130" x2="240" y2="70" stroke={MUTED} strokeWidth="1" strokeDasharray="3 4" opacity="0.35"/>
+        <line x1="430" y1="130" x2="340" y2="70" stroke={MUTED} strokeWidth="1" strokeDasharray="3 4" opacity="0.35"/>
+        <text x="180" y="115" textAnchor="middle" fill={MUTED} fontSize="7" fontFamily="'Source Sans 3',sans-serif" opacity="0.4">signal</text>
+        <text x="400" y="115" textAnchor="middle" fill={MUTED} fontSize="7" fontFamily="'Source Sans 3',sans-serif" opacity="0.4">signal</text>
+      </svg>
+    );
+
+    /* Orbital: many factories around a library */
+    const OrbitalSVG = () => (
+      <svg viewBox="0 0 440 440" width="400" height="400" style={{display:'block',margin:'0 auto'}}>
+        {/* Orbital rings */}
+        <circle cx="220" cy="220" r="155" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="30"/>
+        <circle cx="220" cy="220" r="155" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1"/>
+
+        {/* Animated flow ring */}
+        <circle cx="220" cy="220" r="155" fill="none" stroke={BLUE} strokeWidth="2" strokeDasharray="12 6" className="flow-path" opacity="0.5"/>
+
+        {/* Center corporate library */}
+        <circle cx="220" cy="220" r="48" fill="#1a1612" stroke={GOLD} strokeWidth="2.5"/>
+        <text x="220" y="214" textAnchor="middle" fill={GOLD} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1">CONTEXT</text>
+        <text x="220" y="228" textAnchor="middle" fill={GOLD} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1">LIBRARY</text>
+        <text x="220" y="242" textAnchor="middle" fill={MUTED} fontSize="8.5" fontFamily="'Source Sans 3',sans-serif">shared knowledge</text>
+
+        {/* 8 factories in orbit */}
+        {[
+          { angle: 0,    label: 'SOFTWARE',  color: BLUE,   sub: 'code' },
+          { angle: 45,   label: 'DOCS',      color: BLUE,   sub: 'prose' },
+          { angle: 90,   label: 'MARKETING', color: GREEN,  sub: 'campaigns' },
+          { angle: 135,  label: 'SALES',     color: GREEN,  sub: 'decks' },
+          { angle: 180,  label: 'RESEARCH',  color: PURPLE, sub: 'papers' },
+          { angle: 225,  label: 'MEDIA',     color: PURPLE, sub: 'video' },
+          { angle: 270,  label: 'DESIGN',    color: RED,    sub: 'assets' },
+          { angle: 315,  label: 'OPS',       color: RED,    sub: 'plans' },
+        ].map(({ angle, label, color, sub }) => {
+          const rad = (angle * Math.PI) / 180;
+          const cx = 220 + 155 * Math.cos(rad);
+          const cy = 220 + 155 * Math.sin(rad);
+          /* spoke line from center to node */
+          const spokeCX = 220 + 68 * Math.cos(rad);
+          const spokeCY = 220 + 68 * Math.sin(rad);
+          const spokeEx = 220 + 128 * Math.cos(rad);
+          const spokeEy = 220 + 128 * Math.sin(rad);
+          return (
+            <g key={angle}>
+              <line x1={spokeCX} y1={spokeCY} x2={spokeEx} y2={spokeEy}
+                stroke={color} strokeWidth="1" strokeDasharray="3 3" opacity="0.4"/>
+              <circle cx={cx} cy={cy} r="26" fill="#1a1612" stroke={color} strokeWidth="1.8"/>
+              <text x={cx} y={cy - 4} textAnchor="middle" fill={color} fontSize="7.5" fontWeight="700"
+                fontFamily="'Source Sans 3',sans-serif" letterSpacing="0.5">{label}</text>
+              <text x={cx} y={cy + 9} textAnchor="middle" fill={MUTED} fontSize="7"
+                fontFamily="'Source Sans 3',sans-serif">{sub}</text>
+            </g>
+          );
+        })}
+      </svg>
+    );
+
+    /* WHY chain diagram */
+    const WhyChainSVG = () => (
+      <svg viewBox="0 0 420 260" width="420" height="260" style={{display:'block',margin:'0 auto'}}>
+        {/* Vertical chain */}
+        {[
+          { y: 20,  label: 'COMPANY BET',   sub: 'strategic thesis',     color: GOLD },
+          { y: 90,  label: 'PRODUCT THESIS', sub: 'why this product',    color: PURPLE },
+          { y: 160, label: 'PRINCIPLE',      sub: 'design constraint',   color: BLUE },
+          { y: 230, label: 'CARD',           sub: 'factory instruction', color: GREEN },
+        ].map(({ y, label, sub, color }, i) => (
+          <g key={i}>
+            <rect x="110" y={y} width="200" height="50" rx="10" fill="#1a1612" stroke={color} strokeWidth="1.8"/>
+            <text x="210" y={y + 22} textAnchor="middle" fill={color} fontSize="11" fontWeight="700"
+              fontFamily="'Source Sans 3',sans-serif" letterSpacing="0.8">{label}</text>
+            <text x="210" y={y + 38} textAnchor="middle" fill={MUTED} fontSize="10"
+              fontFamily="'Source Sans 3',sans-serif">{sub}</text>
+            {i < 3 && (
+              <>
+                <line x1="210" y1={y + 50} x2="210" y2={y + 68} stroke={GOLD} strokeWidth="1.5" strokeDasharray="4 3" opacity="0.6"/>
+                <text x="250" y={y + 63} fill={GOLD} fontSize="9" fontFamily="'Source Sans 3',sans-serif" opacity="0.7">WHY</text>
+              </>
+            )}
+          </g>
+        ))}
+        {/* Signal going back up */}
+        <path d="M 80 280 A 40 120 0 0 1 80 20" fill="none" stroke={GOLD} strokeWidth="1.5" className="flow-path-reverse" opacity="0.5"/>
+        <polygon points="80,20 74,32 86,32" fill={GOLD} opacity="0.5"/>
+        <text x="52" y="155" textAnchor="middle" fill={GOLD} fontSize="9" fontFamily="'Source Sans 3',sans-serif" opacity="0.5" transform="rotate(-90, 52, 155)">signal</text>
+      </svg>
+    );
+
+    /* Bridge agents between nodes */
+    const BridgeSVG = () => (
+      <svg viewBox="0 0 480 200" width="480" height="200" style={{display:'block',margin:'0 auto'}}>
+        {/* Left node */}
+        <circle cx="80" cy="100" r="50" fill="#1a1612" stroke={GOLD} strokeWidth="2"/>
+        <text x="80" y="96" textAnchor="middle" fill={GOLD} fontSize="9.5" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="0.8">LIBRARY</text>
+        <text x="80" y="110" textAnchor="middle" fill={MUTED} fontSize="8.5" fontFamily="'Source Sans 3',sans-serif">node A</text>
+
+        {/* Right node */}
+        <circle cx="400" cy="100" r="50" fill="#1a1612" stroke={BLUE} strokeWidth="2"/>
+        <text x="400" y="96" textAnchor="middle" fill={BLUE} fontSize="9.5" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="0.8">FACTORY</text>
+        <text x="400" y="110" textAnchor="middle" fill={MUTED} fontSize="8.5" fontFamily="'Source Sans 3',sans-serif">node B</text>
+
+        {/* Bridge agent in center */}
+        <circle cx="240" cy="100" r="36" fill="#1a1612" stroke={PURPLE} strokeWidth="2"/>
+        <text x="240" y="96" textAnchor="middle" fill={PURPLE} fontSize="9.5" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="0.5">BRIDGET</text>
+        <text x="240" y="110" textAnchor="middle" fill={MUTED} fontSize="8" fontFamily="'Source Sans 3',sans-serif">assembles</text>
+
+        {/* Flows */}
+        <path d="M 130 85 Q 185 65 204 84" fill="none" stroke={GOLD} strokeWidth="2" className="flow-path" opacity="0.8"/>
+        <polygon points="204,84 194,78 198,89" fill={GOLD} opacity="0.8"/>
+
+        <path d="M 276 84 Q 295 65 350 85" fill="none" stroke={BLUE} strokeWidth="2" className="flow-path-slow" opacity="0.8"/>
+        <polygon points="350,85 338,80 342,91" fill={BLUE} opacity="0.8"/>
+
+        {/* Signal return */}
+        <path d="M 350 115 Q 295 135 276 116" fill="none" stroke={MUTED} strokeWidth="1.5" strokeDasharray="4 3" opacity="0.5"/>
+        <polygon points="276,116 288,122 284,111" fill={MUTED} opacity="0.5"/>
+
+        <text x="240" y="180" textAnchor="middle" fill={MUTED} fontSize="10" fontFamily="'Source Sans 3',sans-serif" opacity="0.7">Bridget pulls context · gaps feed back</text>
+      </svg>
+    );
+
+    /* Full federated smart company */
+    const SmartCompanySVG = () => (
+      <svg viewBox="0 0 600 380" width="580" height="380" style={{display:'block',margin:'0 auto'}}>
+        {/* CORPORATE layer */}
+        <rect x="200" y="10" width="200" height="55" rx="12" fill="#1a1612" stroke={GOLD} strokeWidth="2"/>
+        <text x="300" y="33" textAnchor="middle" fill={GOLD} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1">CORPORATE LIBRARY</text>
+        <text x="300" y="50" textAnchor="middle" fill={MUTED} fontSize="9" fontFamily="'Source Sans 3',sans-serif">strategy · brand · bets</text>
+
+        {/* WHY lines down */}
+        {[130, 300, 470].map((x, i) => (
+          <line key={i} x1="300" y1="65" x2={x} y2="130" stroke={GOLD} strokeWidth="1.2" strokeDasharray="4 3" opacity="0.4"/>
+        ))}
+
+        {/* Three division libraries */}
+        {[
+          { x: 55,  label: 'PRODUCT',  color: BLUE   },
+          { x: 225, label: 'GROWTH',   color: GREEN  },
+          { x: 395, label: 'OPS',      color: PURPLE },
+        ].map(({ x, label, color }) => (
+          <g key={label}>
+            <rect x={x} y="130" width="145" height="50" rx="10" fill="#1a1612" stroke={color} strokeWidth="1.8"/>
+            <text x={x + 72} y="152" textAnchor="middle" fill={color} fontSize="9.5" fontWeight="700"
+              fontFamily="'Source Sans 3',sans-serif" letterSpacing="0.8">{label}</text>
+            <text x={x + 72} y="168" textAnchor="middle" fill={MUTED} fontSize="8.5"
+              fontFamily="'Source Sans 3',sans-serif">library</text>
+          </g>
+        ))}
+
+        {/* Factory lines */}
+        {[
+          { from: 127, to: 75,  color: BLUE  },
+          { from: 127, to: 175, color: BLUE  },
+          { from: 297, to: 250, color: GREEN },
+          { from: 297, to: 345, color: GREEN },
+          { from: 467, to: 420, color: PURPLE },
+          { from: 467, to: 515, color: PURPLE },
+        ].map(({ from, to, color }, i) => (
+          <line key={i} x1={from} y1="180" x2={to} y2="230" stroke={color} strokeWidth="1" strokeDasharray="3 3" opacity="0.4"/>
+        ))}
+
+        {/* Factory nodes */}
+        {[
+          { cx: 75,  cy: 255, label: 'CODE',   color: BLUE   },
+          { cx: 175, cy: 255, label: 'DOCS',   color: BLUE   },
+          { cx: 250, cy: 255, label: 'ADS',    color: GREEN  },
+          { cx: 345, cy: 255, label: 'SALES',  color: GREEN  },
+          { cx: 420, cy: 255, label: 'LEGAL',  color: PURPLE },
+          { cx: 515, cy: 255, label: 'INFRA',  color: PURPLE },
+        ].map(({ cx, cy, label, color }) => (
+          <g key={label}>
+            <circle cx={cx} cy={cy} r="26" fill="#1a1612" stroke={color} strokeWidth="1.5"/>
+            <text x={cx} y={cy + 4} textAnchor="middle" fill={color} fontSize="8.5" fontWeight="700"
+              fontFamily="'Source Sans 3',sans-serif">{label}</text>
+          </g>
+        ))}
+
+        {/* Shipping / Receiving bar */}
+        <rect x="20" y="300" width="560" height="38" rx="8" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.1)" strokeWidth="1"/>
+        <text x="300" y="315" textAnchor="middle" fill={MUTED} fontSize="9" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1.5">SHIPPING &amp; RECEIVING</text>
+        <text x="300" y="330" textAnchor="middle" fill={DIM} fontSize="8.5" fontFamily="'Source Sans 3',sans-serif">out: code · content · campaigns — in: usage · feedback · revenue</text>
+
+        {/* Down arrows from factories to shipping */}
+        {[75, 175, 250, 345, 420, 515].map((cx, i) => (
+          <line key={i} x1={cx} y1="281" x2={cx} y2="298" stroke={MUTED} strokeWidth="1" opacity="0.3"/>
+        ))}
+
+        {/* Signal return path */}
+        <path d="M 580 319 A 30 150 0 0 1 580 40" fill="none" stroke={GOLD} strokeWidth="1.5" className="flow-path-reverse" opacity="0.4"/>
+        <polygon points="580,40 574,54 586,54" fill={GOLD} opacity="0.4"/>
+        <text x="594" y="185" textAnchor="middle" fill={GOLD} fontSize="8" fontFamily="'Source Sans 3',sans-serif" opacity="0.5" transform="rotate(90, 594, 185)">signal up</text>
+
+        {/* Marketplace */}
+        <rect x="20" y="348" width="560" height="28" rx="8" fill="rgba(122,158,122,0.05)" stroke="rgba(122,158,122,0.2)" strokeWidth="1"/>
+        <text x="300" y="367" textAnchor="middle" fill={GREEN} fontSize="9" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1.5">MARKETPLACE — economic value created or not</text>
+      </svg>
+    );
+
+    /* ═══════════════════════════════════════════════════════════
+       SLIDES
+    ═══════════════════════════════════════════════════════════ */
+
+    const slides = [
+
+      /* 0 — TITLE */
+      {
+        color: GOLD,
+        content: (
+          <div style={{ textAlign: 'center', paddingTop: '40px' }}>
+            <div style={{ fontSize: 13, letterSpacing: 3, textTransform: 'uppercase', color: GOLD, marginBottom: 28, fontWeight: 600 }}>
+              The Context Library of Alexandria
+            </div>
+            <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: 68, fontWeight: 700, lineHeight: 1.1, color: '#f5f0e8', marginBottom: 32 }}>
+              Everything loops.
+            </h1>
+            <div style={{ fontSize: 22, color: MUTED, maxWidth: 560, margin: '0 auto 48px', lineHeight: 1.5 }}>
+              You build a library. You connect it to a factory. You print software. And then the world talks back.
+            </div>
+            <svg viewBox="0 0 200 120" width="200" height="120" style={{display:'block',margin:'0 auto'}}>
+              <ellipse cx="100" cy="60" rx="85" ry="50" fill="none" stroke={GOLD} strokeWidth="2" opacity="0.4"/>
+              <path d="M 15 60 A 85 50 0 0 1 185 60" fill="none" stroke={GOLD} strokeWidth="2.5" className="flow-path" opacity="0.9"/>
+              <path d="M 185 60 A 85 50 0 0 1 15 60" fill="none" stroke={BLUE} strokeWidth="2.5" className="flow-path-reverse" opacity="0.9"/>
+              <polygon points="185,60 173,53 173,67" fill={GOLD} opacity="0.9"/>
+              <polygon points="15,60 27,53 27,67" fill={BLUE} opacity="0.9"/>
+            </svg>
+            <div style={{ marginTop: 60, fontSize: 16, color: DIM, animation: 'pulse 2s infinite' }}>
+              → to begin
+            </div>
+          </div>
+        )
+      },
+
+      /* 1 — THREE QUESTIONS */
+      {
+        color: GOLD,
+        label: 'THE LIBRARY',
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: GOLD, marginBottom: 20, fontWeight: 600 }}>The Library</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 40, lineHeight: 1.2 }}>
+              You answer three questions.<br/>You get a library.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24 }}>
+              {[
+                { q: 'What does your factory print?', label: '1', color: GOLD },
+                { q: 'How novel is your domain?', label: '2', color: GOLD },
+                { q: 'How complex is your product?', label: '3', color: GOLD },
+              ].map(({ q, label, color }) => (
+                <div key={label} style={{ background: CARD_BG, border: `1px solid ${CARD_BORDER}`, borderRadius: 12, padding: '28px 24px', textAlign: 'center' }}>
+                  <div style={{ fontFamily: "'Fraunces', serif", fontSize: 48, fontWeight: 700, color, marginBottom: 16, lineHeight: 1 }}>{label}</div>
+                  <div style={{ fontSize: 17, lineHeight: 1.5, color: '#f5f0e8' }}>{q}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 40, padding: '20px 28px', background: CARD_BG, borderLeft: `4px solid ${GOLD}`, borderRadius: 12, fontSize: 18 }}>
+              The wizard scores your answers and tells you what knowledge to build first — in what order, for what factory.
+            </div>
+          </div>
+        )
+      },
+
+      /* 2 — WHAT'S IN IT */
+      {
+        color: GOLD,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: GOLD, marginBottom: 20, fontWeight: 600 }}>The Library</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 36, lineHeight: 1.2 }}>
+              What's in it?<br/>Knowledge your factory needs.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
+              <div>
+                <div style={{ fontSize: 15, letterSpacing: 1.5, textTransform: 'uppercase', color: MUTED, marginBottom: 20, fontWeight: 600 }}>Cards answer five questions</div>
+                {[
+                  { dim: 'WHAT', desc: 'What is this thing?' },
+                  { dim: 'WHY',  desc: 'Why does it exist?' },
+                  { dim: 'HOW',  desc: 'How does it work?' },
+                  { dim: 'WHERE', desc: 'Where does it fit?' },
+                  { dim: 'WHEN', desc: 'When does it change?' },
+                ].map(({ dim, desc }) => (
+                  <div key={dim} style={{ display: 'flex', gap: 16, marginBottom: 14, alignItems: 'center' }}>
+                    <div style={{ width: 56, height: 56, borderRadius: 8, background: CARD_BG, border: `1px solid ${CARD_BORDER}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <span style={{ fontFamily: "'Fraunces', serif", fontSize: 13, fontWeight: 700, color: GOLD }}>{dim}</span>
+                    </div>
+                    <div style={{ fontSize: 16, color: '#f5f0e8' }}>{desc}</div>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <div style={{ fontSize: 15, letterSpacing: 1.5, textTransform: 'uppercase', color: MUTED, marginBottom: 20, fontWeight: 600 }}>Cards link to each other</div>
+                <svg viewBox="0 0 240 200" width="240" height="200" style={{display:'block'}}>
+                  {/* Simple graph of linked cards */}
+                  {[
+                    { cx: 120, cy: 40,  label: 'Thesis',     color: GOLD },
+                    { cx: 50,  cy: 120, label: 'Principle',  color: BLUE },
+                    { cx: 190, cy: 120, label: 'System',     color: GREEN },
+                    { cx: 120, cy: 190, label: 'Component',  color: PURPLE },
+                  ].map(({ cx, cy, label, color }) => (
+                    <g key={label}>
+                      <circle cx={cx} cy={cy} r="30" fill="#1a1612" stroke={color} strokeWidth="1.8"/>
+                      <text x={cx} y={cy + 5} textAnchor="middle" fill={color} fontSize="9" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">{label}</text>
+                    </g>
+                  ))}
+                  <line x1="120" y1="70" x2="70" y2="100" stroke={MUTED} strokeWidth="1.2" opacity="0.5"/>
+                  <line x1="120" y1="70" x2="170" y2="100" stroke={MUTED} strokeWidth="1.2" opacity="0.5"/>
+                  <line x1="70" y1="140" x2="110" y2="165" stroke={MUTED} strokeWidth="1.2" opacity="0.5"/>
+                  <line x1="170" y1="140" x2="130" y2="165" stroke={MUTED} strokeWidth="1.2" opacity="0.5"/>
+                </svg>
+                <div style={{ marginTop: 16, fontSize: 15, color: MUTED, lineHeight: 1.6 }}>
+                  Wikilinks are typed edges. The graph traces every decision back to a bet.
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      },
+
+      /* 3 — CONNECT TO FACTORY */
+      {
+        color: GOLD,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: GOLD, marginBottom: 20, fontWeight: 600 }}>The Handshake</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 40, lineHeight: 1.2 }}>
+              Connect it to a factory.<br/>The factory prints software.
+            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 32, margin: '20px 0 36px' }}>
+              <div style={{ background: CARD_BG, border: `2px solid ${GOLD}`, borderRadius: 16, padding: '24px 32px', textAlign: 'center', minWidth: 160 }}>
+                <div style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 600, color: GOLD, marginBottom: 8 }}>Library</div>
+                <div style={{ fontSize: 14, color: MUTED }}>what the product is</div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+                <div style={{ fontSize: 13, color: MUTED, letterSpacing: 1 }}>BRIDGET</div>
+                <svg width="100" height="24" viewBox="0 0 100 24">
+                  <line x1="0" y1="12" x2="85" y2="12" stroke={PURPLE} strokeWidth="2"/>
+                  <polygon points="100,12 84,5 84,19" fill={PURPLE}/>
+                </svg>
+                <div style={{ fontSize: 12, color: DIM }}>assembles briefing</div>
+              </div>
+              <div style={{ background: CARD_BG, border: `2px solid ${BLUE}`, borderRadius: 16, padding: '24px 32px', textAlign: 'center', minWidth: 160 }}>
+                <div style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 600, color: BLUE, marginBottom: 8 }}>Factory</div>
+                <div style={{ fontSize: 14, color: MUTED }}>builder agents + tools</div>
+              </div>
+            </div>
+            <div style={{ padding: '20px 28px', background: CARD_BG, borderLeft: `4px solid ${BLUE}`, borderRadius: 12, fontSize: 17, lineHeight: 1.6 }}>
+              <strong style={{ color: BLUE }}>The principle:</strong> A library without a factory is a filing cabinet. A factory without a library builds blind. The handshake is where value is created.
+            </div>
+          </div>
+        )
+      },
+
+      /* 4 — THE FIRST LOOP */
+      {
+        color: BLUE,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: BLUE, marginBottom: 20, fontWeight: 600 }}>The First Loop</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 30, lineHeight: 1.2 }}>
+              Library → Factory → Software ships.
+            </h2>
+            <SingleLoopSVG color={BLUE} />
+            <div style={{ marginTop: 28, textAlign: 'center', fontSize: 20, color: '#f5f0e8' }}>
+              Context flows out. Software ships. And then...
+            </div>
+          </div>
+        )
+      },
+
+      /* 5 — WAIT, WHAT COMES BACK? */
+      {
+        color: BLUE,
+        content: (
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: BLUE, marginBottom: 40, fontWeight: 600 }}>Now What?</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 54, fontWeight: 600, marginBottom: 48, lineHeight: 1.1 }}>
+              Wait.<br/>What comes back?
+            </h2>
+            <svg viewBox="0 0 360 180" width="360" height="180" style={{display:'block',margin:'0 auto'}}>
+              {/* Loop with gap on return path */}
+              <path d="M 30 90 A 150 70 0 0 1 330 90" fill="none" stroke={BLUE} strokeWidth="2.5" className="flow-path"/>
+              <polygon points="330,90 318,83 318,97" fill={BLUE}/>
+              {/* Dashed return — question */}
+              <path d="M 330 90 A 150 70 0 0 1 30 90" fill="none" stroke={MUTED} strokeWidth="2" strokeDasharray="8 5" opacity="0.5"/>
+              <text x="180" y="168" textAnchor="middle" fill={MUTED} fontSize="14" fontFamily="'Source Sans 3',sans-serif" opacity="0.7">???</text>
+              {/* Library */}
+              <circle cx="30" cy="90" r="28" fill="#1a1612" stroke={GOLD} strokeWidth="2"/>
+              <text x="30" y="95" textAnchor="middle" fill={GOLD} fontSize="9" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">LIBRARY</text>
+              {/* Factory */}
+              <circle cx="330" cy="90" r="28" fill="#1a1612" stroke={BLUE} strokeWidth="2"/>
+              <text x="330" y="95" textAnchor="middle" fill={BLUE} fontSize="9" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">FACTORY</text>
+            </svg>
+            <div style={{ marginTop: 40, fontSize: 20, color: MUTED, maxWidth: 500, margin: '40px auto 0' }}>
+              The factory shipped. Users are using it. The world has opinions. Where does that go?
+            </div>
+          </div>
+        )
+      },
+
+      /* 6 — THE OUTSIDE WORLD RESPONDS */
+      {
+        color: BLUE,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: BLUE, marginBottom: 20, fontWeight: 600 }}>Now What?</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 32, lineHeight: 1.2 }}>
+              The outside world responds.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
+              <div>
+                {[
+                  { signal: 'Users drop off at step 3', icon: '📉' },
+                  { signal: 'Sales says onboarding confusing', icon: '💬' },
+                  { signal: 'Error rate +40% on feature X', icon: '🔴' },
+                  { signal: 'Completion rate up 20% after fix', icon: '📈' },
+                ].map(({ signal, icon }) => (
+                  <div key={signal} style={{ display: 'flex', gap: 16, marginBottom: 16, padding: '14px 20px', background: CARD_BG, border: `1px solid ${CARD_BORDER}`, borderRadius: 10, alignItems: 'center' }}>
+                    <span style={{ fontSize: 22 }}>{icon}</span>
+                    <span style={{ fontSize: 16 }}>{signal}</span>
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <div style={{ textAlign: 'center', marginBottom: 24 }}>
+                  <div style={{ fontSize: 15, letterSpacing: 1.5, textTransform: 'uppercase', color: MUTED, marginBottom: 16, fontWeight: 600 }}>Signal enters through Solomon</div>
+                  <svg viewBox="0 0 200 120" width="200" height="120" style={{display:'block',margin:'0 auto'}}>
+                    <circle cx="100" cy="60" r="50" fill="#1a1612" stroke={PURPLE} strokeWidth="2"/>
+                    <text x="100" y="56" textAnchor="middle" fill={PURPLE} fontSize="11" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">SOLOMON</text>
+                    <text x="100" y="72" textAnchor="middle" fill={MUTED} fontSize="9" fontFamily="'Source Sans 3',sans-serif">triages · parks · routes</text>
+                    {/* incoming arrows */}
+                    {[-40, 0, 40].map((dy, i) => (
+                      <g key={i}>
+                        <line x1="10" y1={60 + dy} x2="48" y2={60 + dy * 0.3} stroke={GOLD} strokeWidth="1.5" className="flow-path" opacity="0.6"/>
+                        <polygon points={`48,${60 + dy * 0.3} 36,${55 + dy * 0.3} 36,${65 + dy * 0.3}`} fill={GOLD} opacity="0.6"/>
+                      </g>
+                    ))}
+                  </svg>
+                </div>
+                <div style={{ padding: '16px 20px', background: CARD_BG, borderLeft: `4px solid ${PURPLE}`, borderRadius: 10, fontSize: 15, lineHeight: 1.6 }}>
+                  Solomon triages signal. Contested claims get parked. Clear signal updates the library.
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      },
+
+      /* 7 — COMPLETE LOOP */
+      {
+        color: BLUE,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: BLUE, marginBottom: 20, fontWeight: 600 }}>The Complete Loop</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 42, fontWeight: 600, marginBottom: 24, lineHeight: 1.2 }}>
+              The library updates. The factory gets smarter.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center' }}>
+              <CompleteLoopSVG />
+              <div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                  {[
+                    { step: '1', text: 'Factory ships a feature', color: BLUE },
+                    { step: '2', text: 'Marketplace responds — usage, feedback, data', color: GREEN },
+                    { step: '3', text: 'Signal reaches Solomon — triage', color: PURPLE },
+                    { step: '4', text: 'Library card updates', color: GOLD },
+                    { step: '5', text: 'Cascade: what else is affected?', color: GOLD },
+                    { step: '6', text: 'Next briefing reflects updated reality', color: BLUE },
+                  ].map(({ step, text, color }) => (
+                    <div key={step} style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+                      <div style={{ width: 28, height: 28, borderRadius: '50%', background: CARD_BG, border: `1px solid ${color}`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: 13, fontWeight: 700, color }}>{step}</div>
+                      <div style={{ fontSize: 16, paddingTop: 4, lineHeight: 1.4 }}>{text}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ marginTop: 28, padding: '16px 20px', background: CARD_BG, borderLeft: `4px solid ${GOLD}`, borderRadius: 10, fontSize: 15, lineHeight: 1.6, color: GOLD, fontStyle: 'italic' }}>
+                  Documents that respond to reality are alive. Documents that don't are dead.
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      },
+
+      /* 8 — LOOP ENRICHES THE LIBRARY */
+      {
+        color: GREEN,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: GREEN, marginBottom: 20, fontWeight: 600 }}>The Loop Pays Off</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 36, lineHeight: 1.2 }}>
+              Each loop enriches the library.<br/>The library makes the next loop smarter.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center' }}>
+              <div>
+                {[
+                  { cycle: '1st loop', what: 'Library starts sparse. Factory ships. Signal returns.', color: BLUE },
+                  { cycle: '2nd loop', what: 'Library now has usage signal. Briefings get richer. Factory ships better.', color: GREEN },
+                  { cycle: '3rd loop', what: 'Patterns emerge. Weak cards surface. Library self-corrects.', color: GOLD },
+                ].map(({ cycle, what, color }) => (
+                  <div key={cycle} style={{ display: 'flex', gap: 16, marginBottom: 20, padding: '16px 20px', background: CARD_BG, borderLeft: `4px solid ${color}`, borderRadius: 10, alignItems: 'flex-start' }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color, letterSpacing: 1, textTransform: 'uppercase', minWidth: 72, paddingTop: 2 }}>{cycle}</div>
+                    <div style={{ fontSize: 16, lineHeight: 1.5 }}>{what}</div>
+                  </div>
+                ))}
+                <div style={{ padding: '14px 20px', background: CARD_BG, borderLeft: `4px solid ${GOLD}`, borderRadius: 10, fontSize: 15, color: GOLD, fontStyle: 'italic', lineHeight: 1.6 }}>
+                  The loop isn't neutral. Each turn, the library compounds.
+                </div>
+              </div>
+              <div style={{ textAlign: 'center' }}>
+                <svg viewBox="0 0 300 300" width="280" height="280" style={{display:'block',margin:'0 auto'}}>
+                  {/* Three concentric growing loops suggesting compounding */}
+                  <ellipse cx="150" cy="150" rx="60" ry="38" fill="none" stroke={BLUE} strokeWidth="2" className="flow-path" opacity="0.6"/>
+                  <ellipse cx="150" cy="150" rx="100" ry="63" fill="none" stroke={GREEN} strokeWidth="2" className="flow-path-reverse" opacity="0.6"/>
+                  <ellipse cx="150" cy="150" rx="135" ry="85" fill="none" stroke={GOLD} strokeWidth="2" className="flow-path-slow" opacity="0.6"/>
+                  {/* Center library node */}
+                  <circle cx="150" cy="150" r="36" fill="#1a1612" stroke={GOLD} strokeWidth="2.5"/>
+                  <text x="150" y="146" textAnchor="middle" fill={GOLD} fontSize="9" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="1">LIBRARY</text>
+                  <text x="150" y="160" textAnchor="middle" fill={MUTED} fontSize="8.5" fontFamily="'Source Sans 3',sans-serif">compounds</text>
+                  {/* Cycle labels */}
+                  <text x="150" y="108" textAnchor="middle" fill={BLUE} fontSize="9" fontFamily="'Source Sans 3',sans-serif" opacity="0.8">loop 1</text>
+                  <text x="150" y="80" textAnchor="middle" fill={GREEN} fontSize="9" fontFamily="'Source Sans 3',sans-serif" opacity="0.8">loop 2</text>
+                  <text x="150" y="56" textAnchor="middle" fill={GOLD} fontSize="9" fontFamily="'Source Sans 3',sans-serif" opacity="0.8">loop 3</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+        )
+      },
+
+      /* 9 — SECOND FACTORY */
+      {
+        color: GREEN,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: GREEN, marginBottom: 20, fontWeight: 600 }}>Second Factory</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 36, lineHeight: 1.2 }}>
+              Same library. Second factory.<br/>Shared context, different output.
+            </h2>
+            <TwoLoopsSVG />
+            <div style={{ marginTop: 28, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+              <div style={{ padding: '16px 20px', background: CARD_BG, border: `1px solid ${BLUE}`, borderRadius: 10 }}>
+                <div style={{ fontSize: 13, letterSpacing: 1.5, textTransform: 'uppercase', color: BLUE, marginBottom: 8, fontWeight: 600 }}>Software Factory</div>
+                <div style={{ fontSize: 15, color: '#f5f0e8', lineHeight: 1.5 }}>Prints: code, features, releases</div>
+              </div>
+              <div style={{ padding: '16px 20px', background: CARD_BG, border: `1px solid ${GREEN}`, borderRadius: 10 }}>
+                <div style={{ fontSize: 13, letterSpacing: 1.5, textTransform: 'uppercase', color: GREEN, marginBottom: 8, fontWeight: 600 }}>Marketing Factory</div>
+                <div style={{ fontSize: 15, color: '#f5f0e8', lineHeight: 1.5 }}>Prints: campaigns, proposals, collateral</div>
+              </div>
+            </div>
+          </div>
+        )
+      },
+
+      /* 10 — BUT WAIT: different context needed */
+      {
+        color: GREEN,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: GREEN, marginBottom: 20, fontWeight: 600 }}>Second Factory</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 32, lineHeight: 1.2 }}>
+              But wait — the marketing factory needs different vocabulary.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
+              <div>
+                <div style={{ fontSize: 15, letterSpacing: 1.5, textTransform: 'uppercase', color: BLUE, marginBottom: 20, fontWeight: 600 }}>Software library</div>
+                {['Domain', 'System', 'Component', 'Primitive', 'Agent'].map(t => (
+                  <div key={t} style={{ padding: '10px 16px', marginBottom: 10, background: CARD_BG, border: `1px solid rgba(92,138,201,0.3)`, borderRadius: 8, fontSize: 15 }}>{t}</div>
+                ))}
+              </div>
+              <div>
+                <div style={{ fontSize: 15, letterSpacing: 1.5, textTransform: 'uppercase', color: GREEN, marginBottom: 20, fontWeight: 600 }}>Comms library</div>
+                {['Audience', 'Channel', 'Campaign', 'Message', 'Touchpoint'].map(t => (
+                  <div key={t} style={{ padding: '10px 16px', marginBottom: 10, background: CARD_BG, border: `1px solid rgba(122,158,122,0.3)`, borderRadius: 8, fontSize: 15 }}>{t}</div>
+                ))}
+              </div>
+            </div>
+            <div style={{ marginTop: 28, padding: '16px 24px', background: CARD_BG, borderLeft: `4px solid ${GOLD}`, borderRadius: 10, fontSize: 17, lineHeight: 1.6 }}>
+              Same abstract types — different vocabulary. Both factories need their own context layer.
+            </div>
+          </div>
+        )
+      },
+
+      /* 11 — FEDERATION */
+      {
+        color: PURPLE,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: PURPLE, marginBottom: 20, fontWeight: 600 }}>Federation</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 32, lineHeight: 1.2 }}>
+              Split the library.<br/>Shared layer + specialized layers.
+            </h2>
+            <FederationSVG />
+            <div style={{ marginTop: 20, padding: '16px 24px', background: CARD_BG, borderLeft: `4px solid ${GOLD}`, borderRadius: 10, fontSize: 16, lineHeight: 1.6 }}>
+              Corporate layer holds strategy, identity, and bets. Each factory library holds its domain vocabulary. Both trace back up.
+            </div>
+          </div>
+        )
+      },
+
+      /* 12 — WHY CHAIN */
+      {
+        color: PURPLE,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: PURPLE, marginBottom: 20, fontWeight: 600 }}>Federation</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 32, lineHeight: 1.2 }}>
+              Every card traces back to a bet.<br/>That's the connective tissue.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center' }}>
+              <WhyChainSVG />
+              <div>
+                <div style={{ marginBottom: 24, fontSize: 16, lineHeight: 1.7, color: '#f5f0e8' }}>
+                  The WHY chain is already the vertical connective tissue. Every card has a WHY section that links back to a strategic bet.
+                </div>
+                <div style={{ padding: '14px 20px', background: CARD_BG, border: `1px solid rgba(158,122,158,0.3)`, borderRadius: 10, fontSize: 15, lineHeight: 1.6, marginBottom: 16 }}>
+                  <span style={{ color: BLUE }}>Software factory card:</span> WHY → Product Thesis → WHY → Corporate Bet
+                </div>
+                <div style={{ padding: '14px 20px', background: CARD_BG, border: `1px solid rgba(122,158,122,0.3)`, borderRadius: 10, fontSize: 15, lineHeight: 1.6 }}>
+                  <span style={{ color: GREEN }}>Comms factory card:</span> WHY → Channel Strategy → WHY → Same Bet
+                </div>
+                <div style={{ marginTop: 24, padding: '16px 20px', background: CARD_BG, borderLeft: `4px solid ${GOLD}`, borderRadius: 10, fontSize: 15, lineHeight: 1.6, color: GOLD, fontStyle: 'italic' }}>
+                  When a corporate bet changes, cascade analysis traces the blast radius across every factory library.
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      },
+
+      /* 13 — ENRICHMENT DYNAMIC: adding factories isn't stamping copies */
+      {
+        color: PURPLE,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: PURPLE, marginBottom: 20, fontWeight: 600 }}>The Enrichment Dynamic</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 32, lineHeight: 1.2 }}>
+              Each new factory enriches the library.<br/>Each new loop starts from a richer base.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'start' }}>
+              <div>
+                {[
+                  { factory: 'Software factory connects', effect: 'Library gains: release cadence, bug patterns, architecture decisions', color: BLUE },
+                  { factory: 'Marketing factory connects', effect: 'Library gains: messaging that lands, channels that convert, audience signals', color: GREEN },
+                  { factory: 'Sales factory connects', effect: 'Library gains: objections, competitor intel, deal patterns — and marketing gets smarter because the library now holds sales signal too', color: PURPLE },
+                ].map(({ factory, effect, color }) => (
+                  <div key={factory} style={{ marginBottom: 18, padding: '16px 20px', background: CARD_BG, borderLeft: `4px solid ${color}`, borderRadius: 10 }}>
+                    <div style={{ fontSize: 13, fontWeight: 700, color, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 6 }}>{factory}</div>
+                    <div style={{ fontSize: 15, color: MUTED, lineHeight: 1.5 }}>{effect}</div>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <OrbitalSVG />
+                <div style={{ marginTop: 16, padding: '14px 18px', background: CARD_BG, borderLeft: `4px solid ${GOLD}`, borderRadius: 10, fontSize: 15, color: GOLD, fontStyle: 'italic', lineHeight: 1.6 }}>
+                  Related loops — like sales and marketing — get upfitted for collaboration. They don't just share context; they generate context for each other.
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      },
+
+      /* 14 — TEAM SECTION INTRO */
+      {
+        color: RED,
+        content: (
+          <div style={{ textAlign: 'center', paddingTop: 40 }}>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: RED, marginBottom: 48, fontWeight: 600 }}>Team Design</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 64, fontWeight: 700, lineHeight: 1.1, marginBottom: 40 }}>
+              So who staffs<br/>all these loops?
+            </h2>
+            <div style={{ fontSize: 22, color: MUTED, maxWidth: 580, margin: '0 auto 48px', lineHeight: 1.5 }}>
+              Every library needs a team to build it, maintain it, and keep it honest.
+              Every factory needs a team to run the loop and report back.
+            </div>
+            <svg viewBox="0 0 340 100" width="340" height="100" style={{display:'block',margin:'0 auto'}}>
+              {/* Library team icon cluster */}
+              {[-60, -30, 0, 30, 60, 90].map((dx, i) => (
+                <g key={i}>
+                  <circle cx={170 + dx} cy="45" r="18" fill="#1a1612" stroke={RED} strokeWidth="1.5" opacity={0.5 + i * 0.08}/>
+                  <text x={170 + dx} y="50" textAnchor="middle" fill={RED} fontSize="9" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" opacity={0.6 + i * 0.07}>{['S','C','N','SL','B','R'][i]}</text>
+                </g>
+              ))}
+              <text x="170" y="88" textAnchor="middle" fill={MUTED} fontSize="12" fontFamily="'Source Sans 3',sans-serif" opacity="0.6">library team</text>
+            </svg>
+          </div>
+        )
+      },
+
+      /* 15 — THE LIBRARY TEAM: 6 ROLES */
+      {
+        color: RED,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: RED, marginBottom: 20, fontWeight: 600 }}>The Library Team</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 32, lineHeight: 1.2 }}>
+              Here's the library team.<br/>Six roles. One verb each.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
+              {[
+                { name: 'Sam',     role: 'The Scribe',    verb: 'BUILDS',      notDo: 'grade, diagnose',  color: GREEN  },
+                { name: 'Conan',   role: 'The Librarian', verb: 'DIAGNOSES',   notDo: 'write, execute',   color: BLUE   },
+                { name: 'Nit',     role: 'The Picker',    verb: 'CHECKS',      notDo: 'judgment calls',   color: MUTED  },
+                { name: 'Solomon', role: 'The Sorter',    verb: 'TRIAGES',     notDo: 'write, produce',   color: GOLD   },
+                { name: 'Bridget', role: 'The Briefer',   verb: 'ASSEMBLES',   notDo: 'factory output',   color: PURPLE },
+                { name: 'Raven',   role: 'The Maven',     verb: 'SYNTHESIZES', notDo: 'write anything',   color: RED    },
+              ].map(({ name, role, verb, notDo, color }) => (
+                <div key={name} style={{ background: CARD_BG, border: `1px solid ${CARD_BORDER}`, borderRadius: 12, padding: 20 }}>
+                  <div style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 600, color, marginBottom: 4 }}>{name}</div>
+                  <div style={{ fontSize: 12, letterSpacing: 1, textTransform: 'uppercase', color: MUTED, marginBottom: 12 }}>{role}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color, marginBottom: 8 }}>{verb}</div>
+                  <div style={{ fontSize: 13, color: DIM, fontStyle: 'italic' }}>not: {notDo}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      },
+
+      /* 16 — HOW THE LIBRARY TEAM STACKS */
+      {
+        color: RED,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: RED, marginBottom: 20, fontWeight: 600 }}>The Library Team</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 32, lineHeight: 1.2 }}>
+              Here's how they stack<br/>and work together.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'start' }}>
+              <div>
+                {[
+                  { from: 'Signal in', via: 'Solomon', to: 'triages, parks contested claims, routes clear signal', color: GOLD },
+                  { from: 'Sam', via: 'builds', to: 'cards from settled claims and source material', color: GREEN },
+                  { from: 'Conan', via: 'diagnoses', to: 'quality — grades, flags stale, cascades changes', color: BLUE },
+                  { from: 'Nit', via: 'checks', to: 'mechanical linting — format, links, required fields', color: MUTED },
+                  { from: 'Bridget', via: 'assembles', to: 'briefings on demand — right cards for right task', color: PURPLE },
+                  { from: 'Raven', via: 'synthesizes', to: 'across the graph — thinking partner for decisions', color: RED },
+                ].map(({ from, via, to, color }) => (
+                  <div key={from} style={{ display: 'flex', gap: 12, marginBottom: 14, alignItems: 'flex-start' }}>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: color, marginTop: 8, flexShrink: 0 }}/>
+                    <div style={{ fontSize: 15, lineHeight: 1.5 }}>
+                      <span style={{ fontWeight: 700, color }}>{from}</span>
+                      <span style={{ color: MUTED }}> {via} </span>
+                      <span>{to}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <svg viewBox="0 0 280 320" width="260" height="300" style={{display:'block',margin:'0 auto'}}>
+                  {/* Signal in at top */}
+                  <rect x="90" y="10" width="100" height="36" rx="8" fill="#1a1612" stroke={GOLD} strokeWidth="1.5"/>
+                  <text x="140" y="33" textAnchor="middle" fill={GOLD} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">SIGNAL IN</text>
+                  <line x1="140" y1="46" x2="140" y2="68" stroke={GOLD} strokeWidth="1.2" strokeDasharray="3 3" opacity="0.5"/>
+                  {/* Solomon */}
+                  <rect x="82" y="68" width="116" height="36" rx="8" fill="#1a1612" stroke={GOLD} strokeWidth="1.5"/>
+                  <text x="140" y="91" textAnchor="middle" fill={GOLD} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">SOLOMON</text>
+                  {/* Branch to Sam and Conan */}
+                  <line x1="100" y1="104" x2="60" y2="134" stroke={GREEN} strokeWidth="1.2" strokeDasharray="3 3" opacity="0.5"/>
+                  <line x1="180" y1="104" x2="220" y2="134" stroke={BLUE} strokeWidth="1.2" strokeDasharray="3 3" opacity="0.5"/>
+                  {/* Sam */}
+                  <rect x="18" y="134" width="84" height="36" rx="8" fill="#1a1612" stroke={GREEN} strokeWidth="1.5"/>
+                  <text x="60" y="157" textAnchor="middle" fill={GREEN} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">SAM</text>
+                  {/* Conan */}
+                  <rect x="178" y="134" width="84" height="36" rx="8" fill="#1a1612" stroke={BLUE} strokeWidth="1.5"/>
+                  <text x="220" y="157" textAnchor="middle" fill={BLUE} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">CONAN</text>
+                  {/* Nit below Sam+Conan */}
+                  <line x1="60" y1="170" x2="100" y2="200" stroke={MUTED} strokeWidth="1.2" strokeDasharray="3 3" opacity="0.4"/>
+                  <line x1="220" y1="170" x2="180" y2="200" stroke={MUTED} strokeWidth="1.2" strokeDasharray="3 3" opacity="0.4"/>
+                  <rect x="82" y="200" width="116" height="36" rx="8" fill="#1a1612" stroke={MUTED} strokeWidth="1.5"/>
+                  <text x="140" y="223" textAnchor="middle" fill={MUTED} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">NIT</text>
+                  {/* Bridget */}
+                  <line x1="140" y1="236" x2="140" y2="258" stroke={PURPLE} strokeWidth="1.2" strokeDasharray="3 3" opacity="0.5"/>
+                  <rect x="82" y="258" width="116" height="36" rx="8" fill="#1a1612" stroke={PURPLE} strokeWidth="1.5"/>
+                  <text x="140" y="281" textAnchor="middle" fill={PURPLE} fontSize="10" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">BRIDGET → FACTORY</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+        )
+      },
+
+      /* 17 — FACTORY TEAMS */
+      {
+        color: RED,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: RED, marginBottom: 20, fontWeight: 600 }}>Factory Teams</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 32, lineHeight: 1.2 }}>
+              How about all those factories?
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
+              <div>
+                <div style={{ marginBottom: 24, fontSize: 17, lineHeight: 1.7, color: '#f5f0e8' }}>
+                  Each factory will have different specialists — a software factory has engineers, a marketing factory has copywriters. But every factory needs a minimum team that mirrors the library team structure.
+                </div>
+                <div style={{ padding: '16px 20px', background: CARD_BG, borderLeft: `4px solid ${GOLD}`, borderRadius: 10, marginBottom: 20 }}>
+                  <div style={{ fontSize: 13, letterSpacing: 1, textTransform: 'uppercase', color: GOLD, marginBottom: 10, fontWeight: 600 }}>Minimum factory configuration</div>
+                  {[
+                    'A builder — prints the output',
+                    'A reviewer — grades quality before shipping',
+                    'A sensor — captures what the market says',
+                    'A coordinator — routes signal back to the library',
+                  ].map((line, i) => (
+                    <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 10, alignItems: 'flex-start' }}>
+                      <div style={{ width: 5, height: 5, borderRadius: '50%', background: GOLD, marginTop: 7, flexShrink: 0 }}/>
+                      <div style={{ fontSize: 15, lineHeight: 1.5 }}>{line}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ padding: '14px 20px', background: CARD_BG, borderLeft: `4px solid ${BLUE}`, borderRadius: 10, fontSize: 15, color: MUTED, lineHeight: 1.6 }}>
+                  The library team and factory teams are differently specialized, but structurally analogous. Same principle, different domain.
+                </div>
+              </div>
+              <div>
+                <svg viewBox="0 0 280 300" width="260" height="280" style={{display:'block',margin:'0 auto'}}>
+                  {/* Library team on left */}
+                  <rect x="10" y="20" width="110" height="44" rx="10" fill="#1a1612" stroke={GOLD} strokeWidth="2"/>
+                  <text x="65" y="39" textAnchor="middle" fill={GOLD} fontSize="9.5" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="0.8">LIBRARY TEAM</text>
+                  <text x="65" y="55" textAnchor="middle" fill={MUTED} fontSize="8.5" fontFamily="'Source Sans 3',sans-serif">6 roles</text>
+                  {/* Factory teams on right */}
+                  {[
+                    { y: 20,  label: 'SOFTWARE FACTORY', color: BLUE },
+                    { y: 110, label: 'MARKETING FACTORY', color: GREEN },
+                    { y: 200, label: 'SALES FACTORY',    color: PURPLE },
+                  ].map(({ y, label, color }) => (
+                    <g key={label}>
+                      <rect x="160" y={y} width="110" height="44" rx="10" fill="#1a1612" stroke={color} strokeWidth="1.8"/>
+                      <text x="215" y={y + 20} textAnchor="middle" fill={color} fontSize="8.5" fontWeight="700" fontFamily="'Source Sans 3',sans-serif" letterSpacing="0.5">{label}</text>
+                      <text x="215" y={y + 35} textAnchor="middle" fill={MUTED} fontSize="8" fontFamily="'Source Sans 3',sans-serif">min. 4 roles</text>
+                      {/* Connection from library */}
+                      <line x1="120" y1="42" x2="158" y2={y + 22} stroke={GOLD} strokeWidth="1" strokeDasharray="3 3" opacity="0.4"/>
+                    </g>
+                  ))}
+                  {/* WHY connection label */}
+                  <text x="140" y="150" textAnchor="middle" fill={GOLD} fontSize="9" fontFamily="'Source Sans 3',sans-serif" opacity="0.5" transform="rotate(-25, 140, 150)">context</text>
+                  <text x="140" y="170" textAnchor="middle" fill={GOLD} fontSize="9" fontFamily="'Source Sans 3',sans-serif" opacity="0.5" transform="rotate(-25, 140, 170)">signal back</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+        )
+      },
+
+      /* 18 — THE IMPOSSIBLE JOB */
+      {
+        color: RED,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: RED, marginBottom: 20, fontWeight: 600 }}>The Team</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 32, lineHeight: 1.2 }}>
+              Every "and also" is a role<br/>that should be separate.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
+              <div>
+                <div style={{ fontSize: 15, letterSpacing: 1.5, textTransform: 'uppercase', color: RED, marginBottom: 20, fontWeight: 600 }}>The Impossible Job</div>
+                <div style={{ padding: '20px 24px', background: 'rgba(201,92,92,0.06)', border: `1px solid rgba(201,92,92,0.25)`, borderRadius: 12, fontSize: 16, lineHeight: 1.8, fontStyle: 'italic', color: MUTED }}>
+                  "The marketing agent writes campaign briefs and also monitors market trends and also reviews competitor positioning and also reports signal to the library."
+                </div>
+                <div style={{ marginTop: 20, fontSize: 15, color: RED, lineHeight: 1.6 }}>
+                  Every "and also" is a role that should be a separate agent. Producer ≠ sensor. Builder ≠ reviewer.
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: 15, letterSpacing: 1.5, textTransform: 'uppercase', color: GREEN, marginBottom: 20, fontWeight: 600 }}>One Verb</div>
+                {[
+                  'A producer optimizes for throughput',
+                  'A sensor optimizes for signal fidelity',
+                  'You cannot do both at once',
+                  'A builder cannot grade their own work',
+                  'When roles blend, accountability vanishes',
+                ].map((line, i) => (
+                  <div key={i} style={{ display: 'flex', gap: 12, marginBottom: 14, alignItems: 'flex-start' }}>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: GREEN, marginTop: 8, flexShrink: 0 }}/>
+                    <div style={{ fontSize: 16, lineHeight: 1.5 }}>{line}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )
+      },
+
+      /* 19 — BRIDGE AGENTS */
+      {
+        color: RED,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: RED, marginBottom: 20, fontWeight: 600 }}>The Team</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 36, lineHeight: 1.2 }}>
+              Bridget at every boundary.<br/>Nodes talk through her.
+            </h2>
+            <BridgeSVG />
+            <div style={{ marginTop: 32, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+              <div style={{ padding: '16px 20px', background: CARD_BG, border: `1px solid rgba(158,122,158,0.3)`, borderRadius: 10 }}>
+                <div style={{ fontSize: 13, letterSpacing: 1.5, textTransform: 'uppercase', color: PURPLE, marginBottom: 8, fontWeight: 600 }}>What Bridget does</div>
+                <div style={{ fontSize: 15, lineHeight: 1.7 }}>Assembles the right cards for the right task. Builder agents get a curated briefing, not the whole graph.</div>
+              </div>
+              <div style={{ padding: '16px 20px', background: CARD_BG, border: `1px solid rgba(212,184,92,0.3)`, borderRadius: 10 }}>
+                <div style={{ fontSize: 13, letterSpacing: 1.5, textTransform: 'uppercase', color: GOLD, marginBottom: 8, fontWeight: 600 }}>What gaps do</div>
+                <div style={{ fontSize: 15, lineHeight: 1.7 }}>When Bridget can't find what a builder needs, that gap is a signal. It feeds back to construction priorities.</div>
+              </div>
+            </div>
+          </div>
+        )
+      },
+
+      /* 20 — THE FULL PICTURE */
+      {
+        color: RED,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: RED, marginBottom: 16, fontWeight: 600 }}>The Full Picture</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 42, fontWeight: 600, marginBottom: 20, lineHeight: 1.2 }}>
+              Multiple loops, all connected, all feeding back.
+            </h2>
+            <SmartCompanySVG />
+          </div>
+        )
+      },
+
+      /* 21 — DOCUMENTATION AS CONVERSATION */
+      {
+        color: BLUE,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: BLUE, marginBottom: 20, fontWeight: 600 }}>The Operating Principle</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 36, lineHeight: 1.2 }}>
+              The dusty brief vs.<br/>the living document.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
+              <div>
+                <div style={{ fontSize: 15, letterSpacing: 1.5, textTransform: 'uppercase', color: RED, marginBottom: 20, fontWeight: 600 }}>Dead document</div>
+                {[
+                  'Written once',
+                  'Sits in a folder',
+                  'Nobody checks if it\'s still true',
+                  'No mechanism for being challenged',
+                  'Slowly drifts from reality',
+                ].map((line, i) => (
+                  <div key={i} style={{ display: 'flex', gap: 12, marginBottom: 12, alignItems: 'flex-start' }}>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: RED, marginTop: 8, flexShrink: 0 }}/>
+                    <div style={{ fontSize: 16 }}>{line}</div>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <div style={{ fontSize: 15, letterSpacing: 1.5, textTransform: 'uppercase', color: GREEN, marginBottom: 20, fontWeight: 600 }}>Conversational card</div>
+                {[
+                  'Written with explicit assumptions',
+                  'Linked via typed edges — changes propagate',
+                  'Has validation criteria',
+                  'Receives feedback when it fails',
+                  'Gets challenged by incoming signal',
+                ].map((line, i) => (
+                  <div key={i} style={{ display: 'flex', gap: 12, marginBottom: 12, alignItems: 'flex-start' }}>
+                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: GREEN, marginTop: 8, flexShrink: 0 }}/>
+                    <div style={{ fontSize: 16 }}>{line}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{ marginTop: 32, padding: '18px 24px', background: CARD_BG, borderLeft: `4px solid ${BLUE}`, borderRadius: 10, fontSize: 17, lineHeight: 1.6, fontStyle: 'italic', color: '#f5f0e8' }}>
+              A dashboard that nobody brings into the conversation is the same dusty brief. Data as conversation is the same principle: signal that doesn't reach the library doesn't exist.
+            </div>
+          </div>
+        )
+      },
+
+      /* 22 — BUILD SEQUENCE */
+      {
+        color: BLUE,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: BLUE, marginBottom: 20, fontWeight: 600 }}>Build Sequence</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 36, lineHeight: 1.2 }}>
+              We build this in order.<br/>Each phase composes into the next.
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {[
+                { phase: '1', name: 'The Handshake',      desc: 'Library + Factory = working context delivery', color: GOLD,   status: 'now' },
+                { phase: '2', name: 'Close the Loop',     desc: 'External signal enters through Solomon', color: BLUE,         status: 'next' },
+                { phase: '3', name: 'One Complete Node',  desc: 'Three full cycles. Traceable evidence.', color: GREEN,        status: 'milestone' },
+                { phase: '4', name: 'Second Factory',     desc: 'Federation begins. WHY chains connect both.', color: PURPLE,  status: 'future' },
+                { phase: '5', name: 'Repeat the Pattern', desc: 'Each factory: same loop, same team, same principle.', color: RED, status: 'future' },
+              ].map(({ phase, name, desc, color, status }) => (
+                <div key={phase} style={{ display: 'flex', gap: 20, padding: '16px 20px', background: CARD_BG, borderRadius: 10, borderLeft: `4px solid ${color}`, alignItems: 'flex-start' }}>
+                  <div style={{ fontFamily: "'Fraunces', serif", fontSize: 28, fontWeight: 600, color, minWidth: 36, lineHeight: 1 }}>{phase}</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: 18, fontWeight: 600, color, marginBottom: 4 }}>{name}</div>
+                    <div style={{ fontSize: 15, color: MUTED }}>{desc}</div>
+                  </div>
+                  <div style={{ fontSize: 12, color: status === 'now' ? GREEN : status === 'next' ? BLUE : status === 'milestone' ? GOLD : DIM, letterSpacing: 1, textTransform: 'uppercase', fontWeight: 600, marginTop: 4, whiteSpace: 'nowrap' }}>{status === 'now' ? 'BUILDING NOW' : status === 'next' ? 'NEXT' : status === 'milestone' ? 'MILESTONE' : 'LATER'}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      },
+
+      /* 23 — WHAT WE'RE BUILDING NOW */
+      {
+        color: BLUE,
+        content: (
+          <div>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: BLUE, marginBottom: 20, fontWeight: 600 }}>Phase 1</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 46, fontWeight: 600, marginBottom: 36, lineHeight: 1.2 }}>
+              Prove one node works.<br/>Everything else is repetition.
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
+              <div>
+                <div style={{ fontSize: 15, letterSpacing: 1.5, textTransform: 'uppercase', color: GREEN, marginBottom: 20, fontWeight: 600 }}>Operational</div>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <tbody>
+                    {[
+                      ['Six-agent team', 'running in Claude Code'],
+                      ['Configuration wizard', 'three-axis scoring'],
+                      ['Deterministic tooling', '200+ passing tests'],
+                      ['Eval harness', 'adaptive + LLM-as-Judge'],
+                      ['Type taxonomy', '18 types, typed edges'],
+                    ].map(([what, detail]) => (
+                      <tr key={what}>
+                        <td style={{ padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: 15, color: GREEN, fontWeight: 600 }}>{what}</td>
+                        <td style={{ padding: '10px 0 10px 16px', borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: 14, color: MUTED }}>{detail}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div>
+                <div style={{ fontSize: 15, letterSpacing: 1.5, textTransform: 'uppercase', color: GOLD, marginBottom: 20, fontWeight: 600 }}>Designed, Not Yet Built</div>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <tbody>
+                    {[
+                      ['Federated architecture', 'working documents'],
+                      ['Factory team patterns', 'four roles, separation'],
+                      ['Abstract type layer', 'genus-portable'],
+                      ['MCP integration', 'protocol defined'],
+                      ['Second factory', 'conceived'],
+                    ].map(([what, detail]) => (
+                      <tr key={what}>
+                        <td style={{ padding: '10px 0', borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: 15, color: GOLD }}>{what}</td>
+                        <td style={{ padding: '10px 0 10px 16px', borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: 14, color: MUTED }}>{detail}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div style={{ marginTop: 20, padding: '14px 18px', background: CARD_BG, borderLeft: `4px solid ${GOLD}`, borderRadius: 8, fontSize: 14, color: MUTED, lineHeight: 1.5 }}>
+                  The distance is real. The build sequence is modular: each phase composes into the next without requiring the grand architecture upfront.
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      },
+
+      /* 24 — THE RECURSIVE THESIS */
+      {
+        color: GOLD,
+        content: (
+          <div style={{ textAlign: 'center', paddingTop: 20 }}>
+            <div style={{ fontSize: 13, letterSpacing: 2, textTransform: 'uppercase', color: GOLD, marginBottom: 36, fontWeight: 600 }}>The Loop That Closes On Itself</div>
+            <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 48, fontWeight: 700, lineHeight: 1.15, marginBottom: 40, maxWidth: 780, margin: '0 auto 40px' }}>
+              The product is human-AI collaboration.<br/>Built by human-AI collaboration.<br/>For human-AI collaboration.
+            </h2>
+            <svg viewBox="0 0 360 200" width="360" height="200" style={{display:'block',margin:'0 auto 40px'}}>
+              {/* Three nested loops suggesting recursion */}
+              <ellipse cx="180" cy="100" rx="160" ry="80" fill="none" stroke={GOLD} strokeWidth="2" className="flow-path" opacity="0.7"/>
+              <ellipse cx="180" cy="100" rx="115" ry="55" fill="none" stroke={BLUE} strokeWidth="2" className="flow-path-reverse" opacity="0.7"/>
+              <ellipse cx="180" cy="100" rx="65" ry="30" fill="none" stroke={GREEN} strokeWidth="2" className="flow-path-slow" opacity="0.7"/>
+              <circle cx="180" cy="100" r="20" fill="#1a1612" stroke={GOLD} strokeWidth="2"/>
+              <text x="180" y="105" textAnchor="middle" fill={GOLD} fontSize="9" fontWeight="700" fontFamily="'Source Sans 3',sans-serif">TCLoA</text>
+            </svg>
+            <div style={{ fontSize: 18, color: MUTED, maxWidth: 640, margin: '0 auto', lineHeight: 1.7 }}>
+              If the Context Library cannot use its own system to build itself, the thesis is dead.<br/>
+              If it can, the thesis is demonstrated by existence.
+            </div>
+          </div>
+        )
+      },
+
+    ]; // end slides
+
+    /* ═══════════════════════════════════════════════════════════
+       PRESENTATION SHELL
+    ═══════════════════════════════════════════════════════════ */
+
+    const Presentation = () => {
+      const [currentSlide, setCurrentSlide] = useState(0);
+      const totalSlides = slides.length;
+
+      useEffect(() => {
+        const handleKeyDown = (e) => {
+          if (e.key === 'ArrowRight' || e.key === ' ') {
+            e.preventDefault();
+            setCurrentSlide(prev => Math.min(prev + 1, totalSlides - 1));
+          } else if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            setCurrentSlide(prev => Math.max(prev - 1, 0));
+          }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+      }, [totalSlides]);
+
+      const activeColor = sectionColor(currentSlide);
+
+      const shellStyles = `
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+          font-family: 'Source Sans 3', sans-serif;
+          background: linear-gradient(145deg, #1a1612 0%, #2d2620 100%);
+          color: #f5f0e8;
+          overflow: hidden;
+        }
+        h1, h2, h3 { font-family: 'Fraunces', serif; }
+        .slide-container {
+          width: 100vw;
+          height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 50px 60px 90px 60px;
+        }
+        .slide {
+          max-width: 1200px;
+          width: 100%;
+          animation: fadeIn 0.4s ease-out;
+        }
+        .nav-bar {
+          position: fixed;
+          bottom: 0; left: 0; right: 0;
+          background: rgba(26,22,18,0.97);
+          border-top: 1px solid rgba(255,255,255,0.08);
+          padding: 16px 40px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+        }
+        .nav-button {
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.18);
+          color: #f5f0e8;
+          padding: 9px 22px;
+          border-radius: 8px;
+          cursor: pointer;
+          font-family: 'Source Sans 3', sans-serif;
+          font-size: 15px;
+          transition: all 0.2s;
+        }
+        .nav-button:hover:not(:disabled) { background: rgba(255,255,255,0.1); }
+        .nav-button:disabled { opacity: 0.3; cursor: not-allowed; }
+        .progress-dots {
+          display: flex; gap: 9px; flex-wrap: wrap;
+          justify-content: center; max-width: 600px;
+        }
+        .dot {
+          width: 9px; height: 9px; border-radius: 50%;
+          background: rgba(255,255,255,0.18);
+          transition: all 0.3s; cursor: pointer;
+        }
+        .dot:hover { background: rgba(255,255,255,0.4); }
+        .slide-counter {
+          font-size: 13px;
+          color: ${DIM};
+          letter-spacing: 1px;
+          min-width: 80px;
+          text-align: right;
+        }
+      `;
+
+      return (
+        <>
+          <style>{shellStyles}</style>
+          <div className="slide-container">
+            <div className="slide" key={currentSlide}>
+              {slides[currentSlide].content}
+            </div>
+          </div>
+          <div className="nav-bar">
+            <button
+              className="nav-button"
+              onClick={() => setCurrentSlide(prev => Math.max(prev - 1, 0))}
+              disabled={currentSlide === 0}
+            >← Back</button>
+            <div className="progress-dots">
+              {slides.map((_, i) => (
+                <div
+                  key={i}
+                  className="dot"
+                  onClick={() => setCurrentSlide(i)}
+                  style={{
+                    background: i === currentSlide ? sectionColor(i) : 'rgba(255,255,255,0.18)',
+                    transform: i === currentSlide ? 'scale(1.4)' : 'scale(1)',
+                  }}
+                />
+              ))}
+            </div>
+            <div className="slide-counter">{currentSlide + 1} / {totalSlides}</div>
+            <button
+              className="nav-button"
+              onClick={() => setCurrentSlide(prev => Math.min(prev + 1, totalSlides - 1))}
+              disabled={currentSlide === totalSlides - 1}
+            >Next →</button>
+          </div>
+        </>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<Presentation />);
+  </script>
+</body>
+</html>
